@@ -1,44 +1,14 @@
-# Byte-compiled / optimized / DLL files
+# Git
+.git
+.github
+.gitignore
+
+# Python
+__pycache__/
 *.py[cod]
-
-# PyCharm project files
-.idea/
-
-# Vim / Notepad++ temp files
-*~
-
-# Coverage output
-.coverage
-
-# Documentation build folders.
-docs/_*
-docs/src/*
-target/*
-/venv/
-/run_pycharm.bat
-/.nox/
-/build/
-/coverage.xml
-/.zip/
-
-# C++ build artifacts
-*.o
-*.obj
-*.a
-*.lib
-*.dll
+*$py.class
 *.so
-*.dylib
-*.exe
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-Makefile
-*.cbp
-
-# Distribution / packaging
 .Python
-env/
 build/
 develop-eggs/
 dist/
@@ -54,6 +24,22 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
+
+# C++ build artifacts
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+*.exe
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cbp
 
 # Unit test / coverage reports
 htmlcov/
@@ -80,10 +66,14 @@ ENV/
 env.bak/
 venv.bak/
 
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
 # CMake build directories
 _build/
 _skbuild/
 _cmake_build/
-/temp_build.bat
-/run-ide.bat
-/PRD.md

@@ -1,0 +1,245 @@
+name: Workflow Dispatch
+
+on:
+  workflow_dispatch:
+    inputs:
+      workflow_type:
+        description: '要运行的工作流类型'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - lint
+          - test
+          - docs
+          - build
+          - release
+
+jobs:
+  # 构建任务
+  build:
+    if: ${{ github.event.inputs.workflow_type == 'all' || github.event.inputs.workflow_type == 'build' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
+        exclude:
+          - os: windows-latest
+            python-version: '3.10'
+    
+    uses: ./.github/workflows/reusable-jobs.yml
+    with:
+      python-version: ${{ matrix.python-version }}
+      os: ${{ matrix.os }}
+      job-type: 'build'
+
+  # 添加 Python 3.7 构建任务 (所有平台)
+  build-py37:
+    if: ${{ github.event.inputs.workflow_type == 'all' || github.event.inputs.workflow_type == 'build' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-12, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.7'
+          cache: 'pip'
+          allow-prereleases: true
+          check-latest: true
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build wheel setuptools twine
+          python -m pip install -e ".[dev]"
+      
+      - name: Initialize git submodules
+        shell: bash
+        run: |
+          git config --global url.https://github.com/.insteadOf git@github.com:
+          git config --global url.https://.insteadOf git://
+          git submodule sync
+          git submodule update --init --recursive
+      
+      # 安装 Eigen (Linux)
+      - name: Install Eigen (Linux)
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+          bash .github/scripts/linux/setup_eigen.sh
+      
+      # 安装 Eigen (macOS)
+      - name: Install Eigen (macOS)
+        if: ${{ runner.os == 'macOS' }}
+        shell: bash
+        run: |
+          bash .github/scripts/mac/setup_eigen.sh
+      
+      # 安装 Eigen (Windows)
+      - name: Install Eigen (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        shell: bash
+        run: |
+          bash .github/scripts/win/setup_eigen.sh
+      
+      - name: Build package
+        run: |
+          python -m build
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: py-dem-bones-py37-${{ matrix.os }}
+          path: dist/
+          retention-days: 7
+
+  # 测试任务 - 仅在明确指定时运行
+  test:
+    if: ${{ github.event.inputs.workflow_type == 'all' || github.event.inputs.workflow_type == 'test' }}
+    needs: [build]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
+        exclude:
+          - os: windows-latest
+            python-version: '3.10'
+    
+    uses: ./.github/workflows/reusable-jobs.yml
+    with:
+      python-version: ${{ matrix.python-version }}
+      os: ${{ matrix.os }}
+      job-type: 'test'
+  
+  # Python 3.7 测试任务 - 仅在明确指定时运行
+  test-py37:
+    if: ${{ github.event.inputs.workflow_type == 'all' || github.event.inputs.workflow_type == 'test' }}
+    needs: [build-py37]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-12, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.7'
+          cache: 'pip'
+          allow-prereleases: true
+          check-latest: true
+      
+      - name: Install dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest pytest-cov
+          python -m pip install "isort<5.12.0" "black<23.3.0" "ruff<0.0.270"
+          python -m pip install -e "."
+      
+      - name: Run tests
+        run: |
+          python -m pytest
+
+  # 代码检查任务 - 只在单一 Python 版本上执行一次
+  lint:
+    if: ${{ github.event.inputs.workflow_type == 'all' || github.event.inputs.workflow_type == 'lint' }}
+    needs: [build]
+    uses: ./.github/workflows/reusable-jobs.yml
+    with:
+      python-version: '3.11'
+      os: 'ubuntu-latest'
+      job-type: 'lint'
+
+  # 文档构建任务 - 只在单一 Python 版本上执行一次
+  docs:
+    if: ${{ github.event.inputs.workflow_type == 'all' || github.event.inputs.workflow_type == 'docs' }}
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build wheel setuptools twine
+          python -m pip install -e ".[dev]"
+      
+      - name: Initialize git submodules
+        shell: bash
+        run: |
+          git config --global url.https://github.com/.insteadOf git@github.com:
+          git config --global url.https://.insteadOf git://
+          git submodule sync
+          git submodule update --init --recursive
+      
+      - name: Install Eigen
+        run: |
+          bash .github/scripts/linux/setup_eigen.sh
+      
+      - name: Build docs
+        run: |
+          python -m sphinx -b html docs docs/_build/html
+      
+      - name: Upload documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: docs/_build/html/
+          retention-days: 7
+
+  # 发布任务 - 仅需要构建任务，同时发布文档
+  release:
+    if: ${{ github.event.inputs.workflow_type == 'all' || github.event.inputs.workflow_type == 'release' }}
+    needs: [build, build-py37, docs]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      
+      - name: Prepare distribution files
+        run: |
+          mkdir -p dist_final
+          find artifacts -type f -name "*.whl" -o -name "*.tar.gz" | xargs -I {} cp {} dist_final/ || echo "No artifacts found"
+          ls -la dist_final/ || echo "Directory empty or not found"
+      
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install twine
+      
+      - name: Publish to PyPI (dry-run)
+        run: |
+          python -m twine check dist_final/*
+          echo "Would publish to PyPI (dry-run mode)"
+          # 实际发布应该使用 release.yml 工作流
