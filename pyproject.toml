@@ -1,0 +1,100 @@
+[build-system]
+requires = [
+    "scikit-build-core>=0.5.0",
+    "pybind11>=2.10.0",
+    "numpy>=1.20.0",
+    "setuptools>=42.0.0",
+    "wheel>=0.36.0",
+]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "py-dem-bones"
+version = "0.0.1"
+description = "Python bindings for the DEM Bones skinning decomposition algorithm"
+authors = [
+    {name = "Long Hao", email = "hal.long@outlook.com"},
+]
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "numpy>=1.20.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.3.1",
+    "pytest-cov>=4.1.0",
+    "nox>=2023.4.22",
+    "black<23.3.0",
+    "ruff<0.0.270",
+    "isort<5.12.0",
+    "autoflake>=2.0.0",
+    "build>=0.10.0",
+    "twine>=4.0.2",
+]
+docs = [
+    "sphinx>=7.0.0",
+    "furo>=2023.5.20",
+    "sphinx-autobuild>=2021.3.14",
+    "pybind11-stubgen>=0.16.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/loonghao/py-dem-bones"
+Documentation = "https://py-dem-bones.readthedocs.io"
+Issues = "https://github.com/loonghao/py-dem-bones/issues"
+Changelog = "https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md"
+
+[tool.scikit-build]
+wheel.packages = ["src/py_dem_bones"]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.0.1"
+tag_format = "v$version"
+version_files = [
+    "pyproject.toml:version",
+    "src/py_dem_bones/__version__.py",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+
+[tool.ruff]
+line-length = 120
+target-version = "py37"
+# 忽略extern目录
+exclude = ["extern"]
+src = ["src", "nox_actions", "noxfile.py"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["W293"]  # 忽略空行中的空格警告
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"noxfile.py" = ["E402"]
+"docs/conf.py" = ["E402", "F401"]
+
+[tool.isort]
+profile = "black"
+line_length = 120
+skip = ["extern"]

@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  py-dem-bones:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./examples:/app/examples
+    command: python /app/examples/basic_example.py
+    
+  docs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./docs:/app/docs
+    ports:
+      - "8000:8000"
+    command: bash -c "cd /app && pip install sphinx sphinx-rtd-theme sphinx-autobuild myst-parser && cd docs && sphinx-autobuild . _build/html --host 0.0.0.0 --port 8000"

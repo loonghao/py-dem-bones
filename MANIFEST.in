@@ -1,0 +1,25 @@
+include LICENSE
+include README.md
+include README_zh.md
+include CHANGELOG.md
+include 3RDPARTYLICENSES.md
+include 3RDPARTYLICENSES_zh.md
+include pyproject.toml
+include CMakeLists.txt
+include setup.py
+
+recursive-include src/py_dem_bones *.py
+recursive-include src/binding *.cpp *.h
+recursive-include extern/dem-bones/include *.h
+
+recursive-include docs *.rst *.py
+recursive-include examples *.py
+
+prune docs/_build
+prune docs/_static
+prune docs/_templates
+prune tests/__pycache__
+prune src/py_dem_bones/__pycache__
+prune .github
+prune .vscode
+prune .idea

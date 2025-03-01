@@ -1,0 +1,160 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # 匹配所有版本标签，如 v0.1.0
+  workflow_dispatch:
+
+# 并发控制，避免重复运行
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # 构建所有 Python 版本的包
+  build:
+    name: Build Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
+        exclude:
+          - os: windows-latest
+            python-version: '3.10'
+    
+    uses: ./.github/workflows/reusable-jobs.yml
+    with:
+      python-version: ${{ matrix.python-version }}
+      os: ${{ matrix.os }}
+      job-type: 'build'
+
+  # Python 3.7 构建任务 (所有平台)
+  build-py37:
+    name: Build Python 3.7 on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-12, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.7'
+          cache: 'pip'
+          allow-prereleases: true
+          check-latest: true
+      
+      - name: Install dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build wheel setuptools twine
+          # 为所有 Python 3.7 环境指定兼容的依赖版本
+          python -m pip install "isort<5.12.0" "black<23.3.0" "ruff<0.0.270"
+          python -m pip install -e "."
+      
+      - name: Initialize git submodules
+        shell: bash
+        run: |
+          git config --global url.https://github.com/.insteadOf git@github.com:
+          git config --global url.https://.insteadOf git://
+          git submodule sync
+          git submodule update --init --recursive
+      
+      # 安装 Eigen (Linux)
+      - name: Install Eigen (Linux)
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+          bash .github/scripts/linux/setup_eigen.sh
+      
+      # 安装 Eigen (macOS)
+      - name: Install Eigen (macOS)
+        if: ${{ runner.os == 'macOS' }}
+        shell: bash
+        run: |
+          bash .github/scripts/mac/setup_eigen.sh
+      
+      # 安装 Eigen (Windows)
+      - name: Install Eigen (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        shell: bash
+        run: |
+          bash .github/scripts/win/setup_eigen.sh
+      
+      - name: Build package
+        run: |
+          python -m build
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: py-dem-bones-py37-${{ matrix.os }}
+          path: dist/
+          retention-days: 7
+
+  # 发布到GitHub Releases
+  github-release:
+    name: Create GitHub Release
+    needs: [build, build-py37]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 需要写入权限来创建release
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      
+      - name: Prepare release assets
+        run: |
+          mkdir -p release_assets
+          find artifacts -type f -name "*.whl" -o -name "*.tar.gz" | xargs -I {} cp {} release_assets/ || echo "No artifacts found"
+          ls -la release_assets/ || echo "Directory empty or not found"
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release_assets/*
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # 发布到PyPI
+  pypi-publish:
+    name: Publish to PyPI
+    needs: [github-release]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # 用于PyPI的可信发布
+      contents: read
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+      
+      - name: Prepare distribution files
+        run: |
+          mkdir -p dist_final
+          find dist -type f -name "*.whl" -o -name "*.tar.gz" | xargs -I {} cp {} dist_final/ || echo "No artifacts found"
+          ls -la dist_final/ || echo "Directory empty or not found"
+      
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist_final/
+          skip-existing: true
