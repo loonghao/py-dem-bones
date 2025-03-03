@@ -57,14 +57,22 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          # 配置镜像源并添加重试机制
-          python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+          # 配置重试机制
           python -m pip config set global.timeout 120
           python -m pip config set global.retries 5
-          # 安装依赖，添加重试和超时参数
-          python -m pip install --no-cache-dir build wheel setuptools twine
-          python -m pip install --no-cache-dir nox
-          python -m pip install --no-cache-dir -e ".[dev]"
+          
+          # macOS 特定优化
+          if [ "${{ runner.os }}" = "macOS" ]; then
+            # 使用镜像源加速依赖下载
+            python -m pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple build wheel setuptools twine
+            python -m pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple nox
+            python -m pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple -e ".[dev]"
+          else
+            # 其他平台使用默认配置
+            python -m pip install --no-cache-dir build wheel setuptools twine
+            python -m pip install --no-cache-dir nox
+            python -m pip install --no-cache-dir -e ".[dev]"
+          fi
       
       # 初始化 git 子模块 
       - name: Initialize git submodules
@@ -91,6 +99,12 @@ jobs:
         if: ${{ runner.os == 'macOS' }}
         shell: bash
         run: |
+          # 设置 Homebrew 环境变量，提高性能
+          export HOMEBREW_NO_AUTO_UPDATE=1
+          export HOMEBREW_NO_INSTALL_CLEANUP=1
+          export HOMEBREW_NO_ANALYTICS=1
+          export HOMEBREW_NO_COLOR=1
+          
           if [ -d "extern/eigen/Eigen" ]; then
             echo "Eigen already installed, skipping..."
           else
@@ -161,8 +175,7 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          # 配置镜像源并添加重试机制
-          python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+          # 配置重试机制
           python -m pip config set global.timeout 120
           python -m pip config set global.retries 5
           # 安装依赖，添加重试和超时参数
@@ -230,8 +243,7 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          # 配置镜像源并添加重试机制
-          python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+          # 配置重试机制
           python -m pip config set global.timeout 120
           python -m pip config set global.retries 5
           # 安装依赖，添加重试和超时参数
@@ -299,8 +311,7 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          # 配置镜像源并添加重试机制
-          python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+          # 配置重试机制
           python -m pip config set global.timeout 120
           python -m pip config set global.retries 5
           # 安装依赖，添加重试和超时参数
