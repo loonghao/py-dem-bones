@@ -15,6 +15,7 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.mathjax',
     'sphinx.ext.intersphinx',
+    'myst_parser',
 ]
 
 templates_path = ['_templates']
@@ -49,6 +50,17 @@ intersphinx_mapping = {
 # -- Options for autodoc extension ------------------------------------------
 autodoc_member_order = 'bysource'
 autodoc_typehints = 'description'
+
+# -- Options for myst_parser extension --------------------------------------
+myst_enable_extensions = [
+    "colon_fence",
+    "deflist",
+]
+myst_heading_anchors = 3
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
 
 # 添加项目根目录到Python路径，以便导入模块
 import os

@@ -5,6 +5,12 @@ import sys
 # Import third-party modules
 import nox
 
+# Configure nox
+nox.options.reuse_existing_virtualenvs = True
+nox.options.error_on_missing_interpreters = False
+# Enable pip cache to speed up dependency installation
+os.environ["PIP_NO_CACHE_DIR"] = "0"
+
 ROOT = os.path.dirname(__file__)
 
 # Ensure maya_umbrella is importable.
@@ -12,12 +18,7 @@ if ROOT not in sys.path:
     sys.path.append(ROOT)
 
 # Import local modules
-from nox_actions import (  # noqa: E402
-    build,
-    codetest,
-    docs,
-    lint,
-)
+from nox_actions import build, codetest, docs, lint  # noqa: E402
 
 
 @nox.session
@@ -60,8 +61,8 @@ def init_submodules(session: nox.Session) -> None:
     init_submodules(session)
 
 
-nox.session(lint.lint, name="lint")
-nox.session(lint.lint_fix, name="lint-fix")
+nox.session(lint.lint, name="lint", reuse_venv=True)
+nox.session(lint.lint_fix, name="lint-fix", reuse_venv=True)
 nox.session(codetest.pytest, name="pytest")
 nox.session(basic_test, name="basic-test")
 nox.session(docs.docs, name="docs")

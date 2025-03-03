@@ -2,6 +2,7 @@
 import os
 import platform
 import sys
+import time
 from pathlib import Path
 
 MODULE_NAME = "py_dem_bones"
@@ -21,9 +22,50 @@ def _assemble_env_paths(*paths):
     return ";".join(paths)
 
 
+def retry_command(session, command_func, *args, max_retries=3, retry_delay=5, **kwargs):
+    """Execute a command with retry logic.
+
+    Args:
+        session: Nox session object.
+        command_func: Function to execute (e.g., session.run, session.install).
+        *args: Positional arguments to pass to the command function.
+        max_retries: Maximum number of retry attempts.
+        retry_delay: Delay in seconds between retries.
+        **kwargs: Keyword arguments to pass to the command function.
+
+    Returns:
+        The result of the command function if successful.
+
+    Raises:
+        Exception: If the command fails after all retry attempts.
+    """
+    attempt = 0
+    last_error = None
+
+    while attempt < max_retries:
+        try:
+            if attempt > 0:
+                session.log(
+                    f"Retry attempt {attempt}/{max_retries} for command: {command_func.__name__}"
+                )
+            return command_func(*args, **kwargs)
+        except Exception as e:
+            last_error = e
+            attempt += 1
+            if attempt < max_retries:
+                session.log(f"Command failed with error: {e}")
+                session.log(f"Waiting {retry_delay} seconds before retry...")
+                time.sleep(retry_delay)
+                # Increase delay for next retry (exponential backoff)
+                retry_delay *= 2
+            else:
+                session.log(f"Command failed after {max_retries} attempts")
+                raise last_error
+
+
 def find_vcvarsall() -> str:
     """Find vcvarsall.bat on Windows.
-    
+
     Returns:
         str: Path to vcvarsall.bat if found, empty string otherwise.
     """
@@ -46,12 +88,12 @@ def find_vcvarsall() -> str:
 
 def setup_windows_environment(session, command_str: str, env=None) -> bool:
     """Set up Windows environment for building C++ code.
-    
+
     Args:
         session: Nox session object.
         command_str: Command string to be executed in the Windows environment.
         env: Optional environment variables dictionary.
-    
+
     Returns:
         bool: True if the environment was set up and command executed, False otherwise.
     """
@@ -64,7 +106,9 @@ def setup_windows_environment(session, command_str: str, env=None) -> bool:
         try:
             # Directly execute the command
             if command_str.startswith("-m") or command_str.startswith("/"):
-                session.run(sys.executable, *command_str.split(), env=env, external=True)
+                session.run(
+                    sys.executable, *command_str.split(), env=env, external=True
+                )
             else:
                 session.run(command_str, env=env, external=True)
             return True
@@ -75,7 +119,9 @@ def setup_windows_environment(session, command_str: str, env=None) -> bool:
     # Local environment uses vcvarsall.bat
     vcvarsall = find_vcvarsall()
     if not vcvarsall:
-        session.log("Could not find vcvarsall.bat. Please install Visual Studio Build Tools.")
+        session.log(
+            "Could not find vcvarsall.bat. Please install Visual Studio Build Tools."
+        )
         return False
 
     session.log(f"Using Visual Studio environment from: {vcvarsall}")
@@ -87,7 +133,7 @@ def setup_windows_environment(session, command_str: str, env=None) -> bool:
         # If there are environment variables, add them to the batch file
         if env:
             for key, value in env.items():
-                f.write(f'set {key}={value}\n')
+                f.write(f"set {key}={value}\n")
 
         # Get the full path of the Python interpreter
         python_path = sys.executable
@@ -96,7 +142,7 @@ def setup_windows_environment(session, command_str: str, env=None) -> bool:
         if command_str.startswith("-m") or command_str.startswith("/"):
             f.write(f'"{python_path}" {command_str}\n')
         else:
-            f.write(f'{command_str}\n')
+            f.write(f"{command_str}\n")
 
     # Run the batch file
     try:
@@ -116,16 +162,16 @@ def setup_windows_environment(session, command_str: str, env=None) -> bool:
 
 def build_cpp_extension(session, env=None):
     """Build C++ extension for the project.
-    
+
     Args:
         session: Nox session object.
         env: Optional environment variables dictionary.
-        
+
     Returns:
         bool: True if the build was successful, False otherwise.
     """
     session.log("Building C++ extension...")
-    
+
     # Detect platform
     system = platform.system()
     session.log(f"Building on {system} platform")
@@ -138,15 +184,25 @@ def build_cpp_extension(session, env=None):
     # Use pip wheel to directly create a wheel
     os.makedirs("dist", exist_ok=True)
 
-    # 确保 pip 和必要的构建工具已安装
+    # Ensure pip and necessary build tools are installed
     try:
         session.run(sys.executable, "-m", "pip", "--version", silent=True)
     except Exception:
         session.log("pip not found, attempting to install...")
         try:
-            # 尝试安装 pip
+            # Try to install pip
             session.run(sys.executable, "-m", "ensurepip", "--upgrade", silent=True)
-            session.run(sys.executable, "-m", "pip", "install", "--upgrade", "pip", "wheel", "setuptools", "build")
+            session.run(
+                sys.executable,
+                "-m",
+                "pip",
+                "install",
+                "--upgrade",
+                "pip",
+                "wheel",
+                "setuptools",
+                "build",
+            )
         except Exception as e:
             session.log(f"Failed to install pip: {e}")
             return False
@@ -154,18 +210,27 @@ def build_cpp_extension(session, env=None):
     # Execute different build commands based on the platform
     build_success = False
     wheel_cmd = "-m pip wheel . -w dist/ --no-deps"
-    
+
     if system == "Windows":
         if setup_windows_environment(session, wheel_cmd, env):
             session.log("Windows extension build completed successfully")
             build_success = True
         else:
-            session.log("Windows environment setup failed, falling back to direct build")
+            session.log(
+                "Windows environment setup failed, falling back to direct build"
+            )
             try:
                 session.run(
-                    sys.executable, "-m", "pip", "wheel", ".",
-                    "-w", "dist/", "--no-deps",
-                    env=env, external=True
+                    sys.executable,
+                    "-m",
+                    "pip",
+                    "wheel",
+                    ".",
+                    "-w",
+                    "dist/",
+                    "--no-deps",
+                    env=env,
+                    external=True,
                 )
                 build_success = True
             except Exception as e:
@@ -174,9 +239,16 @@ def build_cpp_extension(session, env=None):
         try:
             # Ensure using python -m pip instead of pip directly
             session.run(
-                sys.executable, "-m", "pip", "wheel", ".",
-                "-w", "dist/", "--no-deps",
-                env=env, external=True
+                sys.executable,
+                "-m",
+                "pip",
+                "wheel",
+                ".",
+                "-w",
+                "dist/",
+                "--no-deps",
+                env=env,
+                external=True,
             )
             build_success = True
         except Exception as e:
@@ -184,11 +256,27 @@ def build_cpp_extension(session, env=None):
             # Try installing wheel package and retry
             try:
                 session.log("Attempting to install wheel package and retry...")
-                session.run(sys.executable, "-m", "pip", "install", "--upgrade", "wheel", "setuptools", "build")
                 session.run(
-                    sys.executable, "-m", "pip", "wheel", ".",
-                    "-w", "dist/", "--no-deps",
-                    env=env, external=True
+                    sys.executable,
+                    "-m",
+                    "pip",
+                    "install",
+                    "--upgrade",
+                    "wheel",
+                    "setuptools",
+                    "build",
+                )
+                session.run(
+                    sys.executable,
+                    "-m",
+                    "pip",
+                    "wheel",
+                    ".",
+                    "-w",
+                    "dist/",
+                    "--no-deps",
+                    env=env,
+                    external=True,
                 )
                 build_success = True
             except Exception as e2:
@@ -202,13 +290,13 @@ def build_cpp_extension(session, env=None):
         except Exception as e:
             session.log(f"Warning: Failed to install package in development mode: {e}")
             session.log("Continuing with process...")
-    
+
     return build_success
 
 
 def get_package_name():
     """Get the package name from the pyproject.toml file.
-    
+
     Returns:
         str: The package name.
     """
@@ -217,19 +305,21 @@ def get_package_name():
 
 def get_package_version():
     """Get the package version from the pyproject.toml file.
-    
+
     Returns:
         str: The package version.
     """
     try:
         import tomli
+
         with open(os.path.join(THIS_ROOT, "pyproject.toml"), "rb") as f:
             pyproject = tomli.load(f)
         return pyproject["project"]["version"]
     except (ImportError, FileNotFoundError, KeyError):
         try:
-            # 尝试从 setup.py 中获取版本
+            # Try to get version from setup.py
             import re
+
             setup_py = os.path.join(THIS_ROOT, "setup.py")
             if os.path.exists(setup_py):
                 with open(setup_py, "r") as f:
@@ -239,22 +329,22 @@ def get_package_version():
                         return version_match.group(1)
         except Exception:
             pass
-        return "0.1.0"  # 默认版本
+        return "0.1.0"  # Default version
 
 
 def check_doxygen_installed(session):
     """Check if Doxygen is installed and provide installation instructions if not.
-    
+
     Args:
         session: Nox session object.
-        
+
     Returns:
         bool: True if Doxygen is installed, False otherwise.
     """
     # Check if Doxygen is installed
     doxygen_installed = False
 
-    if os.name == 'nt':  # Windows
+    if os.name == "nt":  # Windows
         # First, check if there is a doxygen executable in the project directory
         local_doxygen = os.path.join(THIS_ROOT, "doxygen.exe")
         if os.path.exists(local_doxygen):
@@ -262,13 +352,17 @@ def check_doxygen_installed(session):
         else:
             # Check if it is in the system path
             try:
-                result = session.run("where", "doxygen", external=True, silent=True, success_codes=[0, 1])
+                result = session.run(
+                    "where", "doxygen", external=True, silent=True, success_codes=[0, 1]
+                )
                 doxygen_installed = result == 0
             except Exception:
                 doxygen_installed = False
     else:  # Linux/macOS
         try:
-            result = session.run("which", "doxygen", external=True, silent=True, success_codes=[0, 1])
+            result = session.run(
+                "which", "doxygen", external=True, silent=True, success_codes=[0, 1]
+            )
             doxygen_installed = result == 0
         except Exception:
             doxygen_installed = False
@@ -276,7 +370,7 @@ def check_doxygen_installed(session):
     if not doxygen_installed:
         session.log("Doxygen not found. C++ API documentation will not be generated.")
         session.log("Please install Doxygen manually:")
-        if os.name == 'nt':  # Windows
+        if os.name == "nt":  # Windows
             session.log("  1. Download from https://www.doxygen.nl/download.html")
             session.log("  2. Or run: choco install doxygen.install")
 
@@ -294,5 +388,5 @@ def check_doxygen_installed(session):
                 session.log("  Run: brew install doxygen")
             else:
                 session.log("  Visit https://www.doxygen.nl/download.html")
-    
+
     return doxygen_installed

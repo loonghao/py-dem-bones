@@ -26,40 +26,45 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-depth: 1  # 减少克隆深度，加快检出速度
       
       - name: Set up Python ${{ inputs.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python-version }}
+          cache: 'pip'  # 启用 pip 缓存
+      
+      # 缓存 pip 依赖
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-py${{ inputs.python-version }}-pip-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-py${{ inputs.python-version }}-pip-
+      
+      # 缓存 Eigen 库
+      - name: Cache Eigen library
+        uses: actions/cache@v3
+        with:
+          path: extern/eigen
+          key: ${{ runner.os }}-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-eigen-
       
       # 安装基础依赖 
       - name: Install dependencies
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          python -m pip install build wheel setuptools twine
-          python -m pip install -e ".[dev]"
-      
-      # 安装 Eigen (Linux)
-      - name: Install Eigen (Linux)
-        if: ${{ runner.os == 'Linux' }}
-        shell: bash
-        run: |
-          bash .github/scripts/linux/setup_eigen.sh
-      
-      # 安装 Eigen (macOS)
-      - name: Install Eigen (macOS)
-        if: ${{ runner.os == 'macOS' }}
-        shell: bash
-        run: |
-          bash .github/scripts/mac/setup_eigen.sh
-      
-      # 安装 Eigen (Windows)
-      - name: Install Eigen (Windows)
-        if: ${{ runner.os == 'Windows' }}
-        shell: bash
-        run: |
-          bash .github/scripts/win/setup_eigen.sh
+          # 配置镜像源并添加重试机制
+          python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+          python -m pip config set global.timeout 120
+          python -m pip config set global.retries 5
+          # 安装依赖，添加重试和超时参数
+          python -m pip install --no-cache-dir build wheel setuptools twine
+          python -m pip install --no-cache-dir nox
+          python -m pip install --no-cache-dir -e ".[dev]"
       
       # 初始化 git 子模块 
       - name: Initialize git submodules
@@ -70,50 +75,61 @@ jobs:
           git submodule sync
           git submodule update --init --recursive
       
+      # 安装 Eigen (Linux)
+      - name: Install Eigen (Linux)
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+          if [ -d "extern/eigen/Eigen" ]; then
+            echo "Eigen already installed, skipping..."
+          else
+            bash .github/scripts/linux/setup_eigen.sh
+          fi
+      
+      # 安装 Eigen (macOS)
+      - name: Install Eigen (macOS)
+        if: ${{ runner.os == 'macOS' }}
+        shell: bash
+        run: |
+          if [ -d "extern/eigen/Eigen" ]; then
+            echo "Eigen already installed, skipping..."
+          else
+            bash .github/scripts/mac/setup_eigen.sh
+          fi
+      
+      # 安装 Eigen (Windows)
+      - name: Install Eigen (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        shell: bash
+        run: |
+          if [ -d "extern/eigen/Eigen" ]; then
+            echo "Eigen already installed, skipping..."
+          else
+            bash .github/scripts/win/setup_eigen.sh
+          fi
+      
       # 构建包 
       - name: Build package
         if: ${{ inputs.job-type == 'build' }}
         shell: bash
         run: |
-          python -m build
+          python -m nox -s build
       
       # 运行测试 
       - name: Run tests
         if: ${{ inputs.job-type == 'test' }}
         shell: bash
         run: |
-          python -m pytest
+          python -m nox -s pytest
       
       # 上传构建产物
       - name: Upload artifacts
         if: ${{ inputs.job-type == 'build' }}
         uses: actions/upload-artifact@v4
         with:
-          name: py-dem-bones-${{ inputs.python-version }}-${{ inputs.os }}
+          name: py-dem-bones-python${{ inputs.python-version }}-${{ runner.os }}
           path: dist/
           retention-days: 7
-      
-      # 运行代码检查
-      - name: Run lint
-        if: ${{ inputs.job-type == 'lint' }}
-        shell: bash
-        run: |
-          uvx nox -s lint
-      
-      # 构建文档
-      - name: Build docs
-        if: ${{ inputs.job-type == 'docs' }}
-        shell: bash
-        run: |
-          python -m sphinx -b html docs docs/_build/html
-      
-      # 发布包
-      - name: Release package
-        if: ${{ inputs.job-type == 'release' }}
-        shell: bash
-        run: |
-          python -m build
-          python -m twine upload --skip-existing dist/*
   
   # 代码检查任务
   lint:
@@ -124,24 +140,52 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-depth: 1  # 减少克隆深度
       
       - name: Set up Python ${{ inputs.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python-version }}
+          cache: 'pip'  # 启用 pip 缓存
+      
+      # 缓存 pip 依赖
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-py${{ inputs.python-version }}-pip-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-py${{ inputs.python-version }}-pip-
       
       - name: Install dependencies
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          python -m pip install build wheel setuptools twine
-          python -m pip install -e ".[dev]"
-          python -m pip install ruff black isort mypy
+          # 配置镜像源并添加重试机制
+          python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+          python -m pip config set global.timeout 120
+          python -m pip config set global.retries 5
+          # 安装依赖，添加重试和超时参数
+          python -m pip install --no-cache-dir -e ".[dev]"
+          python -m pip install --no-cache-dir nox
+      
+      # 缓存 Eigen 库
+      - name: Cache Eigen library
+        uses: actions/cache@v3
+        with:
+          path: extern/eigen
+          key: ${{ runner.os }}-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-eigen-
       
       - name: Install Eigen
         shell: bash
         run: |
-          bash .github/scripts/linux/setup_eigen.sh
+          if [ -d "extern/eigen/Eigen" ]; then
+            echo "Eigen already installed, skipping..."
+          else
+            bash .github/scripts/linux/setup_eigen.sh
+          fi
       
       - name: Initialize git submodules
         shell: bash
@@ -154,24 +198,7 @@ jobs:
       - name: Run linters
         shell: bash
         run: |
-          python -m ruff check .
-          python -m black --check .
-          python -m isort --check .
-      
-      # 构建文档
-      - name: Build docs
-        if: ${{ inputs.job-type == 'docs' }}
-        shell: bash
-        run: |
-          python -m sphinx -b html docs docs/_build/html
-      
-      # 发布包
-      - name: Release package
-        if: ${{ inputs.job-type == 'release' }}
-        shell: bash
-        run: |
-          python -m build
-          python -m twine upload --skip-existing dist/*
+          python -m nox -s lint
   
   # 文档构建任务
   docs:
@@ -182,23 +209,52 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-depth: 1  # 减少克隆深度
       
       - name: Set up Python ${{ inputs.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python-version }}
+          cache: 'pip'  # 启用 pip 缓存
+      
+      # 缓存 pip 依赖
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-py${{ inputs.python-version }}-pip-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-py${{ inputs.python-version }}-pip-
       
       - name: Install dependencies
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          python -m pip install build wheel setuptools twine
-          python -m pip install -e ".[dev]"
+          # 配置镜像源并添加重试机制
+          python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+          python -m pip config set global.timeout 120
+          python -m pip config set global.retries 5
+          # 安装依赖，添加重试和超时参数
+          python -m pip install --no-cache-dir nox
+          python -m pip install --no-cache-dir -e ".[dev,docs]"
+      
+      # 缓存 Eigen 库
+      - name: Cache Eigen library
+        uses: actions/cache@v3
+        with:
+          path: extern/eigen
+          key: ${{ runner.os }}-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-eigen-
       
       - name: Install Eigen
         shell: bash
         run: |
-          bash .github/scripts/linux/setup_eigen.sh
+          if [ -d "extern/eigen/Eigen" ]; then
+            echo "Eigen already installed, skipping..."
+          else
+            bash .github/scripts/linux/setup_eigen.sh
+          fi
       
       - name: Initialize git submodules
         shell: bash
@@ -211,15 +267,7 @@ jobs:
       - name: Build documentation
         shell: bash
         run: |
-          python -m sphinx -b html docs docs/_build/html
-      
-      # 发布包
-      - name: Release package
-        if: ${{ inputs.job-type == 'release' }}
-        shell: bash
-        run: |
-          python -m build
-          python -m twine upload --skip-existing dist/*
+          python -m nox -s docs
   
   # 发布任务
   release:
@@ -230,25 +278,53 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-          fetch-depth: 0
+          fetch-depth: 0  # 发布需要完整的历史记录
       
       - name: Set up Python ${{ inputs.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python-version }}
+          cache: 'pip'  # 启用 pip 缓存
+      
+      # 缓存 pip 依赖
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-py${{ inputs.python-version }}-pip-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-py${{ inputs.python-version }}-pip-
       
       - name: Install dependencies
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          python -m pip install build wheel setuptools twine
-          python -m pip install -e ".[dev]"
-          python -m pip install build twine
+          # 配置镜像源并添加重试机制
+          python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+          python -m pip config set global.timeout 120
+          python -m pip config set global.retries 5
+          # 安装依赖，添加重试和超时参数
+          python -m pip install --no-cache-dir build wheel setuptools twine
+          python -m pip install --no-cache-dir nox
+          python -m pip install --no-cache-dir -e ".[dev]"
+      
+      # 缓存 Eigen 库
+      - name: Cache Eigen library
+        uses: actions/cache@v3
+        with:
+          path: extern/eigen
+          key: ${{ runner.os }}-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-eigen-
       
       - name: Install Eigen
         shell: bash
         run: |
-          bash .github/scripts/linux/setup_eigen.sh
+          if [ -d "extern/eigen/Eigen" ]; then
+            echo "Eigen already installed, skipping..."
+          else
+            bash .github/scripts/linux/setup_eigen.sh
+          fi
       
       - name: Initialize git submodules
         shell: bash
@@ -264,5 +340,5 @@ jobs:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
-          python -m build
+          python -m nox -s build
           python -m twine upload --skip-existing dist/*
