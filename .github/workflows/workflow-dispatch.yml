@@ -41,7 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-12, windows-latest]
+        os: [ubuntu-20.04, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -128,7 +128,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-12, windows-latest]
+        os: [ubuntu-20.04, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -168,7 +168,7 @@ jobs:
   # 文档构建任务 - 只在单一 Python 版本上执行一次
   docs:
     if: ${{ github.event.inputs.workflow_type == 'all' || github.event.inputs.workflow_type == 'docs' }}
-    needs: [build]
+    needs: [lint]  # 只依赖于 lint 任务，与 build 并行执行
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

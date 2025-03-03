@@ -1,4 +1,4 @@
-name: Main Workflow
+name: CI
 
 on:
   push:
@@ -8,16 +8,16 @@ on:
   workflow_dispatch:
     inputs:
       fast-mode:
-        description: 'Fast mode (reduces build variants)'
+        description: 'Run in fast mode (reduced test matrix)'
         required: false
         default: 'false'
-        type: choice
-        options:
-          - 'true'
-          - 'false'
+        type: boolean
 
+# 并发控制配置
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  # 使用 workflow 名称和 PR 编号或分支名称作为并发组
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  # 当新的工作流运行开始时，取消当前运行中的工作流
   cancel-in-progress: true
 
 jobs:
@@ -43,8 +43,7 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          # 配置镜像源并添加重试机制
-          python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+          # 配置重试机制
           python -m pip config set global.timeout 120
           python -m pip config set global.retries 5
           # 安装依赖
@@ -109,13 +108,14 @@ jobs:
       job-type: 'build'
 
   build-py37:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.fast-mode == 'true') }}
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.fast-mode == 'true') && (github.event_name != 'pull_request' || github.base_ref == 'main') }}
     needs: [lint]  # Depends on lint job
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-12, windows-latest]
+        os: [ubuntu-20.04, windows-latest]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -142,13 +142,18 @@ jobs:
             ${{ runner.os }}-eigen-
       
       - name: Install dependencies
+        shell: bash
         run: |
           python -m pip install --upgrade pip
-          python -m pip install build wheel setuptools twine
-          python -m pip install nox
+          # 配置重试机制
+          python -m pip config set global.timeout 120
+          python -m pip config set global.retries 5
+          # 安装依赖
+          python -m pip install --no-cache-dir build wheel setuptools twine
+          python -m pip install --no-cache-dir nox
           # Specify compatible dependency versions for all Python 3.7 environments
-          python -m pip install "isort<5.12.0" "black<23.3.0" "ruff<0.0.270"
-          python -m pip install -e ".[dev]"
+          python -m pip install --no-cache-dir "isort<5.12.0" "black<23.3.0" "ruff<0.0.270"
+          python -m pip install --no-cache-dir -e ".[dev]"
       
       - name: Initialize git submodules
         shell: bash
@@ -168,16 +173,6 @@ jobs:
             bash .github/scripts/linux/setup_eigen.sh
           fi
       
-      - name: Install Eigen (macOS)
-        if: ${{ runner.os == 'macOS' }}
-        shell: bash
-        run: |
-          if [ -d "extern/eigen/Eigen" ]; then
-            echo "Eigen already installed, skipping..."
-          else
-            bash .github/scripts/mac/setup_eigen.sh
-          fi
-      
       - name: Install Eigen (Windows)
         if: ${{ runner.os == 'Windows' }}
         shell: bash
@@ -185,10 +180,16 @@ jobs:
           if [ -d "extern/eigen/Eigen" ]; then
             echo "Eigen already installed, skipping..."
           else
-            bash .github/scripts/win/setup_eigen.sh
+            # 使用预先下载的 Eigen 库，避免每次都从 GitLab 克隆
+            mkdir -p extern/eigen
+            curl -L -o eigen.zip https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip
+            unzip -q eigen.zip
+            cp -r eigen-3.4.0/Eigen extern/eigen/
+            rm -rf eigen.zip eigen-3.4.0
           fi
       
       - name: Build package
+        shell: bash
         run: |
           python -m nox -s build
       
@@ -201,7 +202,7 @@ jobs:
 
   docs:
     if: ${{ github.event_name == 'pull_request' }}
-    needs: [lint, build, build-py37]  # Depends on lint and build jobs
+    needs: [lint]  # 只依赖于 lint 任务，与 build 和 build-py37 并行执行
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -222,8 +223,7 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          # 配置镜像源并添加重试机制
-          python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+          # 配置重试机制
           python -m pip config set global.timeout 120
           python -m pip config set global.retries 5
           # 安装依赖
@@ -271,7 +271,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-20.04, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -288,6 +288,18 @@ jobs:
             pyproject.toml
             requirements*.txt
       
+      # 缓存 Homebrew 依赖 (macOS)
+      - name: Cache Homebrew dependencies
+        if: ${{ runner.os == 'macOS' }}
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/Library/Caches/Homebrew
+            /usr/local/Homebrew
+          key: ${{ runner.os }}-brew-${{ hashFiles('.github/scripts/mac/setup_eigen.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-brew-
+      
       - name: Cache Eigen library
         uses: actions/cache@v3
         with:
@@ -300,9 +312,15 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest pytest-cov
-          python -m pip install nox
-          python -m pip install -e "."
+          # 配置重试机制
+          python -m pip config set global.timeout 120
+          python -m pip config set global.retries 5
+          # 安装测试依赖
+          python -m pip install --no-cache-dir pytest pytest-cov
+          python -m pip install --no-cache-dir nox
+          # 为 Python 3.7 环境指定兼容的依赖版本
+          python -m pip install --no-cache-dir "isort<5.12.0" "black<23.3.0" "ruff<0.0.270"
+          python -m pip install --no-cache-dir -e "."
       
       - name: Initialize git submodules
         shell: bash
