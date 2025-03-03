@@ -10,7 +10,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "py-dem-bones"
-version = "0.2.0"
+version = "0.2.1"
 description = "Python bindings for the DEM Bones skinning decomposition algorithm"
 authors = [
     {name = "Long Hao", email = "hal.long@outlook.com"},
@@ -79,7 +79,7 @@ wheel.packages = ["src/py_dem_bones"]
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.2.0"
+version = "0.2.1"
 tag_format = "v$version"
 version_files = [
     "pyproject.toml:version",
