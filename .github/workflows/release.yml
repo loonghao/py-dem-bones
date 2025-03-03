@@ -104,7 +104,7 @@ jobs:
       
       # 缓存 pip 依赖
       - name: Cache pip dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-py37-pip-${{ hashFiles('**/pyproject.toml') }}
@@ -113,7 +113,7 @@ jobs:
       
       # 缓存 Eigen 库
       - name: Cache Eigen library
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: extern/eigen
           key: ${{ runner.os }}-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}

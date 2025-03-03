@@ -134,7 +134,7 @@ jobs:
           check-latest: true
       
       - name: Cache Eigen library
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: extern/eigen
           key: ${{ runner.os }}-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
@@ -291,7 +291,7 @@ jobs:
       # 缓存 Homebrew 依赖 (macOS)
       - name: Cache Homebrew dependencies
         if: ${{ runner.os == 'macOS' }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/Library/Caches/Homebrew
@@ -301,7 +301,7 @@ jobs:
             ${{ runner.os }}-brew-
       
       - name: Cache Eigen library
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: extern/eigen
           key: ${{ runner.os }}-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
