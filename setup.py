@@ -20,12 +20,12 @@ if __name__ == "__main__":
         author="Long Hao",
         author_email="hal.long@outlook.com",
         url="https://github.com/loonghao/py-dem-bones",
-        license="MIT",
+        license="BSD-3-Clause",
         classifiers=[
-            "Development Status :: 3 - Alpha",
+            "Development Status :: 4 - Beta",
             "Intended Audience :: Developers",
             "Intended Audience :: Science/Research",
-            "License :: OSI Approved :: MIT License",
+            "License :: OSI Approved :: BSD License",
             "Operating System :: OS Independent",
             "Programming Language :: Python :: 3",
             "Programming Language :: Python :: 3.7",
@@ -39,6 +39,7 @@ if __name__ == "__main__":
             "Topic :: Scientific/Engineering",
             "Topic :: Scientific/Engineering :: Artificial Intelligence",
             "Topic :: Multimedia :: Graphics :: 3D Modeling",
+            "Topic :: Software Development :: Libraries :: Python Modules",
         ],
         python_requires=">=3.7",
     )

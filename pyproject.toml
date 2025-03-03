@@ -10,25 +10,32 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "py-dem-bones"
-version = "0.0.1"
+version = "0.1.0"
 description = "Python bindings for the DEM Bones skinning decomposition algorithm"
 authors = [
     {name = "Long Hao", email = "hal.long@outlook.com"},
 ]
 readme = "README.md"
 requires-python = ">=3.7"
-license = {text = "MIT"}
+license = {text = "BSD-3-Clause"}
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: C++",
     "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Multimedia :: Graphics :: 3D Modeling",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
@@ -37,21 +44,28 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.3.1",
-    "pytest-cov>=4.1.0",
     "nox>=2023.4.22",
-    "black<23.3.0",
-    "ruff<0.0.270",
-    "isort<5.12.0",
-    "autoflake>=2.0.0",
-    "build>=0.10.0",
-    "twine>=4.0.2",
 ]
 docs = [
     "sphinx>=7.0.0",
     "furo>=2023.5.20",
     "sphinx-autobuild>=2021.3.14",
     "pybind11-stubgen>=0.16.0",
+    "myst-parser>=2.0.0",
+]
+lint = [
+    "black<23.3.0",
+    "ruff<0.0.270",
+    "isort<5.12.0",
+    "autoflake>=2.0.0",
+]
+test = [
+    "pytest>=7.3.1",
+    "pytest-cov>=4.1.0",
+]
+build = [
+    "build>=0.10.0",
+    "twine>=4.0.2",
 ]
 
 [project.urls]
@@ -65,7 +79,7 @@ wheel.packages = ["src/py_dem_bones"]
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.0.1"
+version = "0.1.0"
 tag_format = "v$version"
 version_files = [
     "pyproject.toml:version",
@@ -81,15 +95,13 @@ python_functions = "test_*"
 [tool.ruff]
 line-length = 120
 target-version = "py37"
-# 忽略extern目录
-exclude = ["extern"]
+# Ignore extern directory and generated stub files
+exclude = ["extern", "**/*.pyi"]
 src = ["src", "nox_actions", "noxfile.py"]
-
-[tool.ruff.lint]
 select = ["E", "F", "W", "I"]
-ignore = ["W293"]  # 忽略空行中的空格警告
+ignore = ["W293"]  # Ignore whitespace warnings in blank lines
 
-[tool.ruff.lint.per-file-ignores]
+[tool.ruff.per-file-ignores]
 "__init__.py" = ["F401"]
 "noxfile.py" = ["E402"]
 "docs/conf.py" = ["E402", "F401"]
@@ -98,3 +110,4 @@ ignore = ["W293"]  # 忽略空行中的空格警告
 profile = "black"
 line_length = 120
 skip = ["extern"]
+skip_glob = ["*.pyi"]
