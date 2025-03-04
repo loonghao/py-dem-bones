@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "py-dem-bones"
+abstract: "Python bindings for the Dem Bones library"
+authors:
+  - family-names: "Long"
+    given-names: "Hao"
+    email: "hal.long@outlook.com"
+version: 0.3.0
+date-released: 2024-03-05
+license: BSD-3-Clause
+repository-code: "https://github.com/loonghao/py-dem-bones"

@@ -11,7 +11,6 @@
 .coverage
 
 # Documentation build folders.
-docs/_*
 docs/src/*
 target/*
 /venv/
@@ -59,7 +58,6 @@ wheelhouse/
 # Unit test / coverage reports
 htmlcov/
 .tox/
-.coverage
 .coverage.*
 .cache
 nosetests.xml
@@ -75,7 +73,6 @@ docs/generated/
 # Environments
 .env
 .venv
-env/
 venv/
 ENV/
 env.bak/
@@ -89,3 +86,4 @@ _cmake_build/
 /run-ide.bat
 /PRD.md
 /wheelhouse/
+/docs/auto_examples/

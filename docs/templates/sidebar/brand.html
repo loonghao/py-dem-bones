@@ -1,0 +1,12 @@
+{% if logo %}
+<a class="navbar-brand" href="{{ pathto(root_doc) }}">
+  <img src="{{ pathto('_static/' + logo, 1) }}" class="logo" alt="{{ _('Logo') }}"/>
+  {% if theme_logo_text %}
+  <p class="brand-text">{{ theme_logo_text }}</p>
+  {% endif %}
+</a>
+{% else %}
+<a class="navbar-brand" href="{{ pathto(root_doc) }}">
+  <p class="brand-text">{{ project }}</p>
+</a>
+{% endif %}

@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/loonghao/py-dem-bones/main/docs/source/_static/logo-dark.png" alt="py-dem-bones logo" width="200" height="200">
+</p>
+
 # py-dem-bones
 
 Python bindings for the [Dem Bones](https://github.com/electronicarts/dem-bones) library - an automated algorithm to extract the linear blend skinning (LBS) from a set of example poses.
@@ -227,17 +231,17 @@ pip install -e ".[dev,docs]"
 
 This will install development tools like pytest, black, and documentation tools.
 
-### CI/CD 流程
+### CI/CD Workflow
 
-本项目使用 GitHub Actions 进行持续集成和部署。主要的工作流程包括：
+This project uses GitHub Actions for continuous integration and deployment. The main workflows include:
 
-1. **构建和测试**：在多个平台和 Python 版本上构建和测试包
-2. **文档构建**：构建项目文档并发布到 GitHub Pages
-3. **发布**：将构建好的 wheel 文件发布到 PyPI
+1. **Build and Test**: Building and testing the package on multiple platforms and Python versions
+2. **Documentation**: Building project documentation and publishing it to GitHub Pages
+3. **Release**: Publishing built wheel files to PyPI
 
-当创建一个新的版本标签（如 `v0.2.1`）时，发布工作流程会自动触发，构建 wheel 文件并发布到 PyPI。
+When a new version tag is created (e.g., `v0.2.1`), the release workflow is automatically triggered, building wheel files and publishing them to PyPI.
 
-更多关于 CI/CD 流程的信息，请查看 [.github/workflows/release.yml](.github/workflows/release.yml) 文件。
+For more information about the CI/CD workflow, please check the [.github/workflows/release.yml](.github/workflows/release.yml) file.
 
 ## Documentation
 

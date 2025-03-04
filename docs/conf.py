@@ -1,29 +1,136 @@
-# Configuration file for the Sphinx documentation builder.
+# -- Import mock modules for examples -----------------------------------------
+import os
+import sys
+
+# 添加项目根目录到Python路径，以便导入模块
+sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../src'))
+
+# 设置模板目录
+templates_path = ['templates']
+
+# 设置静态文件目录
+html_static_path = ['source/_static']
+
+# 导入模拟模块，用于处理示例中的导入
+try:
+    import py_dem_bones
+except ImportError:
+    # 如果无法导入实际模块，使用模拟模块
+    import sys
+    from unittest.mock import MagicMock
+
+    class MockDemBones:
+        """Mock DemBones class for documentation."""
+        
+        def __init__(self):
+            """Initialize DemBones."""
+            self.nIters = 20
+            self.nInitIters = 10
+            self.nTransIters = 5
+            self.nWeightsIters = 3
+            self.nnz = 4
+            self.weightsSmooth = 1e-4
+            self.nV = 0
+            self.nB = 0
+            self.nF = 0
+    
+    class MockModule(MagicMock):
+        """Mock module for sphinx-gallery."""
+        
+        @classmethod
+        def __getattr__(cls, name):
+            if name == "DemBones":
+                return MockDemBones
+            return MagicMock()
+    
+    # Add mock modules
+    MOCK_MODULES = ['py_dem_bones', 'py_dem_bones._py_dem_bones']
+    for mod_name in MOCK_MODULES:
+        sys.modules[mod_name] = MockModule()
 
 # -- Project information -----------------------------------------------------
 project = 'py-dem-bones'
-copyright = '2025, Long Hao'
+copyright = '2024, Long Hao'
 author = 'Long Hao'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.0'
+release = '0.3.0'
+
+# 主要版本
+version = '0.3.0'
 
 # -- General configuration ---------------------------------------------------
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
-    'sphinx.ext.mathjax',
     'sphinx.ext.intersphinx',
     'myst_parser',
+    'sphinxcontrib.googleanalytics',
 ]
 
-templates_path = ['_templates']
+# 模拟导入的模块列表，用于避免导入错误
+autodoc_mock_imports = [
+    'numpy', 
+    'pandas', 
+    'matplotlib', 
+    'scipy',
+    'cv2',
+    'PIL',
+    'imageio',
+    'skimage',
+    'torch',
+    'tensorflow',
+    'itk',  # Add 'itk' to the list
+    'vtk',  # Add 'vtk' to the list
+]
+
+# 为 Sphinx Gallery 模拟 matplotlib
+import sys
+from unittest.mock import MagicMock
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
+
+MOCK_MODULES = ['matplotlib', 'matplotlib.pyplot']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
+autodoc_typehints = 'none'
+autodoc_import_mock = True
+
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+# 指定 myst 解析器配置
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
+
+# Google Analytics 配置
+googleanalytics_id = 'UA-XXXXX-X'
+googleanalytics_enabled = True
+
 # -- Options for HTML output -------------------------------------------------
-html_theme = 'furo'
-html_static_path = ['_static']
+html_theme = 'sphinx_rtd_theme'
+html_css_files = [
+    'custom.css',
+]
+html_js_files = [
+    'custom.js',
+]
+
+html_theme_options = {
+    "navigation_depth": 4,
+    "titles_only": False,
+    "logo_only": False,
+    "display_version": True,
+    "prev_next_buttons_location": "bottom",
+    "style_external_links": True,
+    "collapse_navigation": False
+}
 
 # -- Extension configuration -------------------------------------------------
 napoleon_google_docstring = True
@@ -49,25 +156,26 @@ intersphinx_mapping = {
 
 # -- Options for autodoc extension ------------------------------------------
 autodoc_member_order = 'bysource'
-autodoc_typehints = 'description'
 
 # -- Options for myst_parser extension --------------------------------------
+# 这些配置会被 myst-nb 使用
 myst_enable_extensions = [
     "colon_fence",
     "deflist",
+    "dollarmath",
+    "fieldlist",
+    "html_admonition",
+    "html_image",
+    "replacements",
+    "smartquotes",
+    "strikethrough",
+    "substitution",
+    "tasklist",
 ]
+
+# 避免与 myst-nb 冲突的配置
+myst_update_mathjax = False  # 让 myst-nb 处理数学公式
 myst_heading_anchors = 3
-source_suffix = {
-    '.rst': 'restructuredtext',
-    '.md': 'markdown',
-}
-
-# 添加项目根目录到Python路径，以便导入模块
-import os
-import sys
-
-sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath('../src'))
 
 # 添加 stubs 目录到 Python 路径，以便 autodoc 可以找到类型提示文件
 stubs_dir = os.path.join(os.path.abspath('..'), 'src', 'py_dem_bones-stubs')
@@ -79,9 +187,3 @@ try:
     import py_dem_bones
 except ImportError:
     print("Warning: Failed to import py_dem_bones module. API documentation may be incomplete.")
-
-# 告诉 sphinx 在 HTML 构建中包含生成的内容
-html_sidebars = {
-    '**': ['sidebar/brand.html', 'sidebar/search.html', 'sidebar/scroll-start.html',
-           'sidebar/navigation.html', 'sidebar/ethical-ads.html', 'sidebar/scroll-end.html']
-}

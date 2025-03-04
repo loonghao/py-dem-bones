@@ -1,7 +1,7 @@
 Examples
 ========
 
-Here are some examples of how to use py-dem-bones in various scenarios.
+This page provides examples of how to use py-dem-bones in various scenarios.
 
 Basic Skinning Decomposition
 ---------------------------
@@ -25,22 +25,22 @@ This example demonstrates how to perform basic skinning decomposition on a simpl
             [ 1,  1,  1],  # 6
             [-1,  1,  1]   # 7
         ], dtype=np.float64)
-        
         return vertices
 
-    # Create a deformed cube by stretching it along the y-axis
-    def create_deformed_cube(scale_y):
-        vertices = create_cube()
-        deformed = vertices.copy()
-        deformed[:, 1] *= scale_y
-        return deformed
-
-    # Create rest pose and animated poses
+    # Create rest pose
     rest_pose = create_cube()
+
+    # Create animated poses (e.g., scaling along x-axis)
+    def create_animated_pose(scale_x):
+        vertices = rest_pose.copy()
+        vertices[:, 0] *= scale_x
+        return vertices
+
+    # Create 3 frames with different scaling
     animated_poses = np.vstack([
-        create_deformed_cube(1.2),  # Frame 1
-        create_deformed_cube(1.5),  # Frame 2
-        create_deformed_cube(1.8)   # Frame 3
+        create_animated_pose(1.5),  # Frame 1: 1.5x scale
+        create_animated_pose(2.0),  # Frame 2: 2.0x scale
+        create_animated_pose(0.5)   # Frame 3: 0.5x scale
     ])
 
     # Create DemBones instance

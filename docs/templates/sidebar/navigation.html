@@ -1,0 +1,6 @@
+{% set nav_bar = generate_toc_html() %}
+{% if nav_bar %}
+<div class="sidebar-tree">
+  {{ nav_bar }}
+</div>
+{% endif %}

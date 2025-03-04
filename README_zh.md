@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/loonghao/py-dem-bones/main/docs/source/_static/logo-dark.png" alt="py-dem-bones logo" width="200" height="200">
+</p>
+
 # py-dem-bones
 
 [Dem Bones](https://github.com/electronicarts/dem-bones) 库的 Python 绑定 - 一种从示例姿势集合中提取线性混合蒙皮 (LBS) 的自动算法。

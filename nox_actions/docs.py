@@ -1,5 +1,6 @@
 """Documentation related nox actions."""
 import os
+import platform
 import shutil
 import time
 from pathlib import Path
@@ -75,24 +76,58 @@ def generate_stubs(session: nox.Session) -> bool:
         return False
 
 
-def docs(session: nox.Session) -> None:
-    """Build the docs.
+def prepare_environment_for_docs(session: nox.Session) -> Path:
+    """Prepare the environment for building documentation.
 
     Args:
         session: The nox session.
+
+    Returns:
+        Path: The directory containing the stubs.
     """
-    # Check if build should be skipped
-    skip_build = os.environ.get("SKIP_CMAKE_BUILD", "0") == "1"
+    # Create output directory
+    output_dir = Path("src") / f"{get_package_name()}-stubs"
+    os.makedirs(output_dir, exist_ok=True)
+
+    return output_dir
+
+
+def docs(session: nox.Session) -> None:
+    """Build the docs.
+
+    This builds the documentation using Sphinx.
+    """
+    skip_build = session.posargs and session.posargs[0] == "--skip-build"
+
+    prepare_environment_for_docs(session)
+    (
+        platform.python_version().startswith("3.7")
+        or platform.python_version().startswith("3.8")
+        or platform.python_version().startswith("3.9")
+        or platform.python_version().startswith("3.10")
+        or platform.python_version().startswith("3.11")
+        or platform.python_version().startswith("3.12")
+        or platform.system().lower() == "linux"
+    )
+    session.log(f"Detected platform: {platform.system()}")
+
+    # 基本文档依赖
+    doc_deps = [
+        "sphinx>=7.0.0,<9.0.0",
+        "sphinx-autobuild>=2021.3.14",
+        "sphinx_rtd_theme>=1.3.0",
+        "myst-parser",
+        "sphinxcontrib-googleanalytics",
+        "pillow>=10.0.0",
+        "linkify-it-py>=2.0.0",
+    ]
 
     # Install documentation dependencies with pip cache
     start_time = time.time()
     retry_command(
         session,
         session.install,
-        "sphinx>=7.0.0",
-        "furo>=2023.5.20",
-        "sphinx-autobuild>=2021.3.14",
-        "myst-parser>=2.0.0",
+        *doc_deps,
         max_retries=3,
     )
     session.log(
@@ -114,29 +149,69 @@ def docs(session: nox.Session) -> None:
     build_dir = Path("docs") / "_build"
     os.makedirs(build_dir, exist_ok=True)
 
+    # Ensure examples directory exists
+    examples_dir = Path("examples")
+    os.makedirs(examples_dir, exist_ok=True)
+
+    # Ensure _static directory exists in build directory
+    static_build_dir = build_dir / "html" / "_static"
+    os.makedirs(static_build_dir, exist_ok=True)
+
+    # Copy static files from source/_static to build directory
+    source_static_dir = Path("docs") / "source" / "_static"
+    if source_static_dir.exists():
+        session.log(
+            f"Copying static files from {source_static_dir} to {static_build_dir}"
+        )
+        for file in source_static_dir.glob("*"):
+            if file.is_file():
+                try:
+                    shutil.copy2(file, static_build_dir)
+                    session.log(f"Copied {file.name} to {static_build_dir}")
+                except Exception as e:
+                    session.log(f"Failed to copy {file.name}: {e}")
+
     # Build documentation
     with session.chdir("docs"):
         session.run("sphinx-build", "-b", "html", ".", "_build/html")
 
 
 def docs_serve(session: nox.Session) -> None:
-    """Build and serve the docs with live reloading on file changes.
+    """Serve the docs with live reload.
 
-    Args:
-        session: The nox session.
+    This builds the documentation using Sphinx and serves it with live reload.
     """
-    # Check if build should be skipped
-    skip_build = os.environ.get("SKIP_CMAKE_BUILD", "0") == "1"
+    skip_build = session.posargs and session.posargs[0] == "--skip-build"
+
+    prepare_environment_for_docs(session)
+    (
+        platform.python_version().startswith("3.7")
+        or platform.python_version().startswith("3.8")
+        or platform.python_version().startswith("3.9")
+        or platform.python_version().startswith("3.10")
+        or platform.python_version().startswith("3.11")
+        or platform.python_version().startswith("3.12")
+        or platform.system().lower() == "linux"
+    )
+    session.log(f"Detected platform: {platform.system()}")
+
+    # 基本文档依赖
+    doc_deps = [
+        "sphinx>=7.0.0,<9.0.0",
+        "sphinx-autobuild>=2021.3.14",
+        "sphinx_rtd_theme>=1.3.0",
+        "myst-parser",
+        "sphinxcontrib-googleanalytics",
+        "pillow>=10.0.0",
+        "linkify-it-py>=2.0.0",
+    ]
 
     # Install documentation dependencies with pip cache
     start_time = time.time()
     retry_command(
         session,
         session.install,
-        "sphinx>=7.0.0",
-        "furo>=2023.5.20",
-        "sphinx-autobuild>=2021.3.14",
-        "myst-parser>=2.0.0",
+        *doc_deps,
         max_retries=3,
     )
     session.log(
@@ -154,6 +229,32 @@ def docs_serve(session: nox.Session) -> None:
     if not stubs_generated:
         session.log("Failed to generate type stubs. Documentation may be incomplete.")
 
+    # Ensure build directory exists
+    build_dir = Path("docs") / "_build"
+    os.makedirs(build_dir, exist_ok=True)
+
+    # Ensure examples directory exists
+    examples_dir = Path("examples")
+    os.makedirs(examples_dir, exist_ok=True)
+
+    # Ensure _static directory exists in build directory
+    static_build_dir = build_dir / "html" / "_static"
+    os.makedirs(static_build_dir, exist_ok=True)
+
+    # Copy static files from source/_static to build directory
+    source_static_dir = Path("docs") / "source" / "_static"
+    if source_static_dir.exists():
+        session.log(
+            f"Copying static files from {source_static_dir} to {static_build_dir}"
+        )
+        for file in source_static_dir.glob("*"):
+            if file.is_file():
+                try:
+                    shutil.copy2(file, static_build_dir)
+                    session.log(f"Copied {file.name} to {static_build_dir}")
+                except Exception as e:
+                    session.log(f"Failed to copy {file.name}: {e}")
+
     # Use sphinx-autobuild for live reloading
     with session.chdir("docs"):
         session.run(
@@ -162,5 +263,9 @@ def docs_serve(session: nox.Session) -> None:
             "_build/html",
             "--watch",
             "..",
+            "--watch",
+            "source/_static",
             "--open-browser",
+            "--delay",
+            "1",
         )
