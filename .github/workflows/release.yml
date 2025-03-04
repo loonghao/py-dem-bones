@@ -3,11 +3,11 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'  # 匹配所有版本标签，如 v0.1.0
+      - 'v*'  # Match all version tags, e.g., v0.1.0
   workflow_dispatch:
     inputs:
       fast-mode:
-        description: '快速模式 (减少构建变体)'
+        description: 'Fast mode (reduced build variants)'
         required: false
         default: 'false'
         type: choice
@@ -15,13 +15,13 @@ on:
           - 'true'
           - 'false'
 
-# 并发控制，避免重复运行
+# Concurrency control to avoid duplicate runs
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  # 快速构建模式 - 仅在手动触发时运行
+  # Fast build mode - only runs when manually triggered
   fast-build:
     if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.fast-mode == 'true' }}
     name: Fast Build Python ${{ matrix.python-version }} on ${{ matrix.os }}
@@ -29,14 +29,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # 主要平台和版本组合
+          # Main platform and version combinations
           - os: ubuntu-latest
-            python-version: '3.11'  # 最新稳定版
+            python-version: '3.11'  # Latest stable version
           - os: macos-latest
-            python-version: '3.11'  # 最新稳定版
+            python-version: '3.11'  # Latest stable version
           - os: windows-latest
-            python-version: '3.11'  # 最新稳定版
-          # Python 3.7 兼容性测试
+            python-version: '3.11'  # Latest stable version
+          # Python 3.7 compatibility test
           - os: ubuntu-20.04
             python-version: '3.7'
     
@@ -46,7 +46,7 @@ jobs:
       os: ${{ matrix.os }}
       job-type: 'build'
 
-  # 使用 cibuildwheel 构建跨平台 wheel
+  # Build wheels using cibuildwheel
   build-wheels:
     name: Build wheels on ${{ matrix.os }}
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.fast-mode == 'true') }}
@@ -67,7 +67,7 @@ jobs:
         with:
           python-version: '3.11'
       
-      # 初始化 git 子模块
+      # Initialize git submodules
       - name: Initialize git submodules
         shell: bash
         run: |
@@ -76,7 +76,7 @@ jobs:
           git submodule sync
           git submodule update --init --recursive
       
-      # 缓存 Eigen 库
+      # Cache Eigen library
       - name: Cache Eigen library
         uses: actions/cache@v4
         with:
@@ -85,7 +85,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-eigen-
       
-      # 安装 Eigen (Linux)
+      # Install Eigen (Linux)
       - name: Install Eigen (Linux)
         if: ${{ runner.os == 'Linux' }}
         shell: bash
@@ -96,7 +96,7 @@ jobs:
             bash .github/scripts/linux/setup_eigen.sh
           fi
       
-      # 安装 Eigen (macOS)
+      # Install Eigen (macOS)
       - name: Install Eigen (macOS)
         if: ${{ runner.os == 'macOS' }}
         shell: bash
@@ -107,7 +107,7 @@ jobs:
             bash .github/scripts/mac/setup_eigen.sh
           fi
       
-      # 安装 Eigen (Windows)
+      # Install Eigen (Windows)
       - name: Install Eigen (Windows)
         if: ${{ runner.os == 'Windows' }}
         shell: bash
@@ -118,7 +118,7 @@ jobs:
             bash .github/scripts/win/setup_eigen.sh
           fi
       
-      # 设置 macOS 特定环境
+      # Set up macOS specific environment
       - name: Setup macOS
         if: runner.os == 'macOS'
         run: |
@@ -126,29 +126,29 @@ jobs:
           echo "F77=gfortran-13" >> $GITHUB_ENV
           echo "F90=gfortran-13" >> $GITHUB_ENV
           
-          # 根据运行器设置不同的部署目标
+          # Set deployment target based on runner
           if [[ "${{ matrix.os }}" == "macos-14" ]]; then
-            # Apple Silicon (arm64) 使用更高的部署目标
+            # Apple Silicon (arm64) uses higher deployment target
             echo "CIBW_ENVIRONMENT_MACOS=MACOSX_DEPLOYMENT_TARGET=11.0 PKG_CONFIG_PATH=$PWD/.openblas" >> $GITHUB_ENV
           else
-            # Intel (x86_64) 使用较低的部署目标以保持兼容性
+            # Intel (x86_64) uses lower deployment target for compatibility
             echo "CIBW_ENVIRONMENT_MACOS=MACOSX_DEPLOYMENT_TARGET=10.14 PKG_CONFIG_PATH=$PWD/.openblas" >> $GITHUB_ENV
           fi
       
-      # 设置 Windows 特定环境
+      # Set up Windows specific environment
       - name: Setup Windows
         if: runner.os == 'Windows'
         run: |
           echo "CIBW_ENVIRONMENT_WINDOWS=PKG_CONFIG_PATH=${{ github.workspace }}" >> $env:GITHUB_ENV
       
-      # 使用 cibuildwheel 构建 wheel (非 Windows 环境)
+      # Build wheels using cibuildwheel (non-Windows environments)
       - name: Build wheels (Linux/macOS)
         if: runner.os != 'Windows'
         uses: pypa/cibuildwheel@v2.16.5
         env:
           CIBW_BUILD: "cp37-* cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
-          CIBW_SKIP: "pp* *-musllinux*"  # 跳过 PyPy 和 musllinux
-          CIBW_ARCHS_MACOS: "x86_64 arm64"  # 同时构建 Intel 和 ARM 架构
+          CIBW_SKIP: "pp* *-musllinux*"  # Skip PyPy and musllinux
+          CIBW_ARCHS_MACOS: "x86_64 arm64"  # Build both Intel and ARM architectures
           CIBW_ARCHS_LINUX: "x86_64"
           CIBW_BEFORE_ALL_LINUX: >
             yum install -y cmake ninja-build
@@ -160,22 +160,22 @@ jobs:
           CIBW_ENVIRONMENT_MACOS: ${{ env.CIBW_ENVIRONMENT_MACOS }}
           CIBW_ENVIRONMENT_WINDOWS: ${{ env.CIBW_ENVIRONMENT_WINDOWS }}
       
-      # 在 Windows 环境中使用标准方法构建 wheel
+      # Build wheels using standard method (Windows environment)
       - name: Build wheels (Windows)
         if: runner.os == 'Windows'
         run: |
-          # 安装构建依赖
+          # Install build dependencies
           python -m pip install --upgrade pip
           python -m pip install build wheel setuptools scikit-build-core pybind11 numpy cmake
 
-          # 安装 CMake 和 Ninja
+          # Install CMake and Ninja
           choco install -y cmake ninja
 
-          # 使用专门的 Windows 构建脚本
+          # Use specialized Windows build script
           python tools/wheels/build_windows_wheel.py
         shell: bash
       
-      # 上传构建产物
+      # Upload build artifacts
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -183,7 +183,7 @@ jobs:
           path: ./wheelhouse/*.whl
           retention-days: 7
 
-  # 构建 sdist
+  # Build source distribution
   build-sdist:
     name: Build source distribution
     runs-on: ubuntu-latest
@@ -214,10 +214,10 @@ jobs:
           path: dist/*.tar.gz
           retention-days: 7
 
-  # 文档构建任务
+  # Documentation build job
   docs:
     name: Build Documentation
-    needs: [build-wheels, build-sdist]  # 添加依赖，确保在构建完成后执行
+    needs: [build-wheels, build-sdist]  # Add dependency to ensure documentation builds after wheels and sdist
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
@@ -251,14 +251,14 @@ jobs:
           path: docs/_build/html
           retention-days: 7
 
-  # 发布到GitHub Releases
+  # Publish to GitHub Releases
   github-release:
     name: Create GitHub Release
     needs: [docs, build-wheels, build-sdist]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # 需要写入权限来创建release
+      contents: write  # Requires write permission to create release
     steps:
       - uses: actions/checkout@v4
       
@@ -295,53 +295,37 @@ jobs:
             pip install py-dem-bones==${{ steps.get_version.outputs.VERSION }}
             ```
 
-  # 发布到PyPI
-  pypi-publish:
+  # Publish to PyPI
+  publish:
     name: Publish to PyPI
-    needs: [github-release]
-    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-wheels, build-sdist, github-release]
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     permissions:
-      id-token: write  # 使用OIDC进行PyPI发布
+      id-token: write  # Use OIDC for PyPI publishing
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-      
-      - name: Install dependencies
-        shell: bash
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install build twine wheel
-      
+      # Download all build artifacts
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: dist
-          pattern: py-dem-bones-*
+          pattern: wheels-*
           merge-multiple: true
       
-      - name: Prepare distribution files
-        run: |
-          mkdir -p dist_final
-          find dist -type f -name "*.whl" -o -name "*.tar.gz" | xargs -I{} cp {} dist_final/
-          ls -la dist_final/
+      - name: Download source distribution
+        uses: actions/download-artifact@v4
+        with:
+          name: sdist
+          path: dist
       
-      - name: Verify wheel files
-        run: |
-          echo "Checking wheel files for correct platform tags..."
-          python -m pip install wheel
-          for wheel in dist_final/*.whl; do
-            echo "Checking $wheel"
-            python -m wheel tags $wheel
-          done
+      - name: Display structure of downloaded files
+        run: ls -R dist/
       
+      # Publish to PyPI using trusted publishing
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages-dir: dist_final/
           skip-existing: true
+          verbose: true

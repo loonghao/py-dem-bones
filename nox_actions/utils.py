@@ -179,7 +179,7 @@ def build_cpp_extension(session, env=None):
     # Set environment variables to ensure consistent build configuration
     if env is None:
         env = os.environ.copy()
-    env["SKBUILD_BUILD_VERBOSE"] = "1"  # 使用新的环境变量
+    env["SKBUILD_BUILD_VERBOSE"] = "1"
 
     # Ensure we use standard platform tags
     env["FORCE_BDIST_WHEEL_PLAT"] = ""  # Clear any custom platform tags

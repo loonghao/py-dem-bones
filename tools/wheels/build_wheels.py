@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-构建 wheel 包的工具脚本。
+Wheel package building tool script.
 
-此脚本使用 cibuildwheel 为当前平台构建 wheel 包。
+This script uses cibuildwheel to build wheel packages for the current platform.
 """
 
 import os
@@ -12,7 +12,7 @@ from pathlib import Path
 
 
 def run_command(cmd, cwd=None):
-    """运行命令并返回输出。"""
+    """Run command and return output."""
     print(f"Running: {' '.join(cmd)}")
     try:
         result = subprocess.run(
@@ -32,7 +32,7 @@ def run_command(cmd, cwd=None):
 
 
 def install_dependencies():
-    """安装构建依赖。"""
+    """Install build dependencies."""
     print("Installing dependencies...")
     deps = ["cibuildwheel", "wheel", "build", "twine"]
     success, _ = run_command([sys.executable, "-m", "pip", "install", "-U"] + deps)
@@ -40,21 +40,21 @@ def install_dependencies():
 
 
 def build_wheels():
-    """使用 cibuildwheel 构建 wheel 包。"""
+    """Build wheel packages using cibuildwheel."""
     print("Building wheels...")
     env = os.environ.copy()
     env["CIBW_BUILD_VERBOSITY"] = "3"
     
-    # 使用 cibuildwheel 构建 wheel
+    # Use cibuildwheel to build wheels
     success, _ = run_command(
         [sys.executable, "-m", "cibuildwheel", "--platform", "auto"],
-        cwd=str(Path(__file__).parent.parent.parent),  # 项目根目录
+        cwd=str(Path(__file__).parent.parent.parent),  # Project root directory
         env=env,
     )
     
     if not success:
         print("Failed to build wheels with cibuildwheel. Trying with build...")
-        # 如果 cibuildwheel 失败，尝试使用 build
+        # If cibuildwheel fails, try using build
         success, _ = run_command(
             [sys.executable, "-m", "build", "--wheel", "--no-isolation", "--outdir", "dist/"],
             cwd=str(Path(__file__).parent.parent.parent),
@@ -64,7 +64,7 @@ def build_wheels():
 
 
 def verify_wheels():
-    """验证构建的 wheel 包。"""
+    """Verify built wheel packages."""
     print("Verifying wheels...")
     wheelhouse = Path(__file__).parent.parent.parent / "wheelhouse"
     if not wheelhouse.exists():
@@ -78,7 +78,7 @@ def verify_wheels():
     for wheel in wheelhouse.glob("*.whl"):
         print(f"  - {wheel.name}")
     
-    # 验证 wheel 标签
+    # Verify wheel tags
     for wheel in wheelhouse.glob("*.whl"):
         success, output = run_command([sys.executable, "-m", "wheel", "tags", str(wheel)])
         if not success:
@@ -88,22 +88,22 @@ def verify_wheels():
 
 
 def main():
-    """主函数。"""
+    """Main function."""
     print("=" * 80)
     print("Building wheels for py-dem-bones")
     print("=" * 80)
     
-    # 安装依赖
+    # Install dependencies
     if not install_dependencies():
         print("Failed to install dependencies.")
         return 1
     
-    # 构建 wheel
+    # Build wheels
     if not build_wheels():
         print("Failed to build wheels.")
         return 1
     
-    # 验证 wheel
+    # Verify wheels
     if not verify_wheels():
         print("Failed to verify wheels.")
         return 1
