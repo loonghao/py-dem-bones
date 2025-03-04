@@ -48,10 +48,18 @@ dev = [
 ]
 docs = [
     "sphinx>=7.0.0",
-    "furo>=2023.5.20",
+    "pydata-sphinx-theme>=0.14.1",
     "sphinx-autobuild>=2021.3.14",
     "pybind11-stubgen>=0.16.0",
     "myst-parser>=2.0.0",
+    "sphinx-gallery>=0.13.0",
+    "pillow>=9.0.0",
+    "matplotlib>=3.5.0",
+    "myst-sphinx-gallery>=0.3.0",
+    "myst-nb>=1.0.0",
+]
+docs-linux = [
+    "cairosvg>=2.7.0",
 ]
 lint = [
     "black<23.3.0",
@@ -100,6 +108,9 @@ tag-format = "v$version"
 version-files = [
     "pyproject.toml:version",
     "src/py_dem_bones/__version__.py",
+    "docs/conf.py:release",
+    "docs/conf.py:version",
+    ".github/CITATION.cff:version",
 ]
 
 [tool.pytest.ini_options]

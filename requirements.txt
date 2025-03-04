@@ -1,0 +1,7 @@
+# 依赖项已在 pyproject.toml 中定义
+# 此文件仅用于 Sphinx Gallery Binder 功能
+sphinx>=7.2.0
+sphinx-gallery>=0.15.0
+pydata-sphinx-theme>=0.15.0
+myst-parser>=2.0.0
+pillow>=10.0.0
