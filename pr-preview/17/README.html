@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXX-X"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-XXXXX-X');
+    </script>
+    
+    <title>py-dem-bones Documentation &#8212; py-dem-bones 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinxdoc.css?v=34905f61" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=5dd48075" />
+    <script src="_static/documentation_options.js?v=e259d695"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/custom.js?v=25981fee"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">py-dem-bones 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">py-dem-bones Documentation</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="py-dem-bones-documentation">
+<h1>py-dem-bones Documentation<a class="headerlink" href="#py-dem-bones-documentation" title="Link to this heading">¶</a></h1>
+<p>This directory contains the documentation for the py-dem-bones project.</p>
+<section id="building-the-documentation">
+<h2>Building the Documentation<a class="headerlink" href="#building-the-documentation" title="Link to this heading">¶</a></h2>
+<p>To build the documentation locally, you can use the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>nox<span class="w"> </span>-s<span class="w"> </span>docs
+</pre></div>
+</div>
+<p>This will build the documentation in the <code class="docutils literal notranslate"><span class="pre">docs/_build/html</span></code> directory.</p>
+</section>
+<section id="serving-the-documentation">
+<h2>Serving the Documentation<a class="headerlink" href="#serving-the-documentation" title="Link to this heading">¶</a></h2>
+<p>To serve the documentation locally with live reloading, you can use the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>nox<span class="w"> </span>-s<span class="w"> </span>docs-server
+</pre></div>
+</div>
+<p>This will start a local web server and open the documentation in your default web browser.</p>
+</section>
+<section id="documentation-structure">
+<h2>Documentation Structure<a class="headerlink" href="#documentation-structure" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">conf.py</span></code>: Sphinx configuration file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">index.rst</span></code>: Main documentation page</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">api.rst</span></code>: API documentation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples.rst</span></code>: Examples documentation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_static/</span></code>: Static files (CSS, JavaScript, images)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_build/</span></code>: Build directory (generated)</p></li>
+</ul>
+</section>
+<section id="github-pages-deployment">
+<h2>GitHub Pages Deployment<a class="headerlink" href="#github-pages-deployment" title="Link to this heading">¶</a></h2>
+<p>The documentation is automatically deployed to GitHub Pages when changes are pushed to the main branch. Pull requests also get a preview deployment.</p>
+<ul class="simple">
+<li><p>Main branch documentation: https://loonghao.github.io/py-dem-bones/latest/</p></li>
+<li><p>PR preview: https://loonghao.github.io/py-dem-bones/pr-preview/{PR_NUMBER}/</p></li>
+</ul>
+</section>
+<section id="notes-for-windows-users">
+<h2>Notes for Windows Users<a class="headerlink" href="#notes-for-windows-users" title="Link to this heading">¶</a></h2>
+<p>When building the documentation on Windows, the <code class="docutils literal notranslate"><span class="pre">cairosvg</span></code> package is not required and will be skipped. The documentation will still build correctly, but SVG images will be replaced with placeholder images.</p>
+<p>On Linux (including CI environments), the <code class="docutils literal notranslate"><span class="pre">cairosvg</span></code> package will be installed and used to convert SVG images to PNG.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">py-dem-bones Documentation</a><ul>
+<li><a class="reference internal" href="#building-the-documentation">Building the Documentation</a></li>
+<li><a class="reference internal" href="#serving-the-documentation">Serving the Documentation</a></li>
+<li><a class="reference internal" href="#documentation-structure">Documentation Structure</a></li>
+<li><a class="reference internal" href="#github-pages-deployment">GitHub Pages Deployment</a></li>
+<li><a class="reference internal" href="#notes-for-windows-users">Notes for Windows Users</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/README.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">py-dem-bones 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">py-dem-bones Documentation</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Long Hao.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

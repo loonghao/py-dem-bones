@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXX-X"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-XXXXX-X');
+    </script>
+    
+    <title>py_dem_bones.exceptions &#8212; py-dem-bones 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinxdoc.css?v=34905f61" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=5dd48075" />
+    <script src="../../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/custom.js?v=25981fee"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">py-dem-bones 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">py_dem_bones.exceptions</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for py_dem_bones.exceptions</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Custom exceptions for py-dem-bones.</span>
+
+<span class="sd">This module defines custom exceptions used throughout the py-dem-bones library</span>
+<span class="sd">to provide more specific error information and improve error handling.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="DemBonesError">
+<a class="viewcode-back" href="../../python_api.html#py_dem_bones.DemBonesError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DemBonesError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all py-dem-bones exceptions.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="ParameterError">
+<a class="viewcode-back" href="../../python_api.html#py_dem_bones.ParameterError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ParameterError</span><span class="p">(</span><span class="n">DemBonesError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception raised for invalid parameter values.</span>
+
+<span class="sd">    This exception is raised when a function or method receives a parameter</span>
+<span class="sd">    with an invalid value, such as incorrect array shapes, types, or ranges.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="ComputationError">
+<a class="viewcode-back" href="../../python_api.html#py_dem_bones.ComputationError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ComputationError</span><span class="p">(</span><span class="n">DemBonesError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception raised when computation fails.</span>
+
+<span class="sd">    This exception is raised when the core computation algorithm fails,</span>
+<span class="sd">    for example due to numerical instability or invalid input data.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="IndexError">
+<a class="viewcode-back" href="../../python_api.html#py_dem_bones.IndexError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">IndexError</span><span class="p">(</span><span class="n">DemBonesError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception raised for invalid indices.</span>
+
+<span class="sd">    This exception is raised when an index is out of range, for example</span>
+<span class="sd">    when trying to access a bone index that exceeds the number of bones.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="NameError">
+<a class="viewcode-back" href="../../python_api.html#py_dem_bones.NameError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NameError</span><span class="p">(</span><span class="n">DemBonesError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception raised for name-related errors.</span>
+
+<span class="sd">    This exception is raised when a name-to-index mapping fails, for example</span>
+<span class="sd">    when trying to retrieve a bone index for a non-existent bone name.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="ConfigurationError">
+<a class="viewcode-back" href="../../python_api.html#py_dem_bones.ConfigurationError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConfigurationError</span><span class="p">(</span><span class="n">DemBonesError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception raised for configuration errors.</span>
+
+<span class="sd">    This exception is raised when there are problems with the configuration</span>
+<span class="sd">    of the algorithm or incompatible settings.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="NotImplementedError">
+<a class="viewcode-back" href="../../python_api.html#py_dem_bones.NotImplementedError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NotImplementedError</span><span class="p">(</span><span class="n">DemBonesError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception raised for unimplemented features.</span>
+
+<span class="sd">    This exception is raised when a feature described in the API is not</span>
+<span class="sd">    yet implemented.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="IOError">
+<a class="viewcode-back" href="../../python_api.html#py_dem_bones.IOError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">IOError</span><span class="p">(</span><span class="n">DemBonesError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception raised for input/output errors.</span>
+
+<span class="sd">    This exception is raised when operations involving file I/O or</span>
+<span class="sd">    data exchange with external software fail.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">py-dem-bones 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">py_dem_bones.exceptions</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Long Hao.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>
