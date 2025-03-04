@@ -11,6 +11,12 @@ on:
         default: 'false'
         type: boolean
 
+# Define permissions needed for this workflow
+permissions:
+  contents: write    # Needed for pushing to gh-pages branch
+  pull-requests: write  # Needed for adding comments to PRs
+  pages: write      # Needed for GitHub Pages deployment
+
 # Concurrency configuration
 concurrency:
   # Use workflow name and PR number or branch name as concurrency group
@@ -232,6 +238,60 @@ jobs:
         shell: bash
         run: |
           python -m nox -s docs
+
+  docs-preview:
+    name: Documentation Preview
+    runs-on: ubuntu-latest
+    # Only run on pull requests
+    if: github.event_name == 'pull_request'
+    needs: [lint]  # Run after linting passes
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: |
+            pyproject.toml
+            requirements*.txt
+      
+      - name: Install dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --no-cache-dir nox
+      
+      - name: Build documentation with nox
+        shell: bash
+        run: |
+          # Set environment variable to skip cmake build if needed
+          export SKIP_CMAKE_BUILD=1
+          # Build documentation using nox
+          python -m nox -s docs
+      
+      - name: Deploy documentation preview
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/_build/html
+          destination_dir: pr-preview/${{ github.event.pull_request.number }}
+      
+      - name: Add PR comment with preview link
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: docs-preview
+          message: |
+            📝 Documentation preview for this PR is available at:
+            
+            https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-preview/${{ github.event.pull_request.number }}/
+            
+            This preview will be updated automatically when new changes are pushed to this PR.
 
   test:
     if: ${{ github.event_name == 'pull_request' }}
