@@ -16,8 +16,13 @@ jobs:
         with:
           fetch-depth: 0
           token: '${{ secrets.PERSONAL_ACCESS_TOKEN }}'
+      
       - name: Create bump and changelog
+        id: cz
         uses: commitizen-tools/commitizen-action@master
         with:
           github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           branch: main
+      
+      - name: Print Version
+        run: echo "Bumped to version ${{ steps.cz.outputs.version }}"
