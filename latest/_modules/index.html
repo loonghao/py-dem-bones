@@ -1,0 +1,204 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXX-X"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-XXXXX-X');
+    </script>
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview: module code &mdash; py-dem-bones 0.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=5dd48075" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=e259d695"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/custom.js?v=25981fee"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            py-dem-bones
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-from-pypi">Installing from PyPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-from-source">Installing from Source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#platform-specific-installation">Platform-Specific Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../installation.html#linux-macos">Linux/macOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../installation.html#windows">Windows</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#development-installation">Development Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#managing-dependencies">Managing Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#platform-specific-dependencies">Platform-Specific Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../installation.html#id1">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../installation.html#macos">macOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../installation.html#linux">Linux</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#verifying-installation">Verifying Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#using-the-python-wrapper-classes">Using the Python Wrapper Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#using-dembonesext-for-hierarchical-skeletons">Using DemBonesExt for Hierarchical Skeletons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#converting-between-numpy-and-eigen">Converting Between NumPy and Eigen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#advanced-configuration">Advanced Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#python-api-overview">Python API Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#core-classes">Core Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#wrapper-classes">Wrapper Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#exception-classes">Exception Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#interfaces">Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#c-api">C++ API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#usage-examples">Usage Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#advanced-usage">Advanced Usage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#basic-skinning-decomposition">Basic Skinning Decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#working-with-hierarchical-skeletons">Working with Hierarchical Skeletons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#converting-blendshapes-to-lbs">Converting Blendshapes to LBS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#setting-up-development-environment">Setting Up Development Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-style">Code Style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#building-the-documentation">Building the Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#running-tests">Running Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#releasing">Releasing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ci_cd.html">CI/CD Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ci_cd.html#workflow-overview">Workflow Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ci_cd.html#optimization-strategies">Optimization Strategies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ci_cd.html#reduced-build-matrix">Reduced Build Matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ci_cd.html#caching-mechanism">Caching Mechanism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ci_cd.html#optimized-checkout-process">Optimized Checkout Process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ci_cd.html#smart-step-skipping">Smart Step Skipping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ci_cd.html#concurrency-control">Concurrency Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ci_cd.html#troubleshooting-common-issues">Troubleshooting Common Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ci_cd.html#git-submodules-initialization-failure">Git Submodules Initialization Failure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ci_cd.html#command-execution-issues">Command Execution Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ci_cd.html#dependency-installation-problems">Dependency Installation Problems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ci_cd.html#platform-specific-issues">Platform-Specific Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ci_cd.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#latest-changes">Latest Changes</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py-dem-bones</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Overview: module code</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>All modules for which code is available</h1>
+<ul><li><a href="py_dem_bones/_py_dem_bones.html">py_dem_bones._py_dem_bones</a></li>
+<li><a href="py_dem_bones/base.html">py_dem_bones.base</a></li>
+<li><a href="py_dem_bones/exceptions.html">py_dem_bones.exceptions</a></li>
+<li><a href="py_dem_bones/interfaces/dcc.html">py_dem_bones.interfaces.dcc</a></li>
+<li><a href="py_dem_bones/utils.html">py_dem_bones.utils</a></li>
+</ul>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Long Hao.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

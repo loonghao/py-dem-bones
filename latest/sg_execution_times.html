@@ -15,7 +15,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to py-dem-bones’s documentation! &mdash; py-dem-bones 0.3.0 documentation</title>
+  <title>Computation times &mdash; py-dem-bones 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=5dd48075" />
@@ -29,8 +29,7 @@
       <script src="_static/custom.js?v=25981fee"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation" href="installation.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,7 +40,7 @@
 
           
           
-          <a href="#" class="icon icon-home">
+          <a href="index.html" class="icon icon-home">
             py-dem-bones
           </a>
 <div role="search">
@@ -151,17 +150,17 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">py-dem-bones</a>
+          <a href="index.html">py-dem-bones</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content style-external-links">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Welcome to py-dem-bones’s documentation!</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Computation times</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/sg_execution_times.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -169,129 +168,70 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="welcome-to-py-dem-bones-s-documentation">
-<h1>Welcome to py-dem-bones’s documentation!<a class="headerlink" href="#welcome-to-py-dem-bones-s-documentation" title="Link to this heading"></a></h1>
-<p><strong>py-dem-bones</strong> is a Python binding for the Dem Bones library, which provides an automated algorithm to extract the Linear Blend Skinning (LBS) with bone transformations from a set of example meshes.</p>
-<section id="features">
-<h2>Features<a class="headerlink" href="#features" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>Python bindings for the Dem Bones C++ library</p></li>
-<li><p>Support for Python 3.7+</p></li>
-<li><p>Pythonic wrapper classes for easier integration</p></li>
-<li><p>Comprehensive error handling</p></li>
-<li><p>Cross-platform support (Windows, macOS, Linux)</p></li>
-<li><p>Pre-built wheels for common platforms</p></li>
-<li><p>Efficient conversion between NumPy arrays and Eigen matrices</p></li>
-</ul>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-from-pypi">Installing from PyPI</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-from-source">Installing from Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#development-installation">Development Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#managing-dependencies">Managing Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#verifying-installation">Verifying Installation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#basic-usage">Basic Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#using-the-python-wrapper-classes">Using the Python Wrapper Classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#using-dembonesext-for-hierarchical-skeletons">Using DemBonesExt for Hierarchical Skeletons</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#converting-between-numpy-and-eigen">Converting Between NumPy and Eigen</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#error-handling">Error Handling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#advanced-configuration">Advanced Configuration</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.html#python-api-overview">Python API Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#c-api">C++ API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#usage-examples">Usage Examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#basic-skinning-decomposition">Basic Skinning Decomposition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#working-with-hierarchical-skeletons">Working with Hierarchical Skeletons</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#converting-blendshapes-to-lbs">Converting Blendshapes to LBS</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="contributing.html#setting-up-development-environment">Setting Up Development Environment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing.html#development-workflow">Development Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing.html#code-style">Code Style</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing.html#building-the-documentation">Building the Documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing.html#running-tests">Running Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing.html#releasing">Releasing</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="ci_cd.html">CI/CD Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ci_cd.html#workflow-overview">Workflow Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ci_cd.html#optimization-strategies">Optimization Strategies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ci_cd.html#troubleshooting-common-issues">Troubleshooting Common Issues</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ci_cd.html#best-practices">Best Practices</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changelog.html#latest-changes">Latest Changes</a></li>
-</ul>
-</li>
-</ul>
+  <section id="computation-times">
+<span id="sphx-glr-sg-execution-times"></span><h1>Computation times<a class="headerlink" href="#computation-times" title="Link to this heading"></a></h1>
+<p><strong>00:00.003</strong> total execution time for 8 files <strong>from all galleries</strong>:</p>
+<div class="docutils container">
+<style scoped>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+</style>
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script type="text/javascript" class="init">
+$(document).ready( function () {
+    $('table.sg-datatable').DataTable({order: [[1, 'desc']]});
+} );
+</script><table class="table table-striped sg-datatable docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Example</p></th>
+<th class="head"><p>Time</p></th>
+<th class="head"><p>Mem (MB)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="xref std std-ref">sphx_glr_auto_examples_blendshapes_example.py</span> (<code class="docutils literal notranslate"><span class="pre">..\examples\blendshapes_example.py</span></code>)</p></td>
+<td><p>00:00.003</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="xref std std-ref">sphx_glr_auto_examples_basic_example.py</span> (<code class="docutils literal notranslate"><span class="pre">..\examples\basic_example.py</span></code>)</p></td>
+<td><p>00:00.000</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="xref std std-ref">sphx_glr_auto_examples_blender_example.py</span> (<code class="docutils literal notranslate"><span class="pre">..\examples\blender_example.py</span></code>)</p></td>
+<td><p>00:00.000</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="xref std std-ref">sphx_glr_auto_examples_hierarchical_example.py</span> (<code class="docutils literal notranslate"><span class="pre">..\examples\hierarchical_example.py</span></code>)</p></td>
+<td><p>00:00.000</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="xref std std-ref">sphx_glr_auto_examples_houdini_example.py</span> (<code class="docutils literal notranslate"><span class="pre">..\examples\houdini_example.py</span></code>)</p></td>
+<td><p>00:00.000</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="xref std std-ref">sphx_glr_auto_examples_max_example.py</span> (<code class="docutils literal notranslate"><span class="pre">..\examples\max_example.py</span></code>)</p></td>
+<td><p>00:00.000</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="xref std std-ref">sphx_glr_auto_examples_maya_example.py</span> (<code class="docutils literal notranslate"><span class="pre">..\examples\maya_example.py</span></code>)</p></td>
+<td><p>00:00.000</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="xref std std-ref">sphx_glr_auto_examples_unreal_example.py</span> (<code class="docutils literal notranslate"><span class="pre">..\examples\unreal_example.py</span></code>)</p></td>
+<td><p>00:00.000</p></td>
+<td><p>0.0</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-</section>
-<section id="quick-start">
-<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
-<section id="installation">
-<h3>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py-dem-bones
-</pre></div>
-</div>
-</section>
-<section id="basic-usage">
-<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">py_dem_bones</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pdb</span>
-
-<span class="c1"># Create a DemBonesWrapper instance</span>
-<span class="n">dem_bones</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">DemBonesWrapper</span><span class="p">()</span>
-
-<span class="c1"># Set parameters</span>
-<span class="n">dem_bones</span><span class="o">.</span><span class="n">num_iterations</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="n">dem_bones</span><span class="o">.</span><span class="n">num_init_iterations</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">dem_bones</span><span class="o">.</span><span class="n">num_transform_iterations</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">dem_bones</span><span class="o">.</span><span class="n">num_weights_iterations</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">dem_bones</span><span class="o">.</span><span class="n">max_nonzeros_per_vertex</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="n">dem_bones</span><span class="o">.</span><span class="n">weights_smoothness</span> <span class="o">=</span> <span class="mf">1e-4</span>
-
-<span class="c1"># Set up data</span>
-<span class="c1"># ...</span>
-
-<span class="c1"># Compute skinning decomposition</span>
-<span class="n">dem_bones</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-
-<span class="c1"># Get results</span>
-<span class="n">weights</span> <span class="o">=</span> <span class="n">dem_bones</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
-<span class="n">transformations</span> <span class="o">=</span> <span class="n">dem_bones</span><span class="o">.</span><span class="n">get_transformations</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
-</section>
-</section>
-<section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
 </section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

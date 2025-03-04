@@ -1,0 +1,719 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXX-X"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-XXXXX-X');
+    </script>
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Index &mdash; py-dem-bones 0.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=5dd48075" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=e259d695"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/custom.js?v=25981fee"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            py-dem-bones
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-from-pypi">Installing from PyPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-from-source">Installing from Source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#platform-specific-installation">Platform-Specific Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#linux-macos">Linux/macOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#windows">Windows</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#development-installation">Development Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#managing-dependencies">Managing Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#platform-specific-dependencies">Platform-Specific Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#id1">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#macos">macOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#linux">Linux</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#verifying-installation">Verifying Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#using-the-python-wrapper-classes">Using the Python Wrapper Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#using-dembonesext-for-hierarchical-skeletons">Using DemBonesExt for Hierarchical Skeletons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#converting-between-numpy-and-eigen">Converting Between NumPy and Eigen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#advanced-configuration">Advanced Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#python-api-overview">Python API Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#core-classes">Core Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#wrapper-classes">Wrapper Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#exception-classes">Exception Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#utility-functions">Utility Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#interfaces">Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#c-api">C++ API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#usage-examples">Usage Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#advanced-usage">Advanced Usage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#basic-skinning-decomposition">Basic Skinning Decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#working-with-hierarchical-skeletons">Working with Hierarchical Skeletons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#converting-blendshapes-to-lbs">Converting Blendshapes to LBS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#setting-up-development-environment">Setting Up Development Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#code-style">Code Style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#building-the-documentation">Building the Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#running-tests">Running Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#releasing">Releasing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ci_cd.html">CI/CD Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ci_cd.html#workflow-overview">Workflow Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ci_cd.html#optimization-strategies">Optimization Strategies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#reduced-build-matrix">Reduced Build Matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#caching-mechanism">Caching Mechanism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#optimized-checkout-process">Optimized Checkout Process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#smart-step-skipping">Smart Step Skipping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#concurrency-control">Concurrency Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ci_cd.html#troubleshooting-common-issues">Troubleshooting Common Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#git-submodules-initialization-failure">Git Submodules Initialization Failure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#command-execution-issues">Command Execution Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#dependency-installation-problems">Dependency Installation Problems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#platform-specific-issues">Platform-Specific Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ci_cd.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#latest-changes">Latest Changes</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py-dem-bones</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Index</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#_"><strong>_</strong></a>
+ | <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ 
+</div>
+<h2 id="_">_</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBones.__init__">__init__() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.__init__">(py_dem_bones.DemBonesExt method)</a>
+</li>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExtWrapper.__init__">(py_dem_bones.DemBonesExtWrapper method)</a>
+</li>
+        <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.__init__">(py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DCCInterface.apply_coordinate_system_transform">apply_coordinate_system_transform() (py_dem_bones.DCCInterface method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBonesExt.bind">bind (py_dem_bones.DemBonesExt property)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesExtWrapper.bind_update">bind_update (py_dem_bones.DemBonesExtWrapper property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBonesExt.bindUpdate">bindUpdate (py_dem_bones.DemBonesExt property)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.bone_names">bone_names (py_dem_bones.DemBonesWrapper property)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesExt.boneName">boneName (py_dem_bones.DemBonesExt property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBones.clear">clear() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.clear">(py_dem_bones.DemBonesExt method)</a>
+</li>
+        <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.clear">(py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.ComputationError">ComputationError (class in py_dem_bones)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.compute">compute() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.compute">(py_dem_bones.DemBonesExt method)</a>
+</li>
+        <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.compute">(py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBonesExt.computeRTB">computeRTB() (py_dem_bones.DemBonesExt method)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.computeTranformations">computeTranformations() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.computeTranformations">(py_dem_bones.DemBonesExt method)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.computeWeights">computeWeights() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.computeWeights">(py_dem_bones.DemBonesExt method)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.ConfigurationError">ConfigurationError (class in py_dem_bones)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DCCInterface.convert_matrices">convert_matrices() (py_dem_bones.DCCInterface method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DCCInterface">DCCInterface (class in py_dem_bones)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBones">DemBones (class in py_dem_bones)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesError">DemBonesError (class in py_dem_bones)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBonesExt">DemBonesExt (class in py_dem_bones)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesExtWrapper">DemBonesExtWrapper (class in py_dem_bones)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper">DemBonesWrapper (class in py_dem_bones)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.eigen_to_numpy">eigen_to_numpy() (in module py_dem_bones)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DCCInterface.from_dcc_data">from_dcc_data() (py_dem_bones.DCCInterface method)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.fStart">fStart (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.fStart">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBonesExt.fTime">fTime (py_dem_bones.DemBonesExt property)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.fv">fv (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.fv">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBones.get_animated_poses">get_animated_poses() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.get_animated_poses">(py_dem_bones.DemBonesExt method)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.get_bind_matrix">get_bind_matrix() (py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.get_bone_index">get_bone_index() (py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesExt.get_bone_names">get_bone_names() (py_dem_bones.DemBonesExt method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.get_bone_names">(py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.get_rest_pose">get_rest_pose() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.get_rest_pose">(py_dem_bones.DemBonesExt method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.get_target_index">get_target_index() (py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.get_target_names">get_target_names() (py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.get_transformations">get_transformations() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.get_transformations">(py_dem_bones.DemBonesExt method)</a>
+</li>
+        <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.get_transformations">(py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.get_weights">get_weights() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.get_weights">(py_dem_bones.DemBonesExt method)</a>
+</li>
+        <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.get_weights">(py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.IndexError">IndexError (class in py_dem_bones)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.init">init() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.init">(py_dem_bones.DemBonesExt method)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.IOError">IOError (class in py_dem_bones)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.iter">iter (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.iter">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBones.iterTransformations">iterTransformations (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.iterTransformations">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.iterWeights">iterWeights (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.iterWeights">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBones.lockM">lockM (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.lockM">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBones.lockW">lockW (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.lockW">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBones.m">m (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.m">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.max_influences">max_influences (py_dem_bones.DemBonesWrapper property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.NameError">NameError (class in py_dem_bones)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.nB">nB (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.nB">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.nF">nF (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.nF">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.nInitIters">nInitIters (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.nInitIters">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.nIters">nIters (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.nIters">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.nnz">nnz (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.nnz">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.NotImplementedError">NotImplementedError (class in py_dem_bones)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.nS">nS (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.nS">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBones.nTransIters">nTransIters (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.nTransIters">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.num_bones">num_bones (py_dem_bones.DemBonesWrapper property)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.num_frames">num_frames (py_dem_bones.DemBonesWrapper property)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.num_iterations">num_iterations (py_dem_bones.DemBonesWrapper property)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.num_targets">num_targets (py_dem_bones.DemBonesWrapper property)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.num_vertices">num_vertices (py_dem_bones.DemBonesWrapper property)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.numpy_to_eigen">numpy_to_eigen() (in module py_dem_bones)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.nV">nV (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.nV">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.nWeightsIters">nWeightsIters (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.nWeightsIters">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.ParameterError">ParameterError (class in py_dem_bones)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBonesExt.parent">parent (py_dem_bones.DemBonesExt property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBones.rmse">rmse() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.rmse">(py_dem_bones.DemBonesExt method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBones.set_animated_poses">set_animated_poses() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.set_animated_poses">(py_dem_bones.DemBonesExt method)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.set_bind_matrix">set_bind_matrix() (py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.set_bone_name">set_bone_name() (py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesExt.set_bone_names">set_bone_names() (py_dem_bones.DemBonesExt method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.set_bone_names">(py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.set_rest_pose">set_rest_pose() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.set_rest_pose">(py_dem_bones.DemBonesExt method)</a>
+</li>
+        <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.set_rest_pose">(py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.set_target_name">set_target_name() (py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.set_target_vertices">set_target_vertices() (py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.set_transformations">set_transformations() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.set_transformations">(py_dem_bones.DemBonesExt method)</a>
+</li>
+        <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.set_transformations">(py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.set_weights">set_weights() (py_dem_bones.DemBones method)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.set_weights">(py_dem_bones.DemBonesExt method)</a>
+</li>
+        <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.set_weights">(py_dem_bones.DemBonesWrapper method)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.subjectID">subjectID (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.subjectID">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.target_names">target_names (py_dem_bones.DemBonesWrapper property)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DCCInterface.to_dcc_data">to_dcc_data() (py_dem_bones.DCCInterface method)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.transAffine">transAffine (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.transAffine">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBones.transAffineNorm">transAffineNorm (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.transAffineNorm">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBones.u">u (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.u">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBones.v">v (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.v">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBonesWrapper.weight_smoothness">weight_smoothness (py_dem_bones.DemBonesWrapper property)</a>
+</li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.weightEps">weightEps (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.weightEps">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="python_api.html#py_dem_bones.DemBones.weightsSmooth">weightsSmooth (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.weightsSmooth">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+      <li><a href="python_api.html#py_dem_bones.DemBones.weightsSmoothStep">weightsSmoothStep (py_dem_bones.DemBones property)</a>
+
+      <ul>
+        <li><a href="python_api.html#py_dem_bones.DemBonesExt.weightsSmoothStep">(py_dem_bones.DemBonesExt property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Long Hao.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

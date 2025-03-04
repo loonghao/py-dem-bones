@@ -1,0 +1,316 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXX-X"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-XXXXX-X');
+    </script>
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contributing &mdash; py-dem-bones 0.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=5dd48075" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=e259d695"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/custom.js?v=25981fee"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CI/CD Pipeline" href="ci_cd.html" />
+    <link rel="prev" title="Examples" href="examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            py-dem-bones
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-from-pypi">Installing from PyPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-from-source">Installing from Source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#platform-specific-installation">Platform-Specific Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#linux-macos">Linux/macOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#windows">Windows</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#development-installation">Development Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#managing-dependencies">Managing Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#platform-specific-dependencies">Platform-Specific Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#id1">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#macos">macOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#linux">Linux</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#verifying-installation">Verifying Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#using-the-python-wrapper-classes">Using the Python Wrapper Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#using-dembonesext-for-hierarchical-skeletons">Using DemBonesExt for Hierarchical Skeletons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#converting-between-numpy-and-eigen">Converting Between NumPy and Eigen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#advanced-configuration">Advanced Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#python-api-overview">Python API Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#core-classes">Core Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#wrapper-classes">Wrapper Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#exception-classes">Exception Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#utility-functions">Utility Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#interfaces">Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#c-api">C++ API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#usage-examples">Usage Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#advanced-usage">Advanced Usage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#basic-skinning-decomposition">Basic Skinning Decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#working-with-hierarchical-skeletons">Working with Hierarchical Skeletons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#converting-blendshapes-to-lbs">Converting Blendshapes to LBS</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#setting-up-development-environment">Setting Up Development Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-style">Code Style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-the-documentation">Building the Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-tests">Running Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#releasing">Releasing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ci_cd.html">CI/CD Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ci_cd.html#workflow-overview">Workflow Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ci_cd.html#optimization-strategies">Optimization Strategies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#reduced-build-matrix">Reduced Build Matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#caching-mechanism">Caching Mechanism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#optimized-checkout-process">Optimized Checkout Process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#smart-step-skipping">Smart Step Skipping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#concurrency-control">Concurrency Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ci_cd.html#troubleshooting-common-issues">Troubleshooting Common Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#git-submodules-initialization-failure">Git Submodules Initialization Failure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#command-execution-issues">Command Execution Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#dependency-installation-problems">Dependency Installation Problems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ci_cd.html#platform-specific-issues">Platform-Specific Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ci_cd.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#latest-changes">Latest Changes</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py-dem-bones</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Contributing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/contributing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h1>
+<p>Contributions to py-dem-bones are welcome! Here’s how you can contribute:</p>
+<section id="setting-up-development-environment">
+<h2>Setting Up Development Environment<a class="headerlink" href="#setting-up-development-environment" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Clone the repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/loonghao/py-dem-bones.git
+<span class="nb">cd</span><span class="w"> </span>py-dem-bones
+</pre></div>
+</div>
+</li>
+<li><p>Create a virtual environment and install development dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># On Windows: venv\Scripts\activate</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Install pre-commit hooks:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pre-commit<span class="w"> </span>install
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="development-workflow">
+<h2>Development Workflow<a class="headerlink" href="#development-workflow" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Create a new branch for your feature or bugfix:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/your-feature-name
+</pre></div>
+</div>
+</li>
+<li><p>Make your changes and write tests for them.</p></li>
+<li><p>Run the tests to make sure everything works:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest
+</pre></div>
+</div>
+</li>
+<li><p>Build the documentation to ensure it’s correct:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docs
+make<span class="w"> </span>html
+</pre></div>
+</div>
+</li>
+<li><p>Commit your changes and push them to your fork:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add your feature description&quot;</span>
+git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>feature/your-feature-name
+</pre></div>
+</div>
+</li>
+<li><p>Create a pull request on GitHub.</p></li>
+</ol>
+</section>
+<section id="code-style">
+<h2>Code Style<a class="headerlink" href="#code-style" title="Link to this heading"></a></h2>
+<p>This project follows the Google Python Style Guide. We use <code class="docutils literal notranslate"><span class="pre">ruff</span></code> for linting and formatting.</p>
+<p>To check your code style:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ruff<span class="w"> </span>check<span class="w"> </span>.
+</pre></div>
+</div>
+<p>To automatically fix style issues:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ruff<span class="w"> </span>format<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="building-the-documentation">
+<h2>Building the Documentation<a class="headerlink" href="#building-the-documentation" title="Link to this heading"></a></h2>
+<p>The documentation is built using Sphinx. To build it locally:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docs
+make<span class="w"> </span>html
+</pre></div>
+</div>
+<p>The built documentation will be in <code class="docutils literal notranslate"><span class="pre">docs/_build/html</span></code>.</p>
+</section>
+<section id="running-tests">
+<h2>Running Tests<a class="headerlink" href="#running-tests" title="Link to this heading"></a></h2>
+<p>We use pytest for testing. To run the tests:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest
+</pre></div>
+</div>
+<p>To run tests with coverage:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>--cov<span class="o">=</span>py_dem_bones
+</pre></div>
+</div>
+</section>
+<section id="releasing">
+<h2>Releasing<a class="headerlink" href="#releasing" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Update the version number in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">src/py_dem_bones/__init__.py</span></code>.</p></li>
+<li><p>Update the changelog.</p></li>
+<li><p>Commit the changes:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Bump version to x.y.z&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Tag the release:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>vx.y.z<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Version x.y.z&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Push the changes and tag:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>main<span class="w"> </span>--tags
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The GitHub Actions workflow will automatically build and publish the release to PyPI.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ci_cd.html" class="btn btn-neutral float-right" title="CI/CD Pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Long Hao.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
