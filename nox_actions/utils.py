@@ -179,10 +179,10 @@ def build_cpp_extension(session, env=None):
     # Set environment variables to ensure consistent build configuration
     if env is None:
         env = os.environ.copy()
-    env["SKBUILD_CMAKE_VERBOSE"] = "1"  # Enable verbose CMake output
+    env["SKBUILD_BUILD_VERBOSE"] = "1"  # 使用新的环境变量
 
-    # Use pip wheel to directly create a wheel
-    os.makedirs("dist", exist_ok=True)
+    # Ensure we use standard platform tags
+    env["FORCE_BDIST_WHEEL_PLAT"] = ""  # Clear any custom platform tags
 
     # Ensure pip and necessary build tools are installed
     try:
@@ -207,90 +207,33 @@ def build_cpp_extension(session, env=None):
             session.log(f"Failed to install pip: {e}")
             return False
 
-    # Execute different build commands based on the platform
-    build_success = False
-    wheel_cmd = "-m pip wheel . -w dist/ --no-deps"
+    # Install build dependencies
+    try:
+        session.run(
+            sys.executable,
+            "-m",
+            "pip",
+            "install",
+            "--upgrade",
+            "build",
+            "wheel",
+            "setuptools",
+            "scikit-build-core",
+            "pybind11",
+            "numpy",
+            silent=True,
+        )
+    except Exception as e:
+        session.log(f"Failed to install build dependencies: {e}")
+        session.log("Continuing anyway...")
 
-    if system == "Windows":
-        if setup_windows_environment(session, wheel_cmd, env):
-            session.log("Windows extension build completed successfully")
-            build_success = True
-        else:
-            session.log(
-                "Windows environment setup failed, falling back to direct build"
-            )
-            try:
-                session.run(
-                    sys.executable,
-                    "-m",
-                    "pip",
-                    "wheel",
-                    ".",
-                    "-w",
-                    "dist/",
-                    "--no-deps",
-                    env=env,
-                    external=True,
-                )
-                build_success = True
-            except Exception as e:
-                session.log(f"Error running command in Windows environment: {e}")
-    else:  # Linux or macOS
-        try:
-            # Ensure using python -m pip instead of pip directly
-            session.run(
-                sys.executable,
-                "-m",
-                "pip",
-                "wheel",
-                ".",
-                "-w",
-                "dist/",
-                "--no-deps",
-                env=env,
-                external=True,
-            )
-            build_success = True
-        except Exception as e:
-            session.log(f"Failed to build extension: {e}")
-            # Try installing wheel package and retry
-            try:
-                session.log("Attempting to install wheel package and retry...")
-                session.run(
-                    sys.executable,
-                    "-m",
-                    "pip",
-                    "install",
-                    "--upgrade",
-                    "wheel",
-                    "setuptools",
-                    "build",
-                )
-                session.run(
-                    sys.executable,
-                    "-m",
-                    "pip",
-                    "wheel",
-                    ".",
-                    "-w",
-                    "dist/",
-                    "--no-deps",
-                    env=env,
-                    external=True,
-                )
-                build_success = True
-            except Exception as e2:
-                session.log(f"Second attempt also failed: {e2}")
+    # We'll only prepare the C++ extension here, but not build the wheel
+    # The actual wheel building will be done by the build function using python-build
 
-    # Install the project package to enable import
-    if build_success:
-        try:
-            session.install("-e", ".")
-            session.log("Successfully installed package in development mode")
-        except Exception as e:
-            session.log(f"Warning: Failed to install package in development mode: {e}")
-            session.log("Continuing with process...")
+    # Prepare CMake build directory
+    os.makedirs("_skbuild", exist_ok=True)
 
+    build_success = True
     return build_success
 
 

@@ -207,3 +207,38 @@ pip install -e ".[dev,docs]"
 ## 致谢
 
 本项目基于 Electronic Arts 的 [Dem Bones](https://github.com/electronicarts/dem-bones) 库。
+
+### 构建 wheel 包
+
+我们使用 [cibuildwheel](https://cibuildwheel.readthedocs.io/) 为多个平台和 Python 版本构建 wheel 包。如果您想在本地构建 wheel 包：
+
+```bash
+# 安装 cibuildwheel
+pip install cibuildwheel
+
+# 构建当前平台的 wheel 包
+python -m cibuildwheel --platform auto
+
+# 或者使用 nox 命令
+python -m nox -s build-wheels
+```
+
+构建好的 wheel 文件将位于 `wheelhouse/` 目录中。您可以使用以下命令验证 wheel 文件的平台标签：
+
+```bash
+python -m nox -s verify-wheels
+```
+
+#### Windows 环境特殊说明
+
+在 Windows 环境中，由于 cibuildwheel 可能会遇到一些问题，我们提供了一个专门的脚本来构建 wheel 包：
+
+```bash
+python tools/wheels/build_windows_wheel.py
+```
+
+这个脚本会自动安装所需的依赖，并构建 wheel 包。构建完成后，wheel 包将位于 `wheelhouse/` 目录中。
+
+更多关于 wheel 构建的信息，请查看 [tools/wheels/README_zh.md](tools/wheels/README_zh.md)。
+
+## 依赖

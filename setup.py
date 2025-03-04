@@ -5,6 +5,7 @@ A minimal setup.py file to make pip happy.
 
 import os
 import site
+import sys
 
 # Ensure that the local package is preferred over an installed version
 site.addsitedir(os.path.abspath(os.path.dirname(__file__)))
@@ -12,6 +13,13 @@ site.addsitedir(os.path.abspath(os.path.dirname(__file__)))
 from setuptools import setup
 
 if __name__ == "__main__":
+    # 检查是否使用 scikit-build-core 构建
+    using_scikit_build = any(
+        arg.startswith("--build-option=") for arg in sys.argv
+    ) or os.environ.get("SKBUILD_CMAKE_VERBOSE") is not None
+
+    # 当使用 scikit-build-core 时，直接调用 setup()
+    # 否则，使用 setuptools 的 setup() 函数
     setup(
         name="py-dem-bones",
         description="Python bindings for the Dem Bones library",

@@ -75,6 +75,39 @@ git submodule update --init --recursive
 pip install -e .
 ```
 
+### Building wheels
+
+We use [cibuildwheel](https://cibuildwheel.readthedocs.io/) to build wheels for multiple platforms and Python versions. If you want to build wheels locally:
+
+```bash
+# Install cibuildwheel
+pip install cibuildwheel
+
+# Build wheels for the current platform
+python -m cibuildwheel --platform auto
+
+# Or use nox command
+python -m nox -s build-wheels
+```
+
+Built wheel files will be located in the `wheelhouse/` directory. You can verify the platform tags of wheel files using:
+
+```bash
+python -m nox -s verify-wheels
+```
+
+#### Special Notes for Windows
+
+In Windows environments, as cibuildwheel may encounter some issues, we provide a dedicated script to build wheel packages:
+
+```bash
+python tools/wheels/build_windows_wheel.py
+```
+
+This script will automatically install the required dependencies and build wheel packages. After building, the wheel packages will be located in the `wheelhouse/` directory.
+
+For more information about wheel building, please check [tools/wheels/README.md](tools/wheels/README.md).
+
 ## Dependencies
 
 This project uses Git submodules to manage C++ dependencies:
@@ -193,6 +226,18 @@ pip install -e ".[dev,docs]"
 ```
 
 This will install development tools like pytest, black, and documentation tools.
+
+### CI/CD 流程
+
+本项目使用 GitHub Actions 进行持续集成和部署。主要的工作流程包括：
+
+1. **构建和测试**：在多个平台和 Python 版本上构建和测试包
+2. **文档构建**：构建项目文档并发布到 GitHub Pages
+3. **发布**：将构建好的 wheel 文件发布到 PyPI
+
+当创建一个新的版本标签（如 `v0.2.1`）时，发布工作流程会自动触发，构建 wheel 文件并发布到 PyPI。
+
+更多关于 CI/CD 流程的信息，请查看 [.github/workflows/release.yml](.github/workflows/release.yml) 文件。
 
 ## Documentation
 

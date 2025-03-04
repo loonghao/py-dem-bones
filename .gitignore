@@ -50,7 +50,8 @@ lib64/
 parts/
 sdist/
 var/
-wheels/
+wheelhouse/
+.ruff_cache
 *.egg-info/
 .installed.cfg
 *.egg
@@ -87,3 +88,4 @@ _cmake_build/
 /temp_build.bat
 /run-ide.bat
 /PRD.md
+/wheelhouse/
