@@ -1,0 +1,45 @@
+# cibuildwheel 配置文件
+# 参考: https://cibuildwheel.readthedocs.io/en/stable/options/
+
+[tool.cibuildwheel]
+# 构建所有支持的 Python 版本
+build = ["cp37-*", "cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*"]
+# 跳过 PyPy 和 musllinux
+skip = ["pp*", "*-musllinux*"]
+
+# 构建前安装依赖
+before-build = [
+    "pip install -U pip",
+    "pip install scikit-build-core>=0.10.0 pybind11>=2.10.0 numpy>=1.20.0 setuptools>=42.0.0 wheel>=0.36.0"
+]
+
+# 测试命令
+test-command = "python -c \"import py_dem_bones; print(py_dem_bones.__version__)\""
+test-skip = "*-win32 *-manylinux_i686"
+
+# 环境变量
+environment = {SKBUILD_BUILD_VERBOSE="1", FORCE_BDIST_WHEEL_PLAT=""}
+
+# Linux 特定配置
+[tool.cibuildwheel.linux]
+before-all = [
+    "yum install -y cmake ninja-build"
+]
+archs = ["x86_64"]
+manylinux-x86_64-image = "manylinux2014"
+
+# macOS 特定配置
+[tool.cibuildwheel.macos]
+before-all = [
+    "brew install cmake ninja"
+]
+archs = ["x86_64", "arm64"]
+# 注意: MACOSX_DEPLOYMENT_TARGET 在 GitHub Actions 工作流中设置
+# 不同架构使用不同的部署目标
+
+# Windows 特定配置
+[tool.cibuildwheel.windows]
+before-all = [
+    "choco install -y cmake ninja"
+]
+archs = ["AMD64"]

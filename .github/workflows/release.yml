@@ -46,70 +46,35 @@ jobs:
       os: ${{ matrix.os }}
       job-type: 'build'
 
-  # 构建所有 Python 版本的包
-  build:
+  # 使用 cibuildwheel 构建跨平台 wheel
+  build-wheels:
+    name: Build wheels on ${{ matrix.os }}
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.fast-mode == 'true') }}
-    name: Build Python ${{ matrix.python-version }} on ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          # 主要平台和版本组合
-          - os: ubuntu-latest
-            python-version: '3.11'  # 最新稳定版
-          - os: macos-latest
-            python-version: '3.11'  # 最新稳定版
-          - os: windows-latest
-            python-version: '3.11'  # 最新稳定版
-          # 仅在 Linux 上测试其他 Python 版本
-          - os: ubuntu-latest
-            python-version: '3.8'
-          - os: ubuntu-latest
-            python-version: '3.9'
-          - os: ubuntu-latest
-            python-version: '3.10'
-          - os: ubuntu-latest
-            python-version: '3.12'
-          - os: ubuntu-latest
-            python-version: '3.13'
-    
-    uses: ./.github/workflows/reusable-jobs.yml
-    with:
-      python-version: ${{ matrix.python-version }}
-      os: ${{ matrix.os }}
-      job-type: 'build'
-
-  # Python 3.7 构建任务 (所有平台)
-  build-py37:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.fast-mode == 'true') }}
-    name: Build Python 3.7 on ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-20.04, windows-latest]
     runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2019, macos-13, macos-14]
+    
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 1
       
-      - name: Set up Python 3.7
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.7'
-          cache: 'pip'
-          allow-prereleases: true
-          check-latest: true
+          python-version: '3.11'
       
-      # 缓存 pip 依赖
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-py37-pip-${{ hashFiles('**/pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-py37-pip-
+      # 初始化 git 子模块
+      - name: Initialize git submodules
+        shell: bash
+        run: |
+          git config --global url.https://github.com/.insteadOf git@github.com:
+          git config --global url.https://.insteadOf git://
+          git submodule sync
+          git submodule update --init --recursive
       
       # 缓存 Eigen 库
       - name: Cache Eigen library
@@ -119,24 +84,6 @@ jobs:
           key: ${{ runner.os }}-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
           restore-keys: |
             ${{ runner.os }}-eigen-
-      
-      - name: Install dependencies
-        shell: bash
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install build wheel setuptools twine
-          python -m pip install nox
-          # 为所有 Python 3.7 环境指定兼容的依赖版本
-          python -m pip install "isort<5.12.0" "black<23.3.0" "ruff<0.0.270"
-          python -m pip install -e "."
-      
-      - name: Initialize git submodules
-        shell: bash
-        run: |
-          git config --global url.https://github.com/.insteadOf git@github.com:
-          git config --global url.https://.insteadOf git://
-          git submodule sync
-          git submodule update --init --recursive
       
       # 安装 Eigen (Linux)
       - name: Install Eigen (Linux)
@@ -171,21 +118,106 @@ jobs:
             bash .github/scripts/win/setup_eigen.sh
           fi
       
-      - name: Build package
+      # 设置 macOS 特定环境
+      - name: Setup macOS
+        if: runner.os == 'macOS'
         run: |
-          python -m nox -s build
+          echo "FC=gfortran-13" >> $GITHUB_ENV
+          echo "F77=gfortran-13" >> $GITHUB_ENV
+          echo "F90=gfortran-13" >> $GITHUB_ENV
+          
+          # 根据运行器设置不同的部署目标
+          if [[ "${{ matrix.os }}" == "macos-14" ]]; then
+            # Apple Silicon (arm64) 使用更高的部署目标
+            echo "CIBW_ENVIRONMENT_MACOS=MACOSX_DEPLOYMENT_TARGET=11.0 PKG_CONFIG_PATH=$PWD/.openblas" >> $GITHUB_ENV
+          else
+            # Intel (x86_64) 使用较低的部署目标以保持兼容性
+            echo "CIBW_ENVIRONMENT_MACOS=MACOSX_DEPLOYMENT_TARGET=10.14 PKG_CONFIG_PATH=$PWD/.openblas" >> $GITHUB_ENV
+          fi
       
+      # 设置 Windows 特定环境
+      - name: Setup Windows
+        if: runner.os == 'Windows'
+        run: |
+          echo "CIBW_ENVIRONMENT_WINDOWS=PKG_CONFIG_PATH=${{ github.workspace }}" >> $env:GITHUB_ENV
+      
+      # 使用 cibuildwheel 构建 wheel (非 Windows 环境)
+      - name: Build wheels (Linux/macOS)
+        if: runner.os != 'Windows'
+        uses: pypa/cibuildwheel@v2.16.5
+        env:
+          CIBW_BUILD: "cp37-* cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
+          CIBW_SKIP: "pp* *-musllinux*"  # 跳过 PyPy 和 musllinux
+          CIBW_ARCHS_MACOS: "x86_64 arm64"  # 同时构建 Intel 和 ARM 架构
+          CIBW_ARCHS_LINUX: "x86_64"
+          CIBW_BEFORE_ALL_LINUX: >
+            yum install -y cmake ninja-build
+          CIBW_BEFORE_ALL_MACOS: >
+            brew install cmake ninja
+          CIBW_ENVIRONMENT: >
+            SKBUILD_BUILD_VERBOSE=1 FORCE_BDIST_WHEEL_PLAT=""
+          CIBW_BUILD_VERBOSITY: 3
+          CIBW_ENVIRONMENT_MACOS: ${{ env.CIBW_ENVIRONMENT_MACOS }}
+          CIBW_ENVIRONMENT_WINDOWS: ${{ env.CIBW_ENVIRONMENT_WINDOWS }}
+      
+      # 在 Windows 环境中使用标准方法构建 wheel
+      - name: Build wheels (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          # 安装构建依赖
+          python -m pip install --upgrade pip
+          python -m pip install build wheel setuptools scikit-build-core pybind11 numpy cmake
+
+          # 安装 CMake 和 Ninja
+          choco install -y cmake ninja
+
+          # 使用专门的 Windows 构建脚本
+          python tools/wheels/build_windows_wheel.py
+        shell: bash
+      
+      # 上传构建产物
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: py-dem-bones-python3.7-${{ runner.os }}
-          path: dist/
+          name: py-dem-bones-wheels-${{ runner.os }}
+          path: ./wheelhouse/*.whl
+          retention-days: 7
+
+  # 构建 sdist
+  build-sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build wheel setuptools
+      
+      - name: Build sdist
+        run: |
+          python -m build --sdist
+      
+      - name: Upload sdist
+        uses: actions/upload-artifact@v4
+        with:
+          name: py-dem-bones-sdist
+          path: dist/*.tar.gz
           retention-days: 7
 
   # 文档构建任务
   docs:
     name: Build Documentation
-    needs: [build, build-py37]  # 添加依赖，确保在构建完成后执行
+    needs: [build-wheels, build-sdist]  # 添加依赖，确保在构建完成后执行
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
@@ -222,7 +254,7 @@ jobs:
   # 发布到GitHub Releases
   github-release:
     name: Create GitHub Release
-    needs: [docs, build, build-py37]
+    needs: [docs, build-wheels, build-sdist]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
@@ -284,7 +316,7 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          python -m pip install build twine
+          python -m pip install build twine wheel
       
       - name: Download all artifacts
         uses: actions/download-artifact@v4
@@ -298,6 +330,15 @@ jobs:
           mkdir -p dist_final
           find dist -type f -name "*.whl" -o -name "*.tar.gz" | xargs -I{} cp {} dist_final/
           ls -la dist_final/
+      
+      - name: Verify wheel files
+        run: |
+          echo "Checking wheel files for correct platform tags..."
+          python -m pip install wheel
+          for wheel in dist_final/*.whl; do
+            echo "Checking $wheel"
+            python -m wheel tags $wheel
+          done
       
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

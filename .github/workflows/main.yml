@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches-ignore: [ main ]  # 不再监听 main 分支的推送
   pull_request:
     branches: [ main ]
   workflow_dispatch:
