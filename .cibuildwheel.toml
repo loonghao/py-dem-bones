@@ -2,8 +2,9 @@
 # Reference: https://cibuildwheel.readthedocs.io/en/stable/options/
 
 [tool.cibuildwheel]
-# Build for all supported Python versions
-build = ["cp37-*", "cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*"]
+# 构建所有支持的 Python 版本
+# 添加 abi3 构建，使用 Python 3.10 构建但支持 3.7+
+build = ["cp37-*", "cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*", "cp310-abi3"]
 # Skip PyPy, musllinux and 32-bit systems
 skip = ["pp*", "*-musllinux*", "*-win32", "*-manylinux_i686"]
 
