@@ -92,6 +92,19 @@ def prepare_environment_for_docs(session: nox.Session) -> Path:
     return output_dir
 
 
+def install_doc_dependencies(session):
+    """Install dependencies for building documentation."""
+    session.install(
+        "sphinx",
+        "furo",  #
+        "myst-parser",
+        "sphinx-autodoc-typehints",
+        "sphinxcontrib-googleanalytics",
+        "sphinx-copybutton",  #
+        "sphinx-design",  #
+    )
+
+
 def docs(session: nox.Session) -> None:
     """Build the docs.
 
@@ -111,28 +124,7 @@ def docs(session: nox.Session) -> None:
     )
     session.log(f"Detected platform: {platform.system()}")
 
-    # 基本文档依赖
-    doc_deps = [
-        "sphinx>=7.0.0,<9.0.0",
-        "sphinx-autobuild>=2021.3.14",
-        "furo",
-        "myst-parser",
-        "sphinxcontrib-googleanalytics",
-        "pillow>=10.0.0",
-        "linkify-it-py>=2.0.0",
-    ]
-
-    # Install documentation dependencies with pip cache
-    start_time = time.time()
-    retry_command(
-        session,
-        session.install,
-        *doc_deps,
-        max_retries=3,
-    )
-    session.log(
-        f"Documentation dependencies installed in {time.time() - start_time:.2f}s"
-    )
+    install_doc_dependencies(session)
 
     # Install package if build is not skipped
     if not skip_build:
@@ -195,28 +187,7 @@ def docs_serve(session: nox.Session) -> None:
     )
     session.log(f"Detected platform: {platform.system()}")
 
-    # 基本文档依赖
-    doc_deps = [
-        "sphinx>=7.0.0,<9.0.0",
-        "sphinx-autobuild>=2021.3.14",
-        "furo",
-        "myst-parser",
-        "sphinxcontrib-googleanalytics",
-        "pillow>=10.0.0",
-        "linkify-it-py>=2.0.0",
-    ]
-
-    # Install documentation dependencies with pip cache
-    start_time = time.time()
-    retry_command(
-        session,
-        session.install,
-        *doc_deps,
-        max_retries=3,
-    )
-    session.log(
-        f"Documentation dependencies installed in {time.time() - start_time:.2f}s"
-    )
+    install_doc_dependencies(session)
 
     # Install package if build is not skipped
     if not skip_build:

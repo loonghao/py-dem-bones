@@ -68,7 +68,7 @@ Here's a simple example of how to use py-dem-bones with the direct C++ bindings:
     print(transformations)
 
 Using the Python Wrapper Classes
--------------------------------
+--------------------------------
 
 For a more Pythonic experience, you can use the wrapper classes that provide enhanced functionality:
 
@@ -136,7 +136,7 @@ For a more Pythonic experience, you can use the wrapper classes that provide enh
         print(f"Error: {e}")
 
 Using DemBonesExt for Hierarchical Skeletons
-------------------------------------------
+--------------------------------------------
 
 For more advanced usage with hierarchical skeletons, use the DemBonesExt class:
 
@@ -221,7 +221,7 @@ Or use the Python wrapper for DemBonesExt:
     print(transformations)
 
 Converting Between NumPy and Eigen
---------------------------------
+----------------------------------
 
 py-dem-bones provides utility functions to convert between NumPy arrays and Eigen matrices:
 
@@ -241,7 +241,7 @@ py-dem-bones provides utility functions to convert between NumPy arrays and Eige
     print(reshaped)  # [1.0, 2.0, 3.0, 4.0]
 
 Error Handling
-------------
+--------------
 
 The library provides comprehensive error handling through custom exception classes:
 
@@ -266,7 +266,7 @@ The library provides comprehensive error handling through custom exception class
         print(f"General error: {e}")
 
 Advanced Configuration
--------------------
+----------------------
 
 Fine-tuning the skinning decomposition parameters:
 

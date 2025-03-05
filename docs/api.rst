@@ -1,13 +1,13 @@
 API Reference
 =============
 
-This page provides an overview of the py-dem-bones API. For detailed Python API documentation, see :doc:`python_api`.
+This page provides an overview of the py-dem-bones API. For detailed Python API documentation, see the :doc:`Python API Reference <python_api>` page.
 
 Python API Overview
------------------
+------------------
 
 Core Classes
-~~~~~~~~~~~
+~~~~~~~~~~~~
 
 The core classes provide direct bindings to the C++ implementation:
 
@@ -15,7 +15,7 @@ The core classes provide direct bindings to the C++ implementation:
 - **DemBonesExt**: Extended version with support for hierarchical skeletons
 
 Wrapper Classes
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 
 The wrapper classes provide a more Pythonic interface to the core functionality:
 
@@ -23,7 +23,7 @@ The wrapper classes provide a more Pythonic interface to the core functionality:
 - **DemBonesExtWrapper**: Python-friendly wrapper for DemBonesExt
 
 Exception Classes
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 The exception classes provide structured error handling:
 
@@ -37,7 +37,7 @@ The exception classes provide structured error handling:
 - **IOError**: Raised for input/output errors
 
 Utility Functions
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 The utility functions provide helper functionality:
 
@@ -45,7 +45,7 @@ The utility functions provide helper functionality:
 - **eigen_to_numpy**: Convert an Eigen matrix to a NumPy array
 
 Interfaces
-~~~~~~~~~
+~~~~~~~~~~
 
 The interfaces provide integration with external software:
 
@@ -67,7 +67,7 @@ Usage Examples
 ------------
 
 Basic Usage
-~~~~~~~~~~
+~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -94,6 +94,6 @@ Basic Usage
    transformations = dem_bones.get_transformations()
 
 Advanced Usage
-~~~~~~~~~~~~
+~~~~~~~~~~~~~~
 
 For advanced usage examples, including hierarchical skeletons and custom constraints, see the :doc:`examples` page.
