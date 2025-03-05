@@ -19,7 +19,7 @@ jobs:
       
       - name: Create bump and changelog
         id: cz
-        uses: commitizen-tools/commitizen-action@3.12.0
+        uses: commitizen-tools/commitizen-action@0.24.0
         with:
           github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           branch: main
