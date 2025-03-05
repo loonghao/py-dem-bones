@@ -39,7 +39,8 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "numpy>=1.20.0",
+    "numpy>=1.20.0,<1.22.0; python_version < '3.8'",
+    "numpy>=1.20.0; python_version >= '3.8'",
 ]
 
 [project.optional-dependencies]
@@ -48,6 +49,10 @@ dev = [
     # Use different commitizen versions based on Python version
     "commitizen<=2.42.1; python_version < '3.8'",
     "commitizen>=3.12.0; python_version >= '3.8'",
+]
+test = [
+    "pytest>=6.0.0",
+    "pytest-cov>=2.12.0",
 ]
 docs = [
     "sphinx>=7.0.0",
@@ -70,10 +75,6 @@ lint = [
     "isort<5.12.0",
     "autoflake>=2.0.0",
 ]
-test = [
-    "pytest>=7.3.1",
-    "pytest-cov>=4.1.0",
-]
 build = [
     "build>=0.10.0",
     "twine>=4.0.2",
@@ -92,17 +93,14 @@ wheel.py-api = "cp37"
 wheel.platlib = true  # 确保使用标准的平台标签
 sdist.include = ["src/py_dem_bones/*.py", "src/py_dem_bones/*.pyi", "CMakeLists.txt", "extern/CMakeLists.txt"]
 sdist.exclude = ["extern/eigen/unsupported", "extern/eigen/bench", "extern/eigen/test", "extern/eigen/demos"]
-cmake.version = ">=3.15"  # 添加版本比较符号
+cmake.version = ">=3.15"
 cmake.build-type = "Release"
 build.verbose = true
-cmake.args = ["-DCMAKE_POSITION_INDEPENDENT_CODE=ON"]
-
-[tool.scikit-build.cmake.define]
-PY_DEM_BONES_BUILD_TESTS = "OFF"
-PY_DEM_BONES_BUILD_EXAMPLES = "OFF"
-
-[tool.cibuildwheel]
-build-verbosity = 3
+cmake.args = [
+    "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
+    "-DCMAKE_C_FLAGS=-fPIC",  # 添加PIC标志
+    "-DCMAKE_CXX_FLAGS=-fPIC"
+]
 
 [tool.commitizen]
 name = "cz_conventional_commits"
