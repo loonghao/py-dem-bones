@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'  # Match all version tags, e.g., v0.1.0
+      - '[0-9]*.[0-9]*.[0-9]*'  # Match version tags without 'v' prefix, e.g., 0.1.0
   workflow_dispatch:
     inputs:
       fast-mode:
@@ -218,7 +218,7 @@ jobs:
   docs:
     name: Build Documentation
     needs: [build-wheels, build-sdist]  # Add dependency to ensure documentation builds after wheels and sdist
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -255,7 +255,7 @@ jobs:
   github-release:
     name: Create GitHub Release
     needs: [docs, build-wheels, build-sdist]
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Requires write permission to create release
@@ -275,17 +275,17 @@ jobs:
       
       - name: Get version from tag
         id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
       
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          name: Release v${{ steps.get_version.outputs.VERSION }}
+          name: Release ${{ steps.get_version.outputs.VERSION }}
           draft: false
           prerelease: false
           files: release_assets/*
           body: |
-            ## py-dem-bones v${{ steps.get_version.outputs.VERSION }}
+            ## py-dem-bones ${{ steps.get_version.outputs.VERSION }}
             
             See [CHANGELOG.md](https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md) for details.
             
@@ -300,7 +300,7 @@ jobs:
     name: Publish to PyPI
     needs: [build-wheels, build-sdist, github-release]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     permissions:
       id-token: write  # Use OIDC for PyPI publishing
     steps:

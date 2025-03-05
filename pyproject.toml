@@ -10,7 +10,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "py-dem-bones"
-version = "0.3.0"
+version = "0.4.0"
 description = "Python bindings for the Dem Bones library"
 readme = "README.md"
 requires-python = ">=3.7"
@@ -45,6 +45,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "nox>=2023.4.22",
+    "commitizen==3.12.0",
 ]
 docs = [
     "sphinx>=7.0.0",
@@ -104,7 +105,7 @@ build-verbosity = 3
 [tool.commitizen]
 name = "cz_conventional_commits"
 version = "0.4.0"
-tag-format = "v$version"
+tag-format = "$version"
 version-files = [
     "pyproject.toml:version",
     "src/py_dem_bones/__version__.py",
