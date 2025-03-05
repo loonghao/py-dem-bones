@@ -7,10 +7,10 @@ sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('../src'))
 
 # 设置模板目录
-templates_path = ['templates']
+templates_path = ['_templates']
 
 # 设置静态文件目录
-html_static_path = ['source/_static']
+html_static_path = ['_static']
 
 # 导入模拟模块，用于处理示例中的导入
 try:
@@ -62,13 +62,21 @@ version = '0.3.0'
 
 # -- General configuration ---------------------------------------------------
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.intersphinx',
-    'myst_parser',
-    'sphinxcontrib.googleanalytics',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.extlinks",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.todo",
+    "myst_parser",
 ]
+
+# 只在有 Google Analytics ID 时启用 GA 扩展
+import os
+googleanalytics_id = os.environ.get('GOOGLE_ANALYTICS_ID', '')
+if googleanalytics_id:
+    extensions.append("sphinxcontrib.googleanalytics")
+    googleanalytics_enabled = True
 
 # 模拟导入的模块列表，用于避免导入错误
 autodoc_mock_imports = [
@@ -86,17 +94,6 @@ autodoc_mock_imports = [
     'vtk',  # Add 'vtk' to the list
 ]
 
-# 为 Sphinx Gallery 模拟 matplotlib
-import sys
-from unittest.mock import MagicMock
-
-class Mock(MagicMock):
-    @classmethod
-    def __getattr__(cls, name):
-        return MagicMock()
-
-MOCK_MODULES = ['matplotlib', 'matplotlib.pyplot']
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 autodoc_typehints = 'none'
 autodoc_import_mock = True
@@ -109,29 +106,24 @@ source_suffix = {
     '.md': 'markdown',
 }
 
-# Google Analytics 配置
-googleanalytics_id = 'UA-XXXXX-X'
-googleanalytics_enabled = True
-
 # -- Options for HTML output -------------------------------------------------
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
+html_theme_options = {
+    'light_logo': 'logo-light.svg',
+    'dark_logo': 'logo-dark.svg',
+    'sidebar_hide_name': True,
+}
 html_css_files = [
     'custom.css',
 ]
-html_js_files = [
-    'custom.js',
-]
-
-html_theme_options = {
-    "navigation_depth": 4,
-    "titles_only": False,
-    "logo_only": False,
-    "display_version": True,
-    "prev_next_buttons_location": "bottom",
-    "style_external_links": True,
-    "collapse_navigation": False
+autodoc_class_signature = 'separated'
+autodoc_member_order = 'bysource'
+autodoc_inherit_docstrings = True
+autodoc_default_options = {
+    "show-inheritance": True,
+    "undoc-members": True,
+    "inherited-members": True,
 }
-
 # -- Extension configuration -------------------------------------------------
 napoleon_google_docstring = True
 napoleon_numpy_docstring = True
