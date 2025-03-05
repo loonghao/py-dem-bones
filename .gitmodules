@@ -1,6 +1,7 @@
 [submodule "extern/dem-bones"]
 	path = extern/dem-bones
 	url = https://github.com/electronicarts/dem-bones.git
+	branch = master
 [submodule "extern/eigen"]
 	path = extern/eigen
 	url = https://gitlab.com/libeigen/eigen.git

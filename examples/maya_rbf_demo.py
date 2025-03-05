@@ -10,7 +10,9 @@ RBF与DemBones在Maya中的集成演示
 1. 在Maya的Python环境中安装以下依赖项：
     pip install py-dem-bones numpy scipy
 
-2. 将此脚本复制到Maya的脚本编辑器中运行，或通过Maya的Python命令行执行：
+2. 确保maya_example.py文件在同一目录下或者在Python路径中
+
+3. 将此脚本复制到Maya的脚本编辑器中运行，或通过Maya的Python命令行执行：
     import maya_rbf_demo
     maya_rbf_demo.main()
 """
@@ -21,6 +23,9 @@ import maya.cmds as cmds
 import maya.OpenMaya as om
 import py_dem_bones as pdb
 from py_dem_bones.interfaces import DCCInterface
+
+# 导入MayaDCCInterface类
+from maya_example import MayaDCCInterface
 
 
 def create_cube_mesh(name="demBonesCube", size=2.0):
@@ -154,92 +159,102 @@ def setup_rbf_driven_keys(source_ctrl, target_joint, rbf):
 
 def main():
     """Maya中的RBF演示主函数"""
-    # 清理已存在的对象
-    for obj in ['demBonesCube', 'demBonesRoot_1', 'rbfJoint_1', 'rbfJointCtrl_1']:
-        if cmds.objExists(obj):
-            cmds.delete(obj)
-    
-    # 1. 创建测试场景
-    print("\n1. 创建测试场景...")
-    # 创建立方体网格
-    cube = create_cube_mesh()
-    # 创建骨骼链
-    joints = create_joints()
-    # 创建RBF辅助关节和控制器
-    rbf_joints = create_rbf_joints()
-    
-    # 2. 设置DemBones和Maya接口
-    print("\n2. 设置DemBones...")
-    dem_bones = pdb.DemBones()
-    maya_interface = MayaDCCInterface(dem_bones)
-    
-    # 3. 从Maya导入数据
-    print("\n3. 从Maya导入数据...")
-    success = maya_interface.from_dcc_data(
-        mesh_name=cube,
-        joint_names=joints,
-        use_world_space=True,
-        max_influences=4
-    )
-    
-    if not success:
-        print("从Maya导入数据失败！")
-        return
-    
-    # 4. 计算蒙皮权重
-    print("\n4. 计算蒙皮权重...")
-    dem_bones.compute()
-    
-    # 5. 导出权重到Maya
-    print("\n5. 导出权重到Maya...")
-    maya_interface.to_dcc_data(
-        apply_weights=True,
-        create_skin_cluster=True,
-        skin_cluster_name='demBonesSkinCluster'
-    )
-    
-    # 6. 设置RBF插值
-    print("\n6. 设置RBF插值...")
-    # 定义关键姿势
-    key_poses = np.array([
-        [0.0, 0.0],  # 默认姿势
-        [1.0, 0.0],  # X方向极值
-        [0.0, 1.0],  # Y方向极值
-    ])
-    
-    # 定义对应的辅助关节位置
-    key_values = np.array([
-        # 默认姿势的辅助关节位置
-        [[0.5, 0.5, 0.0], [0.5, 0.5, 1.0]],
-        # X方向极值的辅助关节位置
-        [[0.7, 0.5, 0.0], [0.7, 0.5, 1.2]],
-        # Y方向极值的辅助关节位置
-        [[0.5, 0.7, 0.0], [0.5, 0.7, 1.2]],
-    ])
-    
-    # 创建RBF插值器
-    rbf = create_rbf_interpolator(
-        key_poses,
-        key_values.reshape(3, -1),
-        rbf_function='thin_plate_spline'
-    )
-    
-    # 7. 设置Maya驱动关键帧
-    print("\n7. 设置驱动关键帧...")
-    for i, joint in enumerate(rbf_joints):
-        ctrl_name = f"rbfJointCtrl_{i+1}"
-        setup_rbf_driven_keys(ctrl_name, joint, rbf)
-    
-    print("\n演示设置完成！")
-    print("1. 选择rbfJointCtrl_1来控制辅助关节")
-    print("2. 移动控制器查看效果")
-    print("3. 尝试不同的极限位置来测试RBF插值效果")
-
-
-if __name__ == "__main__":
     try:
-        main()
+        # 清理已存在的对象
+        for obj in ['demBonesCube', 'demBonesRoot_1', 'rbfJoint_1', 'rbfJointCtrl_1']:
+            if cmds.objExists(obj):
+                cmds.delete(obj)
+        
+        # 1. 创建测试场景
+        print("\n1. 创建测试场景...")
+        # 创建立方体网格
+        cube = create_cube_mesh()
+        # 创建骨骼链
+        joints = create_joints()
+        # 创建RBF辅助关节和控制器
+        rbf_joints = create_rbf_joints()
+        
+        # 2. 设置DemBones和Maya接口
+        print("\n2. 设置DemBones...")
+        dem_bones = pdb.DemBones()
+        
+        # 创建MayaDCCInterface实例
+        try:
+            maya_interface = MayaDCCInterface(dem_bones)
+        except NameError:
+            print("错误：无法找到MayaDCCInterface类。请确保maya_example.py文件在同一目录下或者在Python路径中。")
+            return
+        
+        # 3. 从Maya导入数据
+        print("\n3. 从Maya导入数据...")
+        success = maya_interface.from_dcc_data(
+            mesh_name=cube,
+            joint_names=joints,
+            use_world_space=True,
+            max_influences=4
+        )
+        
+        if not success:
+            print("从Maya导入数据失败！")
+            return
+        
+        # 4. 计算蒙皮权重
+        print("\n4. 计算蒙皮权重...")
+        dem_bones.compute()
+        
+        # 5. 导出权重到Maya
+        print("\n5. 导出权重到Maya...")
+        maya_interface.to_dcc_data(
+            apply_weights=True,
+            create_skin_cluster=True,
+            skin_cluster_name='demBonesSkinCluster'
+        )
+        
+        # 6. 设置RBF插值
+        print("\n6. 设置RBF插值...")
+        # 定义关键姿势
+        key_poses = np.array([
+            [0.0, 0.0],  # 默认姿势
+            [1.0, 0.0],  # X方向极值
+            [0.0, 1.0],  # Y方向极值
+        ])
+        
+        # 定义对应的辅助关节位置
+        key_values = np.array([
+            # 默认姿势的辅助关节位置
+            [[0.5, 0.5, 0.0], [0.5, 0.5, 1.0]],
+            # X方向极值的辅助关节位置
+            [[0.7, 0.5, 0.0], [0.7, 0.5, 1.2]],
+            # Y方向极值的辅助关节位置
+            [[0.5, 0.7, 0.0], [0.5, 0.7, 1.2]],
+        ])
+        
+        # 创建RBF插值器
+        try:
+            rbf = create_rbf_interpolator(
+                key_poses,
+                key_values.reshape(3, -1),
+                rbf_function='thin_plate_spline'
+            )
+        except Exception as e:
+            print(f"创建RBF插值器失败：{e}")
+            return
+        
+        # 7. 设置Maya驱动关键帧
+        print("\n7. 设置驱动关键帧...")
+        for i, joint in enumerate(rbf_joints):
+            ctrl_name = f"rbfJointCtrl_{i+1}"
+            setup_rbf_driven_keys(ctrl_name, joint, rbf)
+        
+        print("\n演示设置完成！")
+        print("1. 选择rbfJointCtrl_1来控制辅助关节")
+        print("2. 移动控制器查看效果")
+        print("3. 尝试不同的极限位置来测试RBF插值效果")
     except Exception as e:
         print(f"错误：{e}")
         import traceback
         traceback.print_exc()
+
+
+if __name__ == "__main__":
+    main()
