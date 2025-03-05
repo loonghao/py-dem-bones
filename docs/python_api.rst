@@ -1,10 +1,10 @@
 Python API Reference
 ===================
 
-This page provides detailed documentation for the Python API of the py-dem-bones package.
+This page provides detailed documentation for the Python API of the py-dem-bones package. For a high-level overview of the API, see the :doc:`API Reference <api>` page.
 
 Core Classes
------------
+-------------
 
 .. autoclass:: py_dem_bones.DemBones
    :members:
@@ -19,7 +19,7 @@ Core Classes
    :special-members: __init__
 
 Wrapper Classes
---------------
+----------------
 
 .. autoclass:: py_dem_bones.DemBonesWrapper
    :members:
@@ -34,7 +34,7 @@ Wrapper Classes
    :special-members: __init__
 
 Exception Classes
----------------
+-----------------
 
 .. autoclass:: py_dem_bones.DemBonesError
    :members:
@@ -77,14 +77,14 @@ Exception Classes
    :show-inheritance:
 
 Utility Functions
----------------
+-----------------
 
 .. autofunction:: py_dem_bones.numpy_to_eigen
 
 .. autofunction:: py_dem_bones.eigen_to_numpy
 
 Interfaces
----------
+----------
 
 .. autoclass:: py_dem_bones.DCCInterface
    :members:

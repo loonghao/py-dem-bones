@@ -258,6 +258,7 @@ jobs:
         run: |
           # Create a root index.html that redirects to the PR preview directory
           mkdir -p gh-pages-root
+          mkdir -p gh-pages-root/pr-preview/${{ github.event.pull_request.number }}
           cp -r docs/_build/html/* gh-pages-root/pr-preview/${{ github.event.pull_request.number }}/
           
           # Create index.html in the root that lists all PR previews

@@ -17,22 +17,33 @@ Features
 * Efficient conversion between NumPy arrays and Eigen matrices
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   :caption: User Guide
 
    installation
    usage
-   api
    examples
+
+.. toctree::
+   :maxdepth: 1
+   :caption: API Reference
+
+   api
+   python_api
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Development
+
    contributing
    ci_cd
    changelog
 
 Quick Start
-----------
+-----------
 
 Installation
-^^^^^^^^^^^
+^^^^^^^^^^^^
 
 .. code-block:: bash
 

@@ -27,7 +27,7 @@ class DCCInterface(abc.ABC):
 
     __abstractmethods__: typing.ClassVar[
         frozenset
-    ]  # value = frozenset({'to_dcc_data', 'convert_matrices', 'from_dcc_data'})
+    ]  # value = frozenset({'convert_matrices', 'to_dcc_data', 'from_dcc_data'})
     _abc_impl: typing.ClassVar[_abc._abc_data]  # value = <_abc._abc_data object>
     def apply_coordinate_system_transform(self, data, from_dcc=True):
         """
