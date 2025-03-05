@@ -19,10 +19,16 @@ jobs:
       
       - name: Create bump and changelog
         id: cz
-        uses: commitizen-tools/commitizen-action@master
+        uses: commitizen-tools/commitizen-action@3.12.0
         with:
           github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           branch: main
+          version_files: |
+            pyproject.toml:version
+            src/py_dem_bones/__version__.py
+            docs/conf.py:release
+            docs/conf.py:version
+            .github/CITATION.cff:version
       
       - name: Print Version
         run: echo "Bumped to version ${{ steps.cz.outputs.version }}"
