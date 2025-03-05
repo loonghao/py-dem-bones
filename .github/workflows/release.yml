@@ -179,7 +179,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: py-dem-bones-wheels-${{ runner.os }}
+          name: wheels-${{ runner.os }}-${{ runner.arch }}-${{ github.run_id }}
           path: ./wheelhouse/*.whl
           retention-days: 7
 
@@ -210,7 +210,7 @@ jobs:
       - name: Upload sdist
         uses: actions/upload-artifact@v4
         with:
-          name: py-dem-bones-sdist
+          name: sdist-${{ github.run_id }}
           path: dist/*.tar.gz
           retention-days: 7
 
@@ -310,18 +310,41 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          path: dist
+          path: dist/wheels
           pattern: wheels-*
           merge-multiple: true
       
       - name: Download source distribution
         uses: actions/download-artifact@v4
         with:
-          name: sdist
-          path: dist
+          name: sdist-${{ github.run_id }}
+          path: dist/sdist
       
-      - name: Display structure of downloaded files
-        run: ls -R dist/
+      # Move files to correct location with proper names
+      - name: Organize files for PyPI
+        run: |
+          # Move wheel files to dist root
+          find dist/wheels -name "*.whl" -type f -exec mv {} dist/ \;
+          
+          # Move sdist files to dist root
+          find dist/sdist -name "*.tar.gz" -type f -exec mv {} dist/ \;
+          
+          # Remove empty directories
+          rm -rf dist/wheels dist/sdist
+          
+          # Display final structure
+          echo "Files ready for PyPI upload:"
+          ls -la dist/
+          
+          # Verify wheel naming convention
+          echo "\nChecking wheel file naming convention:"
+          for wheel in dist/*.whl; do
+            if [[ ! "$wheel" =~ ^dist/py_dem_bones-[0-9]+\.[0-9]+\.[0-9]+.*\.whl$ ]]; then
+              echo "WARNING: Wheel filename may not follow PEP 427 naming convention: $wheel"
+            else
+              echo "OK: $wheel"
+            fi
+          done
       
       # Publish to PyPI using trusted publishing
       - name: Publish to PyPI
