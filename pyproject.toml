@@ -106,7 +106,7 @@ build-verbosity = 3
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.4.0"
+version = "0.4.1"
 tag-format = "$version"
 version-files = [
     "pyproject.toml:version",
