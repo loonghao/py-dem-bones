@@ -19,3 +19,4 @@ Integration Examples
 Advanced Examples
 ---------------
 * `blendshapes_example.py` - Converting blendshapes to linear blend skinning
+* `rbf_demo.py` - Integrating RBF interpolation with DemBones for advanced animation workflows

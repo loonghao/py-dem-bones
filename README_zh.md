@@ -79,21 +79,6 @@ git submodule update --init --recursive
 pip install -e .
 ```
 
-## 依赖项
-
-本项目使用 Git 子模块管理 C++ 依赖项：
-
-- [Dem Bones](https://github.com/electronicarts/dem-bones) - 用于蒙皮分解的核心 C++ 库
-- [Eigen](https://gitlab.com/libeigen/eigen) - C++ 线性代数模板库
-
-克隆仓库时，请确保初始化子模块：
-
-```bash
-git clone https://github.com/loonghao/py-dem-bones.git
-cd py-dem-bones
-git submodule update --init --recursive
-```
-
 ## 快速开始
 
 ```python
@@ -198,19 +183,17 @@ pip install -e ".[dev,docs]"
 
 这将安装开发工具，如 pytest、black 和文档工具。
 
-## 文档
+### CI/CD 工作流
 
-详细文档请访问 [文档网站](https://py-dem-bones.readthedocs.io/)。
+本项目使用 GitHub Actions 进行持续集成和部署。主要工作流包括：
 
-## 许可证
+1. **构建和测试**：在多个平台和 Python 版本上构建和测试包
+2. **文档**：构建项目文档并发布到 GitHub Pages
+3. **发布**：将构建好的 wheel 文件发布到 PyPI
 
-本项目采用 BSD 3-Clause 许可证 - 详见 [LICENSE](LICENSE) 文件。
+当创建新的版本标签（例如 `0.2.1`）时，发布工作流会自动触发，构建 wheel 文件并将其发布到 PyPI。
 
-本项目包含多个开源许可证下的组件。有关所有使用的第三方许可证的详细信息，请参阅 [3RDPARTYLICENSES.md](3RDPARTYLICENSES.md)。
-
-## 致谢
-
-本项目基于 Electronic Arts 的 [Dem Bones](https://github.com/electronicarts/dem-bones) 库。
+关于 CI/CD 工作流的更多信息，请查看 [.github/workflows/release.yml](.github/workflows/release.yml) 文件。
 
 ### 构建 wheel 包
 
@@ -245,4 +228,78 @@ python tools/wheels/build_windows_wheel.py
 
 更多关于 wheel 构建的信息，请查看 [tools/wheels/README_zh.md](tools/wheels/README_zh.md)。
 
-## 依赖
+## 文档
+
+详细文档请访问 [文档网站](https://loonghao.github.io/py-dem-bones)。
+
+## 许可证
+
+本项目采用 BSD 3-Clause 许可证 - 详见 [LICENSE](LICENSE) 文件。
+
+本项目包含多个开源许可证下的组件。有关所有使用的第三方许可证的详细信息，请参阅 [3RDPARTYLICENSES.md](3RDPARTYLICENSES.md)。
+
+## 致谢
+
+本项目基于 Electronic Arts 的 [Dem Bones](https://github.com/electronicarts/dem-bones) 库。
+
+## RBF 与 SciPy 集成
+
+Py-dem-bones 可以与 SciPy 的径向基函数 (RBF) 功能集成，以增强蒙皮分解和动画工作流程。这种集成实现了类似于 Chad Vernon 为 Maya 开发的 RBF 节点的功能，但具有使用 Python 科学计算堆栈的优势。
+
+### 为什么使用 RBF？
+
+径向基函数为高维空间中的插值提供了强大的方法，使其非常适合：
+
+- 创建由控制参数驱动的辅助关节
+- 在不同姿势之间进行插值
+- 通过额外的控制增强蒙皮结果
+
+### SciPy 实现与自定义 RBF 对比
+
+虽然自定义 RBF 实现（如 Chad Vernon 的实现）提供了很好的控制，但 SciPy 提供：
+
+- 生产就绪的优化实现
+- 多种 RBF 核函数选项（薄板样条、多二次、高斯等）
+- 与更广泛的科学 Python 生态系统集成
+- 来自科学计算社区的定期维护和更新
+
+### 使用示例
+
+我们在 `examples/rbf_demo.py` 中提供了一个示例，展示：
+
+1. 使用 DemBones 计算蒙皮权重和变换
+2. 使用 SciPy 的 `RBFInterpolator` 类设置 RBF 插值器
+3. 创建由控制参数驱动的辅助关节
+4. 可视化结果
+
+### 参考资料
+
+- [SciPy RBFInterpolator 文档](https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.RBFInterpolator.html)
+- [Dem Bones 论文](https://github.com/electronicarts/dem-bones)
+- [Chad Vernon 的 RBF 实现](https://github.com/chadmv/cmt/blob/master/src/rbfNode.cpp)
+- [蒙皮分解文档](https://www.ea.com/seed/news/skinning-decomposition)
+
+## 依赖项
+
+本项目使用 Git 子模块管理 C++ 依赖项：
+
+- [Dem Bones](https://github.com/electronicarts/dem-bones) - 用于蒙皮分解的核心 C++ 库
+- [Eigen](https://gitlab.com/libeigen/eigen) - C++ 线性代数模板库
+
+克隆仓库时，请确保初始化子模块：
+
+```bash
+git clone https://github.com/loonghao/py-dem-bones.git
+cd py-dem-bones
+git submodule update --init --recursive
+```
+
+## 文档
+
+详细文档请访问 [文档网站](https://loonghao.github.io/py-dem-bones)。
+
+## 许可证
+
+本项目采用 BSD 3-Clause 许可证 - 详见 [LICENSE](LICENSE) 文件。
+
+本项目包含多个开源许可证下的组件。有关所有使用的第三方许可证的详细信息，请参阅 [3RDPARTYLICENSES.md](3RDPARTYLICENSES.md)。

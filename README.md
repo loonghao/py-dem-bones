@@ -221,6 +221,43 @@ except pdb.DemBonesError as e:
     print(f"Error: {e}")
 ```
 
+## RBF Integration with SciPy
+
+Py-dem-bones can be integrated with the Radial Basis Function (RBF) functionality from SciPy to enhance skinning decomposition and animation workflows. This integration enables similar capabilities to Chad Vernon's RBF node implementation for Maya, but with the advantage of using Python's scientific computing stack.
+
+### Why Use RBF?
+
+Radial Basis Functions provide a powerful method for interpolation in high-dimensional spaces, making them ideal for:
+
+- Creating helper joints driven by control parameters
+- Interpolating between different poses
+- Enhancing skinning results with additional control
+
+### SciPy Implementation vs. Custom RBF
+
+While custom RBF implementations (like Chad Vernon's) provide great control, SciPy offers:
+
+- Production-ready, optimized implementations
+- Multiple RBF kernel options (thin plate spline, multiquadric, gaussian, etc.)
+- Integration with the broader scientific Python ecosystem
+- Regular maintenance and updates from the scientific community
+
+### Example Usage
+
+We've provided an example in `examples/rbf_demo.py` that demonstrates:
+
+1. Using DemBones to compute skinning weights and transformations
+2. Setting up an RBF interpolator using SciPy's `RBFInterpolator` class
+3. Creating helper joints that are driven by control parameters
+4. Visualizing the results
+
+### References
+
+- [SciPy RBFInterpolator Documentation](https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.RBFInterpolator.html)
+- [Dem Bones Paper](https://github.com/electronicarts/dem-bones)
+- [Chad Vernon's RBF Implementation](https://github.com/chadmv/cmt/blob/master/src/rbfNode.cpp)
+- [Skinning Decomposition Documentation](https://www.ea.com/seed/news/skinning-decomposition)
+
 ## Development
 
 For development, you can install additional dependencies:
@@ -245,7 +282,7 @@ For more information about the CI/CD workflow, please check the [.github/workflo
 
 ## Documentation
 
-For detailed documentation, please visit [the documentation site](https://py-dem-bones.readthedocs.io/).
+Detailed documentation can be found at [Documentation Site](https://loonghao.github.io/py-dem-bones).
 
 ## License
 
