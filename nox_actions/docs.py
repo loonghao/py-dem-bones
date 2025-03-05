@@ -115,7 +115,7 @@ def docs(session: nox.Session) -> None:
     doc_deps = [
         "sphinx>=7.0.0,<9.0.0",
         "sphinx-autobuild>=2021.3.14",
-        "sphinx_rtd_theme>=1.3.0",
+        "furo",
         "myst-parser",
         "sphinxcontrib-googleanalytics",
         "pillow>=10.0.0",
@@ -199,7 +199,7 @@ def docs_serve(session: nox.Session) -> None:
     doc_deps = [
         "sphinx>=7.0.0,<9.0.0",
         "sphinx-autobuild>=2021.3.14",
-        "sphinx_rtd_theme>=1.3.0",
+        "furo",
         "myst-parser",
         "sphinxcontrib-googleanalytics",
         "pillow>=10.0.0",
