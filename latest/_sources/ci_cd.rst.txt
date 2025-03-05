@@ -4,7 +4,7 @@ CI/CD Pipeline
 This project uses GitHub Actions for continuous integration and deployment. The CI/CD pipeline is designed to be efficient and reliable, with optimizations for faster builds and reduced resource consumption.
 
 Workflow Overview
----------------
+-----------------
 
 The CI/CD pipeline consists of several workflows:
 
@@ -14,33 +14,33 @@ The CI/CD pipeline consists of several workflows:
 - **Reusable Jobs** (``reusable-jobs.yml``): Contains reusable job definitions for build, test, lint, docs, and release tasks.
 
 Optimization Strategies
----------------------
+-----------------------
 
 The CI/CD pipeline implements several optimization strategies:
 
 Reduced Build Matrix
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
 - Main testing focuses on the latest stable Python version (3.11) across all platforms
 - Other Python versions are primarily tested on Linux to reduce unnecessary cross-platform testing
 - Fast mode option allows running only critical test combinations during manual triggers
 
 Caching Mechanism
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 - Pip dependencies are cached using ``pyproject.toml`` as the cache key
 - Eigen library is cached to avoid repeated downloads and installations
 - Utilizes the built-in caching functionality of ``actions/setup-python``
 
 Optimized Checkout Process
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Reduced git checkout depth (``fetch-depth: 1``) for faster checkout
 - Optimized submodule initialization process
 - SSH URLs are replaced with HTTPS URLs for better compatibility with GitHub Actions
 
 Smart Step Skipping
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
 - Conditional checks to avoid reinstalling already cached Eigen library
 - Fast mode option in release workflow to skip unnecessary builds during development testing
@@ -51,10 +51,10 @@ Concurrency Control
 - Concurrency groups and cancellation of in-progress tasks to avoid duplicate runs and resource waste
 
 Troubleshooting Common Issues
---------------------------
+------------------------------
 
 Git Submodules Initialization Failure
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Symptom**: "Eigen not found" error during build
 
@@ -78,14 +78,14 @@ Command Execution Issues
 **Symptom**: ``uvx: command not found`` errors
 
 **Solution**:
-- Use ``python -m`` commands instead of tool-specific commands:
-  - Build: ``python -m build`` instead of ``uvx nox -s build``
-  - Test: ``python -m pytest`` instead of ``uvx nox -s pytest``
-  - Lint: ``python -m ruff/black/isort`` instead of ``uvx nox -s lint``
-  - Docs: ``python -m sphinx`` instead of ``uvx nox -s docs``
+  - Use ``python -m`` commands instead of tool-specific commands:
+    - Build: ``python -m build`` instead of ``uvx nox -s build``
+    - Test: ``python -m pytest`` instead of ``uvx nox -s pytest``
+    - Lint: ``python -m ruff/black/isort`` instead of ``uvx nox -s lint``
+    - Docs: ``python -m sphinx`` instead of ``uvx nox -s docs``
 
 Dependency Installation Problems
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Symptom**: Complex dependency installation fails
 
@@ -95,7 +95,7 @@ Dependency Installation Problems
 - Remove dependencies on specific tools like ``uv``
 
 Platform-Specific Issues
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Symptom**: Build fails on specific platforms
 
@@ -105,7 +105,7 @@ Platform-Specific Issues
 - Ensure proper environment setup for each platform
 
 Best Practices
-------------
+---------------
 
 1. **Always use caching** for dependencies and build artifacts
 2. **Minimize build matrix** to focus on critical configurations
