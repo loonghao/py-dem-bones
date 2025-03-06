@@ -46,7 +46,6 @@ def lint_fix(session: nox.Session) -> None:
 
     # Fix linting issues
     session.run("ruff", "check", "--fix", "src", "nox_actions", "noxfile.py")
-    session.run("isort", "--skip", "extern", "src", "nox_actions", "noxfile.py")
     session.run("black", "src", "nox_actions", "noxfile.py")
     session.run(
         "autoflake",
@@ -59,3 +58,4 @@ def lint_fix(session: nox.Session) -> None:
         "nox_actions",
         "noxfile.py",
     )
+    session.run("isort", "--skip", "extern", "src", "nox_actions", "noxfile.py")

@@ -15,6 +15,7 @@ Features
 * Cross-platform support (Windows, macOS, Linux)
 * Pre-built wheels for common platforms
 * Efficient conversion between NumPy arrays and Eigen matrices
+* Integration with SciPy's RBF functionality for advanced animation workflows
 
 .. toctree::
    :maxdepth: 1
@@ -23,6 +24,7 @@ Features
    installation
    usage
    examples
+   rbf_features
 
 .. toctree::
    :maxdepth: 1
@@ -30,6 +32,7 @@ Features
 
    api
    python_api
+   rbf_api
 
 .. toctree::
    :maxdepth: 1
