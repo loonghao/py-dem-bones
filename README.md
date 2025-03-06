@@ -4,6 +4,8 @@
 
 # py-dem-bones
 
+[English](README.md) | [中文](README_zh.md)
+
 Python bindings for the [Dem Bones](https://github.com/electronicarts/dem-bones) library - an automated algorithm to extract the linear blend skinning (LBS) from a set of example poses.
 
 [![PyPI version](https://badge.fury.io/py/py-dem-bones.svg)](https://badge.fury.io/py/py-dem-bones)
@@ -12,10 +14,15 @@ Python bindings for the [Dem Bones](https://github.com/electronicarts/dem-bones)
 [![Python Version](https://img.shields.io/pypi/pyversions/py-dem-bones.svg)](https://pypi.org/project/py-dem-bones/)
 [![License](https://img.shields.io/github/license/loonghao/py-dem-bones.svg)](https://github.com/loonghao/py-dem-bones/blob/master/LICENSE)
 [![Downloads](https://static.pepy.tech/badge/py-dem-bones)](https://pepy.tech/project/py-dem-bones)
+[![Downloads Month](https://static.pepy.tech/badge/py-dem-bones/month)](https://pepy.tech/project/py-dem-bones)
+[![Downloads Week](https://static.pepy.tech/badge/py-dem-bones/week)](https://pepy.tech/project/py-dem-bones)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Ruff](https://img.shields.io/badge/ruff-enabled-brightgreen)](https://github.com/astral-sh/ruff)
+[![Nox](https://img.shields.io/badge/%F0%9F%A6%8A-Nox-D85E00.svg)](https://github.com/wntrblm/nox)
 [![Wheel](https://img.shields.io/pypi/wheel/py-dem-bones.svg)](https://pypi.org/project/py-dem-bones/)
-[![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)](https://py-dem-bones.readthedocs.io/en/latest/installation.html)
+[![PyPI Format](https://img.shields.io/pypi/format/py-dem-bones)](https://pypi.org/project/py-dem-bones/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/loonghao/py-dem-bones/graphs/commit-activity)
+[![Platforms](https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux-lightgrey)](https://pypi.org/project/py-dem-bones/)
 
 ## Features
 
