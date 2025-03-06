@@ -39,7 +39,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "numpy>=1.20.0,<1.22.0; python_version < '3.8'",
+    "numpy>=1.26.4,<1.27.0; python_version < '3.8'",
     "numpy>=1.20.0; python_version >= '3.8'",
 ]
 
