@@ -96,58 +96,24 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-eigen-
       
-      # Install system dependencies
-      - name: Install system dependencies (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake ninja-build gcc g++
-        shell: bash
-      
-      - name: Install system dependencies (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          brew install cmake ninja
-        shell: bash
-      
-      - name: Cache Homebrew packages
-        if: runner.os == 'macOS'
-        uses: actions/cache@v4
-        with:
-          path: ~/Library/Caches/Homebrew
-          key: ${{ runner.os }}-brew-${{ hashFiles('.github/workflows/release.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-brew-
-      
-      - name: Install system dependencies (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          choco install cmake ninja -y
-        shell: bash
-      
       # Build wheels using cibuildwheel action
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.16.2
-        # 为 Windows 构建的参数设置
+        uses: pypa/cibuildwheel@v2.23.0
         with:
           output-dir: wheelhouse
-          config-file: ""
-          only: "${{ runner.os == 'Windows' && 'cp*-win*' || '' }}"
         env:
+          CIBW_BUILD: "cp37-* cp38-* cp39-* cp310-* cp311-* cp312-*"
+          CIBW_SKIP: "pp* *-musllinux* *-win32 *-manylinux_i686"
+          CIBW_BEFORE_BUILD: "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core cmake"
           CIBW_BUILD_VERBOSITY: 3
-          CIBW_ENVIRONMENT_PASS_LINUX: "SKBUILD_BUILD_VERBOSE FORCE_BDIST_WHEEL_PLAT CFLAGS CXXFLAGS SETUPTOOLS_USE_DISTUTILS PIP_CONSTRAINT"
-          CIBW_ENVIRONMENT_PASS_MACOS: "MACOSX_DEPLOYMENT_TARGET SKBUILD_BUILD_VERBOSE FORCE_BDIST_WHEEL_PLAT CFLAGS CXXFLAGS SETUPTOOLS_USE_DISTUTILS PIP_CONSTRAINT SYSTEM_VERSION_COMPAT"
-          CIBW_ENVIRONMENT_PASS_WINDOWS: "CMAKE_GENERATOR SKBUILD_BUILD_VERBOSE FORCE_BDIST_WHEEL_PLAT CFLAGS CXXFLAGS SETUPTOOLS_USE_DISTUTILS PIP_CONSTRAINT"
-          CIBW_TEST_REQUIRES: "pytest>=6.0.0 pytest-cov>=2.12.0"
-          CIBW_TEST_COMMAND: "python -m pytest {project}/tests/test_basic.py -v || echo 'Basic tests failed but continuing'"
-          CIBW_BUILD: "cp*-*"
-          CIBW_ENVIRONMENT_LINUX: "CFLAGS='-fPIC' CXXFLAGS='-fPIC'"
-          # 修改 Linux 依赖安装方式，使用更可靠的镜像源
-          CIBW_BEFORE_ALL_LINUX: |
-            sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
-            sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
-            yum install -y cmake ninja-build gcc-c++ libxml2-devel zlib-devel
-          CIBW_BEFORE_BUILD: "git submodule update --init --recursive && pip install pytest>=6.0.0 pytest-cov>=2.12.0"
+          CIBW_ENVIRONMENT: "PYTHONIOENCODING=UTF-8 PIP_NO_BUILD_ISOLATION=1"
+          CIBW_ENVIRONMENT_PASS_LINUX: "LANG LC_ALL"
+          CIBW_ENVIRONMENT_LINUX: "LANG=C.UTF-8 LC_ALL=C.UTF-8 PYTHONIOENCODING=UTF-8 CMAKE_PREFIX_PATH=/opt/python/{package.platname}"
+          CIBW_ENVIRONMENT_WINDOWS: "CMAKE_GENERATOR=Ninja CMAKE_POSITION_INDEPENDENT_CODE=ON"
+          CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair -w {dest_dir} {wheel}"
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
+          CIBW_BEFORE_ALL_WINDOWS: "choco install -y ninja && dir \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\" || dir \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\" || dir \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\" || dir \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\""
+          CIBW_ENVIRONMENT_MACOS: "MAKEFLAGS=-j4 FORCE_PYTHON_VERSION={python_version}"
       
       # Upload wheels
       - uses: actions/upload-artifact@v4
@@ -323,13 +289,13 @@ jobs:
       
       - name: Build SDist
         run: |
-          python -m pip install build
+          python -m pip install build numpy pybind11 scikit-build-core cmake
           python -m build --sdist
       
       - name: Test SDist
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest pytest-cov
+          python -m pip install pytest pytest-cov numpy
           python -m pip install dist/*.tar.gz
           python -c "import py_dem_bones; print(py_dem_bones.__version__)"
           python -m pytest tests/test_basic.py -v || echo "Basic tests failed but continuing"
