@@ -102,7 +102,7 @@ CMAKE_POSITION_INDEPENDENT_CODE = "ON"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.5.0"
+version = "0.5.1"
 tag-format = "$version"
 version-files = [
     "pyproject.toml:version",
