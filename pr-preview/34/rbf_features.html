@@ -343,12 +343,12 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="ch">#!/usr/bin/env python</span>
 <span class="linenos">  2</span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="linenos">  3</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="linenos">  4</span><span class="sd">RBF与DemBones结合的演示</span>
+<span class="linenos">  4</span><span class="sd">RBF Integration with DemBones Demo</span>
 <span class="linenos">  5</span>
-<span class="linenos">  6</span><span class="sd">这个例子展示了如何结合DemBones和SciPy的RBF功能，类似于Chad Vernon的实现。</span>
-<span class="linenos">  7</span><span class="sd">我们将使用DemBones计算骨骼权重和变换，然后使用RBF插值器驱动辅助关节。</span>
+<span class="linenos">  6</span><span class="sd">This example demonstrates how to combine DemBones with SciPy&#39;s RBF functionality, similar to Chad Vernon&#39;s implementation.</span>
+<span class="linenos">  7</span><span class="sd">We will use DemBones to calculate bone weights and transformations, then use RBF interpolators to drive auxiliary joints.</span>
 <span class="linenos">  8</span>
-<span class="linenos">  9</span><span class="sd">要运行此示例，您需要安装以下依赖项：</span>
+<span class="linenos">  9</span><span class="sd">To run this example, you need to install the following dependencies:</span>
 <span class="linenos"> 10</span><span class="sd">    pip install py-dem-bones numpy matplotlib scipy</span>
 <span class="linenos"> 11</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos"> 12</span>
@@ -361,9 +361,9 @@
 <span class="linenos"> 19</span>
 <span class="linenos"> 20</span><span class="k">def</span><span class="w"> </span><span class="nf">create_simple_mesh</span><span class="p">():</span>
 <span class="linenos"> 21</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="linenos"> 22</span><span class="sd">    创建一个简单的测试网格（立方体）</span>
+<span class="linenos"> 22</span><span class="sd">    Create a simple test mesh (cube)</span>
 <span class="linenos"> 23</span><span class="sd">    &quot;&quot;&quot;</span>
-<span class="linenos"> 24</span>    <span class="c1"># 创建一个立方体的顶点</span>
+<span class="linenos"> 24</span>    <span class="c1"># Create cube vertices</span>
 <span class="linenos"> 25</span>    <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
 <span class="linenos"> 26</span>        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c1"># 0</span>
 <span class="linenos"> 27</span>        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c1"># 1</span>
@@ -380,46 +380,46 @@
 <span class="linenos"> 38</span>
 <span class="linenos"> 39</span><span class="k">def</span><span class="w"> </span><span class="nf">create_deformed_mesh</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">deformation_amount</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
 <span class="linenos"> 40</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="linenos"> 41</span><span class="sd">    创建变形后的网格</span>
+<span class="linenos"> 41</span><span class="sd">    Create a deformed mesh</span>
 <span class="linenos"> 42</span><span class="sd">    &quot;&quot;&quot;</span>
-<span class="linenos"> 43</span>    <span class="c1"># 对立方体上半部分顶点进行变形</span>
+<span class="linenos"> 43</span>    <span class="c1"># Deform the upper part of the cube</span>
 <span class="linenos"> 44</span>    <span class="n">deformed</span> <span class="o">=</span> <span class="n">vertices</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="linenos"> 45</span>    <span class="c1"># 变形上半部分(顶点4-7)</span>
-<span class="linenos"> 46</span>    <span class="n">deformed</span><span class="p">[</span><span class="mi">4</span><span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">deformation_amount</span>  <span class="c1"># 沿X轴偏移</span>
-<span class="linenos"> 47</span>    <span class="n">deformed</span><span class="p">[</span><span class="mi">4</span><span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">deformation_amount</span>  <span class="c1"># 沿Z轴偏移</span>
+<span class="linenos"> 45</span>    <span class="c1"># Deform the upper part (vertices 4-7)</span>
+<span class="linenos"> 46</span>    <span class="n">deformed</span><span class="p">[</span><span class="mi">4</span><span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">deformation_amount</span>  <span class="c1"># Offset along X axis</span>
+<span class="linenos"> 47</span>    <span class="n">deformed</span><span class="p">[</span><span class="mi">4</span><span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">deformation_amount</span>  <span class="c1"># Offset along Z axis</span>
 <span class="linenos"> 48</span>    
 <span class="linenos"> 49</span>    <span class="k">return</span> <span class="n">deformed</span>
 <span class="linenos"> 50</span>
 <span class="linenos"> 51</span>
 <span class="linenos"> 52</span><span class="k">def</span><span class="w"> </span><span class="nf">compute_dem_bones</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">,</span> <span class="n">deformed_pose</span><span class="p">,</span> <span class="n">num_bones</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
 <span class="linenos"> 53</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="linenos"> 54</span><span class="sd">    使用DemBones计算蒙皮权重和骨骼变换</span>
+<span class="linenos"> 54</span><span class="sd">    Use DemBones to calculate skinning weights and bone transformations</span>
 <span class="linenos"> 55</span><span class="sd">    &quot;&quot;&quot;</span>
-<span class="linenos"> 56</span>    <span class="c1"># 创建DemBones实例</span>
+<span class="linenos"> 56</span>    <span class="c1"># Create DemBones instance</span>
 <span class="linenos"> 57</span>    <span class="n">dem_bones</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">DemBones</span><span class="p">()</span>
 <span class="linenos"> 58</span>    
-<span class="linenos"> 59</span>    <span class="c1"># 设置参数</span>
+<span class="linenos"> 59</span>    <span class="c1"># Set parameters</span>
 <span class="linenos"> 60</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nIters</span> <span class="o">=</span> <span class="mi">30</span>
 <span class="linenos"> 61</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nInitIters</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="linenos"> 62</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nTransIters</span> <span class="o">=</span> <span class="mi">5</span>
 <span class="linenos"> 63</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nWeightsIters</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="linenos"> 64</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nnz</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># 每个顶点的非零权重数</span>
+<span class="linenos"> 64</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nnz</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># Number of non-zero weights per vertex</span>
 <span class="linenos"> 65</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">weightsSmooth</span> <span class="o">=</span> <span class="mf">1e-4</span>
 <span class="linenos"> 66</span>    
-<span class="linenos"> 67</span>    <span class="c1"># 设置数据</span>
-<span class="linenos"> 68</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nV</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">)</span>  <span class="c1"># 顶点数</span>
-<span class="linenos"> 69</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nB</span> <span class="o">=</span> <span class="n">num_bones</span>  <span class="c1"># 骨骼数</span>
-<span class="linenos"> 70</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nF</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># 帧数</span>
-<span class="linenos"> 71</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nS</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># 主体数</span>
-<span class="linenos"> 72</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">fStart</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>  <span class="c1"># 每个主体的帧起始索引</span>
-<span class="linenos"> 73</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">subjectID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>  <span class="c1"># 每帧的主体ID</span>
-<span class="linenos"> 74</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">rest_pose</span>  <span class="c1"># 静止姿态</span>
-<span class="linenos"> 75</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">deformed_pose</span>  <span class="c1"># 变形姿态</span>
+<span class="linenos"> 67</span>    <span class="c1"># Set data</span>
+<span class="linenos"> 68</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nV</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">)</span>  <span class="c1"># Number of vertices</span>
+<span class="linenos"> 69</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nB</span> <span class="o">=</span> <span class="n">num_bones</span>  <span class="c1"># Number of bones</span>
+<span class="linenos"> 70</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nF</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Number of frames</span>
+<span class="linenos"> 71</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nS</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Number of subjects</span>
+<span class="linenos"> 72</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">fStart</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>  <span class="c1"># Starting frame index for each subject</span>
+<span class="linenos"> 73</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">subjectID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>  <span class="c1"># Subject ID for each frame</span>
+<span class="linenos"> 74</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">rest_pose</span>  <span class="c1"># Rest pose</span>
+<span class="linenos"> 75</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">deformed_pose</span>  <span class="c1"># Deformed pose</span>
 <span class="linenos"> 76</span>    
-<span class="linenos"> 77</span>    <span class="c1"># 计算蒙皮分解</span>
+<span class="linenos"> 77</span>    <span class="c1"># Compute skinning decomposition</span>
 <span class="linenos"> 78</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
 <span class="linenos"> 79</span>    
-<span class="linenos"> 80</span>    <span class="c1"># 获取结果</span>
+<span class="linenos"> 80</span>    <span class="c1"># Get results</span>
 <span class="linenos"> 81</span>    <span class="n">weights</span> <span class="o">=</span> <span class="n">dem_bones</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
 <span class="linenos"> 82</span>    <span class="n">transformations</span> <span class="o">=</span> <span class="n">dem_bones</span><span class="o">.</span><span class="n">get_transformations</span><span class="p">()</span>
 <span class="linenos"> 83</span>    
@@ -428,64 +428,64 @@
 <span class="linenos"> 86</span>
 <span class="linenos"> 87</span><span class="k">def</span><span class="w"> </span><span class="nf">create_rbf_interpolator</span><span class="p">(</span><span class="n">key_poses</span><span class="p">,</span> <span class="n">key_values</span><span class="p">,</span> <span class="n">rbf_function</span><span class="o">=</span><span class="s1">&#39;thin_plate_spline&#39;</span><span class="p">):</span>
 <span class="linenos"> 88</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="linenos"> 89</span><span class="sd">    创建RBF插值器，类似于Chad Vernon的RBF节点</span>
+<span class="linenos"> 89</span><span class="sd">    Create RBF interpolator, similar to Chad Vernon&#39;s RBF nodes</span>
 <span class="linenos"> 90</span><span class="sd">    </span>
-<span class="linenos"> 91</span><span class="sd">    参数：</span>
-<span class="linenos"> 92</span><span class="sd">        key_poses: 关键姿势的输入值 (n_samples, n_features)</span>
-<span class="linenos"> 93</span><span class="sd">        key_values: 每个关键姿势对应的输出值 (n_samples, m)</span>
-<span class="linenos"> 94</span><span class="sd">        rbf_function: RBF函数类型，可选值包括：</span>
-<span class="linenos"> 95</span><span class="sd">            - &#39;thin_plate_spline&#39;: 薄板样条(默认)</span>
-<span class="linenos"> 96</span><span class="sd">            - &#39;multiquadric&#39;: 多二次曲面</span>
-<span class="linenos"> 97</span><span class="sd">            - &#39;inverse_multiquadric&#39;: 反多二次曲面</span>
-<span class="linenos"> 98</span><span class="sd">            - &#39;gaussian&#39;: 高斯函数</span>
-<span class="linenos"> 99</span><span class="sd">            - &#39;linear&#39;: 线性函数</span>
-<span class="linenos">100</span><span class="sd">            - &#39;cubic&#39;: 三次函数</span>
-<span class="linenos">101</span><span class="sd">            - &#39;quintic&#39;: 五次函数</span>
+<span class="linenos"> 91</span><span class="sd">    Parameters:</span>
+<span class="linenos"> 92</span><span class="sd">        key_poses: Input values for key poses (n_samples, n_features)</span>
+<span class="linenos"> 93</span><span class="sd">        key_values: Output values for each key pose (n_samples, m)</span>
+<span class="linenos"> 94</span><span class="sd">        rbf_function: RBF function type, options include:</span>
+<span class="linenos"> 95</span><span class="sd">            - &#39;thin_plate_spline&#39;: Thin plate spline (default)</span>
+<span class="linenos"> 96</span><span class="sd">            - &#39;multiquadric&#39;: Multiquadric</span>
+<span class="linenos"> 97</span><span class="sd">            - &#39;inverse_multiquadric&#39;: Inverse multiquadric</span>
+<span class="linenos"> 98</span><span class="sd">            - &#39;gaussian&#39;: Gaussian function</span>
+<span class="linenos"> 99</span><span class="sd">            - &#39;linear&#39;: Linear function</span>
+<span class="linenos">100</span><span class="sd">            - &#39;cubic&#39;: Cubic function</span>
+<span class="linenos">101</span><span class="sd">            - &#39;quintic&#39;: Quintic function</span>
 <span class="linenos">102</span><span class="sd">    </span>
-<span class="linenos">103</span><span class="sd">    返回：</span>
-<span class="linenos">104</span><span class="sd">        RBF插值器</span>
+<span class="linenos">103</span><span class="sd">    Returns:</span>
+<span class="linenos">104</span><span class="sd">        RBF interpolator</span>
 <span class="linenos">105</span><span class="sd">    &quot;&quot;&quot;</span>
-<span class="linenos">106</span>    <span class="c1"># 使用SciPy的RBFInterpolator，它是更现代的替代Rbf类</span>
+<span class="linenos">106</span>    <span class="c1"># Use SciPy&#39;s RBFInterpolator, which is a more modern alternative to the Rbf class</span>
 <span class="linenos">107</span>    <span class="k">return</span> <span class="n">RBFInterpolator</span><span class="p">(</span>
 <span class="linenos">108</span>        <span class="n">key_poses</span><span class="p">,</span> 
 <span class="linenos">109</span>        <span class="n">key_values</span><span class="p">,</span>
 <span class="linenos">110</span>        <span class="n">kernel</span><span class="o">=</span><span class="n">rbf_function</span><span class="p">,</span>
-<span class="linenos">111</span>        <span class="n">smoothing</span><span class="o">=</span><span class="mf">0.0</span>  <span class="c1"># 无平滑，精确插值</span>
+<span class="linenos">111</span>        <span class="n">smoothing</span><span class="o">=</span><span class="mf">0.0</span>  <span class="c1"># No smoothing, exact interpolation</span>
 <span class="linenos">112</span>    <span class="p">)</span>
 <span class="linenos">113</span>
 <span class="linenos">114</span>
 <span class="linenos">115</span><span class="k">def</span><span class="w"> </span><span class="nf">visualize_results</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">,</span> <span class="n">deformed_pose</span><span class="p">,</span> <span class="n">dem_bones_weights</span><span class="p">,</span> <span class="n">helper_joint_positions</span><span class="p">):</span>
 <span class="linenos">116</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="linenos">117</span><span class="sd">    可视化结果</span>
+<span class="linenos">117</span><span class="sd">    Visualize results</span>
 <span class="linenos">118</span><span class="sd">    </span>
-<span class="linenos">119</span><span class="sd">    参数：</span>
-<span class="linenos">120</span><span class="sd">        rest_pose: 静止姿态的顶点位置</span>
-<span class="linenos">121</span><span class="sd">        deformed_pose: 变形姿态的顶点位置</span>
-<span class="linenos">122</span><span class="sd">        dem_bones_weights: DemBones计算的骨骼权重</span>
-<span class="linenos">123</span><span class="sd">        helper_joint_positions: RBF插值器计算的辅助关节位置</span>
+<span class="linenos">119</span><span class="sd">    Parameters:</span>
+<span class="linenos">120</span><span class="sd">        rest_pose: Vertex positions in rest pose</span>
+<span class="linenos">121</span><span class="sd">        deformed_pose: Vertex positions in deformed pose</span>
+<span class="linenos">122</span><span class="sd">        dem_bones_weights: Bone weights calculated by DemBones</span>
+<span class="linenos">123</span><span class="sd">        helper_joint_positions: Auxiliary joint positions calculated by RBF interpolator</span>
 <span class="linenos">124</span><span class="sd">    &quot;&quot;&quot;</span>
 <span class="linenos">125</span>    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="linenos">126</span>    
-<span class="linenos">127</span>    <span class="c1"># 第一个子图：原始网格</span>
+<span class="linenos">127</span>    <span class="c1"># First subplot: Original mesh</span>
 <span class="linenos">128</span>    <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">131</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
 <span class="linenos">129</span>    <span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">rest_pose</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rest_pose</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<span class="linenos">130</span>    <span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;原始网格&#39;</span><span class="p">)</span>
+<span class="linenos">130</span>    <span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Original Mesh&#39;</span><span class="p">)</span>
 <span class="linenos">131</span>    <span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
 <span class="linenos">132</span>    <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span>
 <span class="linenos">133</span>    <span class="n">ax1</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">)</span>
 <span class="linenos">134</span>    
-<span class="linenos">135</span>    <span class="c1"># 第二个子图：变形网格</span>
+<span class="linenos">135</span>    <span class="c1"># Second subplot: Deformed mesh</span>
 <span class="linenos">136</span>    <span class="n">ax2</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">132</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
 <span class="linenos">137</span>    <span class="n">ax2</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">deformed_pose</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">deformed_pose</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">deformed_pose</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<span class="linenos">138</span>    <span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;变形网格&#39;</span><span class="p">)</span>
+<span class="linenos">138</span>    <span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Deformed Mesh&#39;</span><span class="p">)</span>
 <span class="linenos">139</span>    <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
 <span class="linenos">140</span>    <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span>
 <span class="linenos">141</span>    <span class="n">ax2</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">)</span>
 <span class="linenos">142</span>    
-<span class="linenos">143</span>    <span class="c1"># 第三个子图：权重和辅助关节</span>
+<span class="linenos">143</span>    <span class="c1"># Third subplot: Weights and auxiliary joints</span>
 <span class="linenos">144</span>    <span class="n">ax3</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">133</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
-<span class="linenos">145</span>    <span class="c1"># 使用权重值作为颜色</span>
-<span class="linenos">146</span>    <span class="n">colors</span> <span class="o">=</span> <span class="n">dem_bones_weights</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># 使用第一根骨骼的权重作为颜色</span>
+<span class="linenos">145</span>    <span class="c1"># Use weight values as colors</span>
+<span class="linenos">146</span>    <span class="n">colors</span> <span class="o">=</span> <span class="n">dem_bones_weights</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Use weights of the first bone as colors</span>
 <span class="linenos">147</span>    <span class="n">scatter</span> <span class="o">=</span> <span class="n">ax3</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
 <span class="linenos">148</span>        <span class="n">deformed_pose</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> 
 <span class="linenos">149</span>        <span class="n">deformed_pose</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> 
@@ -494,7 +494,7 @@
 <span class="linenos">152</span>        <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> 
 <span class="linenos">153</span>        <span class="n">s</span><span class="o">=</span><span class="mi">100</span>
 <span class="linenos">154</span>    <span class="p">)</span>
-<span class="linenos">155</span>    <span class="c1"># 添加辅助关节位置</span>
+<span class="linenos">155</span>    <span class="c1"># Add auxiliary joint positions</span>
 <span class="linenos">156</span>    <span class="n">ax3</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
 <span class="linenos">157</span>        <span class="n">helper_joint_positions</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="linenos">158</span>        <span class="n">helper_joint_positions</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
@@ -503,80 +503,80 @@
 <span class="linenos">161</span>        <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
 <span class="linenos">162</span>        <span class="n">s</span><span class="o">=</span><span class="mi">200</span>
 <span class="linenos">163</span>    <span class="p">)</span>
-<span class="linenos">164</span>    <span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;骨骼权重和辅助关节&#39;</span><span class="p">)</span>
+<span class="linenos">164</span>    <span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Bone Weights and Auxiliary Joints&#39;</span><span class="p">)</span>
 <span class="linenos">165</span>    <span class="n">ax3</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
 <span class="linenos">166</span>    <span class="n">ax3</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span>
 <span class="linenos">167</span>    <span class="n">ax3</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">)</span>
-<span class="linenos">168</span>    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">scatter</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;骨骼权重&#39;</span><span class="p">)</span>
+<span class="linenos">168</span>    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">scatter</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Bone Weights&#39;</span><span class="p">)</span>
 <span class="linenos">169</span>    
 <span class="linenos">170</span>    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="linenos">171</span>    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <span class="linenos">172</span>
 <span class="linenos">173</span>
 <span class="linenos">174</span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<span class="linenos">175</span>    <span class="c1"># 创建测试数据</span>
+<span class="linenos">175</span>    <span class="c1"># Create test data</span>
 <span class="linenos">176</span>    <span class="n">rest_pose</span> <span class="o">=</span> <span class="n">create_simple_mesh</span><span class="p">()</span>
 <span class="linenos">177</span>    <span class="n">deformed_pose</span> <span class="o">=</span> <span class="n">create_deformed_mesh</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">)</span>
 <span class="linenos">178</span>    
-<span class="linenos">179</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. 计算DemBones权重和变换...&quot;</span><span class="p">)</span>
+<span class="linenos">179</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Computing DemBones weights and transformations...&quot;</span><span class="p">)</span>
 <span class="linenos">180</span>    <span class="n">weights</span><span class="p">,</span> <span class="n">transformations</span> <span class="o">=</span> <span class="n">compute_dem_bones</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">,</span> <span class="n">deformed_pose</span><span class="p">)</span>
 <span class="linenos">181</span>    
-<span class="linenos">182</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;骨骼权重:&quot;</span><span class="p">)</span>
+<span class="linenos">182</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Bone weights:&quot;</span><span class="p">)</span>
 <span class="linenos">183</span>    <span class="nb">print</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
-<span class="linenos">184</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">骨骼变换:&quot;</span><span class="p">)</span>
+<span class="linenos">184</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Bone transformations:&quot;</span><span class="p">)</span>
 <span class="linenos">185</span>    <span class="nb">print</span><span class="p">(</span><span class="n">transformations</span><span class="p">)</span>
 <span class="linenos">186</span>    
-<span class="linenos">187</span>    <span class="c1"># 创建RBF插值数据</span>
-<span class="linenos">188</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">2. 创建RBF插值器...&quot;</span><span class="p">)</span>
+<span class="linenos">187</span>    <span class="c1"># Create RBF interpolation data</span>
+<span class="linenos">188</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">2. Creating RBF interpolator...&quot;</span><span class="p">)</span>
 <span class="linenos">189</span>    
-<span class="linenos">190</span>    <span class="c1"># 定义输入关键姿势</span>
-<span class="linenos">191</span>    <span class="c1"># 在实际情况下，这些可能是控制器的位置或其他控制值</span>
+<span class="linenos">190</span>    <span class="c1"># Define input key poses</span>
+<span class="linenos">191</span>    <span class="c1"># In a real scenario, these might be controller positions or other control values</span>
 <span class="linenos">192</span>    <span class="n">key_poses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-<span class="linenos">193</span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># 默认姿势</span>
-<span class="linenos">194</span>        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># X方向极值</span>
-<span class="linenos">195</span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>  <span class="c1"># Y方向极值</span>
+<span class="linenos">193</span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># Default pose</span>
+<span class="linenos">194</span>        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># X-direction extreme</span>
+<span class="linenos">195</span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>  <span class="c1"># Y-direction extreme</span>
 <span class="linenos">196</span>    <span class="p">])</span>
 <span class="linenos">197</span>    
-<span class="linenos">198</span>    <span class="c1"># 定义输出值 - 辅助关节位置</span>
-<span class="linenos">199</span>    <span class="c1"># 这些是对应每个关键姿势的辅助关节的位置</span>
+<span class="linenos">198</span>    <span class="c1"># Define output values - auxiliary joint positions</span>
+<span class="linenos">199</span>    <span class="c1"># These are the positions of auxiliary joints corresponding to each key pose</span>
 <span class="linenos">200</span>    <span class="n">key_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-<span class="linenos">201</span>        <span class="c1"># 默认姿势的辅助关节位置</span>
+<span class="linenos">201</span>        <span class="c1"># Auxiliary joint positions for default pose</span>
 <span class="linenos">202</span>        <span class="p">[[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]],</span>
-<span class="linenos">203</span>        <span class="c1"># X方向极值的辅助关节位置</span>
+<span class="linenos">203</span>        <span class="c1"># Auxiliary joint positions for X-direction extreme</span>
 <span class="linenos">204</span>        <span class="p">[[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">]],</span>
-<span class="linenos">205</span>        <span class="c1"># Y方向极值的辅助关节位置</span>
+<span class="linenos">205</span>        <span class="c1"># Auxiliary joint positions for Y-direction extreme</span>
 <span class="linenos">206</span>        <span class="p">[[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">]],</span>
 <span class="linenos">207</span>    <span class="p">])</span>
 <span class="linenos">208</span>    
-<span class="linenos">209</span>    <span class="c1"># 创建RBF插值器</span>
+<span class="linenos">209</span>    <span class="c1"># Create RBF interpolator</span>
 <span class="linenos">210</span>    <span class="n">rbf</span> <span class="o">=</span> <span class="n">create_rbf_interpolator</span><span class="p">(</span><span class="n">key_poses</span><span class="p">,</span> <span class="n">key_values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">rbf_function</span><span class="o">=</span><span class="s1">&#39;thin_plate_spline&#39;</span><span class="p">)</span>
 <span class="linenos">211</span>    
-<span class="linenos">212</span>    <span class="c1"># 测试RBF插值</span>
-<span class="linenos">213</span>    <span class="n">test_pose</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>  <span class="c1"># 测试姿势</span>
-<span class="linenos">214</span>    <span class="n">interpolated</span> <span class="o">=</span> <span class="n">rbf</span><span class="p">(</span><span class="n">test_pose</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># 获取插值结果</span>
+<span class="linenos">212</span>    <span class="c1"># Test RBF interpolation</span>
+<span class="linenos">213</span>    <span class="n">test_pose</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>  <span class="c1"># Test pose</span>
+<span class="linenos">214</span>    <span class="n">interpolated</span> <span class="o">=</span> <span class="n">rbf</span><span class="p">(</span><span class="n">test_pose</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># Get interpolation result</span>
 <span class="linenos">215</span>    
-<span class="linenos">216</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;输入测试姿势:&quot;</span><span class="p">,</span> <span class="n">test_pose</span><span class="p">)</span>
-<span class="linenos">217</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;插值辅助关节位置:&quot;</span><span class="p">)</span>
+<span class="linenos">216</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input test pose:&quot;</span><span class="p">,</span> <span class="n">test_pose</span><span class="p">)</span>
+<span class="linenos">217</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Interpolated auxiliary joint positions:&quot;</span><span class="p">)</span>
 <span class="linenos">218</span>    <span class="nb">print</span><span class="p">(</span><span class="n">interpolated</span><span class="p">)</span>
 <span class="linenos">219</span>    
-<span class="linenos">220</span>    <span class="c1"># 可视化结果</span>
+<span class="linenos">220</span>    <span class="c1"># Visualize results</span>
 <span class="linenos">221</span>    <span class="n">visualize_results</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">,</span> <span class="n">deformed_pose</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">interpolated</span><span class="p">)</span>
 <span class="linenos">222</span>    
-<span class="linenos">223</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">3. 测试不同姿势的RBF插值:&quot;</span><span class="p">)</span>
-<span class="linenos">224</span>    <span class="c1"># 测试不同姿势的RBF插值</span>
+<span class="linenos">223</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">3. Testing RBF interpolation for different poses:&quot;</span><span class="p">)</span>
+<span class="linenos">224</span>    <span class="c1"># Test RBF interpolation for different poses</span>
 <span class="linenos">225</span>    <span class="n">test_poses</span> <span class="o">=</span> <span class="p">[</span>
-<span class="linenos">226</span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># 默认姿势</span>
-<span class="linenos">227</span>        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># X方向极值</span>
-<span class="linenos">228</span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>  <span class="c1"># Y方向极值</span>
-<span class="linenos">229</span>        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>  <span class="c1"># 中间姿势</span>
-<span class="linenos">230</span>        <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">],</span>  <span class="c1"># 其他姿势</span>
+<span class="linenos">226</span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># Default pose</span>
+<span class="linenos">227</span>        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># X-direction extreme</span>
+<span class="linenos">228</span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>  <span class="c1"># Y-direction extreme</span>
+<span class="linenos">229</span>        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>  <span class="c1"># Middle pose</span>
+<span class="linenos">230</span>        <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">],</span>  <span class="c1"># Other pose</span>
 <span class="linenos">231</span>    <span class="p">]</span>
 <span class="linenos">232</span>    
 <span class="linenos">233</span>    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pose</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">test_poses</span><span class="p">):</span>
 <span class="linenos">234</span>        <span class="n">test_pose</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">pose</span><span class="p">])</span>
 <span class="linenos">235</span>        <span class="n">result</span> <span class="o">=</span> <span class="n">rbf</span><span class="p">(</span><span class="n">test_pose</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="linenos">236</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">测试姿势 </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">pose</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="linenos">237</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;插值辅助关节位置:&quot;</span><span class="p">)</span>  
+<span class="linenos">236</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Test pose </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">pose</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">237</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Interpolated auxiliary joint positions:&quot;</span><span class="p">)</span>
 <span class="linenos">238</span>        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 <span class="linenos">239</span>
 <span class="linenos">240</span>
