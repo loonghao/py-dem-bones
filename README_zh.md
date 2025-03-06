@@ -7,9 +7,15 @@
 [Dem Bones](https://github.com/electronicarts/dem-bones) 库的 Python 绑定 - 一种从示例姿势集合中提取线性混合蒙皮 (LBS) 的自动算法。
 
 [![PyPI version](https://badge.fury.io/py/py-dem-bones.svg)](https://badge.fury.io/py/py-dem-bones)
-[![Build Status](https://github.com/loonghao/py-dem-bones/workflows/Python%20package/badge.svg)](https://github.com/loonghao/py-dem-bones/actions)
+[![Build Status](https://github.com/loonghao/py-dem-bones/workflows/Build%20and%20Release/badge.svg)](https://github.com/loonghao/py-dem-bones/actions)
+[![Documentation Status](https://readthedocs.org/projects/py-dem-bones/badge/?version=latest)](https://py-dem-bones.readthedocs.io/en/latest/?badge=latest)
 [![Python Version](https://img.shields.io/pypi/pyversions/py-dem-bones.svg)](https://pypi.org/project/py-dem-bones/)
 [![License](https://img.shields.io/github/license/loonghao/py-dem-bones.svg)](https://github.com/loonghao/py-dem-bones/blob/master/LICENSE)
+[![Downloads](https://static.pepy.tech/badge/py-dem-bones)](https://pepy.tech/project/py-dem-bones)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Ruff](https://img.shields.io/badge/ruff-enabled-brightgreen)](https://github.com/astral-sh/ruff)
+[![Wheel](https://img.shields.io/pypi/wheel/py-dem-bones.svg)](https://pypi.org/project/py-dem-bones/)
+[![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)](https://py-dem-bones.readthedocs.io/en/latest/installation.html)
 
 ## 特性
 
