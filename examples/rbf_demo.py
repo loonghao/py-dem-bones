@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-RBF与DemBones结合的演示
+RBF Integration with DemBones Demo
 
-这个例子展示了如何结合DemBones和SciPy的RBF功能，类似于Chad Vernon的实现。
-我们将使用DemBones计算骨骼权重和变换，然后使用RBF插值器驱动辅助关节。
+This example demonstrates how to combine DemBones with SciPy's RBF functionality, similar to Chad Vernon's implementation.
+We will use DemBones to calculate bone weights and transformations, then use RBF interpolators to drive auxiliary joints.
 
-要运行此示例，您需要安装以下依赖项：
+To run this example, you need to install the following dependencies:
     pip install py-dem-bones numpy matplotlib scipy
 """
 
@@ -19,9 +19,9 @@ import py_dem_bones as pdb
 
 def create_simple_mesh():
     """
-    创建一个简单的测试网格（立方体）
+    Create a simple test mesh (cube)
     """
-    # 创建一个立方体的顶点
+    # Create cube vertices
     vertices = np.array([
         [0, 0, 0],  # 0
         [1, 0, 0],  # 1
@@ -38,46 +38,46 @@ def create_simple_mesh():
 
 def create_deformed_mesh(vertices, deformation_amount=0.3):
     """
-    创建变形后的网格
+    Create a deformed mesh
     """
-    # 对立方体上半部分顶点进行变形
+    # Deform the upper part of the cube
     deformed = vertices.copy()
-    # 变形上半部分(顶点4-7)
-    deformed[4:, 0] += deformation_amount  # 沿X轴偏移
-    deformed[4:, 2] += deformation_amount  # 沿Z轴偏移
+    # Deform the upper part (vertices 4-7)
+    deformed[4:, 0] += deformation_amount  # Offset along X axis
+    deformed[4:, 2] += deformation_amount  # Offset along Z axis
     
     return deformed
 
 
 def compute_dem_bones(rest_pose, deformed_pose, num_bones=2):
     """
-    使用DemBones计算蒙皮权重和骨骼变换
+    Use DemBones to calculate skinning weights and bone transformations
     """
-    # 创建DemBones实例
+    # Create DemBones instance
     dem_bones = pdb.DemBones()
     
-    # 设置参数
+    # Set parameters
     dem_bones.nIters = 30
     dem_bones.nInitIters = 10
     dem_bones.nTransIters = 5
     dem_bones.nWeightsIters = 3
-    dem_bones.nnz = 4  # 每个顶点的非零权重数
+    dem_bones.nnz = 4  # Number of non-zero weights per vertex
     dem_bones.weightsSmooth = 1e-4
     
-    # 设置数据
-    dem_bones.nV = len(rest_pose)  # 顶点数
-    dem_bones.nB = num_bones  # 骨骼数
-    dem_bones.nF = 1  # 帧数
-    dem_bones.nS = 1  # 主体数
-    dem_bones.fStart = np.array([0], dtype=np.int32)  # 每个主体的帧起始索引
-    dem_bones.subjectID = np.zeros(1, dtype=np.int32)  # 每帧的主体ID
-    dem_bones.u = rest_pose  # 静止姿态
-    dem_bones.v = deformed_pose  # 变形姿态
+    # Set data
+    dem_bones.nV = len(rest_pose)  # Number of vertices
+    dem_bones.nB = num_bones  # Number of bones
+    dem_bones.nF = 1  # Number of frames
+    dem_bones.nS = 1  # Number of subjects
+    dem_bones.fStart = np.array([0], dtype=np.int32)  # Starting frame index for each subject
+    dem_bones.subjectID = np.zeros(1, dtype=np.int32)  # Subject ID for each frame
+    dem_bones.u = rest_pose  # Rest pose
+    dem_bones.v = deformed_pose  # Deformed pose
     
-    # 计算蒙皮分解
+    # Compute skinning decomposition
     dem_bones.compute()
     
-    # 获取结果
+    # Get results
     weights = dem_bones.get_weights()
     transformations = dem_bones.get_transformations()
     
@@ -86,64 +86,64 @@ def compute_dem_bones(rest_pose, deformed_pose, num_bones=2):
 
 def create_rbf_interpolator(key_poses, key_values, rbf_function='thin_plate_spline'):
     """
-    创建RBF插值器，类似于Chad Vernon的RBF节点
+    Create RBF interpolator, similar to Chad Vernon's RBF nodes
     
-    参数：
-        key_poses: 关键姿势的输入值 (n_samples, n_features)
-        key_values: 每个关键姿势对应的输出值 (n_samples, m)
-        rbf_function: RBF函数类型，可选值包括：
-            - 'thin_plate_spline': 薄板样条(默认)
-            - 'multiquadric': 多二次曲面
-            - 'inverse_multiquadric': 反多二次曲面
-            - 'gaussian': 高斯函数
-            - 'linear': 线性函数
-            - 'cubic': 三次函数
-            - 'quintic': 五次函数
+    Parameters:
+        key_poses: Input values for key poses (n_samples, n_features)
+        key_values: Output values for each key pose (n_samples, m)
+        rbf_function: RBF function type, options include:
+            - 'thin_plate_spline': Thin plate spline (default)
+            - 'multiquadric': Multiquadric
+            - 'inverse_multiquadric': Inverse multiquadric
+            - 'gaussian': Gaussian function
+            - 'linear': Linear function
+            - 'cubic': Cubic function
+            - 'quintic': Quintic function
     
-    返回：
-        RBF插值器
+    Returns:
+        RBF interpolator
     """
-    # 使用SciPy的RBFInterpolator，它是更现代的替代Rbf类
+    # Use SciPy's RBFInterpolator, which is a more modern alternative to the Rbf class
     return RBFInterpolator(
         key_poses, 
         key_values,
         kernel=rbf_function,
-        smoothing=0.0  # 无平滑，精确插值
+        smoothing=0.0  # No smoothing, exact interpolation
     )
 
 
 def visualize_results(rest_pose, deformed_pose, dem_bones_weights, helper_joint_positions):
     """
-    可视化结果
+    Visualize results
     
-    参数：
-        rest_pose: 静止姿态的顶点位置
-        deformed_pose: 变形姿态的顶点位置
-        dem_bones_weights: DemBones计算的骨骼权重
-        helper_joint_positions: RBF插值器计算的辅助关节位置
+    Parameters:
+        rest_pose: Vertex positions in rest pose
+        deformed_pose: Vertex positions in deformed pose
+        dem_bones_weights: Bone weights calculated by DemBones
+        helper_joint_positions: Auxiliary joint positions calculated by RBF interpolator
     """
     fig = plt.figure(figsize=(18, 6))
     
-    # 第一个子图：原始网格
+    # First subplot: Original mesh
     ax1 = fig.add_subplot(131, projection='3d')
     ax1.scatter(rest_pose[:, 0], rest_pose[:, 1], rest_pose[:, 2], c='blue', s=100)
-    ax1.set_title('原始网格')
+    ax1.set_title('Original Mesh')
     ax1.set_xlabel('X')
     ax1.set_ylabel('Y')
     ax1.set_zlabel('Z')
     
-    # 第二个子图：变形网格
+    # Second subplot: Deformed mesh
     ax2 = fig.add_subplot(132, projection='3d')
     ax2.scatter(deformed_pose[:, 0], deformed_pose[:, 1], deformed_pose[:, 2], c='red', s=100)
-    ax2.set_title('变形网格')
+    ax2.set_title('Deformed Mesh')
     ax2.set_xlabel('X')
     ax2.set_ylabel('Y')
     ax2.set_zlabel('Z')
     
-    # 第三个子图：权重和辅助关节
+    # Third subplot: Weights and auxiliary joints
     ax3 = fig.add_subplot(133, projection='3d')
-    # 使用权重值作为颜色
-    colors = dem_bones_weights[:, 0]  # 使用第一根骨骼的权重作为颜色
+    # Use weight values as colors
+    colors = dem_bones_weights[:, 0]  # Use weights of the first bone as colors
     scatter = ax3.scatter(
         deformed_pose[:, 0], 
         deformed_pose[:, 1], 
@@ -152,7 +152,7 @@ def visualize_results(rest_pose, deformed_pose, dem_bones_weights, helper_joint_
         cmap='viridis', 
         s=100
     )
-    # 添加辅助关节位置
+    # Add auxiliary joint positions
     ax3.scatter(
         helper_joint_positions[:, 0],
         helper_joint_positions[:, 1],
@@ -161,80 +161,80 @@ def visualize_results(rest_pose, deformed_pose, dem_bones_weights, helper_joint_
         marker='x',
         s=200
     )
-    ax3.set_title('骨骼权重和辅助关节')
+    ax3.set_title('Bone Weights and Auxiliary Joints')
     ax3.set_xlabel('X')
     ax3.set_ylabel('Y')
     ax3.set_zlabel('Z')
-    plt.colorbar(scatter, ax=ax3, label='骨骼权重')
+    plt.colorbar(scatter, ax=ax3, label='Bone Weights')
     
     plt.tight_layout()
     plt.show()
 
 
 def main():
-    # 创建测试数据
+    # Create test data
     rest_pose = create_simple_mesh()
     deformed_pose = create_deformed_mesh(rest_pose)
     
-    print("1. 计算DemBones权重和变换...")
+    print("1. Computing DemBones weights and transformations...")
     weights, transformations = compute_dem_bones(rest_pose, deformed_pose)
     
-    print("骨骼权重:")
+    print("Bone weights:")
     print(weights)
-    print("\n骨骼变换:")
+    print("\nBone transformations:")
     print(transformations)
     
-    # 创建RBF插值数据
-    print("\n2. 创建RBF插值器...")
+    # Create RBF interpolation data
+    print("\n2. Creating RBF interpolator...")
     
-    # 定义输入关键姿势
-    # 在实际情况下，这些可能是控制器的位置或其他控制值
+    # Define input key poses
+    # In a real scenario, these might be controller positions or other control values
     key_poses = np.array([
-        [0.0, 0.0],  # 默认姿势
-        [1.0, 0.0],  # X方向极值
-        [0.0, 1.0],  # Y方向极值
+        [0.0, 0.0],  # Default pose
+        [1.0, 0.0],  # X-direction extreme
+        [0.0, 1.0],  # Y-direction extreme
     ])
     
-    # 定义输出值 - 辅助关节位置
-    # 这些是对应每个关键姿势的辅助关节的位置
+    # Define output values - auxiliary joint positions
+    # These are the positions of auxiliary joints corresponding to each key pose
     key_values = np.array([
-        # 默认姿势的辅助关节位置
+        # Auxiliary joint positions for default pose
         [[0.5, 0.5, 0.0], [0.5, 0.5, 1.0]],
-        # X方向极值的辅助关节位置
+        # Auxiliary joint positions for X-direction extreme
         [[0.7, 0.5, 0.0], [0.7, 0.5, 1.2]],
-        # Y方向极值的辅助关节位置
+        # Auxiliary joint positions for Y-direction extreme
         [[0.5, 0.7, 0.0], [0.5, 0.7, 1.2]],
     ])
     
-    # 创建RBF插值器
+    # Create RBF interpolator
     rbf = create_rbf_interpolator(key_poses, key_values.reshape(3, -1), rbf_function='thin_plate_spline')
     
-    # 测试RBF插值
-    test_pose = np.array([[0.5, 0.5]])  # 测试姿势
-    interpolated = rbf(test_pose).reshape(-1, 3)  # 获取插值结果
+    # Test RBF interpolation
+    test_pose = np.array([[0.5, 0.5]])  # Test pose
+    interpolated = rbf(test_pose).reshape(-1, 3)  # Get interpolation result
     
-    print("输入测试姿势:", test_pose)
-    print("插值辅助关节位置:")
+    print("Input test pose:", test_pose)
+    print("Interpolated auxiliary joint positions:")
     print(interpolated)
     
-    # 可视化结果
+    # Visualize results
     visualize_results(rest_pose, deformed_pose, weights, interpolated)
     
-    print("\n3. 测试不同姿势的RBF插值:")
-    # 测试不同姿势的RBF插值
+    print("\n3. Testing RBF interpolation for different poses:")
+    # Test RBF interpolation for different poses
     test_poses = [
-        [0.0, 0.0],  # 默认姿势
-        [1.0, 0.0],  # X方向极值
-        [0.0, 1.0],  # Y方向极值
-        [0.5, 0.5],  # 中间姿势
-        [0.25, 0.75],  # 其他姿势
+        [0.0, 0.0],  # Default pose
+        [1.0, 0.0],  # X-direction extreme
+        [0.0, 1.0],  # Y-direction extreme
+        [0.5, 0.5],  # Middle pose
+        [0.25, 0.75],  # Other pose
     ]
     
     for i, pose in enumerate(test_poses):
         test_pose = np.array([pose])
         result = rbf(test_pose).reshape(-1, 3)
-        print(f"\n测试姿势 {i+1}: {pose}")
-        print(f"插值辅助关节位置:")  
+        print(f"\nTest pose {i+1}: {pose}")
+        print(f"Interpolated auxiliary joint positions:")
         print(result)
 
 

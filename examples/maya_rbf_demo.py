@@ -1,18 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-RBF与DemBones在Maya中的集成演示
+Integration Demo of RBF with DemBones in Maya
 
-这个例子展示了如何在Maya中结合DemBones和SciPy的RBF功能，实现类似于Chad Vernon的RBF节点功能。
-我们将使用DemBones计算骨骼权重和变换，然后使用RBF插值器驱动辅助关节。
+This example demonstrates how to combine DemBones with SciPy's RBF functionality in Maya,
+implementing functionality similar to Chad Vernon's RBF nodes.
+We will use DemBones to calculate bone weights and transformations, then use RBF interpolators
+to drive auxiliary joints.
 
-要运行此示例，您需要：
-1. 在Maya的Python环境中安装以下依赖项：
+To run this example, you need:
+1. Install the following dependencies in Maya's Python environment:
     pip install py-dem-bones numpy scipy
 
-2. 确保maya_example.py文件在同一目录下或者在Python路径中
+2. Ensure that the maya_example.py file is in the same directory or in the Python path
 
-3. 将此脚本复制到Maya的脚本编辑器中运行，或通过Maya的Python命令行执行：
+3. Copy this script to Maya's script editor to run, or execute via Maya's Python command line:
     import maya_rbf_demo
     maya_rbf_demo.main()
 """
@@ -24,15 +26,15 @@ import maya.OpenMaya as om
 import py_dem_bones as pdb
 from py_dem_bones.interfaces import DCCInterface
 
-# 导入MayaDCCInterface类
+# Import MayaDCCInterface class
 from maya_example import MayaDCCInterface
 
 
 def create_cube_mesh(name="demBonesCube", size=2.0):
     """
-    在Maya中创建一个用于测试的立方体网格
+    Create a test cube mesh in Maya
     """
-    # 创建立方体
+    # Create cube
     cube = cmds.polyCube(
         name=name,
         width=size,
@@ -48,12 +50,12 @@ def create_cube_mesh(name="demBonesCube", size=2.0):
 
 def create_joints(root_name="demBonesRoot", joint_positions=None):
     """
-    在Maya中创建测试用的骨骼链
+    Create test joint chain in Maya
     """
     if joint_positions is None:
         joint_positions = [
-            (-1, 0, 0),  # 根关节
-            (1, 0, 0),   # 末端关节
+            (-1, 0, 0),  # Root joint
+            (1, 0, 0),   # End joint
         ]
     
     cmds.select(clear=True)
@@ -72,19 +74,19 @@ def create_joints(root_name="demBonesRoot", joint_positions=None):
 
 def create_rbf_joints(name_prefix="rbfJoint", positions=None):
     """
-    创建RBF控制用的辅助关节
+    Create auxiliary joints for RBF control
     """
     if positions is None:
         positions = [
-            (0.5, 0.5, 0.0),  # 第一个辅助关节
-            (0.5, 0.5, 1.0),  # 第二个辅助关节
+            (0.5, 0.5, 0.0),  # First auxiliary joint
+            (0.5, 0.5, 1.0),  # Second auxiliary joint
         ]
     
     joints = []
     for i, pos in enumerate(positions):
         cmds.select(clear=True)
         joint = cmds.joint(name=f"{name_prefix}_{i+1}", position=pos)
-        # 添加控制器
+        # Add controller
         ctrl = create_control(f"{name_prefix}Ctrl_{i+1}", joint)
         joints.append(joint)
     
@@ -93,15 +95,15 @@ def create_rbf_joints(name_prefix="rbfJoint", positions=None):
 
 def create_control(name, target):
     """
-    为关节创建NURBS控制器
+    Create NURBS controller for joint
     """
-    # 创建NURBS圆环
+    # Create NURBS circle
     ctrl = cmds.circle(name=name, normal=(0, 1, 0), radius=0.3)[0]
-    # 获取目标世界位置
+    # Get target world position
     pos = cmds.xform(target, query=True, worldSpace=True, translation=True)
-    # 移动控制器到目标位置
+    # Move controller to target position
     cmds.xform(ctrl, worldSpace=True, translation=pos)
-    # 父子关系
+    # Parent relationship
     cmds.parentConstraint(ctrl, target, maintainOffset=True)
     
     return ctrl
@@ -109,40 +111,40 @@ def create_control(name, target):
 
 def create_rbf_interpolator(key_poses, key_values, rbf_function='thin_plate_spline'):
     """
-    创建RBF插值器，类似于Chad Vernon的RBF节点
+    Create RBF interpolator, similar to Chad Vernon's RBF nodes
     
-    参数：
-        key_poses: 关键姿势的输入值 (n_samples, n_features)
-        key_values: 每个关键姿势对应的输出值 (n_samples, m)
-        rbf_function: RBF函数类型，可选值包括：
-            - 'thin_plate_spline': 薄板样条(默认)
-            - 'multiquadric': 多二次曲面
-            - 'inverse_multiquadric': 反多二次曲面
-            - 'gaussian': 高斯函数
-            - 'linear': 线性函数
-            - 'cubic': 三次函数
-            - 'quintic': 五次函数
+    Parameters:
+        key_poses: Input values for key poses (n_samples, n_features)
+        key_values: Output values for each key pose (n_samples, m)
+        rbf_function: RBF function type, options include:
+            - 'thin_plate_spline': Thin plate spline (default)
+            - 'multiquadric': Multiquadric
+            - 'inverse_multiquadric': Inverse multiquadric
+            - 'gaussian': Gaussian function
+            - 'linear': Linear function
+            - 'cubic': Cubic function
+            - 'quintic': Quintic function
     """
     return RBFInterpolator(
         key_poses, 
         key_values,
         kernel=rbf_function,
-        smoothing=0.0  # 无平滑，精确插值
+        smoothing=0.0  # No smoothing, exact interpolation
     )
 
 
 def setup_rbf_driven_keys(source_ctrl, target_joint, rbf):
     """
-    设置RBF驱动的关键帧动画
+    Set up RBF-driven keyframe animation
     """
-    # 创建节点来存储RBF权重
+    # Create node to store RBF weights
     weight_node = cmds.createNode('multiplyDivide', name=f"{target_joint}_rbfWeight")
     
-    # 连接控制器属性到权重节点
+    # Connect controller attributes to weight node
     cmds.connectAttr(f"{source_ctrl}.translateX", f"{weight_node}.input1X")
     cmds.connectAttr(f"{source_ctrl}.translateY", f"{weight_node}.input1Y")
     
-    # 设置驱动关键帧
+    # Set driven keyframes
     cmds.setDrivenKeyframe(
         f"{target_joint}.translateX",
         currentDriver=f"{weight_node}.outputX",
@@ -158,35 +160,35 @@ def setup_rbf_driven_keys(source_ctrl, target_joint, rbf):
 
 
 def main():
-    """Maya中的RBF演示主函数"""
+    """Main function for RBF demo in Maya"""
     try:
-        # 清理已存在的对象
+        # Clean up existing objects
         for obj in ['demBonesCube', 'demBonesRoot_1', 'rbfJoint_1', 'rbfJointCtrl_1']:
             if cmds.objExists(obj):
                 cmds.delete(obj)
         
-        # 1. 创建测试场景
-        print("\n1. 创建测试场景...")
-        # 创建立方体网格
+        # 1. Create test scene
+        print("\n1. Creating test scene...")
+        # Create cube mesh
         cube = create_cube_mesh()
-        # 创建骨骼链
+        # Create joint chain
         joints = create_joints()
-        # 创建RBF辅助关节和控制器
+        # Create RBF auxiliary joints and controllers
         rbf_joints = create_rbf_joints()
         
-        # 2. 设置DemBones和Maya接口
-        print("\n2. 设置DemBones...")
+        # 2. Set up DemBones and Maya interface
+        print("\n2. Setting up DemBones...")
         dem_bones = pdb.DemBones()
         
-        # 创建MayaDCCInterface实例
+        # Create MayaDCCInterface instance
         try:
             maya_interface = MayaDCCInterface(dem_bones)
         except NameError:
-            print("错误：无法找到MayaDCCInterface类。请确保maya_example.py文件在同一目录下或者在Python路径中。")
+            print("Error: Cannot find MayaDCCInterface class. Please ensure maya_example.py file is in the same directory or in the Python path.")
             return
         
-        # 3. 从Maya导入数据
-        print("\n3. 从Maya导入数据...")
+        # 3. Import data from Maya
+        print("\n3. Importing data from Maya...")
         success = maya_interface.from_dcc_data(
             mesh_name=cube,
             joint_names=joints,
@@ -195,41 +197,41 @@ def main():
         )
         
         if not success:
-            print("从Maya导入数据失败！")
+            print("Failed to import data from Maya!")
             return
         
-        # 4. 计算蒙皮权重
-        print("\n4. 计算蒙皮权重...")
+        # 4. Calculate skinning weights
+        print("\n4. Calculating skinning weights...")
         dem_bones.compute()
         
-        # 5. 导出权重到Maya
-        print("\n5. 导出权重到Maya...")
+        # 5. Export weights to Maya
+        print("\n5. Exporting weights to Maya...")
         maya_interface.to_dcc_data(
             apply_weights=True,
             create_skin_cluster=True,
             skin_cluster_name='demBonesSkinCluster'
         )
         
-        # 6. 设置RBF插值
-        print("\n6. 设置RBF插值...")
-        # 定义关键姿势
+        # 6. Set up RBF interpolation
+        print("\n6. Setting up RBF interpolation...")
+        # Define key poses
         key_poses = np.array([
-            [0.0, 0.0],  # 默认姿势
-            [1.0, 0.0],  # X方向极值
-            [0.0, 1.0],  # Y方向极值
+            [0.0, 0.0],  # Default pose
+            [1.0, 0.0],  # X-direction extreme
+            [0.0, 1.0],  # Y-direction extreme
         ])
         
-        # 定义对应的辅助关节位置
+        # Define corresponding auxiliary joint positions
         key_values = np.array([
-            # 默认姿势的辅助关节位置
+            # Auxiliary joint positions for default pose
             [[0.5, 0.5, 0.0], [0.5, 0.5, 1.0]],
-            # X方向极值的辅助关节位置
+            # Auxiliary joint positions for X-direction extreme
             [[0.7, 0.5, 0.0], [0.7, 0.5, 1.2]],
-            # Y方向极值的辅助关节位置
+            # Auxiliary joint positions for Y-direction extreme
             [[0.5, 0.7, 0.0], [0.5, 0.7, 1.2]],
         ])
         
-        # 创建RBF插值器
+        # Create RBF interpolator
         try:
             rbf = create_rbf_interpolator(
                 key_poses,
@@ -237,21 +239,21 @@ def main():
                 rbf_function='thin_plate_spline'
             )
         except Exception as e:
-            print(f"创建RBF插值器失败：{e}")
+            print(f"Failed to create RBF interpolator: {e}")
             return
         
-        # 7. 设置Maya驱动关键帧
-        print("\n7. 设置驱动关键帧...")
+        # 7. Set up Maya driven keyframes
+        print("\n7. Setting up driven keyframes...")
         for i, joint in enumerate(rbf_joints):
             ctrl_name = f"rbfJointCtrl_{i+1}"
             setup_rbf_driven_keys(ctrl_name, joint, rbf)
         
-        print("\n演示设置完成！")
-        print("1. 选择rbfJointCtrl_1来控制辅助关节")
-        print("2. 移动控制器查看效果")
-        print("3. 尝试不同的极限位置来测试RBF插值效果")
+        print("\nDemo setup complete!")
+        print("1. Select rbfJointCtrl_1 to control auxiliary joints")
+        print("2. Move the controller to see the effect")
+        print("3. Try different extreme positions to test RBF interpolation effect")
     except Exception as e:
-        print(f"错误：{e}")
+        print(f"Error: {e}")
         import traceback
         traceback.print_exc()
 

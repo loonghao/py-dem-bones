@@ -59,7 +59,6 @@ on:
         default: 'false'
         type: choice
         options: ['true', 'false']
-
 # Permissions needed for this workflow
 permissions:
   contents: write    # For creating releases and pushing to gh-pages
@@ -165,7 +164,7 @@ jobs:
   test-wheels:
     name: Test wheels compatibility
     needs: [build-wheels]
-    if: ${{ github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && github.event.inputs.test-wheels == 'true') }}
+    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.test-wheels == 'true') }}
     strategy:
       fail-fast: false
       matrix:
@@ -247,7 +246,6 @@ jobs:
           # 运行完整的单元测试套件
           echo "Running full test suite..."
           python -m pytest tests/ -v
-        shell: bash
 
   # Fast build for quick checks
   fast-build:
