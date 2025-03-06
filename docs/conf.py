@@ -2,20 +2,20 @@
 import os
 import sys
 
-# 添加项目根目录到Python路径，以便导入模块
+# Add project root directory to Python path for module imports
 sys.path.insert(0, os.path.abspath('.'))
 
-# 设置模板目录
+# Set template directory
 templates_path = ['_templates']
 
-# 设置静态文件目录
+# Set static files directory
 html_static_path = ['_static']
 
-# 导入模拟模块，用于处理示例中的导入
+# Import mock modules for handling imports in examples
 try:
     import py_dem_bones
 except ImportError:
-    # 如果无法导入实际模块，使用模拟模块
+    # If unable to import actual modules, use mock modules
     import sys
     from unittest.mock import MagicMock
 
@@ -54,10 +54,10 @@ copyright = '2024, Long Hao'
 author = 'Long Hao'
 
 # The full version, including alpha/beta/rc tags
-release = '0.4.0'
+release = '0.5.1'
 
-# 主要版本
-version = '0.4.0'
+# Major version
+version = '0.5.1'
 
 # -- General configuration ---------------------------------------------------
 extensions = [
@@ -68,17 +68,17 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
     "myst_parser",
-    "py_dem_bones_sphinxext",  # 添加我们的自定义扩展
+    "py_dem_bones_sphinxext",  # Add our custom extension
 ]
 
-# 如果设置了 Google Analytics ID，则添加 Google Analytics 扩展
+# If Google Analytics ID is set, add Google Analytics extension
 google_analytics_id = os.environ.get("GOOGLE_ANALYTICS_ID")
 if google_analytics_id:
     extensions.append("sphinxcontrib.googleanalytics")
     googleanalytics_id = google_analytics_id
     googleanalytics_enabled = True
 
-# 模拟导入的模块列表，用于避免导入错误
+# List of modules to mock import, to avoid import errors
 autodoc_mock_imports = [
     'numpy', 
     'pandas', 
@@ -90,8 +90,8 @@ autodoc_mock_imports = [
     'skimage',
     'torch',
     'tensorflow',
-    'itk',  # Add 'itk' to the list
-    'vtk',  # Add 'vtk' to the list
+    'itk',
+    'vtk',
 ]
 
 autodoc_typehints = 'none'
@@ -99,7 +99,7 @@ autodoc_import_mock = True
 
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-# 指定 myst 解析器配置
+# Specify myst parser configuration
 source_suffix = {
     '.rst': 'restructuredtext',
     '.md': 'markdown',
@@ -109,9 +109,8 @@ source_suffix = {
 html_theme = "furo"
 
 # Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
+# further. For a list of options available for each theme, see the
 # documentation.
-#
 html_theme_options = {
     "sidebar_hide_name": False,
     "light_css_variables": {
@@ -172,14 +171,15 @@ html_sidebars = {
            "sidebar/navigation.html", "sidebar/scroll-end.html"],
 }
 
-# 添加自定义 CSS 和 JS 文件
+# Add custom CSS and JS files
 html_css_files = ["custom.css"]
 html_js_files = ["custom.js"]
 
-# 设置项目徽标
+# Set project logo
 html_logo = "_static/logo-dark.png"
 html_favicon = "_static/logo-dark.png"
 
+# Autodoc configuration
 autodoc_class_signature = 'separated'
 autodoc_member_order = 'bysource'
 autodoc_inherit_docstrings = True
@@ -205,17 +205,18 @@ napoleon_preprocess_types = False
 napoleon_type_aliases = None
 napoleon_attr_annotations = True
 
-# -- Options for intersphinx extension ---------------------------------------
+# Add intersphinx mapping for linking to external documentation
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'numpy': ('https://numpy.org/doc/stable', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy', None),
 }
 
-# -- Options for autodoc extension ------------------------------------------
-autodoc_member_order = 'bysource'
+# Configure todo extension
+todo_include_todos = True
 
 # -- Options for myst_parser extension --------------------------------------
-# 这些配置会被 myst-nb 使用
+# These configurations will be used by myst-nb
 myst_enable_extensions = [
     "colon_fence",
     "deflist",
@@ -230,16 +231,16 @@ myst_enable_extensions = [
     "tasklist",
 ]
 
-# 避免与 myst-nb 冲突的配置
-myst_update_mathjax = False  # 让 myst-nb 处理数学公式
+# Avoid conflicting configurations with myst-nb
+myst_update_mathjax = False  # Let myst-nb handle math formulas
 myst_heading_anchors = 3
 
-# 添加 stubs 目录到 Python 路径，以便 autodoc 可以找到类型提示文件
+# Add stubs directory to Python path, so autodoc can find type hint files
 stubs_dir = os.path.join(os.path.abspath('..'), 'src', 'py_dem_bones-stubs')
 if os.path.exists(stubs_dir):
     sys.path.insert(0, stubs_dir)
 
-# 尝试导入模块，如果失败则不会影响文档构建
+# Try to import module, if failed, it won't affect documentation building
 try:
     import py_dem_bones
 except ImportError:

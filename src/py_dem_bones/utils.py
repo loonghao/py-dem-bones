@@ -1,6 +1,7 @@
 """
 Utility functions for py_dem_bones.
 """
+# Import third-party modules
 import numpy as np
 
 

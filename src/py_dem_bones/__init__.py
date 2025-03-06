@@ -5,18 +5,17 @@ Dem Bones is an automated algorithm to extract the Linear Blend Skinning (LBS)
 with bone transformations from a set of example meshes.
 """
 
-__version__ = "0.1.0"
-__dem_bones_version__ = "v1.2.1-2-g09b899b"
 
 # Import built-in modules
 
 # Import third-party modules
 
 # Import local modules
-from ._py_dem_bones import DemBones as _DemBones
-from ._py_dem_bones import DemBonesExt as _DemBonesExt
-from .base import DemBonesExtWrapper, DemBonesWrapper
-from .exceptions import (
+from py_dem_bones.__version__ import __dem_bones_version__, __version__
+from py_dem_bones._py_dem_bones import DemBones as _DemBones
+from py_dem_bones._py_dem_bones import DemBonesExt as _DemBonesExt
+from py_dem_bones.base import DemBonesExtWrapper, DemBonesWrapper
+from py_dem_bones.exceptions import (
     ComputationError,
     ConfigurationError,
     DemBonesError,
@@ -26,8 +25,8 @@ from .exceptions import (
     NotImplementedError,
     ParameterError,
 )
-from .interfaces.dcc import DCCInterface
-from .utils import eigen_to_numpy, numpy_to_eigen
+from py_dem_bones.interfaces.dcc import DCCInterface
+from py_dem_bones.utils import eigen_to_numpy, numpy_to_eigen
 
 # Expose the raw C++ classes directly for testing and advanced usage
 DemBones = _DemBones

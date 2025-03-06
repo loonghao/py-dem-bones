@@ -10,7 +10,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "py-dem-bones"
-version = "0.4.0"
+version = "0.5.1"
 description = "Python bindings for the Dem Bones library"
 readme = "README.md"
 requires-python = ">=3.7"
@@ -82,7 +82,7 @@ build = [
 
 [project.urls]
 Homepage = "https://github.com/loonghao/py-dem-bones"
-Documentation = "https://py-dem-bones.readthedocs.io"
+Documentation = "https://loonghao.github.io/py-dem-bones"
 Issues = "https://github.com/loonghao/py-dem-bones/issues"
 Changelog = "https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md"
 
@@ -104,9 +104,11 @@ CMAKE_POSITION_INDEPENDENT_CODE = "ON"
 name = "cz_conventional_commits"
 version = "0.5.1"
 tag-format = "$version"
+update_changelog_on_bump = true
+change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "ci", "build", "docs", "test", "chore"]
 version-files = [
     "pyproject.toml:version",
-    "src/py_dem_bones/__version__.py",
+    "src/py_dem_bones/__version__.py:__version__",
     "docs/conf.py:release",
     "docs/conf.py:version",
     ".github/CITATION.cff:version",

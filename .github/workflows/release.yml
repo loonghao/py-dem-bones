@@ -3,9 +3,48 @@ name: Build and Release
 on:
   push:
     branches: [ main ]
-    tags: ['[0-9]+\.[0-9]+\.[0-9]+']
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/*.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - 'LICENSE*'
+      - '.readthedocs.yml'
+      - 'CITATION.cff'
+      - 'CODE_OF_CONDUCT.md'
+      - 'CONTRIBUTING.md'
+      - '**.rst'
+      - '.hound.yml'
+      - '.gitignore'
+      - '.gitmodules'
+      - '.coveragerc'
+      - 'codecov.yml'
+      - '.flake8'
+      - '.pylintrc'
+      - 'renovate.json'
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/*.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - 'LICENSE*'
+      - '.readthedocs.yml'
+      - 'CITATION.cff'
+      - 'CODE_OF_CONDUCT.md'
+      - 'CONTRIBUTING.md'
+      - '**.rst'
+      - '.hound.yml'
+      - '.gitignore'
+      - '.gitmodules'
+      - '.coveragerc'
+      - 'codecov.yml'
+      - '.flake8'
+      - '.pylintrc'
+      - 'renovate.json'
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       fast-mode:
@@ -310,7 +349,11 @@ jobs:
   docs-preview:
     name: Documentation Preview
     needs: [lint]
-    if: github.event_name == 'pull_request'
+    if: |
+      github.event_name == 'pull_request' && 
+      github.actor != 'renovate[bot]' && 
+      github.actor != 'dependabot[bot]' && 
+      !contains(github.actor, 'bot')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -366,35 +409,45 @@ jobs:
   release:
     name: Release
     needs: [build-wheels, build-sdist]
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
     environment:
       name: release
       url: https://pypi.org/p/py-dem-bones
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
           fetch-depth: 0
       
-      # Download artifacts
-      - uses: actions/download-artifact@v4
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
         with:
-          pattern: wheels-*
           path: dist
           merge-multiple: true
       
-      - uses: actions/download-artifact@v4
-        with:
-          name: sdist
-          path: dist
+      - name: Generate Release Notes
+        id: release_notes
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          CHANGES=$(grep -A 100 "## $VERSION" CHANGELOG.md | grep -B 100 -m 2 "^## " | grep -v "^## $VERSION" | grep -v "^## " | sed '/^$/d')
+          TEMPLATE=$(cat .github/release-template.md)
+          TEMPLATE="${TEMPLATE//\$RELEASE_VERSION/$VERSION}"
+          TEMPLATE="${TEMPLATE//\$CHANGES/$CHANGES}"
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
+          echo "$TEMPLATE" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        shell: bash
       
-      # Create GitHub Release
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
+      # Update release notes
+      - name: Update Release Notes
+        uses: softprops/action-gh-release@v2
         with:
+          body: ${{ env.RELEASE_NOTES }}
           files: dist/*
-          generate_release_notes: true
+          fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
@@ -406,7 +459,7 @@ jobs:
   docs-deploy:
     name: Deploy Documentation
     needs: [release]
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
     # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
     permissions:
@@ -439,6 +492,7 @@ jobs:
           python -m nox -s docs
       
       - name: Setup Pages
+        id: pages
         uses: actions/configure-pages@v4
       
       - name: Upload artifact
@@ -449,3 +503,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
