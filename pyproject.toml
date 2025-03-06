@@ -88,19 +88,17 @@ Changelog = "https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md"
 
 [tool.scikit-build]
 wheel.packages = ["src/py_dem_bones"]
-wheel.expand-macos-universal-tags = true
-wheel.py-api = "cp37"
-wheel.platlib = true  # 确保使用标准的平台标签
-sdist.include = ["src/py_dem_bones/*.py", "src/py_dem_bones/*.pyi", "CMakeLists.txt", "extern/CMakeLists.txt"]
-sdist.exclude = ["extern/eigen/unsupported", "extern/eigen/bench", "extern/eigen/test", "extern/eigen/demos"]
-cmake.version = ">=3.15"
-cmake.build-type = "Release"
-build.verbose = true
-cmake.args = [
-    "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
-    "-DCMAKE_C_FLAGS=-fPIC",  # 添加PIC标志
-    "-DCMAKE_CXX_FLAGS=-fPIC"
-]
+wheel.exclude = ["tests/*"]
+sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICENSE.md", "README.md", "extern/dem-bones/*", "extern/eigen/*"]
+sdist.exclude = ["tests/data/*"]
+
+[tool.scikit-build.cmake]
+minimum-version = "3.15"
+build-type = "Release"
+
+[tool.scikit-build.cmake.define]
+PYTHON_LIMITED_API = "OFF"
+CMAKE_POSITION_INDEPENDENT_CODE = "ON"
 
 [tool.commitizen]
 name = "cz_conventional_commits"

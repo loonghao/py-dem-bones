@@ -1,5 +1,16 @@
-cmake_minimum_required(VERSION 3.15)
-project(py_dem_bones VERSION 0.1.0 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.15...3.30)
+project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
+
+# 使用 scikit-build-core 的 FindPython 支持
+find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
+
+# 如果 Python 版本是 3.7，输出一些调试信息
+if(Python_VERSION MATCHES "^3\.7")
+  message(STATUS "Found Python 3.7: ${Python_VERSION}")
+  message(STATUS "  Python_EXECUTABLE: ${Python_EXECUTABLE}")
+  message(STATUS "  Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
+  message(STATUS "  Python_LIBRARIES: ${Python_LIBRARIES}")
+endif()
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 14)
@@ -8,11 +19,35 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Windows-specific configuration
 if(WIN32)
-    # Ensure we can find the compiler
-    if(DEFINED ENV{VSCMD_ARG_TGT_ARCH})
+    # Check if Ninja generator is being used
+    if(CMAKE_GENERATOR MATCHES "Ninja")
+        message(STATUS "Using Ninja generator")
+    # Ensure we can find the compiler if using Visual Studio
+    elseif(DEFINED ENV{VSCMD_ARG_TGT_ARCH})
         message(STATUS "Visual Studio environment detected: $ENV{VSCMD_ARG_TGT_ARCH}")
     else()
-        message(STATUS "Visual Studio environment not detected, using default settings")
+        message(STATUS "Using default build settings")
+    endif()
+    
+    # Set Windows platform-specific configuration for MSVC
+    if(MSVC)
+      # Add MSVC-specific flags
+      add_compile_options(/MP /bigobj)
+      
+      # Check if the platform toolset is specified
+      if(NOT CMAKE_GENERATOR_TOOLSET)
+        # Set the default toolset based on the Visual Studio version
+        if(MSVC_VERSION GREATER_EQUAL 1920)
+          # Visual Studio 2019 and above
+          set(CMAKE_GENERATOR_TOOLSET "v142")
+        elseif(MSVC_VERSION GREATER_EQUAL 1910)
+          # Visual Studio 2017
+          set(CMAKE_GENERATOR_TOOLSET "v141")
+        elseif(MSVC_VERSION GREATER_EQUAL 1900)
+          # Visual Studio 2015
+          set(CMAKE_GENERATOR_TOOLSET "v140")
+        endif()
+      endif()
     endif()
 endif()
 
@@ -25,12 +60,34 @@ else()
   add_compile_options(-Wall -Wno-unused-variable -Wno-unused-but-set-variable -Wno-sign-compare -Wno-unused-parameter)
 endif()
 
-# Find Python
-find_package(Python COMPONENTS Interpreter Development REQUIRED)
-find_package(Python COMPONENTS NumPy QUIET)
+# Try to find NumPy
+if(NOT Python_NumPy_FOUND)
+    find_package(Python COMPONENTS NumPy QUIET)
+    if(NOT Python_NumPy_FOUND AND Python_EXECUTABLE)
+      # Try to find NumPy manually
+      execute_process(
+        COMMAND "${Python_EXECUTABLE}" -c "import numpy; print(numpy.get_include())"
+        OUTPUT_VARIABLE Python_NumPy_INCLUDE_DIRS
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_QUIET
+        RESULT_VARIABLE _NUMPY_RESULT
+      )
+      if(_NUMPY_RESULT EQUAL 0 AND EXISTS "${Python_NumPy_INCLUDE_DIRS}")
+        set(Python_NumPy_FOUND TRUE)
+      endif()
+    endif()
+endif()
+
+# Print debug information
+message(STATUS "Python_EXECUTABLE: ${Python_EXECUTABLE}")
+message(STATUS "Python_LIBRARIES: ${Python_LIBRARIES}")
+message(STATUS "Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
+if(Python_NumPy_FOUND)
+  message(STATUS "Python_NumPy_INCLUDE_DIRS: ${Python_NumPy_INCLUDE_DIRS}")
+endif()
 
 # Find pybind11
-find_package(pybind11 CONFIG)
+find_package(pybind11 CONFIG QUIET)
 if(NOT pybind11_FOUND)
     # Try to find pybind11 using Python
     execute_process(
@@ -48,15 +105,24 @@ if(NOT pybind11_FOUND)
             target_include_directories(${target_name} PRIVATE ${PYBIND11_INCLUDE_DIR})
             target_compile_definitions(${target_name} PRIVATE PYBIND11_DETAILED_ERROR_MESSAGES)
             
-            # 使用平台特定的扩展名
+            # Use platform-specific extension
             if(WIN32)
                 set_target_properties(${target_name} PROPERTIES PREFIX "" SUFFIX ".pyd")
             else()
                 set_target_properties(${target_name} PROPERTIES PREFIX "" SUFFIX ".so")
             endif()
             
+            # Ensure linking to the correct Python library
             if(WIN32)
                 target_link_libraries(${target_name} PRIVATE ${Python_LIBRARIES})
+            elseif(APPLE)
+                # macOS may require special handling
+                set_target_properties(${target_name} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+            else()
+                # Linux may require linking to the Python library
+                if(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux")
+                    target_link_libraries(${target_name} PRIVATE ${Python_LIBRARIES})
+                endif()
             endif()
         endfunction()
     else()
@@ -126,8 +192,8 @@ pybind11_add_module(_py_dem_bones
     src/binding/py_dem_bones_module.cpp
 )
 
-# 注意：不要直接定义 Py_LIMITED_API，这会导致 pybind11 内部类和函数的编译错误
-# 我们暂时移除 ABI3 兼容模式，因为它与当前的 pybind11 代码不兼容
+# Note: Do not directly define Py_LIMITED_API, as it will cause compilation errors in pybind11 internal classes and functions
+# We temporarily remove ABI3 compatibility mode, as it is not compatible with the current pybind11 code
 
 # Set target properties
 set_target_properties(_py_dem_bones PROPERTIES
@@ -135,7 +201,7 @@ set_target_properties(_py_dem_bones PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/py_dem_bones"
 )
 
-# Install the module - 确保安装到正确的目录
+# Install the module - Ensure installation to the correct directory
 install(TARGETS _py_dem_bones DESTINATION py_dem_bones)
 
 # Copy Python files
