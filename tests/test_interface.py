@@ -1,168 +1,139 @@
 """
-Tests for the py-dem-bones interface classes.
+Tests for the py-dem-bones interface.
 
-This module tests the interface classes for DCC software integration.
+This module tests the interface of the py_dem_bones module, including
+the DemBonesWrapper and DemBonesExtWrapper classes.
 """
-
-from abc import ABCMeta
 
 import numpy as np
 import pytest
+import py_dem_bones as pdb
+from py_dem_bones import ParameterError, NameError, IndexError
+from py_dem_bones.base import DemBonesWrapper, DemBonesExtWrapper
 
 
-def test_dcc_interface_abstract():
-    """Test that DCCInterface is an abstract base class."""
-    try:
-        from py_dem_bones import DCCInterface
-        
-        # Check that DCCInterface is an abstract base class
-        assert isinstance(DCCInterface, ABCMeta)
-        
-        # Check that we can't instantiate it directly
-        with pytest.raises(TypeError):
-            DCCInterface()
-    except ImportError:
-        pytest.skip("py_dem_bones not installed")
+def test_dem_bones_class():
+    """Test the DemBonesWrapper class."""
+    dem_bones = DemBonesWrapper()
+    
+    # Test default values
+    assert dem_bones.num_bones == 0
+    assert dem_bones.num_vertices == 0
+    assert dem_bones.num_iterations == 30
+    assert dem_bones.weight_smoothness == 0.0001
+    assert dem_bones.max_influences == 8
+    
+    # Test setting parameters
+    dem_bones.num_iterations = 50
+    assert dem_bones.num_iterations == 50
+    
+    dem_bones.weight_smoothness = 0.01
+    assert dem_bones.weight_smoothness == 0.01
+    
+    dem_bones.max_influences = 8
+    assert dem_bones.max_influences == 8
 
 
-def test_dcc_interface_implementation():
-    """Test that DCCInterface can be implemented properly."""
-    try:
-        from py_dem_bones import DCCInterface
-        
-        # Create a concrete implementation
-        class MayaInterface(DCCInterface):
-            def from_dcc_data(self, **kwargs):
-                return True
-                
-            def to_dcc_data(self, **kwargs):
-                return True
-                
-            def convert_matrices(self, matrices, from_dcc=True):
-                return matrices
-        
-        # Should be able to instantiate the implementation
-        maya_interface = MayaInterface()
-        assert maya_interface is not None
-        
-        # Test the methods
-        assert maya_interface.from_dcc_data()
-        assert maya_interface.to_dcc_data()
-        
-        # Test the matrix conversion
-        test_matrix = np.eye(4)
-        result = maya_interface.convert_matrices(test_matrix)
-        assert np.array_equal(test_matrix, result)
-        
-        # Test the default implementation of apply_coordinate_system_transform
-        test_data = np.random.rand(3, 10)
-        result = maya_interface.apply_coordinate_system_transform(test_data)
-        assert np.array_equal(test_data, result)
-    except ImportError:
-        pytest.skip("py_dem_bones not installed")
+def test_dem_bones_ext_class():
+    """Test the DemBonesExtWrapper class."""
+    dem_bones_ext = DemBonesExtWrapper()
+    
+    # Test that it inherits from DemBonesWrapper
+    assert isinstance(dem_bones_ext, DemBonesWrapper)
+    
+    # Test default values
+    assert dem_bones_ext.num_iterations == 30
+    assert dem_bones_ext.bind_update == 0
+    
+    # Test setting parameters
+    dem_bones_ext.num_iterations = 50
+    assert dem_bones_ext.num_iterations == 50
+    
+    dem_bones_ext.bind_update = 1
+    assert dem_bones_ext.bind_update == 1
 
 
-def test_dcc_interface_missing_methods():
-    """Test that implementations must provide required methods."""
-    try:
-        from py_dem_bones import DCCInterface
-        
-        # Attempt to create an incomplete implementation
-        class IncompleteInterface(DCCInterface):
-            # Missing from_dcc_data
-            
-            def to_dcc_data(self, **kwargs):
-                return True
-                
-            def convert_matrices(self, matrices, from_dcc=True):
-                return matrices
-        
-        # Should not be able to instantiate
-        with pytest.raises(TypeError):
-            IncompleteInterface()
-            
-        # Another incomplete implementation
-        class AnotherIncompleteInterface(DCCInterface):
-            def from_dcc_data(self, **kwargs):
-                return True
-                
-            # Missing to_dcc_data
-                
-            def convert_matrices(self, matrices, from_dcc=True):
-                return matrices
-        
-        # Should not be able to instantiate
-        with pytest.raises(TypeError):
-            AnotherIncompleteInterface()
-            
-        # Yet another incomplete implementation
-        class YetAnotherIncompleteInterface(DCCInterface):
-            def from_dcc_data(self, **kwargs):
-                return True
-                
-            def to_dcc_data(self, **kwargs):
-                return True
-                
-            # Missing convert_matrices
-        
-        # Should not be able to instantiate
-        with pytest.raises(TypeError):
-            YetAnotherIncompleteInterface()
-    except ImportError:
-        pytest.skip("py_dem_bones not installed")
+def test_bone_management():
+    """Test bone name management."""
+    dem_bones = DemBonesWrapper()
+    
+    # Set bone names
+    dem_bones.set_bone_name("root", 0)
+    dem_bones.set_bone_name("spine", 1)
+    
+    # Test bone name retrieval
+    assert dem_bones.get_bone_index("root") == 0
+    assert dem_bones.get_bone_index("spine") == 1
+    
+    # Test bone names list
+    assert set(dem_bones.get_bone_names()) == {"root", "spine"}
+    
+    # Test automatic index assignment
+    idx = dem_bones.set_bone_name("head")
+    assert idx == 2
+    assert dem_bones.get_bone_index("head") == 2
+    
+    # Test error on non-existent bone
+    with pytest.raises(NameError):
+        dem_bones.get_bone_index("tail")
+    
+    # Test setting multiple bone names at once
+    indices = dem_bones.set_bone_names("arm.L", "arm.R", "leg.L", "leg.R")
+    assert indices == [0, 1, 2, 3]
+    assert dem_bones.num_bones == 4
+    
+    # Test that bone_names property returns ordered list
+    assert dem_bones.bone_names == ["arm.L", "arm.R", "leg.L", "leg.R"]
 
 
-def test_custom_coordinate_transform():
-    """Test a custom implementation of coordinate system transform."""
-    try:
-        from py_dem_bones import DCCInterface
-        
-        # Create an implementation with custom coordinate transform
-        class BlenderInterface(DCCInterface):
-            def from_dcc_data(self, **kwargs):
-                return True
-                
-            def to_dcc_data(self, **kwargs):
-                return True
-                
-            def convert_matrices(self, matrices, from_dcc=True):
-                return matrices
-                
-            def apply_coordinate_system_transform(self, data, from_dcc=True):
-                # Blender uses Z-up, DemBones uses Y-up
-                # This is a simplified transformation
-                if from_dcc:
-                    # From Blender to DemBones
-                    result = data.copy()
-                    # Swap Y and Z axes
-                    result[1:3] = result[2:0:-1]
-                    return result
-                else:
-                    # From DemBones to Blender
-                    result = data.copy()
-                    # Swap Y and Z axes back
-                    result[1:3] = result[2:0:-1]
-                    return result
-        
-        # Test the custom implementation
-        blender_interface = BlenderInterface()
-        
-        # Create test data in Blender space (Z-up)
-        blender_data = np.zeros((3, 1))
-        blender_data[2, 0] = 1  # Z = 1 in Blender space
-        
-        # Convert to DemBones space (Y-up)
-        dem_bones_data = blender_interface.apply_coordinate_system_transform(blender_data)
-        
-        # In DemBones space, Y should be 1 and Z should be 0
-        assert dem_bones_data[1, 0] == 1
-        assert dem_bones_data[2, 0] == 0
-        
-        # Convert back to Blender space
-        blender_data_back = blender_interface.apply_coordinate_system_transform(
-            dem_bones_data, from_dcc=False)
-        
-        # Should match the original Blender data
-        assert np.array_equal(blender_data, blender_data_back)
-    except ImportError:
-        pytest.skip("py_dem_bones not installed")
+def test_target_management():
+    """Test target name management."""
+    dem_bones = DemBonesWrapper()
+    
+    # Set target names
+    dem_bones.set_target_name("rest", 0)
+    dem_bones.set_target_name("pose1", 1)
+    
+    # Test target name retrieval
+    assert dem_bones.get_target_index("rest") == 0
+    assert dem_bones.get_target_index("pose1") == 1
+    
+    # Test target names list
+    assert set(dem_bones.get_target_names()) == {"rest", "pose1"}
+    
+    # Test automatic index assignment
+    idx = dem_bones.set_target_name("pose2")
+    assert idx == 2
+    assert dem_bones.get_target_index("pose2") == 2
+    
+    # Test error on non-existent target
+    with pytest.raises(NameError):
+        dem_bones.get_target_index("pose3")
+    
+    # Test that target_names property returns ordered list
+    assert dem_bones.target_names == ["rest", "pose1", "pose2"]
+
+
+def test_parameter_validation():
+    """Test parameter validation."""
+    dem_bones = DemBonesWrapper()
+    
+    # Test valid parameter values
+    dem_bones.num_iterations = 50
+    assert dem_bones.num_iterations == 50
+    
+    dem_bones.weight_smoothness = 0.01
+    assert dem_bones.weight_smoothness == 0.01
+    
+    dem_bones.max_influences = 8
+    assert dem_bones.max_influences == 8
+    
+    # Test invalid parameter values
+    with pytest.raises(ParameterError):
+        dem_bones.num_iterations = -1
+    
+    with pytest.raises(ParameterError):
+        dem_bones.weight_smoothness = -0.1
+    
+    with pytest.raises(ParameterError):
+        dem_bones.max_influences = 0

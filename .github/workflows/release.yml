@@ -239,14 +239,13 @@ jobs:
             Write-Host "VC Redist path not found at $vcRedistPath"
           }
       
-      # 使用两种方法测试 Windows 兼容性
-      # 方法 1: 使用我们的 nox 会话
+      # 
+      # 1: 
       - name: Test Windows compatibility using nox
         shell: pwsh
         run: |
           python -m nox -s test-windows
       
-      # 方法 2: 使用预构建的 wheel 包
       - name: Download wheel artifacts
         uses: actions/download-artifact@v4
         with:
@@ -270,120 +269,44 @@ jobs:
           
           $wheel = Get-ChildItem -Path dist -Filter $wheelPattern | Select-Object -First 1
           if ($wheel) {
-            Write-Host "Installing wheel: $($wheel.FullName)"
+            Write-Host "Found wheel: $($wheel.FullName)" -ForegroundColor Green
             
-            # Examine wheel contents before installation
-            Write-Host "Examining wheel contents:" -ForegroundColor Cyan
-            python -m pip install wheel
-            python -m wheel unpack $wheel.FullName -d wheel_contents
-            Get-ChildItem -Path wheel_contents -Recurse | Select-Object FullName
+            # Create wheelhouse directory and copy wheel package
+            $wheelhouse = "wheelhouse"
+            if (-not (Test-Path $wheelhouse)) {
+              New-Item -ItemType Directory -Path $wheelhouse | Out-Null
+            }
+            Copy-Item $wheel.FullName -Destination $wheelhouse
             
-            # Check for DLL files
-            Write-Host "Checking for DLL files:" -ForegroundColor Cyan
-            Get-ChildItem -Path wheel_contents -Recurse -Filter "*.dll" | Select-Object FullName
-            Get-ChildItem -Path wheel_contents -Recurse -Filter "*.pyd" | Select-Object FullName
+            # Debug DLL loading issues
+            Write-Host "Running DLL loading debug script..." -ForegroundColor Cyan
+            Copy-Item scripts/debug_dll_loading.py .
+            python debug_dll_loading.py
             
-            # Copy any DLL files to the Python directory to ensure they can be found
-            $pythonDir = Split-Path -Parent (Get-Command python).Source
-            $dllFiles = Get-ChildItem -Path wheel_contents -Recurse -Filter "*.dll"
-            if ($dllFiles) {
-              Write-Host "Copying DLL files to Python directory: $pythonDir" -ForegroundColor Yellow
-              foreach ($dll in $dllFiles) {
-                Copy-Item -Path $dll.FullName -Destination $pythonDir -Force
-                Write-Host "Copied $($dll.Name) to $pythonDir"
-              }
+            # Check Python version compatibility
+            $pythonFullVersion = python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" | Out-String
+            $pythonFullVersion = $pythonFullVersion.Trim()
+            $wheelPythonVersion = [regex]::Match($wheel.Name, "cp(\d\d)").Groups[1].Value
+            $wheelPythonVersion = $wheelPythonVersion.Insert(1, ".")
+            
+            Write-Host "Current Python version: $pythonFullVersion" -ForegroundColor Cyan
+            Write-Host "Wheel Python version: $wheelPythonVersion" -ForegroundColor Cyan
+            
+            if ($pythonFullVersion -ne $wheelPythonVersion) {
+              Write-Host "WARNING: Python version mismatch!" -ForegroundColor Yellow
+              Write-Host "Using Python $pythonFullVersion to test a wheel built for Python $wheelPythonVersion" -ForegroundColor Yellow
+              Write-Host "This test will be skipped as versions are incompatible" -ForegroundColor Yellow
+              exit 0
             }
             
-            # First install dependencies
-            pip install numpy pytest
-            # Force install the wheel with --no-deps to avoid platform compatibility checks
-            pip install --no-deps --force-reinstall $wheel.FullName
-            # Verify installation
-            pip list | Select-String "py-dem-bones"
-            
-            # Test import with detailed debugging
-            Write-Host "Testing import with detailed debugging..." -ForegroundColor Cyan
-            $sitePkgsDir = python -c "import site; print(site.getsitepackages()[0])"
-            
-            # Check Python path and loaded DLLs
-            $testScript = @"
-            import os
-            import sys
-            import site
-            
-            # Print environment information
-            print(f"Python executable: {sys.executable}")
-            print(f"Python version: {sys.version}")
-            print(f"Platform: {sys.platform}")
-            
-            # Print PATH environment variable
-            print(f"PATH: {os.environ.get('PATH')}")
-            
-            # Print site-packages directories
-            print(f"Site packages: {site.getsitepackages()}")
-            
-            # Try to import the module with detailed error handling
-            try:
-                # First try to import the C extension directly to isolate the issue
-                print("Attempting to import _py_dem_bones directly...")
-                import py_dem_bones._py_dem_bones
-                print("Successfully imported _py_dem_bones")
-            except ImportError as e:
-                print(f"Error importing _py_dem_bones: {e}")
-                
-                # Check if the file exists
-                ext = '.pyd' if sys.platform == 'win32' else '.so'
-                for site_pkg in site.getsitepackages():
-                    ext_path = os.path.join(site_pkg, 'py_dem_bones', f'_py_dem_bones{ext}')
-                    if os.path.exists(ext_path):
-                        print(f"Extension file exists at: {ext_path}")
-                        # On Windows, try to load the DLL using ctypes to get more detailed error
-                        if sys.platform == 'win32':
-                            import ctypes
-                            try:
-                                print("Trying to load with ctypes...")
-                                ctypes.CDLL(ext_path)
-                                print("Successfully loaded with ctypes")
-                            except Exception as ctypes_err:
-                                print(f"ctypes error: {ctypes_err}")
-                                # Get Windows error code
-                                import ctypes.wintypes
-                                print(f"Windows error code: {ctypes.GetLastError()}")
-                    else:
-                        print(f"Extension file does not exist at: {ext_path}")
-            
-            # Now try the normal import
-            try:
-                print("\nAttempting normal import...")
-                import py_dem_bones
-                print(f"Successfully imported py_dem_bones {py_dem_bones.__version__}")
-                print(f"Module location: {py_dem_bones.__file__}")
-            except ImportError as e:
-                print(f"Error importing py_dem_bones: {e}")
-            "@ | Out-File -FilePath test_detailed_import.py -Encoding utf8
-            
-            # Run the detailed test script
-            python test_detailed_import.py
-            
-            # If we still have issues, try to fix by copying the PYD file to the Python directory
-            if ($LASTEXITCODE -ne 0) {
-              Write-Host "Import failed, trying to fix by copying PYD file..." -ForegroundColor Yellow
-              $pydFiles = Get-ChildItem -Path $sitePkgsDir -Recurse -Filter "*_py_dem_bones*.pyd"
-              if ($pydFiles) {
-                foreach ($pyd in $pydFiles) {
-                  $destPath = Join-Path $pythonDir $pyd.Name
-                  Copy-Item -Path $pyd.FullName -Destination $destPath -Force
-                  Write-Host "Copied $($pyd.FullName) to $destPath"
-                }
-                # Try import again
-                python test_detailed_import.py
-              }
-            }
+            # Use pytest_skip_install session to run tests
+            Write-Host "Running tests with pytest_skip_install session..." -ForegroundColor Cyan
+            python -m pip install nox
+            python -m nox -s pytest_skip_install
           } else {
-            Write-Host "No matching wheel found for Python ${{ matrix.python-version }}. Available wheels:"
+            Write-Host "No matching wheel found for Python ${{ matrix.python-version }}. Available wheels:" -ForegroundColor Red
             Get-ChildItem -Path dist
-            # 不要在这里失败，因为我们已经用 nox 测试过了
-            # exit 1
+            exit 1
           }
 
   # Build source distribution

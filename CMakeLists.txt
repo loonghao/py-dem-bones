@@ -43,10 +43,13 @@ if(WIN32)
       # Use Multi-threaded Debug DLL runtime library (/MDd) for Debug builds
       set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
       
-      # Export all symbols to ensure proper DLL generation
-      set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+      # 使用导出符号表文件
+      set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
       
-      # Check if the platform toolset is specified
+      # 使用静态链接到Python库
+      set(PYTHON_LINK_STATIC ON)
+      
+      # 检查是否指定了平台工具集
       if(NOT CMAKE_GENERATOR_TOOLSET)
         # Set the default toolset based on the Visual Studio version
         if(MSVC_VERSION GREATER_EQUAL 1920)
@@ -228,34 +231,23 @@ if(WIN32)
     # Copy required DLLs to the output directory
     # If using MSVC, copy the Visual C++ runtime DLL
     if(MSVC)
-        # Check the architecture of the Visual C++ runtime
-        if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-            # 64-bit architecture
-            set(VC_REDIST_DIR "$ENV{VCToolsRedistDir}x64/Microsoft.VC142.CRT")
-        else()
-            # 32-bit architecture
-            set(VC_REDIST_DIR "$ENV{VCToolsRedistDir}x86/Microsoft.VC142.CRT")
-        endif()
+        # 使用静态库
+        target_compile_options(_py_dem_bones PRIVATE 
+            "/MT$<$<CONFIG:Debug>:d>"
+        )
         
-        # Copy the DLLs if the directory exists
-        if(EXISTS "${VC_REDIST_DIR}")
-            message(STATUS "Found VC Redist directory: ${VC_REDIST_DIR}")
-            file(GLOB VC_REDIST_DLLS "${VC_REDIST_DIR}/*.dll")
-            foreach(DLL_FILE ${VC_REDIST_DLLS})
-                message(STATUS "Copying DLL: ${DLL_FILE}")
-                file(COPY ${DLL_FILE} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/py_dem_bones")
-            endforeach()
-        else()
-            message(WARNING "VC Redist directory not found. DLLs may need to be manually copied.")
-        endif()
-    endif()
-    
-    # Ensure all symbols are exported for Windows
-    set_target_properties(_py_dem_bones PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
-    
-    # Delay-load the Python DLL
-    if(MSVC)
-        set_property(TARGET _py_dem_bones APPEND_STRING PROPERTY LINK_FLAGS " /DELAYLOAD:python3*.dll")
+        # 关闭自动导出所有符号
+        set_property(TARGET _py_dem_bones PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS OFF)
+        
+        # 指定导出符号的宏定义
+        target_compile_definitions(_py_dem_bones PRIVATE 
+            "PYBIND11_EXPORT=__declspec(dllexport)"
+        )
+        
+        # 指定导出符号表文件
+        set_property(TARGET _py_dem_bones APPEND_STRING PROPERTY LINK_FLAGS 
+            " /EXPORT:PyInit__py_dem_bones"
+        )
     endif()
 endif()
 
