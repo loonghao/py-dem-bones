@@ -34,6 +34,18 @@ if(WIN32)
       # Add MSVC-specific flags
       add_compile_options(/MP /bigobj)
       
+      # Enable multi-threaded compilation
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+      
+      # Set runtime library to match Python's expectations
+      # Use Multi-threaded DLL runtime library (/MD) for Release builds
+      set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
+      # Use Multi-threaded Debug DLL runtime library (/MDd) for Debug builds
+      set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
+      
+      # Export all symbols to ensure proper DLL generation
+      set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+      
       # Check if the platform toolset is specified
       if(NOT CMAKE_GENERATOR_TOOLSET)
         # Set the default toolset based on the Visual Studio version
@@ -108,6 +120,16 @@ if(NOT pybind11_FOUND)
             # Use platform-specific extension
             if(WIN32)
                 set_target_properties(${target_name} PROPERTIES PREFIX "" SUFFIX ".pyd")
+                
+                # 确保正确链接到Python库
+                target_link_libraries(${target_name} PRIVATE ${Python_LIBRARIES})
+                
+                # 添加Windows特定的编译定义
+                target_compile_definitions(${target_name} PRIVATE
+                    _WINDOWS
+                    NOMINMAX  # 避免min/max宏与STL冲突
+                    WIN32_LEAN_AND_MEAN  # 减少Windows头文件包含
+                )
             else()
                 set_target_properties(${target_name} PROPERTIES PREFIX "" SUFFIX ".so")
             endif()
