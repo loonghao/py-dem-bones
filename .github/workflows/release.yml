@@ -220,9 +220,24 @@ jobs:
       - name: Install Visual C++ Redistributable
         shell: pwsh
         run: |
+          # Download and install the latest Visual C++ Redistributable
           Invoke-WebRequest -Uri https://aka.ms/vs/17/release/vc_redist.x64.exe -OutFile vc_redist.x64.exe
           Start-Process -FilePath "vc_redist.x64.exe" -ArgumentList "/quiet", "/norestart" -Wait
           Write-Host "Visual C++ Redistributable installed"
+          
+          # Set environment variables to help locate DLLs
+          $vcRedistPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Redist\MSVC"
+          if (Test-Path $vcRedistPath) {
+            $latestVersion = Get-ChildItem $vcRedistPath | Sort-Object Name -Descending | Select-Object -First 1
+            $dllPath = Join-Path $latestVersion.FullName "x64\Microsoft.VC142.CRT"
+            Write-Host "Adding DLL path to PATH: $dllPath"
+            $env:PATH = "$dllPath;$env:PATH"
+            # Also set VCToolsRedistDir for CMake to find
+            $env:VCToolsRedistDir = "$($latestVersion.FullName)\"
+            Write-Host "Set VCToolsRedistDir=$env:VCToolsRedistDir"
+          } else {
+            Write-Host "VC Redist path not found at $vcRedistPath"
+          }
       
       # 使用两种方法测试 Windows 兼容性
       # 方法 1: 使用我们的 nox 会话
@@ -268,6 +283,17 @@ jobs:
             Get-ChildItem -Path wheel_contents -Recurse -Filter "*.dll" | Select-Object FullName
             Get-ChildItem -Path wheel_contents -Recurse -Filter "*.pyd" | Select-Object FullName
             
+            # Copy any DLL files to the Python directory to ensure they can be found
+            $pythonDir = Split-Path -Parent (Get-Command python).Source
+            $dllFiles = Get-ChildItem -Path wheel_contents -Recurse -Filter "*.dll"
+            if ($dllFiles) {
+              Write-Host "Copying DLL files to Python directory: $pythonDir" -ForegroundColor Yellow
+              foreach ($dll in $dllFiles) {
+                Copy-Item -Path $dll.FullName -Destination $pythonDir -Force
+                Write-Host "Copied $($dll.Name) to $pythonDir"
+              }
+            }
+            
             # First install dependencies
             pip install numpy pytest
             # Force install the wheel with --no-deps to avoid platform compatibility checks
@@ -275,9 +301,84 @@ jobs:
             # Verify installation
             pip list | Select-String "py-dem-bones"
             
-            # Test import
-            Write-Host "Testing import..." -ForegroundColor Cyan
-            python -c "import py_dem_bones; print(f'Successfully imported py_dem_bones {py_dem_bones.__version__}')"
+            # Test import with detailed debugging
+            Write-Host "Testing import with detailed debugging..." -ForegroundColor Cyan
+            $sitePkgsDir = python -c "import site; print(site.getsitepackages()[0])"
+            
+            # Check Python path and loaded DLLs
+            $testScript = @"
+            import os
+            import sys
+            import site
+            
+            # Print environment information
+            print(f"Python executable: {sys.executable}")
+            print(f"Python version: {sys.version}")
+            print(f"Platform: {sys.platform}")
+            
+            # Print PATH environment variable
+            print(f"PATH: {os.environ.get('PATH')}")
+            
+            # Print site-packages directories
+            print(f"Site packages: {site.getsitepackages()}")
+            
+            # Try to import the module with detailed error handling
+            try:
+                # First try to import the C extension directly to isolate the issue
+                print("Attempting to import _py_dem_bones directly...")
+                import py_dem_bones._py_dem_bones
+                print("Successfully imported _py_dem_bones")
+            except ImportError as e:
+                print(f"Error importing _py_dem_bones: {e}")
+                
+                # Check if the file exists
+                ext = '.pyd' if sys.platform == 'win32' else '.so'
+                for site_pkg in site.getsitepackages():
+                    ext_path = os.path.join(site_pkg, 'py_dem_bones', f'_py_dem_bones{ext}')
+                    if os.path.exists(ext_path):
+                        print(f"Extension file exists at: {ext_path}")
+                        # On Windows, try to load the DLL using ctypes to get more detailed error
+                        if sys.platform == 'win32':
+                            import ctypes
+                            try:
+                                print("Trying to load with ctypes...")
+                                ctypes.CDLL(ext_path)
+                                print("Successfully loaded with ctypes")
+                            except Exception as ctypes_err:
+                                print(f"ctypes error: {ctypes_err}")
+                                # Get Windows error code
+                                import ctypes.wintypes
+                                print(f"Windows error code: {ctypes.GetLastError()}")
+                    else:
+                        print(f"Extension file does not exist at: {ext_path}")
+            
+            # Now try the normal import
+            try:
+                print("\nAttempting normal import...")
+                import py_dem_bones
+                print(f"Successfully imported py_dem_bones {py_dem_bones.__version__}")
+                print(f"Module location: {py_dem_bones.__file__}")
+            except ImportError as e:
+                print(f"Error importing py_dem_bones: {e}")
+            "@ | Out-File -FilePath test_detailed_import.py -Encoding utf8
+            
+            # Run the detailed test script
+            python test_detailed_import.py
+            
+            # If we still have issues, try to fix by copying the PYD file to the Python directory
+            if ($LASTEXITCODE -ne 0) {
+              Write-Host "Import failed, trying to fix by copying PYD file..." -ForegroundColor Yellow
+              $pydFiles = Get-ChildItem -Path $sitePkgsDir -Recurse -Filter "*_py_dem_bones*.pyd"
+              if ($pydFiles) {
+                foreach ($pyd in $pydFiles) {
+                  $destPath = Join-Path $pythonDir $pyd.Name
+                  Copy-Item -Path $pyd.FullName -Destination $destPath -Force
+                  Write-Host "Copied $($pyd.FullName) to $destPath"
+                }
+                # Try import again
+                python test_detailed_import.py
+              }
+            }
           } else {
             Write-Host "No matching wheel found for Python ${{ matrix.python-version }}. Available wheels:"
             Get-ChildItem -Path dist

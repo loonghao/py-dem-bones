@@ -223,6 +223,42 @@ set_target_properties(_py_dem_bones PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/py_dem_bones"
 )
 
+# Windows-specific DLL handling
+if(WIN32)
+    # Copy required DLLs to the output directory
+    # If using MSVC, copy the Visual C++ runtime DLL
+    if(MSVC)
+        # Check the architecture of the Visual C++ runtime
+        if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+            # 64-bit architecture
+            set(VC_REDIST_DIR "$ENV{VCToolsRedistDir}x64/Microsoft.VC142.CRT")
+        else()
+            # 32-bit architecture
+            set(VC_REDIST_DIR "$ENV{VCToolsRedistDir}x86/Microsoft.VC142.CRT")
+        endif()
+        
+        # Copy the DLLs if the directory exists
+        if(EXISTS "${VC_REDIST_DIR}")
+            message(STATUS "Found VC Redist directory: ${VC_REDIST_DIR}")
+            file(GLOB VC_REDIST_DLLS "${VC_REDIST_DIR}/*.dll")
+            foreach(DLL_FILE ${VC_REDIST_DLLS})
+                message(STATUS "Copying DLL: ${DLL_FILE}")
+                file(COPY ${DLL_FILE} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/py_dem_bones")
+            endforeach()
+        else()
+            message(WARNING "VC Redist directory not found. DLLs may need to be manually copied.")
+        endif()
+    endif()
+    
+    # Ensure all symbols are exported for Windows
+    set_target_properties(_py_dem_bones PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+    
+    # Delay-load the Python DLL
+    if(MSVC)
+        set_property(TARGET _py_dem_bones APPEND_STRING PROPERTY LINK_FLAGS " /DELAYLOAD:python3*.dll")
+    endif()
+endif()
+
 # Install the module - Ensure installation to the correct directory
 install(TARGETS _py_dem_bones DESTINATION py_dem_bones)
 
