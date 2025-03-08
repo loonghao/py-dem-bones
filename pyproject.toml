@@ -90,7 +90,7 @@ sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICEN
 sdist.exclude = ["tests/data/*"]
 
 [tool.scikit-build.cmake]
-minimum-version = "3.15"
+version = "3.15"
 build-type = "Release"
 
 [tool.scikit-build.cmake.define]
