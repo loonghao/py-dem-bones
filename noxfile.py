@@ -119,6 +119,14 @@ def publish(session: nox.Session) -> None:
     )
 
 
+@nox.session
+def test_windows(session: nox.Session) -> None:
+    """Test Windows compatibility by building and testing on Windows."""
+    from nox_actions.codetest import test_windows_compatibility
+
+    test_windows_compatibility(session)
+
+
 nox.session(lint.lint, name="lint", reuse_venv=True)
 nox.session(lint.lint_fix, name="lint-fix", reuse_venv=True)
 nox.session(codetest.pytest, name="pytest")
@@ -135,3 +143,4 @@ nox.session(build_test, name="build-test")
 nox.session(build_no_test, name="build-no-test")
 nox.session(coverage, name="coverage")
 nox.session(init_submodules, name="init-submodules")
+nox.session(test_windows, name="test-windows")
