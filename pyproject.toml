@@ -86,16 +86,20 @@ Changelog = "https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md"
 [tool.scikit-build]
 wheel.packages = ["src/py_dem_bones"]
 wheel.exclude = ["tests/*"]
+# 确保包含所有必要的 DLL 文件
+wheel.expand-macos-universal-tags = true
 sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICENSE.md", "README.md", "extern/dem-bones/*", "extern/eigen/*"]
 sdist.exclude = ["tests/data/*"]
 
 [tool.scikit-build.cmake]
-version = "3.15"
+version = ">=3.15"
 build-type = "Release"
 
 [tool.scikit-build.cmake.define]
 PYTHON_LIMITED_API = "OFF"
 CMAKE_POSITION_INDEPENDENT_CODE = "ON"
+# 确保在 Windows 上正确导出符号
+CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON"
 
 [tool.commitizen]
 name = "cz_conventional_commits"

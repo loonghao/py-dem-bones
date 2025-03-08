@@ -120,12 +120,19 @@ def build_test(session: nox.Session) -> None:
     pytest(session)
 
 
-def find_latest_wheel():
-    """Find the latest wheel file in the dist directory."""
-    wheels = glob.glob(os.path.join(THIS_ROOT, "dist", "*.whl"))
-    if not wheels:
+def find_latest_wheel(dist_dir: str = "dist") -> str:
+    """Find the latest wheel file in the dist directory.
+
+    Args:
+        dist_dir: The directory to search for wheel files.
+
+    Returns:
+        The path to the latest wheel file, or None if no wheel files are found.
+    """
+    wheel_files = glob.glob(os.path.join(THIS_ROOT, dist_dir, "*.whl"))
+    if not wheel_files:
         return None
-    return sorted(wheels, key=os.path.getmtime)[-1]
+    return max(wheel_files, key=os.path.getctime)
 
 
 def build_no_test(session: nox.Session) -> None:
@@ -146,3 +153,67 @@ def build_no_test(session: nox.Session) -> None:
         session.log(f"Successfully built wheel: {os.path.basename(latest_wheel)}")
     else:
         session.log("Warning: No wheel found after build.")
+
+
+def test_windows_compatibility(session: nox.Session) -> None:
+    """Test Windows compatibility by building and testing on Windows.
+
+    This session is specifically designed for testing Windows compatibility
+    and ensuring proper DLL loading.
+    """
+    # Check if we're on Windows
+    if platform.system() != "Windows":
+        session.skip("This session is only for Windows platforms")
+
+    # Install build dependencies including CMake
+    retry_command(
+        session,
+        session.install,
+        "build",
+        "wheel",
+        "setuptools>=42.0.0",
+        "scikit-build-core>=0.5.0",
+        "pybind11>=2.10.0",
+        "numpy>=1.20.0",
+        "cmake>=3.15",  # 确保安装 CMake
+        max_retries=3,
+    )
+
+    # 验证 CMake 是否已安装
+    session.run("cmake", "--version", silent=True)
+    session.log("CMake installed successfully")
+
+    # Build the wheel
+    session.log("Building wheel for Windows...")
+    session.run("python", "-m", "build", "--wheel", "--no-isolation")
+
+    # Find the wheel file
+    wheel_file = find_latest_wheel()
+    if not wheel_file:
+        session.error("Failed to build wheel")
+
+    # Install the wheel
+    session.log(f"Installing wheel: {wheel_file}")
+    retry_command(session, session.install, wheel_file, max_retries=3)
+
+    # Install test dependencies
+    retry_command(
+        session, session.install, "pytest>=7.3.1", "pytest-cov>=4.1.0", max_retries=3
+    )
+
+    # Test import
+    session.log("Testing import...")
+    import_statement = (
+        f"import {MODULE_NAME}; "
+        f"print(f'Successfully imported {MODULE_NAME} {{getattr({MODULE_NAME}, \""
+        f'__version__", "unknown")}}\')'
+    )
+    session.run("python", "-c", import_statement)
+
+    # Run basic tests
+    test_root = os.path.join(THIS_ROOT, "tests")
+    if not os.path.exists(test_root):
+        test_root = os.path.join(THIS_ROOT, "src", MODULE_NAME, "test")
+
+    session.log("Running tests...")
+    session.run("pytest", f"--rootdir={test_root}", "tests/test_basic.py", "-v")
