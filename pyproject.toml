@@ -99,7 +99,7 @@ CMAKE_POSITION_INDEPENDENT_CODE = "ON"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.6.3"
+version = "0.6.4"
 tag-format = "$version"
 update_changelog_on_bump = true
 change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "ci", "build", "docs", "test", "chore"]
