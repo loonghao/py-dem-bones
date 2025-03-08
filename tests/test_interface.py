@@ -7,7 +7,6 @@ the DemBonesWrapper and DemBonesExtWrapper classes.
 
 import numpy as np
 import pytest
-import py_dem_bones as pdb
 from py_dem_bones import ParameterError, NameError, IndexError
 from py_dem_bones.base import DemBonesWrapper, DemBonesExtWrapper
 

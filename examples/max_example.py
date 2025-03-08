@@ -8,7 +8,7 @@ Note: This example requires 3ds Max 2024+ to be installed and the script to be r
 """
 
 import numpy as np
-from typing import Dict, List, Tuple, Optional, Any, Union
+from typing import List, Optional
 
 import py_dem_bones as pdb
 from py_dem_bones.interfaces import DCCInterface

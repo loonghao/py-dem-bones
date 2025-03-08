@@ -3,28 +3,8 @@ name: Build and Release
 on:
   push:
     tags: 
-      - "[0-9]+\\.[0-9]+\\.[0-9]+.*"
-    branches: [ main ]
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - '.github/*.md'
-      - '.github/ISSUE_TEMPLATE/**'
-      - 'LICENSE*'
-      - '.readthedocs.yml'
-      - 'CITATION.cff'
-      - 'CODE_OF_CONDUCT.md'
-      - 'CONTRIBUTING.md'
-      - '**.rst'
-      - '.hound.yml'
-      - '.gitignore'
-      - '.gitmodules'
-      - '.coveragerc'
-      - 'codecov.yml'
-      - '.flake8'
-      - '.pylintrc'
-      - 'renovate.json'
-  pull_request:
+      - 'v*'
+      - '[0-9]+.[0-9]+.[0-9]+*'
     branches: [ main ]
     paths-ignore:
       - '**.md'
@@ -47,6 +27,27 @@ on:
       - 'renovate.json'
   release:
     types: [published]
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/*.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - 'LICENSE*'
+      - '.readthedocs.yml'
+      - 'CITATION.cff'
+      - 'CODE_OF_CONDUCT.md'
+      - 'CONTRIBUTING.md'
+      - '**.rst'
+      - '.hound.yml'
+      - '.gitignore'
+      - '.gitmodules'
+      - '.coveragerc'
+      - 'codecov.yml'
+      - '.flake8'
+      - '.pylintrc'
+      - 'renovate.json'
   workflow_dispatch:
     inputs:
       fast-mode:

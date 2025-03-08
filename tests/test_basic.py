@@ -5,7 +5,6 @@ and basic functionality tests.
 """
 
 import numpy as np
-import pytest
 import py_dem_bones as pdb
 from py_dem_bones.base import DemBonesWrapper
 
