@@ -7,7 +7,6 @@ matrix operations and data conversion utilities.
 import numpy as np
 import pytest
 import py_dem_bones as pdb
-from py_dem_bones import ParameterError
 from py_dem_bones.base import DemBonesWrapper
 
 

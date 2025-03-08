@@ -7,7 +7,6 @@ exceptions are correctly translated to Python exceptions.
 import builtins
 import numpy as np
 import pytest
-import py_dem_bones as pdb
 from py_dem_bones import (
     ComputationError, ConfigurationError, DemBonesError, IndexError,
     IOError, NameError, NotImplementedError, ParameterError

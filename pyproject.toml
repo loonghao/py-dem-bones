@@ -10,7 +10,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "py-dem-bones"
-version = "0.6.4"
+version = "0.6.5"
 description = "Python bindings for the Dem Bones library"
 readme = "README.md"
 requires-python = ">=3.7"
@@ -109,9 +109,10 @@ update_changelog_on_bump = true
 change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "ci", "build", "docs", "test", "chore"]
 version-files = [
     "pyproject.toml:version",
-    "src/py_dem_bones/__version__.py",
-    "docs/conf.py",
-    ".github/CITATION.cff",
+    "src/py_dem_bones/__version__.py:__version__",
+    "docs/conf.py:release",
+    "docs/conf.py:version",
+    ".github/CITATION.cff:version",
 ]
 
 [tool.pytest.ini_options]

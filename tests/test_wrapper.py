@@ -8,7 +8,6 @@ from unittest.mock import patch
 
 import numpy as np
 import pytest
-import py_dem_bones as pdb
 from py_dem_bones import ParameterError, NameError, ComputationError, IndexError
 from py_dem_bones.base import DemBonesWrapper, DemBonesExtWrapper
 

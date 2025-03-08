@@ -12,8 +12,4 @@ PYBIND11_MODULE(_py_dem_bones, m) {
     // Initialize submodules
     init_dem_bones(m);
     init_dem_bones_ext(m);
-    
-    // Version information
-    m.attr("__version__") = "0.1.0";
-    m.attr("__dem_bones_version__") = "v1.2.1-2-g09b899b";
 }

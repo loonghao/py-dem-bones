@@ -5,11 +5,6 @@ Dem Bones is an automated algorithm to extract the Linear Blend Skinning (LBS)
 with bone transformations from a set of example meshes.
 """
 
-
-# Import built-in modules
-
-# Import third-party modules
-
 # Import local modules
 from py_dem_bones.__version__ import __dem_bones_version__, __version__
 from py_dem_bones._py_dem_bones import DemBones as _DemBones
