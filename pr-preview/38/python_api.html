@@ -333,7 +333,7 @@ Type stubs are automatically generated during the build process and are included
 
 <dl class="py method">
 <dt class="sig sig-object py" id="py_dem_bones.DemBones.compute">
-<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBones" title="py_dem_bones._py_dem_bones.DemBones"><span class="pre">py_dem_bones._py_dem_bones.DemBones</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBones.compute" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBones" title="py_dem_bones._py_dem_bones.DemBones"><span class="pre">py_dem_bones._py_dem_bones.DemBones</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><span class="pre">tuple</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBones.compute" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -523,256 +523,10 @@ Type stubs are automatically generated during the build process and are included
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="py_dem_bones.DemBonesExt">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py_dem_bones.</span></span><span class="sig-name descname"><span class="pre">DemBonesExt</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pybind11_object</span></code></p>
-<p>Extended class to handle hierarchical skeleton with local rotations/translations and bind matrices</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.__init__" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.__new__">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DemBonesExt.__new__" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.bind">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bind</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.bind" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.bindUpdate">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bindUpdate</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.bindUpdate" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.boneName">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">boneName</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.boneName" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.clear" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.compute">
-<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.compute" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.computeRTB">
-<span class="sig-name descname"><span class="pre">computeRTB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.computeRTB" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.computeTranformations">
-<span class="sig-name descname"><span class="pre">computeTranformations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.computeTranformations" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.computeWeights">
-<span class="sig-name descname"><span class="pre">computeWeights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.computeWeights" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.fStart">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fStart</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.fStart" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.fTime">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fTime</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.fTime" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.fv">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fv</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.fv" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.get_animated_poses">
-<span class="sig-name descname"><span class="pre">get_animated_poses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">[</span></span><span class="pre">m</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">n</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.get_animated_poses" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.get_bone_names">
-<span class="sig-name descname"><span class="pre">get_bone_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.get_bone_names" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.get_rest_pose">
-<span class="sig-name descname"><span class="pre">get_rest_pose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">[</span></span><span class="pre">m</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">n</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.get_rest_pose" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.get_transformations">
-<span class="sig-name descname"><span class="pre">get_transformations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.get_transformations" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.get_weights">
-<span class="sig-name descname"><span class="pre">get_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.get_weights" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.init">
-<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.init" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.iter">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iter</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.iter" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.iterTransformations">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iterTransformations</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.iterTransformations" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.iterWeights">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iterWeights</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.iterWeights" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.lockM">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lockM</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.lockM" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.lockW">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lockW</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.lockW" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.m">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">m</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.m" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.nB">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nB</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.nB" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.nF">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nF</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.nF" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.nInitIters">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nInitIters</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.nInitIters" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.nIters">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nIters</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.nIters" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.nS">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nS</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.nS" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.nTransIters">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nTransIters</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.nTransIters" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.nV">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nV</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.nV" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.nWeightsIters">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nWeightsIters</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.nWeightsIters" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.nnz">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nnz</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.nnz" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.parent">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.parent" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.rmse">
-<span class="sig-name descname"><span class="pre">rmse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.rmse" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.set_animated_poses">
-<span class="sig-name descname"><span class="pre">set_animated_poses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">[</span></span><span class="pre">m</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">n</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.set_animated_poses" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.set_bone_names">
-<span class="sig-name descname"><span class="pre">set_bone_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.set_bone_names" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.set_rest_pose">
-<span class="sig-name descname"><span class="pre">set_rest_pose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">[</span></span><span class="pre">m</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">n</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.set_rest_pose" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.set_transformations">
-<span class="sig-name descname"><span class="pre">set_transformations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">[</span></span><span class="pre">m</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">n</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.set_transformations" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.set_weights">
-<span class="sig-name descname"><span class="pre">set_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py_dem_bones.DemBonesExt" title="py_dem_bones._py_dem_bones.DemBonesExt"><span class="pre">py_dem_bones._py_dem_bones.DemBonesExt</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">[</span></span><span class="pre">m</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">n</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.set_weights" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.subjectID">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">subjectID</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.subjectID" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.transAffine">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transAffine</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.transAffine" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.transAffineNorm">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transAffineNorm</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.transAffineNorm" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.u">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">u</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.u" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.v">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">v</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.v" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.weightEps">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weightEps</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.weightEps" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.weightsSmooth">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weightsSmooth</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.weightsSmooth" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExt.weightsSmoothStep">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weightsSmoothStep</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt.weightsSmoothStep" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<span class="sig-prename descclassname"><span class="pre">py_dem_bones.</span></span><span class="sig-name descname"><span class="pre">DemBonesExt</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExt" title="Link to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">DemBonesExtd</span></code></p>
 </dd></dl>
 
 </section>
@@ -1082,13 +836,18 @@ adding support for named bones, error handling, and convenience methods.</p>
 <dd><p>Compute the skinning weights and transformations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>True if computation succeeded</p>
+<dd class="field-odd"><p><dl class="simple">
+<dt>(success, error_message) where success is a boolean indicating</dt><dd><p>whether the computation succeeded, and error_message is a string
+with details if it failed</p>
+</dd>
+</dl>
+</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#py_dem_bones.ComputationError" title="py_dem_bones.ComputationError"><strong>ComputationError</strong></a> – If the computation fails</p>
+<dd class="field-odd"><p><a class="reference internal" href="#py_dem_bones.ComputationError" title="py_dem_bones.ComputationError"><strong>ComputationError</strong></a> – If the computation fails with an unexpected error</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1118,23 +877,6 @@ the DemBonesExt C++ class, such as advanced skinning algorithms.</p>
 <dt class="sig sig-object py" id="py_dem_bones.DemBonesExtWrapper.clear">
 <span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DemBonesExtWrapper.clear" title="Link to this definition">¶</a></dt>
 <dd><p>Clear all data and reset the computation.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DemBonesExtWrapper.compute">
-<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DemBonesExtWrapper.compute" title="Link to this definition">¶</a></dt>
-<dd><p>Compute the skinning weights and transformations.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>True if computation succeeded</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#py_dem_bones.ComputationError" title="py_dem_bones.ComputationError"><strong>ComputationError</strong></a> – If the computation fails</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1426,6 +1168,30 @@ the DemBonesExt C++ class, such as advanced skinning algorithms.</p>
 <dt class="sig sig-object py" id="py_dem_bones.DemBonesExtWrapper.bind_update">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bind_update</span></span><a class="headerlink" href="#py_dem_bones.DemBonesExtWrapper.bind_update" title="Link to this definition">¶</a></dt>
 <dd><p>Get the bind update parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py_dem_bones.DemBonesExtWrapper.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DemBonesExtWrapper.compute" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the skinning weights and transformations.</p>
+<p>This method overrides the base class method to include additional parameters
+specific to DemBonesExt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>(success, error_message) where success is a boolean indicating</dt><dd><p>whether the computation succeeded, and error_message is a string
+with details if it failed</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#py_dem_bones.ComputationError" title="py_dem_bones.ComputationError"><strong>ComputationError</strong></a> – If the computation fails with an unexpected error</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1792,97 +1558,6 @@ set self.__traceback__ to tb and return self.</p>
 </section>
 <section id="interfaces">
 <h2>Interfaces<a class="headerlink" href="#interfaces" title="Link to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="py_dem_bones.DCCInterface">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py_dem_bones.</span></span><span class="sig-name descname"><span class="pre">DCCInterface</span></span><a class="headerlink" href="#py_dem_bones.DCCInterface" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
-<p>Abstract base class for DCC software integration.</p>
-<p>This class defines methods that must be implemented by any class
-that wants to provide integration between py-dem-bones and a specific
-DCC software application.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DCCInterface.from_dcc_data">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dcc_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DCCInterface.from_dcc_data" title="Link to this definition">¶</a></dt>
-<dd><p>Import data from DCC software into DemBones.</p>
-<p>This method should convert data structures specific to the DCC software
-into the format required by the DemBones library.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>**kwargs</strong> – DCC-specific parameters</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if import was successful</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DCCInterface.to_dcc_data">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_dcc_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DCCInterface.to_dcc_data" title="Link to this definition">¶</a></dt>
-<dd><p>Export DemBones data to DCC software.</p>
-<p>This method should convert DemBones data structures into the format
-required by the DCC software.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>**kwargs</strong> – DCC-specific parameters</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if export was successful</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DCCInterface.convert_matrices">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">convert_matrices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_dcc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DCCInterface.convert_matrices" title="Link to this definition">¶</a></dt>
-<dd><p>Convert between DCC-specific and DemBones matrix formats.</p>
-<p>Many DCC software applications use different coordinate systems,
-matrix layouts, or conventions than those used by DemBones.
-This method handles the conversion between these formats.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>matrices</strong> – The matrices to convert</p></li>
-<li><p><strong>from_dcc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, convert from DCC format to DemBones format,
-otherwise convert from DemBones format to DCC format</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The converted matrices</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py_dem_bones.DCCInterface.apply_coordinate_system_transform">
-<span class="sig-name descname"><span class="pre">apply_coordinate_system_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_dcc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DCCInterface.apply_coordinate_system_transform" title="Link to this definition">¶</a></dt>
-<dd><p>Apply coordinate system transformations.</p>
-<p>This is a utility method to handle coordinate system differences
-between DCC software and DemBones. The base implementation is a
-no-op that returns the data unchanged. Subclasses should override
-this method if the DCC software uses a different coordinate system.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – The data to transform</p></li>
-<li><p><strong>from_dcc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, transform from DCC to DemBones coordinate system,
-otherwise transform from DemBones to DCC coordinate system</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The transformed data</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 </section>
 </section>
 
@@ -1994,58 +1669,7 @@ otherwise transform from DemBones to DCC coordinate system</p></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBones.weightsSmoothStep"><code class="docutils literal notranslate"><span class="pre">DemBones.weightsSmoothStep</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt"><code class="docutils literal notranslate"><span class="pre">DemBonesExt</span></code></a><ul>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.__init__"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.__init__()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.__new__"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.__new__()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.bind"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.bind</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.bindUpdate"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.bindUpdate</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.boneName"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.boneName</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.clear"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.clear()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.compute"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.compute()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.computeRTB"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.computeRTB()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.computeTranformations"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.computeTranformations()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.computeWeights"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.computeWeights()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.fStart"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.fStart</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.fTime"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.fTime</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.fv"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.fv</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.get_animated_poses"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.get_animated_poses()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.get_bone_names"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.get_bone_names()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.get_rest_pose"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.get_rest_pose()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.get_transformations"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.get_transformations()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.get_weights"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.get_weights()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.init"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.init()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.iter"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.iter</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.iterTransformations"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.iterTransformations</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.iterWeights"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.iterWeights</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.lockM"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.lockM</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.lockW"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.lockW</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.m"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.m</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.nB"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.nB</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.nF"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.nF</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.nInitIters"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.nInitIters</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.nIters"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.nIters</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.nS"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.nS</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.nTransIters"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.nTransIters</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.nV"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.nV</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.nWeightsIters"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.nWeightsIters</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.nnz"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.nnz</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.parent"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.parent</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.rmse"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.rmse()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.set_animated_poses"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.set_animated_poses()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.set_bone_names"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.set_bone_names()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.set_rest_pose"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.set_rest_pose()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.set_transformations"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.set_transformations()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.set_weights"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.set_weights()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.subjectID"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.subjectID</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.transAffine"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.transAffine</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.transAffineNorm"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.transAffineNorm</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.u"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.u</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.v"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.v</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.weightEps"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.weightEps</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.weightsSmooth"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.weightsSmooth</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExt.weightsSmoothStep"><code class="docutils literal notranslate"><span class="pre">DemBonesExt.weightsSmoothStep</span></code></a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#py_dem_bones.DemBonesExt"><code class="docutils literal notranslate"><span class="pre">DemBonesExt</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#wrapper-classes">Wrapper Classes</a><ul>
@@ -2082,7 +1706,6 @@ otherwise transform from DemBones to DCC coordinate system</p></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper</span></code></a><ul>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.bone_names"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.bone_names</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.clear"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.clear()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.compute"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.compute()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.get_bind_matrix"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.get_bind_matrix()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.get_bone_index"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.get_bone_index()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.get_bone_names"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.get_bone_names()</span></code></a></li>
@@ -2108,6 +1731,7 @@ otherwise transform from DemBones to DCC coordinate system</p></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.weight_smoothness"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.weight_smoothness</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.__init__"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.__init__()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.bind_update"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.bind_update</span></code></a></li>
+<li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.compute"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.compute()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -2185,16 +1809,7 @@ otherwise transform from DemBones to DCC coordinate system</p></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#type-annotations">Type Annotations</a></li>
-<li><a class="reference internal" href="#interfaces">Interfaces</a><ul>
-<li><a class="reference internal" href="#py_dem_bones.DCCInterface"><code class="docutils literal notranslate"><span class="pre">DCCInterface</span></code></a><ul>
-<li><a class="reference internal" href="#py_dem_bones.DCCInterface.from_dcc_data"><code class="docutils literal notranslate"><span class="pre">DCCInterface.from_dcc_data()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DCCInterface.to_dcc_data"><code class="docutils literal notranslate"><span class="pre">DCCInterface.to_dcc_data()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DCCInterface.convert_matrices"><code class="docutils literal notranslate"><span class="pre">DCCInterface.convert_matrices()</span></code></a></li>
-<li><a class="reference internal" href="#py_dem_bones.DCCInterface.apply_coordinate_system_transform"><code class="docutils literal notranslate"><span class="pre">DCCInterface.apply_coordinate_system_transform()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li><a class="reference internal" href="#interfaces">Interfaces</a></li>
 </ul>
 </li>
 </ul>
