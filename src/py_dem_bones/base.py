@@ -12,7 +12,12 @@ import numpy as np
 # Import local modules
 from py_dem_bones._py_dem_bones import DemBones as _DemBones
 from py_dem_bones._py_dem_bones import DemBonesExt as _DemBonesExt
-from py_dem_bones.exceptions import ComputationError, IndexError, NameError, ParameterError
+from py_dem_bones.exceptions import (
+    ComputationError,
+    IndexError,
+    NameError,
+    ParameterError,
+)
 
 
 class DemBonesWrapper:

@@ -28,25 +28,4 @@ from . import base
 from . import exceptions
 from . import interfaces
 from . import utils
-
-__all__: list = [
-    "DemBones",
-    "DemBonesExt",
-    "_DemBones",
-    "_DemBonesExt",
-    "DemBonesWrapper",
-    "DemBonesExtWrapper",
-    "numpy_to_eigen",
-    "eigen_to_numpy",
-    "DemBonesError",
-    "ParameterError",
-    "ComputationError",
-    "IndexError",
-    "NameError",
-    "ConfigurationError",
-    "NotImplementedError",
-    "IOError",
-    "DCCInterface",
-]
-__dem_bones_version__: str = "v1.2.1-2-g09b899b"
-__version__: str = "0.1.0"
+__all__: list = ['DemBones', 'DemBonesExt', '_DemBones', '_DemBonesExt', 'DemBonesWrapper', 'DemBonesExtWrapper', 'numpy_to_eigen', 'eigen_to_numpy', 'DemBonesError', 'ParameterError', 'ComputationError', 'IndexError', 'NameError', 'ConfigurationError', 'NotImplementedError', 'IOError', 'DCCInterface']

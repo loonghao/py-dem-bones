@@ -129,3 +129,61 @@ python_files = "test_*.py"  # Test file naming convention
 python_classes = "Test*"  # Test class naming convention
 python_functions = "test_*"  # Test function naming convention
 addopts = "--cov=py_dem_bones --cov-report=term-missing --cov-report=xml:coverage.xml"  # Test parameters
+
+# isort configuration
+[tool.isort]
+profile = "black"  # Compatible with black formatter
+multi_line_output = 3  # Vertical hanging indent
+include_trailing_comma = true  # Include trailing comma in multi-line imports
+force_grid_wrap = 0  # Don't force grid wrap
+use_parentheses = true  # Use parentheses for imports
+ensure_newline_before_comments = true  # Ensure newline before comments
+line_length = 88  # Same as black's default line length
+known_first_party = ["py_dem_bones"]  # Treat py_dem_bones as first party
+known_third_party = ["numpy", "pybind11", "pytest"]  # Known third party imports
+skip = ["extern", "*.pyi"]  # Skip extern directory and .pyi files
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]  # Import sections order
+
+# ruff configuration
+[tool.ruff]
+line-length = 88  # Same as black's default line length
+target-version = "py37"  # Target Python 3.7
+select = ["E", "F", "W"]  # Error, Flake8, Warning
+# 忽略一些特定问题
+ignore = [
+    "E501",  # Line too long (handled by black)
+    "F821",  # Undefined name (issues with type stubs)
+]
+
+# Exclude files and directories
+exclude = [
+    ".git",
+    ".github",
+    "__pycache__",
+    "build",
+    "dist",
+    "extern",
+    "venv",
+    ".venv",
+    "*.egg-info",
+    "*.pyi",  # Exclude type stub files
+]
+
+# black configuration
+[tool.black]
+line-length = 88  # Default line length
+target-version = ["py37", "py38", "py39", "py310", "py311"]  # Target Python versions
+include = '\.pyi?$'  # Include Python files and type stubs
+exclude = '''(
+    /(\.
+      | \.git
+      | \.github
+      | __pycache__
+      | build
+      | dist
+      | extern
+      | venv
+      | \.venv
+      | .*\.egg-info
+    )/
+)'''  # Exclude patterns
