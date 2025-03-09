@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.15...3.30)
 project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
 
-# 使用 scikit-build-core 的 FindPython 支持
+# Use scikit-build-core's FindPython support
 find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 
-# 如果 Python 版本是 3.7，输出一些调试信息
+# If Python version is 3.7, output some debug information
 if(Python_VERSION MATCHES "^3\.7")
   message(STATUS "Found Python 3.7: ${Python_VERSION}")
   message(STATUS "  Python_EXECUTABLE: ${Python_EXECUTABLE}")
@@ -43,13 +43,13 @@ if(WIN32)
       # Use Multi-threaded Debug DLL runtime library (/MDd) for Debug builds
       set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
       
-      # 使用导出符号表文件
+      # Use export symbol table file
       set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
       
-      # 使用静态链接到Python库
+      # Use static linking to Python library
       set(PYTHON_LINK_STATIC ON)
       
-      # 检查是否指定了平台工具集
+      # Check if platform toolset is specified
       if(NOT CMAKE_GENERATOR_TOOLSET)
         # Set the default toolset based on the Visual Studio version
         if(MSVC_VERSION GREATER_EQUAL 1920)
@@ -93,6 +93,46 @@ if(NOT Python_NumPy_FOUND)
     endif()
 endif()
 
+# Find OpenMP
+find_package(OpenMP)
+if(OpenMP_CXX_FOUND)
+  message(STATUS "Found OpenMP: ${OpenMP_CXX_VERSION}")
+else()
+  message(STATUS "OpenMP not found - parallel code will be disabled")
+endif()
+
+# Add spdlog for logging
+include(FetchContent)
+
+# Configure spdlog to use the same runtime library as our module
+set(SPDLOG_BUILD_SHARED OFF CACHE BOOL "Build shared library" FORCE)
+set(SPDLOG_WCHAR_SUPPORT OFF CACHE BOOL "Support wchar api" FORCE)
+set(SPDLOG_WCHAR_FILENAMES OFF CACHE BOOL "Support wchar filenames" FORCE)
+set(SPDLOG_INSTALL OFF CACHE BOOL "Generate the install target" FORCE)
+set(SPDLOG_NO_EXCEPTIONS OFF CACHE BOOL "Compile with -fno-exceptions" FORCE)
+
+# Make sure spdlog uses the same runtime library as our module (/MD instead of /MT)
+if(MSVC)
+  # Force spdlog to use MD runtime
+  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+  set(SPDLOG_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+  
+  # Ensure our module also uses MD runtime
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
+  
+  # Remove any MT flags if present
+  string(REPLACE "/MT" "/MD" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+  string(REPLACE "/MTd" "/MDd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+endif()
+
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG v1.12.0  # Use the latest stable version
+)
+FetchContent_MakeAvailable(spdlog)
+
 # Print debug information
 message(STATUS "Python_EXECUTABLE: ${Python_EXECUTABLE}")
 message(STATUS "Python_LIBRARIES: ${Python_LIBRARIES}")
@@ -124,14 +164,14 @@ if(NOT pybind11_FOUND)
             if(WIN32)
                 set_target_properties(${target_name} PROPERTIES PREFIX "" SUFFIX ".pyd")
                 
-                # 确保正确链接到Python库
+                # Ensure correct linking to Python library
                 target_link_libraries(${target_name} PRIVATE ${Python_LIBRARIES})
                 
-                # 添加Windows特定的编译定义
+                # Add Windows-specific compile definitions
                 target_compile_definitions(${target_name} PRIVATE
                     _WINDOWS
-                    NOMINMAX  # 避免min/max宏与STL冲突
-                    WIN32_LEAN_AND_MEAN  # 减少Windows头文件包含
+                    NOMINMAX  # Avoid min/max macro conflicts with STL
+                    WIN32_LEAN_AND_MEAN  # Reduce Windows header file includes
                 )
             else()
                 set_target_properties(${target_name} PROPERTIES PREFIX "" SUFFIX ".so")
@@ -217,62 +257,31 @@ pybind11_add_module(_py_dem_bones
     src/binding/py_dem_bones_module.cpp
 )
 
-# Note: Do not directly define Py_LIMITED_API, as it will cause compilation errors in pybind11 internal classes and functions
-# We temporarily remove ABI3 compatibility mode, as it is not compatible with the current pybind11 code
+# Link OpenMP if found
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(_py_dem_bones PRIVATE OpenMP::OpenMP_CXX)
+    target_compile_definitions(_py_dem_bones PRIVATE _OPENMP)
+endif()
 
-# Set target properties
-set_target_properties(_py_dem_bones PROPERTIES
-    OUTPUT_NAME "_py_dem_bones"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/py_dem_bones"
-)
+# Link spdlog for logging
+target_link_libraries(_py_dem_bones PRIVATE spdlog::spdlog)
+target_compile_definitions(_py_dem_bones PRIVATE WITH_SPDLOG)
 
-# Windows-specific DLL handling
+# We're not using ABI3 compatibility mode as it causes issues with pybind11
+# Uncomment this if you want to enable ABI3 compatibility
+# if(Python_VERSION VERSION_GREATER_EQUAL 3.7)
+#     target_compile_definitions(_py_dem_bones PRIVATE
+#         Py_LIMITED_API=0x03070000  # Python 3.7 API
+#     )
+#     message(STATUS "Enabling ABI3 compatibility mode for Python 3.7+")
+# endif()
+
+# Set extension module suffix
 if(WIN32)
-    # Copy required DLLs to the output directory
-    # If using MSVC, copy the Visual C++ runtime DLL
-    if(MSVC)
-        # 使用静态库
-        target_compile_options(_py_dem_bones PRIVATE 
-            "/MT$<$<CONFIG:Debug>:d>"
-        )
-        
-        # 关闭自动导出所有符号
-        set_property(TARGET _py_dem_bones PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS OFF)
-        
-        # 指定导出符号的宏定义
-        target_compile_definitions(_py_dem_bones PRIVATE 
-            "PYBIND11_EXPORT=__declspec(dllexport)"
-        )
-        
-        # 指定导出符号表文件
-        set_property(TARGET _py_dem_bones APPEND_STRING PROPERTY LINK_FLAGS 
-            " /EXPORT:PyInit__py_dem_bones"
-        )
-    endif()
-endif()
-
-# Install the module - Ensure installation to the correct directory
-install(TARGETS _py_dem_bones DESTINATION py_dem_bones)
-
-# Copy Python files
-file(GLOB PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/py_dem_bones/*.py")
-foreach(PYTHON_FILE ${PYTHON_FILES})
-    get_filename_component(FILENAME ${PYTHON_FILE} NAME)
-    configure_file(${PYTHON_FILE} "${CMAKE_CURRENT_BINARY_DIR}/py_dem_bones/${FILENAME}" COPYONLY)
-endforeach()
-
-# Set compiler options based on platform
-if(MSVC)
-    target_compile_definitions(_py_dem_bones PRIVATE WIN32 _WINDOWS)
-    target_compile_options(_py_dem_bones PRIVATE
-        /W3     # Warning level 3 (less strict than W4)
-        /MP     # Multi-processor compilation
-        /wd4244 # Disable warning C4244: conversion from 'double' to 'float'
-        /wd4305 # Disable warning C4305: truncation from 'double' to 'float'
-        /bigobj # Support for large object files
-    )
-elseif(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    target_compile_options(_py_dem_bones PRIVATE -Wall -Wextra -Wno-conversion)
+    set_target_properties(_py_dem_bones PROPERTIES PREFIX "" SUFFIX ".pyd")
 else()
-    target_compile_options(_py_dem_bones PRIVATE -Wall -Wextra -Wno-conversion)
+    set_target_properties(_py_dem_bones PROPERTIES PREFIX "" SUFFIX ".so")
 endif()
+
+# Install the extension module
+install(TARGETS _py_dem_bones DESTINATION py_dem_bones)

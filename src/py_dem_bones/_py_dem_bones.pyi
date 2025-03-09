@@ -2,6 +2,7 @@
 Python bindings for the Dem Bones library
 """
 from __future__ import annotations
+
 import numpy
 
 __all__ = ["DemBones", "DemBonesExt", "DemBonesExtF", "DemBonesF"]
@@ -217,6 +218,3 @@ class DemBonesF:
     def iterTransformations(self) -> int: ...
     @property
     def iterWeights(self) -> int: ...
-
-__dem_bones_version__: str = "v1.2.1-2-g09b899b"
-__version__: str = "0.1.0"

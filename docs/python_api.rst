@@ -1,77 +1,87 @@
 Python API Reference
 ===================
 
+.. note::
+   This documentation is generated from the Python API and its type stubs. 
+   Type stubs are automatically generated during the build process and are included in the package distribution.
+
 This page provides detailed documentation for the Python API of the py-dem-bones package. For a high-level overview of the API, see the :doc:`API Reference <api>` page.
+
+.. currentmodule:: py_dem_bones
 
 Core Classes
 -------------
 
-.. autoclass:: py_dem_bones.DemBones
+.. autoclass:: DemBones
    :members:
    :undoc-members:
    :show-inheritance:
    :special-members: __init__
+   :inherited-members:
 
-.. autoclass:: py_dem_bones.DemBonesExt
+.. autoclass:: DemBonesExt
    :members:
    :undoc-members:
    :show-inheritance:
    :special-members: __init__
+   :inherited-members:
 
 Wrapper Classes
 ----------------
 
-.. autoclass:: py_dem_bones.DemBonesWrapper
+.. autoclass:: DemBonesWrapper
    :members:
    :undoc-members:
    :show-inheritance:
    :special-members: __init__
+   :inherited-members:
 
-.. autoclass:: py_dem_bones.DemBonesExtWrapper
+.. autoclass:: DemBonesExtWrapper
    :members:
    :undoc-members:
    :show-inheritance:
    :special-members: __init__
+   :inherited-members:
 
 Exception Classes
 -----------------
 
-.. autoclass:: py_dem_bones.DemBonesError
+.. autoclass:: DemBonesError
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: py_dem_bones.ParameterError
+.. autoclass:: ParameterError
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: py_dem_bones.ComputationError
+.. autoclass:: ComputationError
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: py_dem_bones.IndexError
+.. autoclass:: IndexError
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: py_dem_bones.NameError
+.. autoclass:: NameError
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: py_dem_bones.ConfigurationError
+.. autoclass:: ConfigurationError
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: py_dem_bones.NotImplementedError
+.. autoclass:: NotImplementedError
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: py_dem_bones.IOError
+.. autoclass:: IOError
    :members:
    :undoc-members:
    :show-inheritance:
@@ -79,14 +89,31 @@ Exception Classes
 Utility Functions
 -----------------
 
-.. autofunction:: py_dem_bones.numpy_to_eigen
+.. autofunction:: numpy_to_eigen
 
-.. autofunction:: py_dem_bones.eigen_to_numpy
+.. autofunction:: eigen_to_numpy
+
+Type Annotations
+---------------
+
+The package provides type annotations for all public APIs, which can be used with static type checkers like mypy or pyright.
+
+Example:
+
+.. code-block:: python
+
+   from py_dem_bones import DemBonesWrapper
+   import numpy as np
+   
+   # Type checkers will recognize these types
+   bones = DemBonesWrapper()
+   vertices = np.random.rand(10, 3)  # 10 vertices, 3 coordinates each
+   weights = bones.compute(vertices)
 
 Interfaces
 ----------
 
-.. autoclass:: py_dem_bones.DCCInterface
+.. autoclass:: DCCInterface
    :members:
    :undoc-members:
    :show-inheritance:

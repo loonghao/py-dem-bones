@@ -62,10 +62,9 @@ jobs:
       
       - name: Build documentation
         run: |
-          python -m pip install nox
-          python -m pip install -e ".[docs]"
-          python -m nox -s docs
-      
+          python -m pip install uv
+          uvx nox -s docs
+
       - name: Upload documentation preview
         uses: actions/upload-artifact@v4
         with:
@@ -129,9 +128,8 @@ jobs:
       
       - name: Build documentation
         run: |
-          python -m pip install nox
-          python -m pip install -e ".[docs]"
-          python -m nox -s docs
+          python -m pip install uv
+          uvx nox -s docs
       
       - name: Setup Pages
         id: pages
