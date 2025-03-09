@@ -303,6 +303,11 @@
         <article role="main" id="furo-main-content">
           <section id="python-api-reference">
 <h1>Python API Reference<a class="headerlink" href="#python-api-reference" title="Link to this heading">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This documentation is generated from the Python API and its type stubs.
+Type stubs are automatically generated during the build process and are included in the package distribution.</p>
+</div>
 <p>This page provides detailed documentation for the Python API of the py-dem-bones package. For a high-level overview of the API, see the <a class="reference internal" href="api.html"><span class="doc">API Reference</span></a> page.</p>
 <section id="core-classes">
 <h2>Core Classes<a class="headerlink" href="#core-classes" title="Link to this heading">¶</a></h2>
@@ -1771,6 +1776,20 @@ set self.__traceback__ to tb and return self.</p>
 </dd></dl>
 
 </section>
+<section id="type-annotations">
+<h2>Type Annotations<a class="headerlink" href="#type-annotations" title="Link to this heading">¶</a></h2>
+<p>The package provides type annotations for all public APIs, which can be used with static type checkers like mypy or pyright.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py_dem_bones</span><span class="w"> </span><span class="kn">import</span> <span class="n">DemBonesWrapper</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Type checkers will recognize these types</span>
+<span class="n">bones</span> <span class="o">=</span> <span class="n">DemBonesWrapper</span><span class="p">()</span>
+<span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># 10 vertices, 3 coordinates each</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="n">bones</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
 <section id="interfaces">
 <h2>Interfaces<a class="headerlink" href="#interfaces" title="Link to this heading">¶</a></h2>
 <dl class="py class">
@@ -2165,6 +2184,7 @@ otherwise transform from DemBones to DCC coordinate system</p></li>
 <li><a class="reference internal" href="#py_dem_bones.eigen_to_numpy"><code class="docutils literal notranslate"><span class="pre">eigen_to_numpy()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#type-annotations">Type Annotations</a></li>
 <li><a class="reference internal" href="#interfaces">Interfaces</a><ul>
 <li><a class="reference internal" href="#py_dem_bones.DCCInterface"><code class="docutils literal notranslate"><span class="pre">DCCInterface</span></code></a><ul>
 <li><a class="reference internal" href="#py_dem_bones.DCCInterface.from_dcc_data"><code class="docutils literal notranslate"><span class="pre">DCCInterface.from_dcc_data()</span></code></a></li>
