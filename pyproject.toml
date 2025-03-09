@@ -1,19 +1,24 @@
-[build-system]
-requires = [
-    "scikit-build-core>=0.5.0",
-    "pybind11>=2.10.0",
-    "numpy>=1.20.0",
-    "setuptools>=42.0.0",
-    "wheel>=0.36.0",
-]
-build-backend = "scikit_build_core.build"
+# py-dem-bones: Python bindings for the Dem Bones library
+# This project uses scikit-build-core to build C++ extensions and Poetry for dependency management
 
+[build-system]
+# Build system dependencies
+requires = [
+    "scikit-build-core>=0.5.0",  # For building C++ extensions
+    "pybind11>=2.10.0",          # For Python/C++ bindings
+    "numpy>=1.20.0",             # Numerical computation library
+    "setuptools>=42.0.0",        # Installation tools
+    "wheel>=0.36.0",             # Wheel packaging tool
+    "poetry-core>=1.0.0",        # Poetry core functionality
+]
+build-backend = "scikit_build_core.build"  # Use scikit-build-core as the build backend
+
+# PEP 621 project metadata for scikit-build-core
 [project]
 name = "py-dem-bones"
 version = "0.6.5"
 description = "Python bindings for the Dem Bones library"
 readme = "README.md"
-requires-python = ">=3.7"
 license = {text = "BSD-3-Clause"}
 authors = [
     {name = "Long Hao", email = "hal.long@outlook.com"},
@@ -38,76 +43,78 @@ classifiers = [
     "Topic :: Multimedia :: Graphics :: 3D Modeling",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+# Support Python 3.7 and above
+requires-python = ">=3.7"
 dependencies = [
-    "numpy>=1.26.4,<1.27.0; python_version < '3.8'",
-    "numpy>=1.20.0; python_version >= '3.8'",
+    "numpy>=1.20.0",  # Numerical computation library
 ]
 
-[project.optional-dependencies]
-dev = [
-    "nox>=2023.4.22",
-]
-test = [
-    "pytest>=6.0.0",
-    "pytest-cov>=2.12.0",
-]
-docs = [
-    "sphinx>=7.0.0",
-    "pydata-sphinx-theme>=0.14.1",
-    "sphinx-autobuild>=2021.3.14",
-    "pybind11-stubgen>=0.16.0",
-    "myst-parser>=2.0.0",
-    "sphinx-gallery>=0.13.0",
-    "pillow>=9.0.0",
-    "matplotlib>=3.5.0",
-    "myst-sphinx-gallery>=0.3.0",
-    "myst-nb>=1.0.0",
-]
-docs-linux = [
-    "cairosvg>=2.7.0",
-]
-lint = [
-    "black<23.3.0",
-    "ruff<0.0.270",
-    "isort<5.12.0",
-    "autoflake>=2.0.0",
-]
-build = [
-    "build>=0.10.0",
-    "twine>=4.0.2",
-]
-
+# Project related links
 [project.urls]
-Homepage = "https://github.com/loonghao/py-dem-bones"
-Documentation = "https://loonghao.github.io/py-dem-bones"
-Issues = "https://github.com/loonghao/py-dem-bones/issues"
-Changelog = "https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md"
+repository = "https://github.com/loonghao/py-dem-bones"
+homepage = "https://github.com/loonghao/py-dem-bones"
+documentation = "https://loonghao.github.io/py-dem-bones"
+changelog = "https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md"
+issues = "https://github.com/loonghao/py-dem-bones/issues"
 
+# Poetry configuration (for dependency management)
+[tool.poetry]
+name = "py-dem-bones"
+version = "0.6.5"
+description = "Python bindings for the Dem Bones library"
+readme = "README.md"
+license = "BSD-3-Clause"
+authors = [
+    "Long Hao <hal.long@outlook.com>",
+]
+packages = [{include = "py_dem_bones", from = "src"}]  # Specify package path
+keywords = ["animation", "skinning", "rigging", "computer graphics", "3d"]
+include = ["LICENSE.md", "README.md", "CHANGELOG.md"]
+exclude = ["extern/dem-bones/test/**/*"]
+
+# Poetry URL configuration
+[tool.poetry.urls]
+changelog = "https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md"
+issues = "https://github.com/loonghao/py-dem-bones/issues"
+
+# Poetry dependency configuration
+[tool.poetry.dependencies]
+python = ">=3.7"  # Support Python 3.7 and above
+numpy = ">=1.20.0"  # Numerical computation library
+
+# Test dependencies (optional)
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = ">=6.0.0"  # Testing framework
+pytest-cov = ">=2.12.0"  # Test coverage tool
+
+# scikit-build configuration
 [tool.scikit-build]
-wheel.packages = ["src/py_dem_bones"]
-wheel.exclude = ["tests/*"]
-# 确保包含所有必要的 DLL 文件
-wheel.expand-macos-universal-tags = true
+wheel.packages = ["src/py_dem_bones"]  # Specify packaging path
+wheel.exclude = ["tests/*"]  # Exclude test files
+wheel.expand-macos-universal-tags = true  # Support macOS universal binaries
+# Files to include in the source distribution
 sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICENSE.md", "README.md", "extern/dem-bones/*", "extern/eigen/*"]
-sdist.exclude = ["tests/data/*"]
+sdist.exclude = ["tests/data/*"]  # Exclude test data
 
+# CMake configuration
 [tool.scikit-build.cmake]
-version = ">=3.15"
-build-type = "Release"
+version = ">=3.15"  # Require CMake 3.15 or above
+build-type = "Release"  # Build type is Release
 
+# CMake definitions
 [tool.scikit-build.cmake.define]
-PYTHON_LIMITED_API = "OFF"
-CMAKE_POSITION_INDEPENDENT_CODE = "ON"
-# 确保在 Windows 上正确导出符号
-CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON"
+# Do not use Python stable ABI as pybind11 is not compatible with it
+PYTHON_LIMITED_API = "OFF"  # Disable Python stable ABI
 
+# Commitizen configuration (for version management and commit conventions)
 [tool.commitizen]
-name = "cz_conventional_commits"
-version = "0.6.6"
-tag-format = "$version"
-update_changelog_on_bump = true
-change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "ci", "build", "docs", "test", "chore"]
-version-files = [
+name = "cz_conventional_commits"  # Use conventional commit format
+version = "0.6.6"  # Current version
+tag_format = "$version"  # Tag format without 'v' prefix
+version_files = [  # Files to update version in
     "pyproject.toml:version",
     "src/py_dem_bones/__version__.py:__version__",
     "docs/conf.py:release",
@@ -115,28 +122,10 @@ version-files = [
     ".github/CITATION.cff:version",
 ]
 
+# Pytest configuration
 [tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = "test_*.py"
-python_classes = "Test*"
-python_functions = "test_*"
-
-[tool.ruff]
-line-length = 120
-target-version = "py37"
-# Ignore extern directory and generated stub files
-exclude = ["extern", "**/*.pyi"]
-src = ["src", "nox_actions", "noxfile.py"]
-select = ["E", "F", "W", "I"]
-ignore = ["W293"]  # Ignore whitespace warnings in blank lines
-
-[tool.ruff.per-file-ignores]
-"__init__.py" = ["F401"]
-"noxfile.py" = ["E402"]
-"docs/conf.py" = ["E402", "F401"]
-
-[tool.isort]
-profile = "black"
-line_length = 120
-skip = ["extern"]
-skip_glob = ["*.pyi"]
+testpaths = ["tests"]  # Test file paths
+python_files = "test_*.py"  # Test file naming convention
+python_classes = "Test*"  # Test class naming convention
+python_functions = "test_*"  # Test function naming convention
+addopts = "--cov=py_dem_bones --cov-report=term-missing --cov-report=xml:coverage.xml"  # Test parameters

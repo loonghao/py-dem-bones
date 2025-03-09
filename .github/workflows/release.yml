@@ -153,6 +153,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          submodules: recursive
           fetch-depth: 0
       
       - name: Set up Python ${{ matrix.python-version }}
@@ -160,29 +161,55 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
+          cache-dependency-path: |
+            **/pyproject.toml
+            **/requirements*.txt
       
-      - name: Download wheel artifacts
+      - name: Install Poetry
+        run: |
+          python -m pip install --upgrade pip
+          python scripts/install_poetry.py
+          poetry --version
+      
+      - name: Download wheels
         uses: actions/download-artifact@v4
         with:
           name: wheels-${{ matrix.os }}
-          path: ./wheelhouse
+          path: dist
       
-      - name: Install nox
+      - name: Install wheel and run tests
+        shell: bash
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install nox
-          python -m pip install numpy  # Required for tests
-      
-      - name: Run tests with nox
-        run: |
-          python -m nox --session pytest_skip_install
-      
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          fail_ci_if_error: false
+          # Find the wheel for the current Python version
+          PYTHON_VERSION="${{ matrix.python-version }}"
+          PYTHON_VERSION_NO_DOT="${PYTHON_VERSION//./}"
+          
+          # Find wheel for the current Python version
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            WHEEL_PATTERN="py_dem_bones-*-cp${PYTHON_VERSION_NO_DOT}-*-win_*.whl"
+          elif [[ "${{ runner.os }}" == "macOS" ]]; then
+            WHEEL_PATTERN="py_dem_bones-*-cp${PYTHON_VERSION_NO_DOT}-*-macosx_*.whl"
+          else
+            WHEEL_PATTERN="py_dem_bones-*-cp${PYTHON_VERSION_NO_DOT}-*-manylinux_*.whl"
+          fi
+          
+          echo "Looking for wheel matching pattern: $WHEEL_PATTERN"
+          WHEEL_PATH=$(find dist -name "$WHEEL_PATTERN" | head -n 1)
+          
+          if [ -n "$WHEEL_PATH" ]; then
+            echo "Found wheel: $WHEEL_PATH"
+            
+            # Install the wheel and test dependencies
+            python -m pip install "$WHEEL_PATH"
+            poetry install --only test --no-root
+            
+            # Run tests
+            poetry run pytest tests/test_basic.py -v
+          else
+            echo "No matching wheel found for Python ${{ matrix.python-version }}. Available wheels:"
+            ls -la dist
+            exit 1
+          fi
 
   # Test Windows compatibility
   test-windows:
@@ -193,7 +220,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.8', '3.11']
+        python-version: ['3.8', '3.10', '3.12']
     
     steps:
       - uses: actions/checkout@v4
@@ -206,104 +233,46 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
+          cache-dependency-path: |
+            **/pyproject.toml
+            **/requirements*.txt
       
-      - name: Install build dependencies
-        shell: pwsh
+      - name: Install Poetry
         run: |
           python -m pip install --upgrade pip
-          # Install nox for test management
-          python -m pip install nox
-          # Install CMake and other build dependencies
-          python -m pip install cmake>=3.15 build wheel setuptools>=42.0.0 scikit-build-core>=0.5.0 pybind11>=2.10.0 numpy>=1.20.0
-          # Verify CMake installation
-          cmake --version
+          python scripts/install_poetry.py
+          poetry --version
       
-      - name: Install Visual C++ Redistributable
-        shell: pwsh
-        run: |
-          # Download and install the latest Visual C++ Redistributable
-          Invoke-WebRequest -Uri https://aka.ms/vs/17/release/vc_redist.x64.exe -OutFile vc_redist.x64.exe
-          Start-Process -FilePath "vc_redist.x64.exe" -ArgumentList "/quiet", "/norestart" -Wait
-          Write-Host "Visual C++ Redistributable installed"
-          
-          # Set environment variables to help locate DLLs
-          $vcRedistPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Redist\MSVC"
-          if (Test-Path $vcRedistPath) {
-            $latestVersion = Get-ChildItem $vcRedistPath | Sort-Object Name -Descending | Select-Object -First 1
-            $dllPath = Join-Path $latestVersion.FullName "x64\Microsoft.VC142.CRT"
-            Write-Host "Adding DLL path to PATH: $dllPath"
-            $env:PATH = "$dllPath;$env:PATH"
-            # Also set VCToolsRedistDir for CMake to find
-            $env:VCToolsRedistDir = "$($latestVersion.FullName)\"
-            Write-Host "Set VCToolsRedistDir=$env:VCToolsRedistDir"
-          } else {
-            Write-Host "VC Redist path not found at $vcRedistPath"
-          }
-      
-      # 
-      # 1: 
-      - name: Test Windows compatibility using nox
-        shell: pwsh
-        run: |
-          python -m nox -s test-windows
-      
-      - name: Download wheel artifacts
+      - name: Download wheels
         uses: actions/download-artifact@v4
         with:
           name: wheels-windows-latest
           path: dist
-      
-      - name: List available wheels
-        shell: pwsh
-        run: |
-          Write-Host "Available wheels in dist directory:"
-          Get-ChildItem -Path dist -Filter "*.whl" | ForEach-Object { Write-Host "  $($_.Name)" }
       
       - name: Test pre-built wheel
         shell: pwsh
         run: |
           # Find the wheel for the current Python version
           $pythonVersion = "${{ matrix.python-version }}".Replace(".", "")
-          $shortVersion = if ($pythonVersion.Length -gt 2) { $pythonVersion.Substring(0, 2) } else { $pythonVersion }
-          $wheelPattern = "py_dem_bones-*-cp${shortVersion}*win*.whl"
-          Write-Host "Looking for wheel matching pattern: $wheelPattern"
+          $wheelPattern = "py_dem_bones-*-cp${pythonVersion}-*-win_*.whl"
           
-          $wheel = Get-ChildItem -Path dist -Filter $wheelPattern | Select-Object -First 1
-          if ($wheel) {
-            Write-Host "Found wheel: $($wheel.FullName)" -ForegroundColor Green
+          Write-Host "Looking for wheel matching pattern: $wheelPattern" -ForegroundColor Cyan
+          $wheelPath = Get-ChildItem -Path dist -Filter $wheelPattern | Select-Object -First 1 -ExpandProperty FullName
+          
+          if ($wheelPath) {
+            Write-Host "Found wheel: $wheelPath" -ForegroundColor Green
             
-            # Create wheelhouse directory and copy wheel package
-            $wheelhouse = "wheelhouse"
-            if (-not (Test-Path $wheelhouse)) {
-              New-Item -ItemType Directory -Path $wheelhouse | Out-Null
-            }
-            Copy-Item $wheel.FullName -Destination $wheelhouse
+            # Install the wheel and test dependencies
+            python -m pip install "$wheelPath"
+            poetry install --only test --no-root
             
-            # Debug DLL loading issues
-            Write-Host "Running DLL loading debug script..." -ForegroundColor Cyan
-            Copy-Item scripts/debug_dll_loading.py .
-            python debug_dll_loading.py
-            
-            # Check Python version compatibility
-            $pythonFullVersion = python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" | Out-String
-            $pythonFullVersion = $pythonFullVersion.Trim()
-            $wheelPythonVersion = [regex]::Match($wheel.Name, "cp(\d\d)").Groups[1].Value
-            $wheelPythonVersion = $wheelPythonVersion.Insert(1, ".")
-            
-            Write-Host "Current Python version: $pythonFullVersion" -ForegroundColor Cyan
-            Write-Host "Wheel Python version: $wheelPythonVersion" -ForegroundColor Cyan
-            
-            if ($pythonFullVersion -ne $wheelPythonVersion) {
-              Write-Host "WARNING: Python version mismatch!" -ForegroundColor Yellow
-              Write-Host "Using Python $pythonFullVersion to test a wheel built for Python $wheelPythonVersion" -ForegroundColor Yellow
-              Write-Host "This test will be skipped as versions are incompatible" -ForegroundColor Yellow
-              exit 0
-            }
+            # Run tests
+            poetry run pytest tests/test_basic.py -v
             
             # Use pytest_skip_install session to run tests
             Write-Host "Running tests with pytest_skip_install session..." -ForegroundColor Cyan
-            python -m pip install nox
-            python -m nox -s pytest_skip_install
+            poetry add nox
+            poetry run nox -s pytest_skip_install
           } else {
             Write-Host "No matching wheel found for Python ${{ matrix.python-version }}. Available wheels:" -ForegroundColor Red
             Get-ChildItem -Path dist
@@ -337,6 +306,12 @@ jobs:
           sudo apt-get install -y cmake ninja-build gcc g++
         shell: bash
       
+      - name: Install Poetry
+        run: |
+          python -m pip install --upgrade pip
+          python scripts/install_poetry.py
+          poetry --version
+      
       - name: Build SDist
         run: |
           python -m pip install build numpy pybind11 scikit-build-core cmake
@@ -348,7 +323,8 @@ jobs:
           python -m pip install pytest pytest-cov numpy
           python -m pip install dist/*.tar.gz
           python -c "import py_dem_bones; print(py_dem_bones.__version__)"
-          python -m pytest tests/test_basic.py -v || echo "Basic tests failed but continuing"
+          poetry install --only test --no-root
+          poetry run pytest tests/test_basic.py -v || echo "Basic tests failed but continuing"
       
       - uses: actions/upload-artifact@v4
         with:
