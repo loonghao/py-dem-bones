@@ -11,13 +11,17 @@ import numpy as np
 
 # Import local modules
 from py_dem_bones._py_dem_bones import DemBones as _DemBones
-from py_dem_bones._py_dem_bones import DemBonesExt as _DemBonesExt
+from py_dem_bones._py_dem_bones import DemBonesExtd as _DemBonesExtd
+from py_dem_bones._py_dem_bones import DemBonesExtf as _DemBonesExtf  # noqa: F401
 from py_dem_bones.exceptions import (
     ComputationError,
     IndexError,
     NameError,
     ParameterError,
 )
+
+# For backward compatibility, use double precision as default
+_DemBonesExt = _DemBonesExtd
 
 
 class DemBonesWrapper:
@@ -269,12 +273,12 @@ class DemBonesWrapper:
         if bone >= self.num_bones:
             raise IndexError(f"Bone index {bone} out of range (0-{self.num_bones-1})")
 
-        # 我们需要为每个骨骼维护一个单独的绑定矩阵
-        # 由于 C++ 绑定不支持这一点，我们在 Python 端维护这些矩阵
+        # We need to maintain a separate binding matrix for each bone
+        # Since C++ binding does not support this, we maintain these matrices in Python
         if not hasattr(self, "_bind_matrices"):
             self._bind_matrices = [np.eye(4) for _ in range(self.num_bones)]
 
-        # 确保我们有足够的绑定矩阵
+        # Ensure we have enough binding matrices
         while len(self._bind_matrices) <= bone:
             self._bind_matrices.append(np.eye(4))
 
@@ -301,42 +305,42 @@ class DemBonesWrapper:
         if not isinstance(matrix, np.ndarray) or matrix.shape != (4, 4):
             raise ParameterError("Matrix must be a 4x4 numpy array")
 
-        # 我们需要为每个骨骼维护一个单独的绑定矩阵
-        # 由于 C++ 绑定不支持这一点，我们在 Python 端维护这些矩阵
+        # We need to maintain a separate binding matrix for each bone
+        # Since C++ binding does not support this, we maintain these matrices in Python
         if not hasattr(self, "_bind_matrices"):
             self._bind_matrices = [np.eye(4) for _ in range(self.num_bones)]
 
-        # 确保我们有足够的绑定矩阵
+        # Ensure we have enough binding matrices
         while len(self._bind_matrices) <= bone:
             self._bind_matrices.append(np.eye(4))
 
-        # 更新绑定矩阵
+        # Update binding matrix
         self._bind_matrices[bone] = matrix.copy()
 
-        # 获取当前变换矩阵
+        # Get current transformations
         transformations = self._dem_bones.get_transformations()
 
-        # 如果没有变换矩阵，创建一个新的数组
+        # If no transformations exist, create a new array
         if transformations.shape[0] == 0:
-            self._dem_bones.nF = 1  # 只有一帧（绑定姿势）
+            self._dem_bones.nF = 1  # Only one frame (bind pose)
 
-            # 创建一个新的变换矩阵数组
-            # 在 C++ 绑定中，我们期望一个 2D 矩阵
-            # 其中每 3 行表示一个骨骼的前 3 行变换矩阵
+            # Create a new transformation matrix array
+            # In C++ binding, we expect a 2D matrix
+            # Where each 3 rows represent the first 3 rows of a bone's transformation matrix
             flat_transforms = np.zeros((3 * self.num_bones, 4))
 
-            # 对于每个骨骼，设置其变换矩阵
+            # For each bone, set its transformation matrix
             for b in range(self.num_bones):
                 if b < len(self._bind_matrices):
-                    # 只复制前 3 行，最后一行 [0,0,0,1] 是隐含的
+                    # Only copy the first 3 rows, the last row [0,0,0,1] is implicit
                     flat_transforms[b * 3 : (b + 1) * 3, :] = self._bind_matrices[b][
                         :3, :
                     ]
                 else:
-                    # 对于没有绑定矩阵的骨骼，使用单位矩阵
+                    # For bones without binding matrices, use identity matrix
                     flat_transforms[b * 3 : (b + 1) * 3, :] = np.eye(4)[:3, :]
 
-            # 更新 DemBones 中的变换矩阵
+            # Update DemBones transformations
             self._dem_bones.set_transformations(flat_transforms)
 
     def get_weights(self):
@@ -346,11 +350,11 @@ class DemBonesWrapper:
         Returns:
             numpy.ndarray: The weights matrix with shape [num_bones, num_vertices]
         """
-        # 如果我们有缓存的权重，返回它
+        # If we have cached weights, return them
         if hasattr(self, "_cached_weights") and self._cached_weights is not None:
             return self._cached_weights
 
-        # 否则从 C++ 绑定获取权重
+        # Otherwise, get weights from C++ binding
         weights = self._dem_bones.get_weights()
         return weights
 
@@ -388,10 +392,10 @@ class DemBonesWrapper:
         if np.any(mask):
             weights[:, mask] = weights[:, mask] / sums[mask]
 
-        # 缓存权重，以便 get_weights 可以返回相同的值
+        # Cache weights, so get_weights returns the same value
         self._cached_weights = weights.copy()
 
-        # 更新 C++ 绑定中的权重
+        # Update weights in C++ binding
         self._dem_bones.set_weights(weights)
 
     def set_rest_pose(self, vertices):
@@ -472,9 +476,9 @@ class DemBonesWrapper:
         # Update the target pose
         poses[:, :, target_idx] = vertices
 
-        # 将 3D 数组转换为 C++ 绑定期望的格式
-        # 在 C++ 中，我们期望一个 2D 矩阵，其中行是顶点坐标，列是顶点索引
-        # 我们需要将 [3, num_vertices, num_targets] 重塑为 [3, num_vertices * num_targets]
+        # Convert 3D array to C++ binding expected format
+        # In C++, we expect a 2D matrix, where rows are vertex coordinates, columns are vertex indices
+        # We need to reshape [3, num_vertices, num_targets] to [3, num_vertices * num_targets]
         num_vertices = poses.shape[1]
         num_targets = poses.shape[2]
         flat_poses = np.zeros((3, num_vertices * num_targets))
@@ -492,14 +496,14 @@ class DemBonesWrapper:
         Returns:
             numpy.ndarray: Array of 4x4 transformation matrices with shape [num_frames, 4, 4]
         """
-        # 获取 C++ 绑定中的变换矩阵
+        # Get transformations from C++ binding
         transforms = self._dem_bones.get_transformations()
 
-        # 如果没有变换矩阵，返回空数组
+        # If no transformations exist, return empty array
         if transforms.shape[0] == 0:
             return np.zeros((0, 4, 4))
 
-        # C++ 绑定已经返回了 [num_frames, 4, 4] 格式的数组，直接返回
+        # C++ binding already returns [num_frames, 4, 4] format, return directly
         return transforms
 
     def set_transformations(self, transformations):
@@ -527,12 +531,12 @@ class DemBonesWrapper:
         if transformations.shape[0] > self.num_frames:
             self._dem_bones.nF = transformations.shape[0]
 
-        # 将 3D 数组转换为 C++ 绑定期望的格式
+        # Convert 3D array to C++ binding expected format
         num_frames = transformations.shape[0]
         flat_transforms = np.zeros((num_frames * 3, 4))
 
         for f in range(num_frames):
-            # 只复制前 3 行，最后一行 [0,0,0,1] 是隐含的
+            # Only copy the first 3 rows, the last row [0,0,0,1] is implicit
             flat_transforms[f * 3 : f * 3 + 3, :] = transformations[f, :3, :]
 
         self._dem_bones.set_transformations(flat_transforms)
@@ -542,18 +546,50 @@ class DemBonesWrapper:
         Compute the skinning weights and transformations.
 
         Returns:
-            bool: True if computation succeeded
+            tuple: (success, error_message) where success is a boolean indicating
+                  whether the computation succeeded, and error_message is a string
+                  with details if it failed
 
         Raises:
-            ComputationError: If the computation fails
+            ComputationError: If the computation fails with an unexpected error
         """
+        # Import logging module
+        from py_dem_bones.logging import debug, error, info
+
         try:
-            result = self._dem_bones.compute()
-            if not result:
-                raise ComputationError("DemBones.compute() returned failure")
-            return result
+            # Check if bones and vertices are set
+            if self.num_bones <= 0 or self.num_vertices <= 0:
+                error("Computation failed: No bones or vertices set")
+                return False, "Computation failed: No bones or vertices set"
+
+            # Log computation start
+            info(
+                f"Starting computation with {self.num_bones} bones and {self.num_vertices} vertices"
+            )
+            debug(
+                f"Computation parameters: iterations={self.num_iterations}, "
+                f"weight_smoothness={self.weight_smoothness}, "
+                f"max_influences={self.max_influences}"
+            )
+
+            # Call C++ layer compute method
+            success, error_msg = self._dem_bones.compute()
+
+            if not success:
+                # Record failure information
+                error(f"Computation failed: {error_msg}")
+                # Return failure status and error message, instead of raising an exception
+                # This allows the caller to handle the failure gracefully
+                return False, f"Computation failed: {error_msg}"
+
+            # Log success information
+            info("Computation completed successfully")
+            return True, ""
         except Exception as e:
-            raise ComputationError(f"Computation failed: {str(e)}")
+            # Record unexpected error
+            error(f"Unexpected error during computation: {str(e)}")
+            # For unexpected errors, still raise ComputationError
+            raise ComputationError(f"Unexpected error during computation: {str(e)}")
 
     def clear(self):
         """Clear all data and reset the computation."""
@@ -574,7 +610,7 @@ class DemBonesExtWrapper(DemBonesWrapper):
         """Initialize a new DemBonesExtWrapper instance."""
         super().__init__()
         # Replace the base C++ object with the extended version
-        self._dem_bones = _DemBonesExt()
+        self._dem_bones = _DemBonesExtd()
 
     # Additional properties and methods specific to DemBonesExt
     # can be added here as the C++ bindings evolve
@@ -587,6 +623,62 @@ class DemBonesExtWrapper(DemBonesWrapper):
     @bind_update.setter
     def bind_update(self, value):
         """Set the bind update parameter."""
-        if not isinstance(value, int) or value < 0:
-            raise ParameterError("Bind update must be a non-negative integer")
+        if not isinstance(value, bool):
+            try:
+                value = bool(value)
+            except ValueError:
+                raise ParameterError("Bind update must be a boolean value")
         self._dem_bones.bindUpdate = value
+
+    def compute(self):
+        """
+        Compute the skinning weights and transformations.
+
+        This method overrides the base class method to include additional parameters
+        specific to DemBonesExt.
+
+        Returns:
+            tuple: (success, error_message) where success is a boolean indicating
+                  whether the computation succeeded, and error_message is a string
+                  with details if it failed
+
+        Raises:
+            ComputationError: If the computation fails with an unexpected error
+        """
+        # Import logging module
+        from py_dem_bones.logging import debug, error, info
+
+        try:
+            # Check if bones and vertices are set
+            if self.num_bones <= 0 or self.num_vertices <= 0:
+                error("Computation failed: No bones or vertices set")
+                return False, "Computation failed: No bones or vertices set"
+
+            # Log computation start
+            info(
+                f"Starting DemBonesExt computation with {self.num_bones} bones and {self.num_vertices} vertices"
+            )
+            debug(
+                f"Computation parameters: iterations={self.num_iterations}, "
+                f"weight_smoothness={self.weight_smoothness}, "
+                f"max_influences={self.max_influences}, "
+                f"bind_update={self.bind_update}"
+            )
+
+            # Call C++ layer compute method
+            success, error_msg = self._dem_bones.compute()
+
+            if not success:
+                # Record failure information
+                error(f"DemBonesExt computation failed: {error_msg}")
+                # Return failure status and error message, instead of raising an exception
+                return False, f"Computation failed: {error_msg}"
+
+            # Log success information
+            info("DemBonesExt computation completed successfully")
+            return True, ""
+        except Exception as e:
+            # Record unexpected error
+            error(f"Unexpected error during DemBonesExt computation: {str(e)}")
+            # For unexpected errors, still raise ComputationError
+            raise ComputationError(f"Unexpected error during computation: {str(e)}")

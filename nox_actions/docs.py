@@ -66,7 +66,15 @@ def generate_stubs(session: nox.Session) -> bool:
             if not skip_build:
                 session.log("Attempting to build the C++ extension manually...")
                 try:
-                    session.run("pip", "install", "-e", ".", "--no-deps", "--force-reinstall", silent=False)
+                    session.run(
+                        "pip",
+                        "install",
+                        "-e",
+                        ".",
+                        "--no-deps",
+                        "--force-reinstall",
+                        silent=False,
+                    )
                     session.log("Manual build completed")
                 except Exception as build_err:
                     session.log(f"Manual build failed: {build_err}")
@@ -90,12 +98,13 @@ def generate_stubs(session: nox.Session) -> bool:
         stub_files = list(output_dir.glob("**/*.pyi"))
         if not stub_files:
             session.log(f"No stub files were generated in {output_dir}")
-            
+
             # If no stubs were generated, create a minimal stub file manually
             session.log("Creating minimal stub file manually...")
             minimal_stub = output_dir / "__init__.pyi"
             with open(minimal_stub, "w") as f:
-                f.write(f"""# Minimal type stubs for {package_name}
+                f.write(
+                    f"""# Minimal type stubs for {package_name}
 
 from typing import Any, List, Dict, Tuple, Optional, Union, Callable
 
@@ -129,7 +138,8 @@ class IOError(DemBonesError): ...
 
 def numpy_to_eigen(array: Any) -> Any: ...
 def eigen_to_numpy(matrix: Any) -> Any: ...
-""")
+"""
+                )
             stub_files = [minimal_stub]
             session.log(f"Created minimal stub file at {minimal_stub}")
 
@@ -151,14 +161,15 @@ def eigen_to_numpy(matrix: Any) -> Any: ...
 
     except Exception as e:
         session.log(f"Failed to generate stubs: {e}")
-        
+
         # Create a minimal stub file as fallback
         try:
             session.log("Creating minimal stub file as fallback...")
             os.makedirs(output_dir, exist_ok=True)
             minimal_stub = output_dir / "__init__.pyi"
             with open(minimal_stub, "w") as f:
-                f.write(f"""# Minimal type stubs for {package_name}
+                f.write(
+                    f"""# Minimal type stubs for {package_name}
 
 from typing import Any, List, Dict, Tuple, Optional, Union, Callable
 
@@ -192,14 +203,15 @@ class IOError(DemBonesError): ...
 
 def numpy_to_eigen(array: Any) -> Any: ...
 def eigen_to_numpy(matrix: Any) -> Any: ...
-""")
-            
+"""
+                )
+
             # Copy fallback stub to docs directory
             docs_stubs_dir = Path("docs") / "_stubs"
             os.makedirs(docs_stubs_dir, exist_ok=True)
             target_path = docs_stubs_dir / "__init__.pyi"
             shutil.copy2(minimal_stub, target_path)
-            
+
             session.log(f"Created fallback stub file at {minimal_stub}")
             return True
         except Exception as fallback_err:

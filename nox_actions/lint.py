@@ -26,9 +26,19 @@ def lint(session: nox.Session) -> None:
 
     # Run linting checks
     session.run(
-        "isort", "--check-only", "--skip", "extern", "--skip", "*.pyi", "src", "nox_actions", "noxfile.py"
+        "isort",
+        "--check-only",
+        "--skip",
+        "extern",
+        "--skip",
+        "*.pyi",
+        "src",
+        "nox_actions",
+        "noxfile.py",
     )
-    session.run("ruff", "check", "--exclude", "*.pyi", "src", "nox_actions", "noxfile.py")
+    session.run(
+        "ruff", "check", "--exclude", "*.pyi", "src", "nox_actions", "noxfile.py"
+    )
 
 
 def lint_fix(session: nox.Session) -> None:
@@ -50,11 +60,20 @@ def lint_fix(session: nox.Session) -> None:
 
     # First run isort to fix import sorting issues
     session.log("Fixing import sorting issues with isort...")
-    session.run("isort", "--skip", "extern", "--skip", "*.pyi", "src", "nox_actions", "noxfile.py")
+    session.run(
+        "isort",
+        "--skip",
+        "extern",
+        "--skip",
+        "*.pyi",
+        "src",
+        "nox_actions",
+        "noxfile.py",
+    )
 
     # Then run other linting fixes
     session.log("Fixing code style issues with black...")
-    session.run("black", "--exclude", ".*\.pyi", "src", "nox_actions", "noxfile.py")
+    session.run("black", "--exclude", ".*\\.pyi", "src", "nox_actions", "noxfile.py")
 
     session.log("Fixing unused imports and variables with autoflake...")
     session.run(
@@ -64,15 +83,34 @@ def lint_fix(session: nox.Session) -> None:
         "--remove-all-unused-imports",
         "--remove-unused-variables",
         "--ignore-init-module-imports",
-        "--exclude", "*.pyi",
+        "--exclude",
+        "*.pyi",
         "src",
         "nox_actions",
         "noxfile.py",
     )
 
     session.log("Fixing linting issues with ruff...")
-    session.run("ruff", "check", "--fix", "--exclude", "*.pyi", "src", "nox_actions", "noxfile.py")
+    session.run(
+        "ruff",
+        "check",
+        "--fix",
+        "--exclude",
+        "*.pyi",
+        "src",
+        "nox_actions",
+        "noxfile.py",
+    )
 
     # Run isort again to ensure imports are correctly sorted after all fixes
     session.log("Final import sorting check...")
-    session.run("isort", "--skip", "extern", "--skip", "*.pyi", "src", "nox_actions", "noxfile.py")
+    session.run(
+        "isort",
+        "--skip",
+        "extern",
+        "--skip",
+        "*.pyi",
+        "src",
+        "nox_actions",
+        "noxfile.py",
+    )
