@@ -315,19 +315,25 @@ def test_compute():
     """Test the compute method."""
     # Mock the C++ compute method to avoid actual computation
     with patch('py_dem_bones._py_dem_bones.DemBones.compute') as mock_compute:
-        mock_compute.return_value = True
+        # Return a tuple (success, error_message) to match the C++ binding
+        mock_compute.return_value = (True, "")
         
         wrapper = DemBonesWrapper()
+        # Set required parameters to pass validation
+        wrapper.num_bones = 2
+        wrapper.num_vertices = 10
+        
         result = wrapper.compute()
         
-        assert result is True
+        assert result[0] is True  # First element is success flag
+        assert result[1] == ""    # Second element is error message
         mock_compute.assert_called_once()
         
         # Test compute failure
-        mock_compute.return_value = False
-        
-        with pytest.raises(ComputationError):
-            wrapper.compute()
+        mock_compute.return_value = (False, "Error message")
+        result = wrapper.compute()
+        assert result[0] is False  # First element is success flag
+        assert "Error message" in result[1]  # Second element is error message
 
 
 def test_dem_bones_ext_wrapper():

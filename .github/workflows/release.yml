@@ -227,11 +227,11 @@ jobs:
           if [ -n "$WHEEL_PATH" ]; then
             echo "Found wheel: $WHEEL_PATH"
             
-            # Install the wheel and test dependencies using uv
-            uv pip install "$WHEEL_PATH"
+            # Install the wheel and test dependencies using uvx
+            uvx pip install "$WHEEL_PATH" pytest pytest-cov
 
-            # Run tests
-            uvx pytest tests/test_basic.py -v
+            # Run tests with coverage
+            uvx pytest tests/test_basic.py -v --cov=py_dem_bones --cov-report=xml:coverage.xml
           else
             echo "No matching wheel found for Python ${{ matrix.python-version }}. Available wheels:"
             ls -la dist
@@ -354,7 +354,9 @@ jobs:
       
       # Build source distribution using Poetry
       - name: Build source distribution
-        run: uvx poetry build --format sdist
+        run: |
+          # Build source distribution using Poetry
+          uvx poetry build --format sdist
       
       # Upload source distribution
       - uses: actions/upload-artifact@v4

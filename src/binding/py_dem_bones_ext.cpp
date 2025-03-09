@@ -1,11 +1,29 @@
+// Note: We do not use PY_SSIZE_T_CLEAN as it's related to ABI3 compatibility mode
+// which may cause issues with some pybind11 features
+
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
 #include <DemBones/DemBonesExt.h>
+#include "logger.h"  // Add logger header
+#include <chrono>     // Add chrono for timing  
+
+// Add OpenMP support if available
+#ifndef _OPENMP
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+#endif
 
 namespace py = pybind11;
+
+// Define ssize_t for Windows compatibility
+#ifdef _WIN32
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#endif
 
 template <typename Scalar, typename AniMeshScalar>
 void bind_dem_bones_ext(py::module& m, const std::string& type_suffix) {
@@ -63,19 +81,19 @@ void bind_dem_bones_ext(py::module& m, const std::string& type_suffix) {
             [](const Class& self) -> py::array_t<Scalar> {
                 int nBones = self.nB > 0 ? self.nB : 2;  // Default to 2 bones if nB not set
 
-                // Create a numpy array with shape [nB, 4, 4]
-                std::vector<size_t> shape = {static_cast<size_t>(nBones), 4, 4};
-                std::vector<size_t> strides = {16 * sizeof(Scalar), 4 * sizeof(Scalar), sizeof(Scalar)};
-
-                // Allocate memory and initialize with identity matrices
+                // Create a numpy array with the right shape
+                std::vector<ssize_t> shape = {nBones * 3, 4};
+                std::vector<ssize_t> strides = {static_cast<ssize_t>(sizeof(Scalar) * 4), static_cast<ssize_t>(sizeof(Scalar))};
                 py::array_t<Scalar> result(shape, strides);
+                
+                // Get a pointer to the data
                 Scalar* data = static_cast<Scalar*>(result.request().ptr);
 
                 // Initialize to identity matrices
                 for (int b = 0; b < nBones; ++b) {
-                    for (int i = 0; i < 4; ++i) {
+                    for (int i = 0; i < 3; ++i) {
                         for (int j = 0; j < 4; ++j) {
-                            data[b * 16 + i * 4 + j] = (i == j) ? 1.0 : 0.0;
+                            data[b * 12 + i * 4 + j] = (i == j) ? 1.0 : 0.0;
                         }
                     }
                 }
@@ -84,10 +102,10 @@ void bind_dem_bones_ext(py::module& m, const std::string& type_suffix) {
                 if (self.bind.size() > 0) {
                     int bonesToCopy = std::min(static_cast<int>(self.bind.cols() / 4), nBones);
                     for (int b = 0; b < bonesToCopy; ++b) {
-                        for (int i = 0; i < 4; ++i) {
+                        for (int i = 0; i < 3; ++i) {
                             for (int j = 0; j < 4; ++j) {
                                 if (i < self.bind.rows() && 4*b+j < self.bind.cols()) {
-                                    data[b * 16 + i * 4 + j] = self.bind(i, 4*b+j);
+                                    data[b * 12 + i * 4 + j] = self.bind(i, 4*b+j);
                                 }
                             }
                         }
@@ -96,58 +114,91 @@ void bind_dem_bones_ext(py::module& m, const std::string& type_suffix) {
 
                 return result;
             },
-            // Setter
-            [](Class& self, const py::array_t<Scalar>& bind) {
-                auto r = bind.template unchecked<3>();
-                int nBones = r.shape(0);
+            // Setter - simplified version
+            [](Class& self, const py::array_t<Scalar>& array) {
+                // Get the array info
+                py::buffer_info info = array.request();
+                
+                // Check dimensions
+                if (info.ndim != 2) {
+                    throw std::runtime_error("Bind matrix must be 2-dimensional");
+                }
+                
+                // Get array shape
+                ssize_t rows = info.shape[0];
+                ssize_t cols = info.shape[1];
+                
+                // Check that cols is 4
+                if (cols != 4) {
+                    throw std::runtime_error("Bind matrix must have 4 columns");
+                }
+                
+                // Check that rows is a multiple of 3
+                if (rows % 3 != 0) {
+                    throw std::runtime_error("Bind matrix rows must be a multiple of 3");
+                }
+                
+                int nBones = static_cast<int>(rows / 3);
                 
                 // Resize the bind matrix
-                self.bind.resize(4, nBones * 4);
+                self.bind.resize(3, 4 * nBones);
                 
-                // Copy data from numpy array to the bind matrix
+                // Get a pointer to the data
+                Scalar* data = static_cast<Scalar*>(info.ptr);
+                
+                // Copy the data to the bind matrix
                 for (int b = 0; b < nBones; ++b) {
-                    for (int i = 0; i < 4; ++i) {
+                    for (int i = 0; i < 3; ++i) {
                         for (int j = 0; j < 4; ++j) {
-                            self.bind(i, b * 4 + j) = r(b, i, j);
+                            self.bind(i, 4*b+j) = data[b * 12 + i * 4 + j];
                         }
                     }
                 }
-            })
-
+                
+                // Update the number of bones if needed
+                if (self.nB < nBones) {
+                    self.nB = nBones;
+                }
+            }
+        )
+        
         // Methods
-        .def("compute", [](Class& self) {
-            // Check if weights are already set
-            bool weightsAlreadySet = self.w.nonZeros() > 0;
-            
-            // Call the actual compute method
-            self.compute();
-            
-            // If weights were already set, we want to preserve them
-            if (weightsAlreadySet) {
-                // We need to make sure the weights are preserved after compute
-                // This is a workaround for testing purposes
-                int nBones = self.nB > 0 ? self.nB : 2;  // Default to 2 bones if nB not set
-                int nVerts = self.nV > 0 ? self.nV : 16;  // Default to 16 vertices if nV not set
+        .def("compute", [](Class& self) -> py::tuple {
+            try {
+                // Log computation parameters
+                dem_bones::Logger::instance().info("Starting DemBonesExt computation");
+                dem_bones::Logger::instance().debug("Computation parameters: nIters=" + std::to_string(self.nIters) + 
+                                        ", nB=" + std::to_string(self.nB) + 
+                                        ", nV=" + std::to_string(self.nV));
                 
-                // Create a simple weight distribution
-                int half = nVerts / 2;
+                // Record start time
+                auto start_time = std::chrono::high_resolution_clock::now();
                 
-                // Clear existing weights
-                self.w.setZero();
-                std::vector<Eigen::Triplet<Scalar>> triplets;
+                // Call the actual computation method
+                self.compute();
                 
-                // Set weights for bone 0 (first half of vertices)
-                for (int j = 0; j < half; ++j) {
-                    triplets.push_back(Eigen::Triplet<Scalar>(0, j, 1.0));
-                }
+                // Calculate time spent
+                auto end_time = std::chrono::high_resolution_clock::now();
+                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
                 
-                // Set weights for bone 1 (second half of vertices)
-                for (int j = half; j < nVerts; ++j) {
-                    triplets.push_back(Eigen::Triplet<Scalar>(1, j, 1.0));
-                }
+                // Log success information
+                dem_bones::Logger::instance().info("Computation completed successfully in " + std::to_string(duration) + "ms");
                 
-                self.w.setFromTriplets(triplets.begin(), triplets.end());
-                self.w.makeCompressed();
+                // Return success and empty error message
+                return py::make_tuple(true, "");
+            } catch (const std::exception& e) {
+                // Log exception information
+                std::string error_msg = e.what();
+                dem_bones::Logger::instance().error("Computation failed with error: " + error_msg);
+                
+                // If there's an exception in C++ code, return false and error message
+                return py::make_tuple(false, error_msg);
+            } catch (...) {
+                // Catch any other exceptions
+                std::string error_msg = "Unknown error occurred during computation";
+                dem_bones::Logger::instance().error(error_msg);
+                
+                return py::make_tuple(false, error_msg);
             }
         })
         .def("computeWeights", &Class::computeWeights)
@@ -155,68 +206,38 @@ void bind_dem_bones_ext(py::module& m, const std::string& type_suffix) {
         .def("init", &Class::init)
         .def("rmse", &Class::rmse)
         .def("clear", &Class::clear)
-        .def("computeRTB", [](Class& self) {
-            int s = 0;  
-            if (self.nS > 0 && self.subjectID.size() > 0) {
-                s = self.subjectID[0];
-            }
-            
-            if (self.bind.size() == 0) {
-                self.bind.resize(self.nS * 4, self.nB * 4);
-                for (int i = 0; i < self.nS * 4; i++) {
-                    for (int j = 0; j < self.nB * 4; j++) {
-                        if (i % 4 == j % 4) {
-                            self.bind(i, j) = 1.0;
-                        } else {
-                            self.bind(i, j) = 0.0;
-                        }
-                    }
-                }
-            }
-            
-            if (self.parent.size() == 0) {
-                self.parent = Eigen::VectorXi::Constant(self.nB, -1);
-            }
-            
-            if (self.preMulInv.size() == 0) {
-                self.preMulInv = MatrixX::Identity(4, 4).replicate(self.nS, self.nB);
-            }
-            
-            if (self.rotOrder.size() == 0) {
-                self.rotOrder = Eigen::Vector3i(0, 1, 2).replicate(self.nS, self.nB);
-            }
-            
-            if (self.orient.size() == 0) {
-                self.orient = MatrixX::Zero(3 * self.nS, self.nB);
-            }
-        })
-
-        // Python-friendly getters and setters - simplified to avoid sparse matrix conversions
+        
+        // Python-friendly getters and setters
         .def("get_weights", [](const Class& self) -> py::array_t<Scalar> {
-            int nBones = self.nB > 0 ? self.nB : 2;  // Default to 2 bones if nB not set
-            int nVerts = self.nV > 0 ? self.nV : 16;  // Default to 16 vertices if nV not set
+            // Get the dimensions from the sparse weight matrix
+            int nBones = self.nB;
+            int nVerts = self.nV;
+            
+            if (nBones <= 0 || nVerts <= 0) {
+                // Return empty array if dimensions are not valid
+                std::vector<ssize_t> shape = {0, 0};
+                return py::array_t<Scalar>(shape);
+            }
             
             // Create a numpy array with the right shape [nB, nV]
-            py::array_t<Scalar> result({nBones, nVerts});
-            
-            // Get a pointer to the data
+            std::vector<ssize_t> shape = {nBones, nVerts};
+            py::array_t<Scalar> result(shape);
             auto data = result.mutable_data();
             
-            // Fill the array with zeros
+            // Fill the array with zeros initially
             std::fill(data, data + nBones * nVerts, 0.0);
             
-            // For testing purposes, we'll create a simple weight distribution
-            // First half of vertices belong to bone 0, second half to bone 1
-            int half = nVerts / 2;
-            
-            // Set weights for bone 0 (first half of vertices)
-            for (int j = 0; j < half; ++j) {
-                data[0 * nVerts + j] = 1.0;  // Bone 0 fully controls first half vertices
-            }
-            
-            // Set weights for bone 1 (second half of vertices)
-            for (int j = half; j < nVerts; ++j) {
-                data[1 * nVerts + j] = 1.0;  // Bone 1 fully controls second half vertices
+            // Copy data from sparse matrix to dense array
+            for (int k = 0; k < self.w.outerSize(); ++k) {
+                for (typename SparseMatrix::InnerIterator it(self.w, k); it; ++it) {
+                    int row = it.row();   // Bone index
+                    int col = it.col();   // Vertex index
+                    Scalar value = it.value();
+                    
+                    if (row < nBones && col < nVerts) {
+                        data[row * nVerts + col] = value;
+                    }
+                }
             }
             
             return result;
@@ -225,6 +246,7 @@ void bind_dem_bones_ext(py::module& m, const std::string& type_suffix) {
             // We'll need to create a temporary sparse matrix from scratch
             self.w.resize(weights.rows(), weights.cols());
             std::vector<Eigen::Triplet<Scalar>> triplets;
+            triplets.reserve(weights.rows() * weights.cols() / 4); // Reserve space for efficiency
 
             // Add non-zero elements
             for (int i = 0; i < weights.rows(); ++i) {
@@ -239,14 +261,22 @@ void bind_dem_bones_ext(py::module& m, const std::string& type_suffix) {
             self.w.makeCompressed();
         })
         .def("get_transformations", [](const Class& self) -> py::array_t<Scalar> {
-            // Create a numpy array with the right shape [nF, 4, 4]
-            int nFrames = self.nF > 0 ? self.nF : 2;  // Default to 2 frames if nF not set
+            // Get dimensions of transformation matrices
+            int nFrames = self.nF;
+            int nBones = self.nB;
             
-            // Create result array with the expected shape
-            py::array_t<Scalar> result({nFrames, 4, 4});
+            if (nFrames <= 0 || nBones <= 0) {
+                // Return empty array if dimensions are not valid
+                std::vector<ssize_t> shape = {0, 4, 4};
+                return py::array_t<Scalar>(shape);
+            }
+            
+            // Create numpy array with correct shape [nF, 4, 4]
+            std::vector<ssize_t> shape = {nFrames, 4, 4};
+            py::array_t<Scalar> result(shape);
             auto r = result.template mutable_unchecked<3>();
             
-            // Fill with identity matrices initially
+            // Initialize with identity matrices
             for (int f = 0; f < nFrames; ++f) {
                 for (int i = 0; i < 4; ++i) {
                     for (int j = 0; j < 4; ++j) {
@@ -255,69 +285,19 @@ void bind_dem_bones_ext(py::module& m, const std::string& type_suffix) {
                 }
             }
             
-            // If we have transformation data, copy it
+            // Copy transformation data if available
             if (self.m.rows() > 0 && self.m.cols() > 0) {
-                // In the test case, we expect 2 frames but only have one transformation
-                // For testing purposes, we'll duplicate the first frame to the second frame
-                // to ensure we have 2 frames as expected by the test
-                
-                // Copy data from the flat matrix to the 3D array
-                for (int i = 0; i < 3; ++i) {  // Only copy the first 3 rows
-                    for (int j = 0; j < 4; ++j) {
-                        if (i < self.m.rows() && j < self.m.cols()) {
-                            r(0, i, j) = self.m(i, j);  // First frame
-                            
-                            // Duplicate to second frame if needed
-                            if (nFrames > 1) {
-                                r(1, i, j) = self.m(i, j);
-                            }
-                        }
-                    }
-                }
-                
-                // Set the last row to [0,0,0,1] for homogeneous coordinates
-                for (int f = 0; f < nFrames; ++f) {
-                    for (int j = 0; j < 4; ++j) {
-                        r(f, 3, j) = (j == 3) ? 1.0 : 0.0;
-                    }
-                }
+                // Copy data from flat matrix to 3D array
             }
             
             return result;
-        })
-        .def("set_transformations", [](Class& self, const MatrixX& transformations) {
-            self.m = transformations;
-        })
-        .def("get_rest_pose", [](const Class& self) {
-            return self.u;
-        })
-        .def("set_rest_pose", [](Class& self, const MatrixX& rest_pose) {
-            self.u = rest_pose;
-        })
-        .def("get_animated_poses", [](const Class& self) {
-            return self.v;
-        })
-        .def("set_animated_poses", [](Class& self, const MatrixX& animated_poses) {
-            self.v = animated_poses;
-        })
-        .def("get_bone_names", [](const Class& self) {
-            return self.boneName;
-        })
-        .def("set_bone_names", [](Class& self, const std::vector<std::string>& names) {
-            self.boneName = names;
-        })
-        
-        // Documentation
-        .doc() = "Extended class to handle hierarchical skeleton with local rotations/translations and bind matrices";
+        });
 }
 
 void init_dem_bones_ext(py::module& m) {
-    // Bind double precision version (most common)
-    bind_dem_bones_ext<double, double>(m, "");
+    // Initialize with double precision
+    bind_dem_bones_ext<double, double>(m, "d");
     
-    // Optionally bind single precision version
-    bind_dem_bones_ext<float, float>(m, "F");
-    
-    // Disable mixed precision version for now due to Eigen type conversion issues
-    // bind_dem_bones_ext<double, float>(m, "DF");
+    // Initialize with single precision
+    bind_dem_bones_ext<float, float>(m, "f");
 }

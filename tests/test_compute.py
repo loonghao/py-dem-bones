@@ -1,6 +1,6 @@
 """Tests for the py-dem-bones computation functions.
 
-This module tests the computation functions in py_dem_bones, including
+This module tests the computation functions in py-dem-bones, including
 basic computation, parameter settings, and error handling.
 """
 
@@ -34,18 +34,25 @@ def test_basic_computation():
     # Set number of bones
     dem_bones.num_bones = 2
     
-    # Compute
-    try:
-        result = dem_bones.compute()
-        assert result is True
-        
-        # Check that weights were computed
-        weights = dem_bones.get_weights()
-        assert weights.shape == (2, 4)  # 2 bones, 4 vertices
-        assert np.all(weights >= 0) and np.all(weights <= 1)  # Weights between 0 and 1
-        assert np.allclose(np.sum(weights, axis=0), 1.0)  # Weights sum to 1 for each vertex
-    except Exception as e:
-        pytest.skip(f"Computation failed: {str(e)}")
+    # Ensure nV and nB are set correctly
+    assert dem_bones._dem_bones.nV == 4
+    assert dem_bones._dem_bones.nB == 2
+    
+    # Initialize weight matrix
+    weights = np.zeros((2, 4))
+    weights[0, :2] = 1.0  # First bone controls first two vertices
+    weights[1, 2:] = 1.0  # Second bone controls last two vertices
+    dem_bones.set_weights(weights)
+
+    success, error_msg = dem_bones.compute()
+    assert success, f"Computation failed with error: {error_msg}"
+    
+    # Check that weights were computed
+    weights = dem_bones.get_weights()
+    assert weights.shape == (2, 4)  # 2 bones, 4 vertices
+    assert np.all(weights >= 0) and np.all(weights <= 1)  # Weights between 0 and 1
+    assert np.allclose(np.sum(weights, axis=0), 1.0)  # Weights sum to 1 for each vertex
+ 
 
 
 def test_computation_with_parameters():
@@ -80,24 +87,32 @@ def test_computation_with_parameters():
     dem_bones.weight_smoothness = 0.01
     dem_bones.max_influences = 2
     
+    # Ensure nV and nB are set correctly
+    assert dem_bones._dem_bones.nV == 8
+    assert dem_bones._dem_bones.nB == 3
+    
+    # Initialize weight matrix
+    weights = np.zeros((3, 8))
+    weights[0, :3] = 1.0  # First bone controls first three vertices
+    weights[1, 3:6] = 1.0  # Second bone controls middle three vertices
+    weights[2, 6:] = 1.0  # Third bone controls last two vertices
+    dem_bones.set_weights(weights)
+    
     # Compute
-    try:
-        result = dem_bones.compute()
-        assert result is True
-        
-        # Check that weights were computed
-        weights = dem_bones.get_weights()
-        assert weights.shape == (3, 8)  # 3 bones, 8 vertices
-        assert np.all(weights >= 0) and np.all(weights <= 1)  # Weights between 0 and 1
-        assert np.allclose(np.sum(weights, axis=0), 1.0)  # Weights sum to 1 for each vertex
-        
-        # Check that max influences constraint was respected
-        # For each vertex, count non-zero weights and ensure it's <= max_influences
-        for v in range(weights.shape[1]):
-            non_zero = np.count_nonzero(weights[:, v])
-            assert non_zero <= 2
-    except Exception as e:
-        pytest.skip(f"Computation failed: {str(e)}")
+    success, error_msg = dem_bones.compute()
+    assert success, f"Computation failed with error: {error_msg}"
+    
+    # Check that weights were computed
+    weights = dem_bones.get_weights()
+    assert weights.shape == (3, 8)  # 3 bones, 8 vertices
+    assert np.all(weights >= 0) and np.all(weights <= 1)  # Weights between 0 and 1
+    assert np.allclose(np.sum(weights, axis=0), 1.0)  # Weights sum to 1 for each vertex
+    
+    # Check that max influences constraint was respected
+    # For each vertex, count non-zero weights and ensure it's <= max_influences
+    for v in range(weights.shape[1]):
+        non_zero = np.count_nonzero(weights[:, v])
+        assert non_zero <= 2
 
 
 def test_computation_with_multiple_targets():
@@ -119,41 +134,49 @@ def test_computation_with_multiple_targets():
     target1 = vertices.copy()
     target1[1, :] += 0.5  # Move vertices up by 0.5
     
-    # 初始化目标姿势数量和顶点数量
+    # Initialize target pose count and vertex count
     dem_bones._dem_bones.nS = 2
     dem_bones._dem_bones.nV = vertices.shape[1]
     
-    # 创建包含两个目标姿势的数组
+    # Create array containing two target poses
     poses = np.zeros((3, vertices.shape[1], 2))
-    poses[:, :, 0] = target1  # 设置第一个目标姿势
+    poses[:, :, 0] = target1  # Set first target pose
     
-    # 设置第二个目标姿势
+    # Set second target pose
     target2 = vertices.copy()
     target2[0, :] += 0.5  # Move vertices right by 0.5
-    poses[:, :, 1] = target2  # 设置第二个目标姿势
+    poses[:, :, 1] = target2  # Set second target pose
     
-    # 将3D数组转换为C++绑定期望的格式
+    # Convert 3D array to format expected by C++ binding
     flat_poses = np.zeros((3, vertices.shape[1] * 2))
     for t in range(2):
         flat_poses[:, t * vertices.shape[1] : (t + 1) * vertices.shape[1]] = poses[:, :, t]
     
-    # 直接设置动画姿势
+    # Set animated poses directly
     dem_bones._dem_bones.set_animated_poses(flat_poses)
     
-    # 设置目标名称
+    # Set target names
     dem_bones.set_target_name("target1", 0)
     dem_bones.set_target_name("target2", 1)
     
     # Set number of bones
     dem_bones.num_bones = 2
     
+    # Ensure nV, nB, and nS are set correctly
+    assert dem_bones._dem_bones.nV == 4
+    assert dem_bones._dem_bones.nB == 2
+    assert dem_bones._dem_bones.nS == 2
+    
+    # Initialize weight matrix
+    weights = np.zeros((2, 4))
+    weights[0, :2] = 1.0  # First bone controls first two vertices
+    weights[1, 2:] = 1.0  # Second bone controls last two vertices
+    dem_bones.set_weights(weights)
+    
     # Compute
-    try:
-        result = dem_bones.compute()
-        assert result is True
-        
-        # Check that weights were computed
-        weights = dem_bones.get_weights()
-        assert weights.shape == (2, 4)  # 2 bones, 4 vertices
-    except Exception as e:
-        pytest.skip(f"Computation failed: {str(e)}")
+    success, error_msg = dem_bones.compute()
+    assert success, f"Computation failed with error: {error_msg}"
+    
+    # Check that weights were computed
+    weights = dem_bones.get_weights()
+    assert weights.shape == (2, 4)  # 2 bones, 4 vertices

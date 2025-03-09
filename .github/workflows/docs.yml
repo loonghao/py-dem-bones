@@ -63,6 +63,7 @@ jobs:
       - name: Build documentation
         run: |
           python -m pip install uv
+          # Run docs using uvx (which creates an isolated environment automatically)
           uvx nox -s docs
 
       - name: Upload documentation preview
@@ -129,6 +130,7 @@ jobs:
       - name: Build documentation
         run: |
           python -m pip install uv
+          # Run docs using uvx (which creates an isolated environment automatically)
           uvx nox -s docs
       
       - name: Setup Pages

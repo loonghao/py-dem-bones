@@ -92,6 +92,8 @@ pytest-cov = ">=2.12.0"  # Test coverage tool
 
 # scikit-build configuration
 [tool.scikit-build]
+# Note: ABI3 mode is disabled as it may cause issues with some pybind11 features
+# wheel.py-api = "cp37"  # Disabled ABI3 mode
 wheel.packages = ["src/py_dem_bones"]  # Specify packaging path
 wheel.exclude = ["tests/*"]  # Exclude test files
 wheel.expand-macos-universal-tags = true  # Support macOS universal binaries

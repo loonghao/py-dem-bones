@@ -59,7 +59,9 @@ jobs:
           python -m pip install uv
 
       - name: Run linters
-        run: uvx nox -s lint
+        run: |
+          # Run linters using uvx (which creates an isolated environment automatically)
+          uvx nox -s lint
       
       - name: Comment on PR
         if: success()
@@ -70,5 +72,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '✅ Lint checks passed successfully!'
+              body: ' Lint checks passed successfully!'
             });
