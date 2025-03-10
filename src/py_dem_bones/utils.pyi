@@ -3,6 +3,7 @@
 Utility functions for py_dem_bones.
 """
 from __future__ import annotations
+
 import numpy as np
 
 __all__ = ["eigen_to_numpy", "np", "numpy_to_eigen"]

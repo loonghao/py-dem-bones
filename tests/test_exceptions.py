@@ -63,12 +63,14 @@ def test_index_error():
 
 
 def test_computation_error():
-    """Test that computation failures raise ComputationError."""
+    """Test that computation failures return error status."""
     dem_bones = DemBonesWrapper()
     
     # Compute without setting up bones or vertices
-    with pytest.raises(ComputationError):
-        dem_bones.compute()
+    result = dem_bones.compute()
+    assert result[0] is False  # First element is success flag
+    assert isinstance(result[1], str)  # Second element is error message
+    assert len(result[1]) > 0  # Error message should not be empty
 
 
 def test_exception_hierarchy():

@@ -7,10 +7,10 @@ developers to integrate py-dem-bones with various digital content creation (DCC)
 software such as Maya, Blender, or custom 3D applications.
 """
 from __future__ import annotations
+
 import abc
-from abc import ABC
-from abc import abstractmethod
 import typing
+from abc import ABC, abstractmethod
 
 __all__ = ["ABC", "DCCInterface", "abstractmethod"]
 
@@ -27,7 +27,7 @@ class DCCInterface(abc.ABC):
 
     __abstractmethods__: typing.ClassVar[
         frozenset
-    ]  # value = frozenset({'convert_matrices', 'to_dcc_data', 'from_dcc_data'})
+    ]  # value = frozenset({'convert_matrices', 'from_dcc_data', 'to_dcc_data'})
     _abc_impl: typing.ClassVar[_abc._abc_data]  # value = <_abc._abc_data object>
     def apply_coordinate_system_transform(self, data, from_dcc=True):
         """

@@ -7,13 +7,17 @@ of the C++ bindings with additional features such as named bones, error handling
 and convenience methods.
 """
 from __future__ import annotations
+
 import numpy as np
+
 from py_dem_bones._py_dem_bones import DemBones as _DemBones
 from py_dem_bones._py_dem_bones import DemBonesExt as _DemBonesExt
-from py_dem_bones.exceptions import ComputationError
-from py_dem_bones.exceptions import IndexError
-from py_dem_bones.exceptions import NameError
-from py_dem_bones.exceptions import ParameterError
+from py_dem_bones.exceptions import (
+    ComputationError,
+    IndexError,
+    NameError,
+    ParameterError,
+)
 
 __all__ = [
     "ComputationError",
