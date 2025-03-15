@@ -110,7 +110,7 @@ jobs:
       
       # Build wheels using cibuildwheel action
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.23.0
+        uses: pypa/cibuildwheel@v2.23.1
         with:
           output-dir: wheelhouse
         env:
