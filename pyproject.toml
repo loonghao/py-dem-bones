@@ -69,7 +69,7 @@ docs-linux = [
 lint = [
     "black<23.3.0",
     "ruff<0.0.270",
-    "isort<5.12.0",
+    "isort<5.13.3",
     "autoflake>=2.0.0",
 ]
 build = [
