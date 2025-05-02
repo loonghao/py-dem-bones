@@ -76,8 +76,10 @@ jobs:
       # Build wheels
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.16.5
+        with:
+          config-file: .cibuildwheel.toml
         env:
-          CIBW_BUILD: ${{ github.event.inputs.python-version || 'cp37-* cp38-* cp39-* cp310-* cp311-* cp312-*' }}
+          CIBW_BUILD: ${{ github.event.inputs.python-version || '' }}
           CIBW_ARCHS: ${{ matrix.cibw-arch || 'auto64' }}
           CIBW_PLATFORM: ${{ github.event.inputs.platform || 'auto' }}
           # Python 3.7 specific settings

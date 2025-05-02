@@ -132,8 +132,9 @@ jobs:
         uses: pypa/cibuildwheel@v2.23.0
         with:
           output-dir: wheelhouse
+          config-file: .cibuildwheel.toml
         env:
-          # Use configuration from pyproject.toml
+          # Additional verbosity for release builds
           CIBW_BUILD_VERBOSITY: 3
           # Pass Python 3.7 specific settings
           CIBW_ENVIRONMENT_PASS_LINUX: PYTHON_37_COMPATIBLE
