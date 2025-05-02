@@ -1,0 +1,107 @@
+name: Test Multiple Python Versions
+
+on:
+  push:
+    branches: [ main, update_use_poetry ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/*.md'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/*.md'
+  workflow_dispatch:
+
+# Permissions needed for this workflow
+permissions:
+  contents: read
+  pull-requests: write
+
+# Concurrency control
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Test on multiple Python versions using uv
+  test-multiple-python:
+    name: Test Multiple Python Versions
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: |
+            **/pyproject.toml
+            **/requirements*.txt
+      
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        if: runner.os != 'Windows'
+      
+      - name: Install uv (Windows)
+        run: |
+          (Invoke-WebRequest -Uri https://github.com/astral-sh/uv/releases/latest/download/uv-installer.ps1 -UseBasicParsing).Content | python -
+        if: runner.os == 'Windows'
+      
+      # Setup MSVC on Windows
+      - name: Setup MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+      
+      # Add Python 3.7 compatibility flags
+      - name: Set Python 3.7 compatibility flags
+        if: matrix.python-version == '3.7'
+        run: |
+          echo "PYTHON_37_COMPATIBLE=1" >> $GITHUB_ENV
+        shell: bash
+      
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m uv pip install wheel setuptools scikit-build-core pybind11 numpy
+      
+      # Build and test
+      - name: Build and test
+        run: |
+          python -m uv pip install -e .
+          python -c "import py_dem_bones; print(py_dem_bones.__version__)"
+      
+      # Upload built wheel as artifact
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: py-dem-bones-py${{ matrix.python-version }}-${{ runner.os }}
+          path: dist/*.whl
+          if-no-files-found: ignore
+      
+      # Comment on PR if successful
+      - name: Comment on PR
+        if: success() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `✅ Python ${{ matrix.python-version }} build successful on ${process.env.RUNNER_OS}!`
+            });

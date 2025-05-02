@@ -1,6 +1,12 @@
 #include <pybind11/pybind11.h>
 #include "logger.h"
 
+// Python 3.7 compatibility
+#ifdef PYTHON_37_COMPATIBLE
+#define PY_MAJOR_VERSION 3
+#define PY_MINOR_VERSION 7
+#endif
+
 // Add OpenMP support if available
 #ifndef _OPENMP
 #ifdef _OPENMP
@@ -17,7 +23,7 @@ void init_dem_bones_ext(py::module& m);
 // Initialize logger module
 void init_logger(py::module& m) {
     using namespace dem_bones;
-    
+
     // Bind log level enumeration
     py::enum_<LogLevel>(m, "LogLevel")
         .value("TRACE", LogLevel::TRACE)
@@ -26,13 +32,13 @@ void init_logger(py::module& m) {
         .value("WARN", LogLevel::WARN)
         .value("ERROR", LogLevel::ERROR)
         .value("CRITICAL", LogLevel::CRITICAL);
-    
+
     // Bind logger class
     py::class_<Logger>(m, "Logger")
         .def_static("instance", &Logger::instance, py::return_value_policy::reference)
-        .def("init", &Logger::init, 
-             py::arg("level") = LogLevel::INFO, 
-             py::arg("to_console") = true, 
+        .def("init", &Logger::init,
+             py::arg("level") = LogLevel::INFO,
+             py::arg("to_console") = true,
              py::arg("to_python") = true)
         .def("set_level", &Logger::set_level)
         .def("trace", &Logger::trace)
@@ -45,14 +51,14 @@ void init_logger(py::module& m) {
 
 PYBIND11_MODULE(_py_dem_bones, m) {
     m.doc() = "Python bindings for the Dem Bones library";
-    
+
     // Initialize logger module
     init_logger(m);
-    
+
     // Initialize submodules
     init_dem_bones(m);
     init_dem_bones_ext(m);
-    
+
     // Initialize logging system
     dem_bones::Logger::instance().init(dem_bones::LogLevel::INFO, true, true);
     dem_bones::Logger::instance().info("DemBones C++ module initialized");

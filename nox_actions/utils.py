@@ -176,10 +176,19 @@ def build_cpp_extension(session, env=None):
     system = platform.system()
     session.log(f"Building on {system} platform")
 
+    # Detect Python version
+    python_version = platform.python_version()
+    session.log(f"Building with Python {python_version}")
+
     # Set environment variables to ensure consistent build configuration
     if env is None:
         env = os.environ.copy()
     env["SKBUILD_BUILD_VERBOSE"] = "1"
+
+    # Special handling for Python 3.7
+    if python_version.startswith("3.7"):
+        session.log("Applying Python 3.7 compatibility settings")
+        env["PYTHON_37_COMPATIBLE"] = "1"
 
     # Ensure we use standard platform tags
     env["FORCE_BDIST_WHEEL_PLAT"] = ""  # Clear any custom platform tags

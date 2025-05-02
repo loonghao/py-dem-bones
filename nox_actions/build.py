@@ -34,6 +34,12 @@ def build(session: nox.Session) -> None:
     env["SKBUILD_BUILD_VERBOSE"] = "1"  # 使用新的环境变量
     env["FORCE_BDIST_WHEEL_PLAT"] = ""
 
+    # Check Python version for special handling
+    python_version = platform.python_version()
+    if python_version.startswith("3.7"):
+        session.log(f"Detected Python 3.7 ({python_version}), applying special compatibility settings")
+        env["PYTHON_37_COMPATIBLE"] = "1"
+
     # Build C++ extension
     build_success = build_cpp_extension(session, env=env)
 
