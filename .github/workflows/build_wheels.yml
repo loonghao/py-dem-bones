@@ -61,6 +61,11 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      # Ensure submodules are initialized
+      - name: Initialize submodules
+        run: |
+          git submodule update --init --recursive
+
       # Setup MSVC on Windows
       - name: Setup MSVC (Windows)
         if: runner.os == 'Windows'
@@ -85,17 +90,33 @@ jobs:
 
           # General settings
           CIBW_BUILD_VERBOSITY: 3
-          CIBW_ENVIRONMENT: "PIP_DISABLE_PIP_VERSION_CHECK=1"
-          CIBW_BEFORE_BUILD: "git submodule update --init --recursive && pip install -U pip setuptools wheel numpy pybind11>=2.13.6 scikit-build-core>=0.11.3"
-          CIBW_TEST_COMMAND: "python -c \"import py_dem_bones; print(py_dem_bones.__version__)\""
+          CIBW_ENVIRONMENT: "PIP_DISABLE_PIP_VERSION_CHECK=1 CMAKE_BUILD_PARALLEL_LEVEL=2 SKBUILD_CMAKE_ARGS='-DCMAKE_VERBOSE_MAKEFILE=ON'"
+          CIBW_BEFORE_BUILD: >-
+            git submodule update --init --recursive &&
+            pip install -U pip setuptools wheel cmake ninja &&
+            python -c "import sys; print(f'Python {sys.version}')" &&
+            python -c "import sys; if sys.version_info < (3, 8): print('Using Python 3.7 compatible dependencies'); else: print('Using latest dependencies')"
+          CIBW_TEST_COMMAND: "python -c \"import py_dem_bones; print(f'Successfully imported py_dem_bones version: {py_dem_bones.__version__}')\""
           CIBW_TEST_REQUIRES: "pytest numpy>=1.20.0"
+
+          # Use pip for Python 3.7 and build for Python 3.8+
+          CIBW_BUILD_FRONTEND: "pip;python_version<'3.8'"
 
           # Linux specific settings
           CIBW_MANYLINUX_X86_64_IMAGE: "manylinux2014"
           CIBW_MANYLINUX_I686_IMAGE: "manylinux2014"
           CIBW_MANYLINUX_AARCH64_IMAGE: "manylinux2014"
-          CIBW_BEFORE_ALL_LINUX: "if command -v yum &> /dev/null; then yum install -y cmake ninja-build; elif command -v apt-get &> /dev/null; then apt-get update && apt-get install -y cmake ninja-build; fi"
-          CIBW_ENVIRONMENT_LINUX: "PIP_DISABLE_PIP_VERSION_CHECK=1 CMAKE_ARGS='-DCMAKE_POSITION_INDEPENDENT_CODE=ON -DPY_DEM_BONES_USE_OPENMP=ON' SKBUILD_BUILD_DIR='.scikit-build'"
+          CIBW_BEFORE_ALL_LINUX: >-
+            if command -v yum &> /dev/null; then
+              yum install -y cmake ninja-build gcc-c++ make libgomp-devel;
+            elif command -v apt-get &> /dev/null; then
+              apt-get update && apt-get install -y cmake ninja-build g++ make libgomp-dev;
+            fi
+          CIBW_ENVIRONMENT_LINUX: >-
+            PIP_DISABLE_PIP_VERSION_CHECK=1
+            CMAKE_ARGS='-DCMAKE_POSITION_INDEPENDENT_CODE=ON -DPY_DEM_BONES_USE_OPENMP=ON'
+            SKBUILD_BUILD_DIR='.scikit-build'
+            CXXFLAGS='-fPIC'
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair -w {dest_dir} {wheel}"
 
           # macOS specific settings

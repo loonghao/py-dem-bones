@@ -140,10 +140,17 @@ jobs:
 
           # General settings
           CIBW_BUILD_VERBOSITY: 3
-          CIBW_ENVIRONMENT: "PIP_DISABLE_PIP_VERSION_CHECK=1"
-          CIBW_BEFORE_BUILD: "git submodule update --init --recursive && pip install -U pip setuptools wheel numpy pybind11>=2.13.6 scikit-build-core>=0.11.3"
-          CIBW_TEST_COMMAND: "python -c \"import py_dem_bones; print(py_dem_bones.__version__)\""
+          CIBW_ENVIRONMENT: "PIP_DISABLE_PIP_VERSION_CHECK=1 CMAKE_BUILD_PARALLEL_LEVEL=2 SKBUILD_CMAKE_ARGS='-DCMAKE_VERBOSE_MAKEFILE=ON'"
+          CIBW_BEFORE_BUILD: >-
+            git submodule update --init --recursive &&
+            pip install -U pip setuptools wheel cmake ninja &&
+            python -c "import sys; print(f'Python {sys.version}')" &&
+            python -c "import sys; if sys.version_info < (3, 8): print('Using Python 3.7 compatible dependencies'); else: print('Using latest dependencies')"
+          CIBW_TEST_COMMAND: "python -c \"import py_dem_bones; print(f'Successfully imported py_dem_bones version: {py_dem_bones.__version__}')\""
           CIBW_TEST_REQUIRES: "pytest numpy>=1.20.0"
+
+          # Use pip for Python 3.7 and build for Python 3.8+
+          CIBW_BUILD_FRONTEND: "pip;python_version<'3.8'"
 
           # Linux specific settings
           CIBW_MANYLINUX_X86_64_IMAGE: "manylinux2014"

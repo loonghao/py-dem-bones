@@ -4,8 +4,10 @@
 [build-system]
 # Build system dependencies
 requires = [
-    "scikit-build-core>=0.11.3",  # For building C++ extensions (updated to latest)
-    "pybind11>=2.13.6",          # For Python/C++ bindings (updated to latest)
+    "scikit-build-core>=0.10.0,<0.11.0; python_version<'3.8'",  # For Python 3.7
+    "scikit-build-core>=0.11.3; python_version>='3.8'",         # For Python 3.8+
+    "pybind11>=2.10.0,<2.13.0; python_version<'3.8'",           # For Python 3.7
+    "pybind11>=2.13.6; python_version>='3.8'",                  # For Python 3.8+
     "numpy>=1.20.0",             # Numerical computation library
     "setuptools>=42.0.0",        # Installation tools
     "wheel>=0.36.0",             # Wheel packaging tool
@@ -124,8 +126,8 @@ myst-parser = ">=2.0.0"  # Markdown support for Sphinx
 optional = true
 
 [tool.poetry.group.build.dependencies]
-scikit-build-core = ">=0.11.3"  # For building C++ extensions
-pybind11 = ">=2.13.0"  # For Python/C++ bindings
+scikit-build-core = ">=0.10.0"  # For building C++ extensions
+pybind11 = ">=2.10.0"  # For Python/C++ bindings
 
 # scikit-build configuration
 [tool.scikit-build]
@@ -276,4 +278,4 @@ exclude = '''(
     )/
 )'''  # Exclude patterns
 
-# cibuildwheel configuration is in .cibuildwheel.toml
+# cibuildwheel configuration is in GitHub Actions workflow files
