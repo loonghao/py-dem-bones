@@ -344,6 +344,6 @@ before-all = [
 # No repair needed for Windows
 
 # Python 3.7 specific settings
-[tool.cibuildwheel.overrides.cp37-*]
+[tool.cibuildwheel.overrides."cp37-*"]
 # Add Python 3.7 specific environment variables
-environment-append = {PYTHON_37_COMPATIBLE="1"}
+environment-append = {"PYTHON_37_COMPATIBLE"="1"}
