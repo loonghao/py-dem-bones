@@ -1,20 +1,19 @@
 [build-system]
 requires = [
-    "scikit-build-core>=0.11.2",         # For Python 3.9+
-    "pybind11>=2.10.0",                  # For Python 3.9+
-    "numpy>=1.20.0",             # Numerical computation library
-    "setuptools>=42.0.0",        # Installation tools
-    "wheel>=0.36.0",             # Wheel packaging tool
-    "poetry-core>=1.0.0",        # Poetry core functionality
+    "scikit-build-core>=0.5.0",
+    "pybind11>=2.10.0",
+    "numpy>=1.20.0",
+    "setuptools>=42.0.0",
+    "wheel>=0.36.0",
 ]
-build-backend = "scikit_build_core.build"  # Use scikit-build-core as the build backend
+build-backend = "scikit_build_core.build"
 
 [project]
 name = "py-dem-bones"
 version = "0.6.5"
 description = "Python bindings for the Dem Bones library"
 readme = "README.md"
-requires-python = ">=3.9"  # Support Python 3.9 and above (VFX Platform standard)
+requires-python = ">=3.9"
 license = {text = "BSD-3-Clause"}
 authors = [
     {name = "Long Hao", email = "hal.long@outlook.com"},
@@ -38,7 +37,8 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "numpy>=1.20.0",  # Numerical computation library
+    "numpy>=1.26.4,<1.27.0; python_version < '3.8'",
+    "numpy>=1.20.0; python_version >= '3.8'",
 ]
 
 [project.optional-dependencies]
@@ -84,7 +84,6 @@ Changelog = "https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md"
 [tool.scikit-build]
 wheel.packages = ["src/py_dem_bones"]
 wheel.exclude = ["tests/*"]
-# 确保包含所有必要的 DLL 文件
 wheel.expand-macos-universal-tags = true
 sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICENSE.md", "README.md", "extern/dem-bones/*", "extern/eigen/*"]
 sdist.exclude = ["tests/data/*"]
@@ -94,13 +93,7 @@ version = ">=3.15"
 build-type = "Release"
 
 [tool.scikit-build.cmake.define]
-# Enable Python stable ABI for abi3 wheels
-PYTHON_LIMITED_API = "ON"
-PYBIND11_PYTHON_VERSION = "3.9"
-# Enable better error messages from pybind11
-PYBIND11_DETAILED_ERROR_MESSAGES = "ON"
-# Enable OpenMP if available
-PY_DEM_BONES_USE_OPENMP = "ON"
+PYTHON_LIMITED_API = "OFF"
 CMAKE_POSITION_INDEPENDENT_CODE = "ON"
 # 确保在 Windows 上正确导出符号
 CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON"
