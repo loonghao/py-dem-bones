@@ -150,7 +150,7 @@ jobs:
           CIBW_TEST_REQUIRES: "pytest numpy>=1.20.0"
 
           # Use pip for Python 3.7 and build for Python 3.8+
-          CIBW_BUILD_FRONTEND: "pip;python_version<'3.8'"
+          CIBW_BUILD_FRONTEND: "pip"
 
           # Linux specific settings
           CIBW_MANYLINUX_X86_64_IMAGE: "manylinux2014"
