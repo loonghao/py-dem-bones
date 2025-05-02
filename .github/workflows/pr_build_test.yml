@@ -118,11 +118,14 @@ jobs:
       # Download and setup ccache (Windows)
       - name: Download ccache (Windows)
         if: runner.os == 'Windows'
-        shell: cmake -P {0}
         run: |
-          set(ccache_url "https://github.com/cristianadam/ccache/releases/download/v$ENV{CCACHE_VERSION}/Windows.tar.xz")
-          file(DOWNLOAD "${ccache_url}" ./ccache.tar.xz SHOW_PROGRESS)
-          execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ./ccache.tar.xz)
+          $ccache_url = "https://github.com/cristianadam/ccache/releases/download/v$env:CCACHE_VERSION/Windows.tar.xz"
+          Invoke-WebRequest -Uri $ccache_url -OutFile ccache.tar.xz
+          7z x ccache.tar.xz
+          7z x ccache.tar
+          $env:PATH = "$pwd;$env:PATH"
+          echo "$pwd" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        shell: powershell
 
       # Setup MSVC on Windows
       - name: Setup MSVC (Windows)
@@ -147,15 +150,22 @@ jobs:
       # Configure ccache (Windows)
       - name: Configure ccache (Windows)
         if: runner.os == 'Windows'
-        shell: cmake -P {0}
         run: |
-          file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}" ccache_basedir)
-          set(ENV{CCACHE_BASEDIR} "${ccache_basedir}")
-          set(ENV{CCACHE_DIR} "${ccache_basedir}/.ccache")
-          set(ENV{CCACHE_COMPRESS} "true")
-          set(ENV{CCACHE_COMPRESSLEVEL} "6")
-          set(ENV{CCACHE_MAXSIZE} "700M")
-          execute_process(COMMAND ccache -z)
+          $ccache_dir = Join-Path $env:GITHUB_WORKSPACE ".ccache"
+          New-Item -ItemType Directory -Force -Path $ccache_dir | Out-Null
+          $env:CCACHE_BASEDIR = $env:GITHUB_WORKSPACE
+          $env:CCACHE_DIR = $ccache_dir
+          $env:CCACHE_COMPRESS = "true"
+          $env:CCACHE_COMPRESSLEVEL = "6"
+          $env:CCACHE_MAXSIZE = "700M"
+          ccache -z
+          # Add environment variables to GitHub environment
+          echo "CCACHE_BASEDIR=$env:GITHUB_WORKSPACE" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "CCACHE_DIR=$ccache_dir" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "CCACHE_COMPRESS=true" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "CCACHE_COMPRESSLEVEL=6" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "CCACHE_MAXSIZE=700M" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        shell: powershell
 
       # Add Python 3.7/3.8 compatibility flags for legacy environments
       - name: Set Python compatibility flags
@@ -204,8 +214,9 @@ jobs:
           python -m pip install pytest>=7.0.0 pytest-cov>=4.0.0 pytest-timeout>=2.0.0 pytest-xdist>=3.0.0 pytest-rerunfailures>=12.0
         shell: powershell
 
-      # Configure CMake with ccache
-      - name: Configure CMake
+      # Configure CMake with ccache (Linux/macOS)
+      - name: Configure CMake (Linux/macOS)
+        if: runner.os != 'Windows'
         run: |
           cmake -S . -B build -G "${{ matrix.config.generators }}" \
             -DCMAKE_C_COMPILER_LAUNCHER=ccache \
@@ -216,11 +227,31 @@ jobs:
             -DPY_DEM_BONES_USE_OPENMP=ON
         shell: bash
 
-      # Build with limited parallelism to avoid memory issues
-      - name: Build
+      # Configure CMake with ccache (Windows)
+      - name: Configure CMake (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cmake -S . -B build -G "${{ matrix.config.generators }}" `
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache `
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_POSITION_INDEPENDENT_CODE=ON `
+            -DPYBIND11_DETAILED_ERROR_MESSAGES=ON
+        shell: powershell
+
+      # Build with limited parallelism to avoid memory issues (Linux/macOS)
+      - name: Build (Linux/macOS)
+        if: runner.os != 'Windows'
         run: |
           cmake --build build --config Release --parallel 2
         shell: bash
+
+      # Build with limited parallelism to avoid memory issues (Windows)
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cmake --build build --config Release --parallel 2
+        shell: powershell
 
       # Show ccache stats (Linux/macOS)
       - name: ccache statistics (Linux/macOS)
@@ -236,13 +267,25 @@ jobs:
           ccache -s
         shell: powershell
 
-      # Install the package
-      - name: Install package
+      # Install the package (Linux/macOS)
+      - name: Install package (Linux/macOS)
+        if: runner.os != 'Windows'
         run: |
           cd build
           cmake --install . --prefix install
           cd ..
           python -m pip install -e .
+        shell: bash
+
+      # Install the package (Windows)
+      - name: Install package (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cd build
+          cmake --install . --prefix install
+          cd ..
+          python -m pip install -e .
+        shell: powershell
 
       # Run tests (Linux/macOS)
       - name: Run tests (Linux/macOS)
