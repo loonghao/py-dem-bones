@@ -37,8 +37,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "numpy>=1.26.4,<1.27.0; python_version < '3.8'",
-    "numpy>=1.20.0; python_version >= '3.8'",
+    "numpy>=1.20.0",  # Numerical computation library
 ]
 
 [project.optional-dependencies]
@@ -93,7 +92,13 @@ version = ">=3.15"
 build-type = "Release"
 
 [tool.scikit-build.cmake.define]
-PYTHON_LIMITED_API = "OFF"
+# Enable Python stable ABI for abi3 wheels
+PYTHON_LIMITED_API = "ON"
+PYBIND11_PYTHON_VERSION = "3.9"
+# Enable better error messages from pybind11
+PYBIND11_DETAILED_ERROR_MESSAGES = "ON"
+# Enable OpenMP if available
+PY_DEM_BONES_USE_OPENMP = "ON"
 CMAKE_POSITION_INDEPENDENT_CODE = "ON"
 # 确保在 Windows 上正确导出符号
 CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON"
