@@ -9,7 +9,7 @@ permissions:
 
 on:
   push:
-    tags: 
+    tags:
       - 'v*'
       - '[0-9]+.[0-9]+.[0-9]+*'
     branches: [ main ]
@@ -96,13 +96,13 @@ jobs:
           - os: macos-13
           # macOS builds - Apple Silicon
           - os: macos-14
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
-      
+
       # Cache Eigen library
       - name: Cache Eigen library
         uses: actions/cache@v4
@@ -111,7 +111,7 @@ jobs:
           key: ${{ runner.os }}-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
           restore-keys: |
             ${{ runner.os }}-eigen-
-      
+
       # Install uv
       - name: Install uv
         shell: bash
@@ -126,26 +126,18 @@ jobs:
           # Verify installation
           echo "Verifying uv installation..."
           which uv || echo "uv not found in PATH"
-      
+
       # Build wheels using cibuildwheel action
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.23.0
         with:
           output-dir: wheelhouse
         env:
-          CIBW_BUILD: "cp37-* cp38-* cp39-* cp310-* cp311-* cp312-*"
-          CIBW_SKIP: "pp* *-musllinux* *-win32 *-manylinux_i686"
-          CIBW_BEFORE_BUILD: "pip install -U pip && pip install numpy pybind11 scikit-build-core cmake"
+          # Use configuration from pyproject.toml
           CIBW_BUILD_VERBOSITY: 3
-          CIBW_ENVIRONMENT: "PYTHONIOENCODING=UTF-8 PIP_NO_BUILD_ISOLATION=1"
-          CIBW_ENVIRONMENT_PASS_LINUX: "LANG LC_ALL"
-          CIBW_ENVIRONMENT_LINUX: "LANG=C.UTF-8 LC_ALL=C.UTF-8 PYTHONIOENCODING=UTF-8 CMAKE_PREFIX_PATH=/opt/python/{package.platname}"
-          CIBW_ENVIRONMENT_WINDOWS: "CMAKE_GENERATOR=Ninja CMAKE_POSITION_INDEPENDENT_CODE=ON"
-          CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair -w {dest_dir} {wheel}"
-          CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
-          CIBW_BEFORE_ALL_WINDOWS: "choco install -y ninja && dir \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\" || dir \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\" || dir \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\" || dir \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\""
-          CIBW_ENVIRONMENT_MACOS: "MAKEFLAGS=-j4 FORCE_PYTHON_VERSION={python_version}"
-      
+          # Pass Python 3.7 specific settings
+          CIBW_ENVIRONMENT_PASS_LINUX: PYTHON_37_COMPATIBLE
+
       # Upload wheels
       - uses: actions/upload-artifact@v4
         with:
@@ -168,13 +160,13 @@ jobs:
         exclude:
           - os: macos-14
             python-version: '3.8'
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
-      
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
@@ -183,7 +175,7 @@ jobs:
           cache-dependency-path: |
             **/pyproject.toml
             **/requirements*.txt
-      
+
       # Install uv
       - name: Install uv
         shell: bash
@@ -204,14 +196,14 @@ jobs:
         with:
           name: wheels-${{ matrix.os }}
           path: dist
-      
+
       - name: Install wheel and run tests
         shell: bash
         run: |
           # Find the wheel for the current Python version
           PYTHON_VERSION="${{ matrix.python-version }}"
           PYTHON_VERSION_NO_DOT="${PYTHON_VERSION//./}"
-          
+
           # Find wheel for the current Python version
           if [[ "${{ runner.os }}" == "Windows" ]]; then
             WHEEL_PATTERN="py_dem_bones-*-cp${PYTHON_VERSION_NO_DOT}-*-win_*.whl"
@@ -220,13 +212,13 @@ jobs:
           else
             WHEEL_PATTERN="py_dem_bones-*-cp${PYTHON_VERSION_NO_DOT}-*-manylinux_*.whl"
           fi
-          
+
           echo "Looking for wheel matching pattern: $WHEEL_PATTERN"
           WHEEL_PATH=$(find dist -name "$WHEEL_PATTERN" | head -n 1)
-          
+
           if [ -n "$WHEEL_PATH" ]; then
             echo "Found wheel: $WHEEL_PATH"
-            
+
             # Install the wheel and test dependencies using uvx
             uvx pip install "$WHEEL_PATH" pytest pytest-cov
 
@@ -248,13 +240,13 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.8', '3.10', '3.12']
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
-      
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
@@ -263,7 +255,7 @@ jobs:
           cache-dependency-path: |
             **/pyproject.toml
             **/requirements*.txt
-      
+
       # Install uv
       - name: Install uv
         shell: bash
@@ -284,7 +276,7 @@ jobs:
         with:
           name: wheels-windows-latest
           path: dist
-      
+
       - name: Run Windows compatibility test
         shell: bash
         run: |
@@ -296,13 +288,13 @@ jobs:
     name: Build source distribution
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.fast-mode == 'true') && (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'release' || github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -311,7 +303,7 @@ jobs:
           cache-dependency-path: |
             **/pyproject.toml
             **/requirements*.txt
-      
+
       # Install uv
       - name: Install uv
         shell: bash
@@ -351,13 +343,13 @@ jobs:
           }
           # List generated stubs
           find src -name "*.pyi" | sort
-      
+
       # Build source distribution using Poetry
       - name: Build source distribution
         run: |
           # Build source distribution using Poetry
           uvx poetry build --format sdist
-      
+
       # Upload source distribution
       - uses: actions/upload-artifact@v4
         with:
@@ -377,12 +369,12 @@ jobs:
     environment:
       name: release
       url: https://pypi.org/p/py-dem-bones
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -391,7 +383,7 @@ jobs:
           cache-dependency-path: |
             **/pyproject.toml
             **/requirements*.txt
-      
+
       # Install uv
       - name: Install uv
         shell: bash
@@ -406,18 +398,18 @@ jobs:
           # Verify installation
           echo "Verifying uv installation..."
           which uv || echo "uv not found in PATH"
-      
+
       # Download all artifacts
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: dist
           merge-multiple: true
-      
+
       # List all artifacts
       - name: List all artifacts
         run: find dist -type f | sort
-      
+
       # Generate release notes from changelog
       - name: Generate Release Notes
         if: startsWith(github.ref, 'refs/tags/')
@@ -431,7 +423,7 @@ jobs:
           echo "$TEMPLATE" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
         shell: bash
-      
+
       # Update release notes
       - name: Update Release Notes
         if: startsWith(github.ref, 'refs/tags/')
@@ -442,7 +434,7 @@ jobs:
           fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       # Publish to PyPI
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

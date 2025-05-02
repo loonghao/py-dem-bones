@@ -16,53 +16,40 @@
 │   └── py37/             # Python 3.7 特定脚本
 │       └── setup_env.sh
 └── workflows/            # GitHub Actions 工作流
-    ├── main.yml          # 主工作流（PR 和 push 触发）
-    ├── workflow-dispatch.yml # 手动触发工作流
+    ├── build_wheels.yml  # 使用 cibuildwheel 构建轮子
     ├── release.yml       # 发布工作流（标签触发）
-    ├── reusable-jobs.yml # 可重用任务定义
     ├── bumpversion.yml   # 版本更新工作流
+    ├── docs.yml          # 文档构建工作流
+    ├── lint.yml          # 代码检查工作流
     └── issue-translator.yml # 问题翻译工作流
 ```
 
 ## 工作流说明
 
-### 主工作流 (`main.yml`)
+### 构建轮子工作流 (`build_wheels.yml`)
 
-主工作流在代码推送到主分支或创建 Pull Request 时自动运行。它执行以下任务：
+使用 cibuildwheel 构建跨平台的 Python 轮子。它执行以下任务：
 
-- **构建任务**: 在所有支持的平台（Ubuntu、macOS、Windows）和 Python 版本（3.7-3.13）上构建包
-- **测试任务**: 在 PR 时在所有支持的平台和 Python 版本上运行测试
-- **代码检查任务**: 在 PR 时只在 Python 3.11 + Ubuntu 环境中执行一次
-- **文档构建任务**: 在 PR 时只在 Python 3.10 + Ubuntu 环境中执行一次
-
-### 手动触发工作流 (`workflow-dispatch.yml`)
-
-允许手动触发特定任务，支持以下选项：
-
-- **all**: 运行所有任务
-- **build**: 只运行构建任务
-- **test**: 只运行测试任务
-- **lint**: 只运行代码检查任务
-- **docs**: 只运行文档构建任务
-- **release**: 只运行发布任务（不会实际发布到 PyPI）
+- **构建任务**: 在所有支持的平台（Ubuntu、macOS、Windows）和 Python 版本（3.7-3.12）上构建包
+- **ARM64 支持**: 支持 Linux 和 macOS 的 ARM64 架构
+- **测试任务**: 在所有支持的平台和 Python 版本上运行测试
 
 ### 发布工作流 (`release.yml`)
 
 当创建新的版本标签（以 'v' 开头）时自动运行，执行以下任务：
 
-- 在所有支持的平台和 Python 版本上构建包
+- 使用 cibuildwheel 在所有支持的平台和 Python 版本上构建包
 - 构建文档
 - 创建 GitHub Release
 - 发布包到 PyPI
 
-### 可重用任务 (`reusable-jobs.yml`)
+### 代码检查工作流 (`lint.yml`)
 
-定义了可在其他工作流中重用的任务：
+在 PR 时运行代码检查，确保代码质量。
 
-- **build-and-test**: 构建和测试任务
-- **lint**: 代码检查任务
-- **docs**: 文档构建任务
-- **release**: 发布任务
+### 文档构建工作流 (`docs.yml`)
+
+在 PR 时构建文档，确保文档正确。
 
 ## 优化特点
 
@@ -84,23 +71,31 @@ This directory contains GitHub Actions workflows for the `py-dem-bones` project.
 
 ## Workflows
 
-### 1. Main Workflow (`main.yml`)
+### 1. Build Wheels Workflow (`build_wheels.yml`)
 
-The main workflow runs on pull requests to the `main` branch and when code is pushed to the `main` branch. It performs the following tasks:
+This workflow uses cibuildwheel to build cross-platform Python wheels. It performs the following tasks:
 
-- **Linting**: Checks code quality using tools like Ruff, Black, and isort
-- **Building**: Builds the project to ensure it compiles correctly
-- **Testing**: Runs unit tests across different Python versions and operating systems
-- **Documentation**:
-  - For PRs: Builds and deploys a preview of the documentation
-  - For main branch: Builds and deploys the latest documentation
+- **Building**: Builds wheels for all supported platforms (Ubuntu, macOS, Windows) and Python versions (3.7-3.12)
+- **ARM64 Support**: Supports ARM64 architecture for Linux and macOS
+- **Testing**: Runs tests on all supported platforms and Python versions
 
-#### Documentation URLs
+### 2. Release Workflow (`release.yml`)
 
-- **Latest Documentation**: https://[owner].github.io/py-dem-bones/latest/
-- **PR Previews**: https://[owner].github.io/py-dem-bones/pr-preview/[PR_NUMBER]/
+This workflow creates a release when a new version tag is pushed to the repository. It performs the following tasks:
 
-### 2. Bump Version Workflow (`bumpversion.yml`)
+- Uses cibuildwheel to build wheels for all supported platforms and Python versions
+- Creates a GitHub release with release notes
+- Publishes the package to PyPI
+
+### 3. Lint Workflow (`lint.yml`)
+
+This workflow runs code quality checks on pull requests to ensure code quality.
+
+### 4. Documentation Workflow (`docs.yml`)
+
+This workflow builds documentation on pull requests to ensure documentation correctness.
+
+### 5. Bump Version Workflow (`bumpversion.yml`)
 
 This workflow automatically bumps the version and creates a changelog based on commit messages. It runs when code is pushed to the `main` branch.
 
@@ -108,14 +103,6 @@ Key features:
 - Uses [Commitizen](https://github.com/commitizen-tools/commitizen) to determine the next version
 - Creates a changelog based on commit messages
 - Commits the version bump and changelog to the repository
-
-### 3. Release Workflow (`release.yml`)
-
-This workflow creates a release when a new version tag is pushed to the repository. It performs the following tasks:
-
-- Builds the project for different platforms
-- Creates a GitHub release with release notes
-- Publishes the package to PyPI
 
 ## Usage
 
