@@ -36,8 +36,6 @@ if __name__ == "__main__":
             "License :: OSI Approved :: BSD License",
             "Operating System :: OS Independent",
             "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 3.7",
-            "Programming Language :: Python :: 3.8",
             "Programming Language :: Python :: 3.9",
             "Programming Language :: Python :: 3.10",
             "Programming Language :: Python :: 3.11",
@@ -49,5 +47,5 @@ if __name__ == "__main__":
             "Topic :: Multimedia :: Graphics :: 3D Modeling",
             "Topic :: Software Development :: Libraries :: Python Modules",
         ],
-        python_requires=">=3.7",
+        python_requires=">=3.9",
     )

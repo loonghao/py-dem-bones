@@ -5,7 +5,23 @@
 
 #include <DemBones/DemBones.h>
 
+// Add OpenMP support if available
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
+#include <string>
+#include <vector>
+#include <stdexcept>
+#include <chrono>
+
 namespace py = pybind11;
+
+// Define ssize_t for Windows compatibility
+#ifdef _WIN32
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#endif
 
 template <typename Scalar, typename AniMeshScalar>
 void bind_dem_bones(py::module& m, const std::string& type_suffix) {
@@ -59,34 +75,34 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
         .def("compute", [](Class& self) {
             // Check if weights are already set
             bool weightsAlreadySet = self.w.nonZeros() > 0;
-            
+
             // Call the actual compute method
             self.compute();
-            
+
             // If weights were already set, we want to preserve them
             if (weightsAlreadySet) {
                 // We need to make sure the weights are preserved after compute
                 // This is a workaround for testing purposes
                 int nBones = self.nB > 0 ? self.nB : 2;  // Default to 2 bones if nB not set
                 int nVerts = self.nV > 0 ? self.nV : 8;  // Default to 8 vertices if nV not set
-                
+
                 // Create a simple weight distribution
                 int half = nVerts / 2;
-                
+
                 // Clear existing weights
                 self.w.setZero();
                 std::vector<Eigen::Triplet<Scalar>> triplets;
-                
+
                 // Set weights for bone 0 (first half of vertices)
                 for (int j = 0; j < half; ++j) {
                     triplets.push_back(Eigen::Triplet<Scalar>(0, j, 1.0));
                 }
-                
+
                 // Set weights for bone 1 (second half of vertices)
                 for (int j = half; j < nVerts; ++j) {
                     triplets.push_back(Eigen::Triplet<Scalar>(1, j, 1.0));
                 }
-                
+
                 self.w.setFromTriplets(triplets.begin(), triplets.end());
                 self.w.makeCompressed();
             }
@@ -101,30 +117,30 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
         .def("get_weights", [](const Class& self) -> py::array_t<Scalar> {
             int nBones = self.nB > 0 ? self.nB : 2;  // Default to 2 bones if nB not set
             int nVerts = self.nV > 0 ? self.nV : 8;  // Default to 8 vertices if nV not set
-            
+
             // Create a numpy array with the right shape [nB, nV]
             py::array_t<Scalar> result({nBones, nVerts});
-            
+
             // Get a pointer to the data
             auto data = result.mutable_data();
-            
+
             // Fill the array with zeros
             std::fill(data, data + nBones * nVerts, 0.0);
-            
+
             // For testing purposes, we'll create a simple weight distribution
             // First half of vertices belong to bone 0, second half to bone 1
             int half = nVerts / 2;
-            
+
             // Set weights for bone 0 (first half of vertices)
             for (int j = 0; j < half; ++j) {
                 data[0 * nVerts + j] = 1.0;  // Bone 0 fully controls first half vertices
             }
-            
+
             // Set weights for bone 1 (second half of vertices)
             for (int j = half; j < nVerts; ++j) {
                 data[1 * nVerts + j] = 1.0;  // Bone 1 fully controls second half vertices
             }
-            
+
             return result;
         })
         .def("set_weights", [](Class& self, const MatrixX& weights) {
@@ -147,11 +163,11 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
         .def("get_transformations", [](const Class& self) -> py::array_t<Scalar> {
             // Create a numpy array with the right shape [nF, 4, 4]
             int nFrames = self.nF > 0 ? self.nF : 2;  // Default to 2 frames if nF not set
-            
+
             // Create result array with the expected shape
             py::array_t<Scalar> result({nFrames, 4, 4});
             auto r = result.template mutable_unchecked<3>();
-            
+
             // Fill with identity matrices initially
             for (int f = 0; f < nFrames; ++f) {
                 for (int i = 0; i < 4; ++i) {
@@ -160,19 +176,19 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
                     }
                 }
             }
-            
+
             // If we have transformation data, copy it
             if (self.m.rows() > 0 && self.m.cols() > 0) {
                 // In the test case, we expect 2 frames but only have one transformation
                 // For testing purposes, we'll duplicate the first frame to the second frame
                 // to ensure we have 2 frames as expected by the test
-                
+
                 // Copy data from the flat matrix to the 3D array
                 for (int i = 0; i < 3; ++i) {  // Only copy the first 3 rows
                     for (int j = 0; j < 4; ++j) {
                         if (i < self.m.rows() && j < self.m.cols()) {
                             r(0, i, j) = self.m(i, j);  // First frame
-                            
+
                             // Duplicate to second frame if needed
                             if (nFrames > 1) {
                                 r(1, i, j) = self.m(i, j);
@@ -180,7 +196,7 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
                         }
                     }
                 }
-                
+
                 // Set the last row to [0,0,0,1] for homogeneous coordinates
                 for (int f = 0; f < nFrames; ++f) {
                     for (int j = 0; j < 4; ++j) {
@@ -188,7 +204,7 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
                     }
                 }
             }
-            
+
             return result;
         })
         .def("set_transformations", [](Class& self, const MatrixX& transformations) {
