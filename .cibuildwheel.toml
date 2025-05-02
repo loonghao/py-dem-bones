@@ -23,11 +23,11 @@ manylinux-x86_64-image = "manylinux2014"
 manylinux-i686-image = "manylinux2014"
 # Before all script - install system dependencies
 before-all = [
-    "yum install -y cmake ninja-build",
+    "yum install -y cmake ninja-build"
 ]
 # Environment variables for Linux
 environment = {
-    "PIP_DISABLE_PIP_VERSION_CHECK" = "1",
+    "PIP_DISABLE_PIP_VERSION_CHECK" = "1", 
     "CMAKE_ARGS" = "-DCMAKE_POSITION_INDEPENDENT_CODE=ON -DPY_DEM_BONES_USE_OPENMP=ON",
     "SKBUILD_BUILD_DIR" = ".scikit-build"
 }
@@ -45,7 +45,7 @@ environment = {
 }
 # Before all script - install system dependencies
 before-all = [
-    "brew install cmake ninja",
+    "brew install cmake ninja"
 ]
 # Repair command
 repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
@@ -60,7 +60,7 @@ environment = {
 }
 # Before all script - install system dependencies
 before-all = [
-    "pip install cmake ninja",
+    "pip install cmake ninja"
 ]
 # No repair needed for Windows
 
