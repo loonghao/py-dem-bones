@@ -10,7 +10,7 @@ test-command = "python -c \"import py_dem_bones; print(py_dem_bones.__version__)
 # Test requires
 test-requires = ["pytest", "numpy>=1.20.0"]
 # Environment variables
-environment = {PIP_DISABLE_PIP_VERSION_CHECK="1"}
+environment = {"PIP_DISABLE_PIP_VERSION_CHECK" = "1"}
 # Build verbosity
 build-verbosity = 1
 # Before build - ensure submodules are available
@@ -27,7 +27,7 @@ before-all = [
 ]
 # Environment variables for Linux
 environment = {
-    "PIP_DISABLE_PIP_VERSION_CHECK" = "1", 
+    "PIP_DISABLE_PIP_VERSION_CHECK" = "1",
     "CMAKE_ARGS" = "-DCMAKE_POSITION_INDEPENDENT_CODE=ON -DPY_DEM_BONES_USE_OPENMP=ON",
     "SKBUILD_BUILD_DIR" = ".scikit-build"
 }
