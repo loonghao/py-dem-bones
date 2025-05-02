@@ -4,13 +4,11 @@ project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
 # Use scikit-build-core's FindPython support
 find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 
-# If Python version is 3.7, output some debug information
-if(Python_VERSION MATCHES "^3\.7")
-  message(STATUS "Found Python 3.7: ${Python_VERSION}")
-  message(STATUS "  Python_EXECUTABLE: ${Python_EXECUTABLE}")
-  message(STATUS "  Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
-  message(STATUS "  Python_LIBRARIES: ${Python_LIBRARIES}")
-endif()
+# Output Python version information for debugging
+message(STATUS "Found Python: ${Python_VERSION}")
+message(STATUS "  Python_EXECUTABLE: ${Python_EXECUTABLE}")
+message(STATUS "  Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
+message(STATUS "  Python_LIBRARIES: ${Python_LIBRARIES}")
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 14)
@@ -261,10 +259,7 @@ pybind11_add_module(_py_dem_bones
     src/binding/py_dem_bones_module.cpp
 )
 
-# Add compiler definitions for Python 3.7 compatibility
-if(Python_VERSION VERSION_LESS 3.8)
-    target_compile_definitions(_py_dem_bones PRIVATE PYTHON_37_COMPATIBLE)
-endif()
+# No special handling needed for Python versions as we only support 3.9+
 
 # Link OpenMP if found
 if(OpenMP_CXX_FOUND)
@@ -276,21 +271,13 @@ endif()
 target_link_libraries(_py_dem_bones PRIVATE spdlog::spdlog)
 target_compile_definitions(_py_dem_bones PRIVATE WITH_SPDLOG)
 
-# Special handling for Python 3.7
-if(Python_VERSION VERSION_MATCHES "^3\.7")
-    message(STATUS "Configuring for Python 3.7 compatibility")
-
-    # Add Python 3.7 specific compile definitions
-    target_compile_definitions(_py_dem_bones PRIVATE PYTHON_37_COMPATIBLE)
-
-    # Ensure we're using the correct runtime library for Python 3.7
-    if(MSVC)
-        # Force MD/MDd runtime for Python 3.7 compatibility
-        target_compile_options(_py_dem_bones PRIVATE
-            $<$<CONFIG:Release>:/MD>
-            $<$<CONFIG:Debug>:/MDd>
-        )
-    endif()
+# Ensure we're using the correct runtime library
+if(MSVC)
+    # Force MD/MDd runtime for compatibility
+    target_compile_options(_py_dem_bones PRIVATE
+        $<$<CONFIG:Release>:/MD>
+        $<$<CONFIG:Debug>:/MDd>
+    )
 endif()
 
 # Set extension module suffix

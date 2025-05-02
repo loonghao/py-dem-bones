@@ -133,8 +133,8 @@ jobs:
         with:
           output-dir: wheelhouse
         env:
-          # Build selection
-          CIBW_BUILD: "cp37-* cp38-* cp39-* cp310-* cp311-* cp312-*"
+          # Build selection (VFX Platform standard: Python 3.9+)
+          CIBW_BUILD: "cp39-* cp310-* cp311-* cp312-*"
           CIBW_SKIP: "pp* *-musllinux*"
           CIBW_ARCHS: "auto64"
 
