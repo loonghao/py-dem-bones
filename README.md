@@ -6,6 +6,8 @@
 
 [English](README.md) | [中文](README_zh.md)
 
+> **Note**: This project is currently a Work in Progress (WIP). Some features may be incomplete or subject to change.
+
 Python bindings for the [Dem Bones](https://github.com/electronicarts/dem-bones) library - an automated algorithm to extract the linear blend skinning (LBS) from a set of example poses.
 
 [![PyPI version](https://badge.fury.io/py/py-dem-bones.svg)](https://badge.fury.io/py/py-dem-bones)
@@ -292,6 +294,26 @@ This project uses GitHub Actions for continuous integration and deployment. The 
 When a new version tag is created (e.g., `v0.2.1`), the release workflow is automatically triggered, building wheel files and publishing them to PyPI.
 
 For more information about the CI/CD workflow, please check the [.github/workflows/release.yml](.github/workflows/release.yml) file.
+
+## Project Status
+
+This project is currently in active development. Here's what's currently working and what's planned:
+
+### Current Status
+- Core Python bindings for the Dem Bones C++ library
+- Basic NumPy integration
+- Cross-platform support (Windows, Linux, macOS)
+- Pythonic wrapper classes
+
+### Coming Soon
+- Improved documentation and examples
+- Integration with popular 3D software packages
+- Performance optimizations
+- Additional utility functions
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to this project.
 
 ## Documentation
 
