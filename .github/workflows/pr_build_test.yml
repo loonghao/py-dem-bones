@@ -59,11 +59,11 @@ jobs:
               generators: "Ninja"
             }
           - {
-              name: "Python 3.7 Windows",
-              os: windows-latest,
+              name: "Python 3.8 Windows (Legacy)",
+              os: windows-2019,
               cc: "cl",
               cxx: "cl",
-              python: "3.7",
+              python: "3.8",
               generators: "Ninja"
             }
 
@@ -140,9 +140,9 @@ jobs:
           endif()
           execute_process(COMMAND ccache -z)
 
-      # Add Python 3.7 compatibility flags
-      - name: Set Python 3.7 compatibility flags
-        if: matrix.config.python == '3.7'
+      # Add Python 3.7/3.8 compatibility flags for legacy environments
+      - name: Set Python compatibility flags
+        if: matrix.config.name == 'Python 3.8 Windows (Legacy)'
         run: |
           echo "PYTHON_37_COMPATIBLE=1" >> $GITHUB_ENV
         shell: bash
