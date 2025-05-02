@@ -66,7 +66,12 @@ on:
         description: 'Python version to use for testing'
         required: false
         default: '3.10'
-        type: string
+        type: choice
+        options:
+          - '3.9'
+          - '3.10'
+          - '3.11'
+          - '3.12'
       os:
         description: 'OS to run tests on'
         required: false
@@ -88,14 +93,123 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Linux builds
+          # Linux builds - manylinux_2_28 (x86_64)
           - os: ubuntu-latest
-          # Windows builds
+            build: CPython 3.9 64 bits manylinux_2_28
+            manylinux: manylinux_2_28
+            python: cp39-manylinux_x86_64
+            python-version: "3.9"
+            arch: x86_64
+          - os: ubuntu-latest
+            build: CPython 3.10 64 bits manylinux_2_28
+            manylinux: manylinux_2_28
+            python: cp310-manylinux_x86_64
+            python-version: "3.10"
+            arch: x86_64
+          - os: ubuntu-latest
+            build: CPython 3.11 64 bits manylinux_2_28
+            manylinux: manylinux_2_28
+            python: cp311-manylinux_x86_64
+            python-version: "3.11"
+            arch: x86_64
+          - os: ubuntu-latest
+            build: CPython 3.12 64 bits manylinux_2_28
+            manylinux: manylinux_2_28
+            python: cp312-manylinux_x86_64
+            python-version: "3.12"
+            arch: x86_64
+
+          # Linux builds - manylinux2014 (x86_64)
+          - os: ubuntu-latest
+            build: CPython 3.9 64 bits manylinux2014
+            manylinux: manylinux2014
+            python: cp39-manylinux_x86_64
+            python-version: "3.9"
+            arch: x86_64
+          - os: ubuntu-latest
+            build: CPython 3.10 64 bits manylinux2014
+            manylinux: manylinux2014
+            python: cp310-manylinux_x86_64
+            python-version: "3.10"
+            arch: x86_64
+          - os: ubuntu-latest
+            build: CPython 3.11 64 bits manylinux2014
+            manylinux: manylinux2014
+            python: cp311-manylinux_x86_64
+            python-version: "3.11"
+            arch: x86_64
+          - os: ubuntu-latest
+            build: CPython 3.12 64 bits manylinux2014
+            manylinux: manylinux2014
+            python: cp312-manylinux_x86_64
+            python-version: "3.12"
+            arch: x86_64
+
+          # Windows builds (AMD64)
           - os: windows-latest
-          # macOS builds - Intel
+            build: CPython 3.9 64 bits
+            python: cp39-win_amd64
+            python-version: "3.9"
+            arch: AMD64
+          - os: windows-latest
+            build: CPython 3.10 64 bits
+            python: cp310-win_amd64
+            python-version: "3.10"
+            arch: AMD64
+          - os: windows-latest
+            build: CPython 3.11 64 bits
+            python: cp311-win_amd64
+            python-version: "3.11"
+            arch: AMD64
+          - os: windows-latest
+            build: CPython 3.12 64 bits
+            python: cp312-win_amd64
+            python-version: "3.12"
+            arch: AMD64
+
+          # macOS builds - Intel (x86_64)
           - os: macos-13
-          # macOS builds - Apple Silicon
+            build: CPython 3.9 64 bits
+            python: cp39-macosx_x86_64
+            python-version: "3.9"
+            arch: x86_64
+          - os: macos-13
+            build: CPython 3.10 64 bits
+            python: cp310-macosx_x86_64
+            python-version: "3.10"
+            arch: x86_64
+          - os: macos-13
+            build: CPython 3.11 64 bits
+            python: cp311-macosx_x86_64
+            python-version: "3.11"
+            arch: x86_64
+          - os: macos-13
+            build: CPython 3.12 64 bits
+            python: cp312-macosx_x86_64
+            python-version: "3.12"
+            arch: x86_64
+
+          # macOS builds - Apple Silicon (arm64)
           - os: macos-14
+            build: CPython 3.9 ARM 64 bits
+            python: cp39-macosx_arm64
+            python-version: "3.9"
+            arch: arm64
+          - os: macos-14
+            build: CPython 3.10 ARM 64 bits
+            python: cp310-macosx_arm64
+            python-version: "3.10"
+            arch: arm64
+          - os: macos-14
+            build: CPython 3.11 ARM 64 bits
+            python: cp311-macosx_arm64
+            python-version: "3.11"
+            arch: arm64
+          - os: macos-14
+            build: CPython 3.12 ARM 64 bits
+            python: cp312-macosx_arm64
+            python-version: "3.12"
+            arch: arm64
 
     steps:
       - uses: actions/checkout@v4
@@ -127,21 +241,37 @@ jobs:
           echo "Verifying uv installation..."
           which uv || echo "uv not found in PATH"
 
+      # Set up Python for cibuildwheel
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
       # Build wheels using cibuildwheel action
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.23.0
         with:
           output-dir: wheelhouse
         env:
-          # Use configuration from pyproject.toml
+          CIBW_BUILD: "${{ matrix.python }}"
+          CIBW_ARCHS: "${{ matrix.arch }}"
+          CIBW_SKIP: "pp* *-musllinux* *-win32 *-manylinux_i686"
+          CIBW_BEFORE_BUILD: "pip install -U pip && pip install numpy 'pybind11>=2.10.0' 'scikit-build-core>=0.11.2' cmake"
           CIBW_BUILD_VERBOSITY: 3
-          # Pass Python 3.7 specific settings
-          CIBW_ENVIRONMENT_PASS_LINUX: PYTHON_37_COMPATIBLE
+          CIBW_ENVIRONMENT: "PYTHONIOENCODING=UTF-8 PIP_NO_BUILD_ISOLATION=1"
+          CIBW_ENVIRONMENT_PASS_LINUX: "LANG LC_ALL"
+          CIBW_ENVIRONMENT_LINUX: "LANG=C.UTF-8 LC_ALL=C.UTF-8 PYTHONIOENCODING=UTF-8 CMAKE_PREFIX_PATH=/opt/python/{package.platname}"
+          CIBW_ENVIRONMENT_WINDOWS: "CMAKE_GENERATOR=Ninja CMAKE_POSITION_INDEPENDENT_CODE=ON"
+          CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair -w {dest_dir} {wheel}"
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
+          CIBW_BEFORE_ALL_WINDOWS: "choco install -y ninja && dir \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\" || dir \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\" || dir \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\" || dir \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\""
+          CIBW_ENVIRONMENT_MACOS: "MAKEFLAGS=-j4 FORCE_PYTHON_VERSION={python_version}"
+          CIBW_MANYLINUX_X86_64_IMAGE: "${{ matrix.manylinux }}"
 
       # Upload wheels
       - uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ matrix.os }}
+          name: cibw-wheels-${{ matrix.python }}${{ matrix.manylinux && '-' || '' }}${{ matrix.manylinux || '' }}
           path: ./wheelhouse/*.whl
           if-no-files-found: error
 
@@ -156,10 +286,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-13, macos-14]
-        python-version: ['3.8', '3.10', '3.12']
-        exclude:
-          - os: macos-14
-            python-version: '3.8'
+        python-version: ['3.9', '3.10', '3.11', '3.12']
 
     steps:
       - uses: actions/checkout@v4
@@ -194,8 +321,9 @@ jobs:
       - name: Download wheels
         uses: actions/download-artifact@v4
         with:
-          name: wheels-${{ matrix.os }}
+          pattern: cibw-wheels-*
           path: dist
+          merge-multiple: true
 
       - name: Install wheel and run tests
         shell: bash
@@ -239,7 +367,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.8', '3.10', '3.12']
+        python-version: ['3.9', '3.10', '3.11', '3.12']
 
     steps:
       - uses: actions/checkout@v4
@@ -274,8 +402,9 @@ jobs:
       - name: Download wheels
         uses: actions/download-artifact@v4
         with:
-          name: wheels-windows-latest
+          pattern: cibw-wheels-cp${{ matrix.python-version == '3.10' && '310' || matrix.python-version == '3.11' && '311' || matrix.python-version == '3.12' && '312' || '39' }}-win_amd64
           path: dist
+          merge-multiple: true
 
       - name: Run Windows compatibility test
         shell: bash

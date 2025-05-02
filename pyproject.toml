@@ -4,8 +4,8 @@
 [build-system]
 # Build system dependencies
 requires = [
-    "scikit-build-core>=0.11.3",  # For building C++ extensions (updated to latest)
-    "pybind11>=2.13.6",          # For Python/C++ bindings (updated to latest)
+    "scikit-build-core>=0.11.2",         # For Python 3.9+
+    "pybind11>=2.10.0",                  # For Python 3.9+
     "numpy>=1.20.0",             # Numerical computation library
     "setuptools>=42.0.0",        # Installation tools
     "wheel>=0.36.0",             # Wheel packaging tool
@@ -30,8 +30,6 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -43,8 +41,8 @@ classifiers = [
     "Topic :: Multimedia :: Graphics :: 3D Modeling",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-# Support Python 3.7 and above
-requires-python = ">=3.7"
+# Support Python 3.9 and above (VFX Platform standard)
+requires-python = ">=3.9"
 dependencies = [
     "numpy>=1.20.0",  # Numerical computation library
 ]
@@ -79,7 +77,7 @@ issues = "https://github.com/loonghao/py-dem-bones/issues"
 
 # Poetry dependency configuration
 [tool.poetry.dependencies]
-python = ">=3.7"  # Support Python 3.7 and above
+python = ">=3.9"  # Support Python 3.9 and above (VFX Platform standard)
 numpy = ">=1.20.0"  # Numerical computation library
 
 # Test dependencies (optional)
@@ -124,12 +122,13 @@ myst-parser = ">=2.0.0"  # Markdown support for Sphinx
 optional = true
 
 [tool.poetry.group.build.dependencies]
-scikit-build-core = ">=0.11.3"  # For building C++ extensions
-pybind11 = ">=2.13.0"  # For Python/C++ bindings
+scikit-build-core = ">=0.10.0"  # For building C++ extensions
+pybind11 = ">=2.10.0"  # For Python/C++ bindings
 
 # scikit-build configuration
 [tool.scikit-build]
-# For Python 3.7 compatibility, we need to be careful with ABI
+# Note: ABI3 mode is disabled as it may cause issues with some pybind11 features
+# wheel.py-api = "cp37"  # Disabled ABI3 mode
 wheel.packages = ["src/py_dem_bones"]  # Specify packaging path
 wheel.exclude = ["tests/*"]  # Exclude test files
 wheel.expand-macos-universal-tags = true  # Support macOS universal binaries
@@ -260,7 +259,7 @@ exclude = [
 # black configuration
 [tool.black]
 line-length = 88  # Default line length
-target-version = ["py37", "py38", "py39", "py310", "py311"]  # Target Python versions
+target-version = ["py39", "py310", "py311", "py312"]  # Target Python versions (VFX Platform standard)
 include = '\.pyi?$'  # Include Python files and type stubs
 exclude = '''(
     /(\.
@@ -276,74 +275,4 @@ exclude = '''(
     )/
 )'''  # Exclude patterns
 
-# cibuildwheel configuration
-[tool.cibuildwheel]
-# Python versions to build
-build = ["cp37-*", "cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*"]
-# Skip PyPy and musllinux for now
-skip = ["pp*", "*-musllinux*"]
-# Build universal2 wheels on macOS
-archs = ["auto64"]
-# Test command to run after building the wheel
-test-command = "python -c \"import py_dem_bones; print(py_dem_bones.__version__)\""
-# Test requires
-test-requires = ["pytest", "numpy>=1.20.0"]
-# Environment variables
-environment = {PIP_DISABLE_PIP_VERSION_CHECK="1"}
-# Build verbosity
-build-verbosity = 1
-# Before build - ensure submodules are available
-before-build = "git submodule update --init --recursive"
-
-# Linux specific settings
-[tool.cibuildwheel.linux]
-# Use manylinux2014 as the base image
-manylinux-x86_64-image = "manylinux2014"
-manylinux-i686-image = "manylinux2014"
-# Before all script - install system dependencies
-before-all = [
-    "yum install -y cmake ninja-build",
-]
-# Environment variables for Linux
-environment = {
-    "PIP_DISABLE_PIP_VERSION_CHECK": "1",
-    "CMAKE_ARGS": "-DCMAKE_POSITION_INDEPENDENT_CODE=ON -DPY_DEM_BONES_USE_OPENMP=ON",
-    "SKBUILD_BUILD_DIR": ".scikit-build"
-}
-# Repair command
-repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
-
-# macOS specific settings
-[tool.cibuildwheel.macos]
-# Environment variables for macOS
-environment = {
-    "PIP_DISABLE_PIP_VERSION_CHECK": "1",
-    "CMAKE_ARGS": "-DCMAKE_POSITION_INDEPENDENT_CODE=ON -DPY_DEM_BONES_USE_OPENMP=ON",
-    "MACOSX_DEPLOYMENT_TARGET": "10.14",
-    "SKBUILD_BUILD_DIR": ".scikit-build"
-}
-# Before all script - install system dependencies
-before-all = [
-    "brew install cmake ninja",
-]
-# Repair command
-repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} {wheel}"
-
-# Windows specific settings
-[tool.cibuildwheel.windows]
-# Environment variables for Windows
-environment = {
-    "PIP_DISABLE_PIP_VERSION_CHECK": "1",
-    "CMAKE_ARGS": "-DCMAKE_POSITION_INDEPENDENT_CODE=ON -DPY_DEM_BONES_USE_OPENMP=ON",
-    "SKBUILD_BUILD_DIR": ".scikit-build"
-}
-# Before all script - install system dependencies
-before-all = [
-    "pip install cmake ninja",
-]
-# No repair needed for Windows
-
-# Python 3.7 specific settings
-[tool.cibuildwheel.overrides.cp37-*]
-# Add Python 3.7 specific environment variables
-environment-append = {PYTHON_37_COMPATIBLE="1"}
+# cibuildwheel configuration is in GitHub Actions workflow files
