@@ -1,0 +1,257 @@
+name: Python 3.7 CI for DCC
+
+on:
+  push:
+    branches: [ main, update_use_poetry ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  workflow_dispatch:
+
+jobs:
+  # Linux build using Docker container
+  build-linux:
+    name: Build on Linux (Python 3.7)
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.7-slim
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    
+    - name: Install build dependencies
+      run: |
+        apt-get update
+        apt-get install -y build-essential cmake git
+    
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install wheel setuptools scikit-build-core pybind11 numpy
+    
+    - name: Build package
+      run: |
+        python -m pip install -e .
+    
+    - name: Test
+      run: |
+        python -c "import py_dem_bones; print(py_dem_bones.__version__)"
+    
+    - name: Build wheel
+      run: |
+        python -m pip install build
+        python -m build
+    
+    - name: Upload wheel
+      uses: actions/upload-artifact@v4
+      with:
+        name: py-dem-bones-linux-py37
+        path: dist/*.whl
+        if-no-files-found: error
+
+  # Windows build using specific Python version
+  build-windows:
+    name: Build on Windows (Python 3.7)
+    runs-on: windows-2019  # Windows 2019 still has Python 3.7 support
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v4  # Use v4 instead of v5 for Python 3.7
+      with:
+        python-version: '3.7'
+    
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install wheel setuptools scikit-build-core pybind11 numpy
+    
+    - name: Build package
+      run: |
+        python -m pip install -e .
+    
+    - name: Test
+      run: |
+        python -c "import py_dem_bones; print(py_dem_bones.__version__)"
+    
+    - name: Build wheel
+      run: |
+        python -m pip install build
+        python -m build
+    
+    - name: Upload wheel
+      uses: actions/upload-artifact@v4
+      with:
+        name: py-dem-bones-windows-py37
+        path: dist/*.whl
+        if-no-files-found: error
+
+  # macOS build using older macOS version
+  build-macos:
+    name: Build on macOS (Python 3.7)
+    runs-on: macos-11  # macOS 11 (Big Sur) has better Python 3.7 support
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v4  # Use v4 instead of v5 for Python 3.7
+      with:
+        python-version: '3.7'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install wheel setuptools scikit-build-core pybind11 numpy
+    
+    - name: Build package
+      run: |
+        python -m pip install -e .
+    
+    - name: Test
+      run: |
+        python -c "import py_dem_bones; print(py_dem_bones.__version__)"
+    
+    - name: Build wheel
+      run: |
+        python -m pip install build
+        python -m build
+    
+    - name: Upload wheel
+      uses: actions/upload-artifact@v4
+      with:
+        name: py-dem-bones-macos-py37
+        path: dist/*.whl
+        if-no-files-found: error
+
+  # Alternative approach using uv for all platforms
+  build-with-uv:
+    name: Build with UV on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, windows-2019, macos-11]
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    
+    - name: Install uv (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      shell: bash
+    
+    - name: Install uv (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        (Invoke-WebRequest -Uri https://github.com/astral-sh/uv/releases/latest/download/uv-installer.ps1 -UseBasicParsing).Content | python -
+    
+    - name: Setup MSVC (Windows)
+      if: runner.os == 'Windows'
+      uses: ilammy/msvc-dev-cmd@v1
+    
+    - name: Create Python 3.7 environment
+      run: |
+        uv venv .venv --python 3.7
+        echo "PYTHON_37_COMPATIBLE=1" >> $GITHUB_ENV
+      shell: bash
+    
+    - name: Install dependencies (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        . .venv/bin/activate
+        uv pip install wheel setuptools scikit-build-core pybind11 numpy
+        uv pip install -e .
+      shell: bash
+    
+    - name: Install dependencies (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        .venv\Scripts\activate
+        uv pip install wheel setuptools scikit-build-core pybind11 numpy
+        uv pip install -e .
+    
+    - name: Test (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        . .venv/bin/activate
+        python -c "import py_dem_bones; print(py_dem_bones.__version__)"
+      shell: bash
+    
+    - name: Test (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        .venv\Scripts\activate
+        python -c "import py_dem_bones; print(py_dem_bones.__version__)"
+    
+    - name: Build wheel (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        . .venv/bin/activate
+        uv pip install build
+        python -m build
+      shell: bash
+    
+    - name: Build wheel (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        .venv\Scripts\activate
+        uv pip install build
+        python -m build
+    
+    - name: Upload wheel
+      uses: actions/upload-artifact@v4
+      with:
+        name: py-dem-bones-${{ runner.os }}-py37-uv
+        path: dist/*.whl
+        if-no-files-found: error
+
+  # Combine all wheels and create release
+  combine-wheels:
+    name: Combine wheels
+    needs: [build-linux, build-windows, build-macos, build-with-uv]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Download all wheels
+      uses: actions/download-artifact@v4
+      with:
+        path: wheels
+    
+    - name: Display structure of downloaded files
+      run: ls -R wheels
+    
+    - name: Create combined directory
+      run: |
+        mkdir -p combined-wheels
+        cp -r wheels/*/*.whl combined-wheels/
+    
+    - name: Upload combined wheels
+      uses: actions/upload-artifact@v4
+      with:
+        name: py-dem-bones-all-platforms-py37
+        path: combined-wheels/*.whl
+        if-no-files-found: error

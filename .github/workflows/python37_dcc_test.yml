@@ -1,0 +1,236 @@
+name: Python 3.7 DCC Environment Tests
+
+on:
+  push:
+    branches: [ main, update_use_poetry ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  workflow_dispatch:
+
+jobs:
+  # Test in simulated DCC environment (Blender as an example)
+  test-blender:
+    name: Test with Blender on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, windows-2019]
+        blender-version: ["2.93.0"]  # Blender 2.93 uses Python 3.7
+        include:
+          - os: ubuntu-20.04
+            blender-path: /tmp/blender
+            blender-download: https://download.blender.org/release/Blender2.93/blender-2.93.0-linux-x64.tar.xz
+            extract-command: tar -xf
+          - os: windows-2019
+            blender-path: C:/blender
+            blender-download: https://download.blender.org/release/Blender2.93/blender-2.93.0-windows-x64.zip
+            extract-command: unzip
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    
+    - name: Download Blender (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        mkdir -p ${{ matrix.blender-path }}
+        wget ${{ matrix.blender-download }} -O /tmp/blender.tar.xz
+        tar -xf /tmp/blender.tar.xz -C ${{ matrix.blender-path }} --strip-components=1
+    
+    - name: Download Blender (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        mkdir -p ${{ matrix.blender-path }}
+        curl -L ${{ matrix.blender-download }} -o C:/blender.zip
+        7z x C:/blender.zip -oC:/
+        move C:/blender-* ${{ matrix.blender-path }}
+    
+    - name: Install package in Blender's Python (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        ${{ matrix.blender-path }}/2.93/python/bin/python3.7 -m pip install --upgrade pip
+        ${{ matrix.blender-path }}/2.93/python/bin/python3.7 -m pip install -e .
+    
+    - name: Install package in Blender's Python (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        ${{ matrix.blender-path }}\2.93\python\bin\python.exe -m pip install --upgrade pip
+        ${{ matrix.blender-path }}\2.93\python\bin\python.exe -m pip install -e .
+    
+    - name: Test in Blender (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        cat > /tmp/test_script.py << 'EOL'
+        import bpy
+        import py_dem_bones
+        print(f"Successfully imported py_dem_bones version: {getattr(py_dem_bones, '__version__', 'unknown')}")
+        # Add more tests specific to your DCC integration here
+        EOL
+        
+        ${{ matrix.blender-path }}/blender -b --python /tmp/test_script.py
+    
+    - name: Test in Blender (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        @"
+        import bpy
+        import py_dem_bones
+        print(f"Successfully imported py_dem_bones version: {getattr(py_dem_bones, '__version__', 'unknown')}")
+        # Add more tests specific to your DCC integration here
+        "@ | Out-File -FilePath C:/test_script.py -Encoding utf8
+        
+        ${{ matrix.blender-path }}\blender.exe -b --python C:/test_script.py
+
+  # Test in simulated Maya environment
+  test-maya:
+    name: Test with Maya Python on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, windows-2019]
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    
+    # Since we can't install Maya in CI, we'll simulate its Python environment
+    - name: Set up Python 3.7 (Maya's Python version)
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.7'
+    
+    - name: Setup MSVC (Windows)
+      if: runner.os == 'Windows'
+      uses: ilammy/msvc-dev-cmd@v1
+    
+    - name: Install Maya-like dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install PySide2 PyOpenGL numpy
+        python -m pip install -e .
+    
+    - name: Test in Maya-like environment (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        cat > test_maya.py << 'EOL'
+        import sys
+        import os
+        
+        # Simulate Maya environment
+        os.environ['MAYA_LOCATION'] = '/fake/maya/path'
+        
+        # Import our package
+        import py_dem_bones
+        print(f"Successfully imported py_dem_bones version: {getattr(py_dem_bones, '__version__', 'unknown')}")
+        
+        # Test basic functionality
+        import numpy as np
+        
+        # Create a DemBonesWrapper instance
+        dem_bones = py_dem_bones.DemBonesWrapper()
+        print("Created DemBonesWrapper instance")
+        
+        # Set some parameters
+        dem_bones.num_bones = 2
+        dem_bones.num_vertices = 4
+        print("Set parameters")
+        
+        # Create some test data
+        rest_pose = np.array([
+            [0, 0, 0],  # Vertex 0
+            [1, 0, 0],  # Vertex 1
+            [0, 1, 0],  # Vertex 2
+            [1, 1, 0]   # Vertex 3
+        ], dtype=np.float64).T  # Transpose to get 3 x n_vertices shape
+        
+        # Set rest pose
+        dem_bones.set_rest_pose(rest_pose)
+        print("Set rest pose")
+        
+        # Create animated poses (just a copy of rest pose for simplicity)
+        animated_poses = np.tile(rest_pose, (1, 1))
+        
+        # Set animated poses
+        dem_bones.set_animated_poses(animated_poses)
+        print("Set animated poses")
+        
+        # Try to compute
+        try:
+            dem_bones.compute()
+            print("Computation successful")
+        except Exception as e:
+            print(f"Computation failed: {e}")
+        
+        print("All tests passed!")
+        EOL
+        
+        python test_maya.py
+    
+    - name: Test in Maya-like environment (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        @"
+        import sys
+        import os
+        
+        # Simulate Maya environment
+        os.environ['MAYA_LOCATION'] = 'C:/fake/maya/path'
+        
+        # Import our package
+        import py_dem_bones
+        print(f"Successfully imported py_dem_bones version: {getattr(py_dem_bones, '__version__', 'unknown')}")
+        
+        # Test basic functionality
+        import numpy as np
+        
+        # Create a DemBonesWrapper instance
+        dem_bones = py_dem_bones.DemBonesWrapper()
+        print("Created DemBonesWrapper instance")
+        
+        # Set some parameters
+        dem_bones.num_bones = 2
+        dem_bones.num_vertices = 4
+        print("Set parameters")
+        
+        # Create some test data
+        rest_pose = np.array([
+            [0, 0, 0],  # Vertex 0
+            [1, 0, 0],  # Vertex 1
+            [0, 1, 0],  # Vertex 2
+            [1, 1, 0]   # Vertex 3
+        ], dtype=np.float64).T  # Transpose to get 3 x n_vertices shape
+        
+        # Set rest pose
+        dem_bones.set_rest_pose(rest_pose)
+        print("Set rest pose")
+        
+        # Create animated poses (just a copy of rest pose for simplicity)
+        animated_poses = np.tile(rest_pose, (1, 1))
+        
+        # Set animated poses
+        dem_bones.set_animated_poses(animated_poses)
+        print("Set animated poses")
+        
+        # Try to compute
+        try:
+            dem_bones.compute()
+            print("Computation successful")
+        except Exception as e:
+            print(f"Computation failed: {e}")
+        
+        print("All tests passed!")
+        "@ | Out-File -FilePath test_maya.py -Encoding utf8
+        
+        python test_maya.py

@@ -1,0 +1,213 @@
+name: Optimized Build and Test
+
+on:
+  push:
+    branches: [ main, update_use_poetry ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/*.md'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/*.md'
+  workflow_dispatch:
+
+# Permissions needed for this workflow
+permissions:
+  contents: read
+  pull-requests: write
+
+# Concurrency control
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Increase timeout for pip
+  PIP_DEFAULT_TIMEOUT: 100
+  # Disable pip's cache, we'll use GitHub's cache
+  PIP_NO_CACHE_DIR: true
+  # Disable build isolation for faster builds
+  PIP_NO_BUILD_ISOLATION: false
+  # Set ccache version
+  CCACHE_VERSION: "4.8.3"
+
+jobs:
+  # Optimized build with ccache
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    timeout-minutes: 60  # Set a reasonable timeout
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {
+              name: "Windows Latest MSVC",
+              os: windows-latest,
+              cc: "cl",
+              cxx: "cl",
+              python: "3.8",
+              generators: "Ninja"
+            }
+          - {
+              name: "Ubuntu Latest GCC",
+              os: ubuntu-latest,
+              cc: "gcc",
+              cxx: "g++",
+              python: "3.8",
+              generators: "Ninja"
+            }
+          - {
+              name: "Python 3.7 Windows",
+              os: windows-latest,
+              cc: "cl",
+              cxx: "cl",
+              python: "3.7",
+              generators: "Ninja"
+            }
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      
+      - name: Set up Python ${{ matrix.config.python }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.config.python }}
+          cache: 'pip'
+          cache-dependency-path: |
+            **/pyproject.toml
+            **/requirements*.txt
+      
+      # Setup ccache
+      - name: Prepare ccache timestamp
+        id: ccache_cache_timestamp
+        shell: cmake -P {0}
+        run: |
+          string(TIMESTAMP current_date "%Y-%m-%d-%H;%M;%S" UTC)
+          message("::set-output name=timestamp::${current_date}")
+      
+      - name: Setup ccache
+        uses: actions/cache@v3
+        with:
+          path: .ccache
+          key: ${{ matrix.config.name }}-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
+          restore-keys: |
+            ${{ matrix.config.name }}-ccache-
+      
+      # Download and setup ccache
+      - name: Download ccache
+        id: ccache
+        shell: cmake -P {0}
+        run: |
+          set(ccache_url "https://github.com/cristianadam/ccache/releases/download/v$ENV{CCACHE_VERSION}/${{ runner.os }}.tar.xz")
+          file(DOWNLOAD "${ccache_url}" ./ccache.tar.xz SHOW_PROGRESS)
+          execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ./ccache.tar.xz)
+      
+      # Setup MSVC on Windows
+      - name: Setup MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+      
+      # Install Ninja
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v3
+      
+      # Configure ccache
+      - name: Configure ccache
+        shell: cmake -P {0}
+        run: |
+          file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}" ccache_basedir)
+          set(ENV{CCACHE_BASEDIR} "${ccache_basedir}")
+          set(ENV{CCACHE_DIR} "${ccache_basedir}/.ccache")
+          set(ENV{CCACHE_COMPRESS} "true")
+          set(ENV{CCACHE_COMPRESSLEVEL} "6")
+          set(ENV{CCACHE_MAXSIZE} "500M")
+          if ("${{ matrix.config.cxx }}" STREQUAL "cl")
+            set(ENV{CCACHE_MAXSIZE} "700M")
+          endif()
+          execute_process(COMMAND ccache -z)
+      
+      # Add Python 3.7 compatibility flags
+      - name: Set Python 3.7 compatibility flags
+        if: matrix.config.python == '3.7'
+        run: |
+          echo "PYTHON_37_COMPATIBLE=1" >> $GITHUB_ENV
+        shell: bash
+      
+      # Install dependencies with retry
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install wheel setuptools scikit-build-core pybind11 numpy
+          # Install uv for faster dependency resolution
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        shell: bash
+      
+      # Install uv on Windows
+      - name: Install uv (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          (Invoke-WebRequest -Uri https://github.com/astral-sh/uv/releases/latest/download/uv-installer.ps1 -UseBasicParsing).Content | python -
+      
+      # Configure CMake with ccache
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build -G "${{ matrix.config.generators }}" \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_BUILD_TYPE=Release
+        shell: bash
+      
+      # Build with limited parallelism to avoid memory issues
+      - name: Build
+        run: |
+          cmake --build build --config Release --parallel 2
+        shell: bash
+      
+      # Show ccache stats
+      - name: ccache statistics
+        shell: bash
+        run: |
+          ccache -s
+      
+      # Install the package
+      - name: Install package
+        run: |
+          cd build
+          cmake --install . --prefix install
+          cd ..
+          python -m pip install -e .
+      
+      # Test the package
+      - name: Test package
+        run: |
+          python -c "import py_dem_bones; print(py_dem_bones.__version__)"
+      
+      # Upload built wheel as artifact
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: py-dem-bones-py${{ matrix.config.python }}-${{ runner.os }}
+          path: dist/*.whl
+          if-no-files-found: ignore
+      
+      # Comment on PR if successful
+      - name: Comment on PR
+        if: success() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `✅ Build successful on ${{ matrix.config.name }}!`
+            });

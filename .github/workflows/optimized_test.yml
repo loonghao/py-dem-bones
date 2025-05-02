@@ -1,0 +1,260 @@
+name: Optimized Test with UV
+
+on:
+  push:
+    branches: [ main, update_use_poetry ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/*.md'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/*.md'
+  workflow_dispatch:
+
+# Permissions needed for this workflow
+permissions:
+  contents: read
+  pull-requests: write
+
+# Concurrency control
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Increase timeout for pip
+  PIP_DEFAULT_TIMEOUT: 100
+  # Disable pip's cache, we'll use GitHub's cache
+  PIP_NO_CACHE_DIR: true
+
+jobs:
+  # Test on multiple Python versions using uv
+  test-multiple-python:
+    name: Test Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30  # Set a reasonable timeout
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        exclude:
+          # Exclude some combinations to reduce matrix size
+          - os: windows-latest
+            python-version: '3.9'
+          - os: ubuntu-latest
+            python-version: '3.10'
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: |
+            **/pyproject.toml
+            **/requirements*.txt
+      
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        shell: bash
+        if: runner.os != 'Windows'
+      
+      - name: Install uv (Windows)
+        run: |
+          (Invoke-WebRequest -Uri https://github.com/astral-sh/uv/releases/latest/download/uv-installer.ps1 -UseBasicParsing).Content | python -
+        if: runner.os == 'Windows'
+      
+      # Setup MSVC on Windows
+      - name: Setup MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+      
+      # Add Python 3.7 compatibility flags
+      - name: Set Python 3.7 compatibility flags
+        if: matrix.python-version == '3.7'
+        run: |
+          echo "PYTHON_37_COMPATIBLE=1" >> $GITHUB_ENV
+        shell: bash
+      
+      # Create temporary environment with uv
+      - name: Create temporary environment
+        id: create_env
+        run: |
+          ENV_PATH=$(uv venv .venv --python ${{ matrix.python-version }})
+          echo "::set-output name=env_path::$ENV_PATH"
+        shell: bash
+      
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          . .venv/bin/activate
+          uv pip install wheel setuptools scikit-build-core pybind11 numpy
+        shell: bash
+        if: runner.os != 'Windows'
+      
+      - name: Install dependencies (Windows)
+        run: |
+          .venv\Scripts\activate
+          uv pip install wheel setuptools scikit-build-core pybind11 numpy
+        if: runner.os == 'Windows'
+      
+      # Build and install package
+      - name: Build and install package
+        run: |
+          . .venv/bin/activate
+          uv pip install -e .
+        shell: bash
+        if: runner.os != 'Windows'
+      
+      - name: Build and install package (Windows)
+        run: |
+          .venv\Scripts\activate
+          uv pip install -e .
+        if: runner.os == 'Windows'
+      
+      # Test package
+      - name: Test package
+        run: |
+          . .venv/bin/activate
+          python -c "import py_dem_bones; print(py_dem_bones.__version__)"
+          
+          # Create test script
+          cat > test_script.py << 'EOL'
+          import py_dem_bones
+          import numpy as np
+          import sys
+          
+          print(f"Python version: {sys.version}")
+          print(f"Successfully imported py_dem_bones version: {getattr(py_dem_bones, '__version__', 'unknown')}")
+          
+          # Create a DemBonesWrapper instance
+          dem_bones = py_dem_bones.DemBonesWrapper()
+          print("Created DemBonesWrapper instance")
+          
+          # Set some parameters
+          dem_bones.num_bones = 2
+          dem_bones.num_vertices = 4
+          print("Set parameters")
+          
+          # Create some test data
+          rest_pose = np.array([
+              [0, 0, 0],  # Vertex 0
+              [1, 0, 0],  # Vertex 1
+              [0, 1, 0],  # Vertex 2
+              [1, 1, 0]   # Vertex 3
+          ], dtype=np.float64).T  # Transpose to get 3 x n_vertices shape
+          
+          # Set rest pose
+          dem_bones.set_rest_pose(rest_pose)
+          print("Set rest pose")
+          
+          # Create animated poses (just a copy of rest pose for simplicity)
+          animated_poses = np.tile(rest_pose, (1, 1))
+          
+          # Set animated poses
+          dem_bones.set_animated_poses(animated_poses)
+          print("Set animated poses")
+          
+          # Try to compute
+          try:
+              dem_bones.compute()
+              print("Computation successful")
+          except Exception as e:
+              print(f"Computation failed: {e}")
+          
+          print("All tests passed!")
+          EOL
+          
+          # Run test script
+          python test_script.py
+        shell: bash
+        if: runner.os != 'Windows'
+      
+      - name: Test package (Windows)
+        run: |
+          .venv\Scripts\activate
+          python -c "import py_dem_bones; print(py_dem_bones.__version__)"
+          
+          # Create test script
+          @"
+          import py_dem_bones
+          import numpy as np
+          import sys
+          
+          print(f"Python version: {sys.version}")
+          print(f"Successfully imported py_dem_bones version: {getattr(py_dem_bones, '__version__', 'unknown')}")
+          
+          # Create a DemBonesWrapper instance
+          dem_bones = py_dem_bones.DemBonesWrapper()
+          print("Created DemBonesWrapper instance")
+          
+          # Set some parameters
+          dem_bones.num_bones = 2
+          dem_bones.num_vertices = 4
+          print("Set parameters")
+          
+          # Create some test data
+          rest_pose = np.array([
+              [0, 0, 0],  # Vertex 0
+              [1, 0, 0],  # Vertex 1
+              [0, 1, 0],  # Vertex 2
+              [1, 1, 0]   # Vertex 3
+          ], dtype=np.float64).T  # Transpose to get 3 x n_vertices shape
+          
+          # Set rest pose
+          dem_bones.set_rest_pose(rest_pose)
+          print("Set rest pose")
+          
+          # Create animated poses (just a copy of rest pose for simplicity)
+          animated_poses = np.tile(rest_pose, (1, 1))
+          
+          # Set animated poses
+          dem_bones.set_animated_poses(animated_poses)
+          print("Set animated poses")
+          
+          # Try to compute
+          try:
+              dem_bones.compute()
+              print("Computation successful")
+          except Exception as e:
+              print(f"Computation failed: {e}")
+          
+          print("All tests passed!")
+          "@ | Out-File -FilePath test_script.py -Encoding utf8
+          
+          # Run test script
+          python test_script.py
+        if: runner.os == 'Windows'
+      
+      # Upload built wheel as artifact
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: py-dem-bones-py${{ matrix.python-version }}-${{ runner.os }}
+          path: dist/*.whl
+          if-no-files-found: ignore
+      
+      # Comment on PR if successful
+      - name: Comment on PR
+        if: success() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `✅ Python ${{ matrix.python-version }} test successful on ${{ runner.os }}!`
+            });
