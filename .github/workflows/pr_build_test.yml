@@ -107,12 +107,20 @@ jobs:
           restore-keys: |
             ${{ matrix.config.name }}-skbuild-
 
-      # Download and setup ccache
-      - name: Download ccache
-        id: ccache
+      # Install ccache (Linux/macOS)
+      - name: Install ccache (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ccache
+        shell: bash
+
+      # Download and setup ccache (Windows)
+      - name: Download ccache (Windows)
+        if: runner.os == 'Windows'
         shell: cmake -P {0}
         run: |
-          set(ccache_url "https://github.com/cristianadam/ccache/releases/download/v$ENV{CCACHE_VERSION}/${{ runner.os }}.tar.xz")
+          set(ccache_url "https://github.com/cristianadam/ccache/releases/download/v$ENV{CCACHE_VERSION}/Windows.tar.xz")
           file(DOWNLOAD "${ccache_url}" ./ccache.tar.xz SHOW_PROGRESS)
           execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ./ccache.tar.xz)
 
@@ -125,8 +133,20 @@ jobs:
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@v3
 
-      # Configure ccache
-      - name: Configure ccache
+      # Configure ccache (Linux/macOS)
+      - name: Configure ccache (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          ccache --set-config=cache_dir="${{github.workspace}}/.ccache"
+          ccache --set-config=compression=true
+          ccache --set-config=compression_level=6
+          ccache --set-config=max_size=500M
+          ccache -z
+        shell: bash
+
+      # Configure ccache (Windows)
+      - name: Configure ccache (Windows)
+        if: runner.os == 'Windows'
         shell: cmake -P {0}
         run: |
           file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}" ccache_basedir)
@@ -134,10 +154,7 @@ jobs:
           set(ENV{CCACHE_DIR} "${ccache_basedir}/.ccache")
           set(ENV{CCACHE_COMPRESS} "true")
           set(ENV{CCACHE_COMPRESSLEVEL} "6")
-          set(ENV{CCACHE_MAXSIZE} "500M")
-          if ("${{ matrix.config.cxx }}" STREQUAL "cl")
-            set(ENV{CCACHE_MAXSIZE} "700M")
-          endif()
+          set(ENV{CCACHE_MAXSIZE} "700M")
           execute_process(COMMAND ccache -z)
 
       # Add Python 3.7/3.8 compatibility flags for legacy environments
@@ -205,11 +222,19 @@ jobs:
           cmake --build build --config Release --parallel 2
         shell: bash
 
-      # Show ccache stats
-      - name: ccache statistics
-        shell: bash
+      # Show ccache stats (Linux/macOS)
+      - name: ccache statistics (Linux/macOS)
+        if: runner.os != 'Windows'
         run: |
           ccache -s
+        shell: bash
+
+      # Show ccache stats (Windows)
+      - name: ccache statistics (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          ccache -s
+        shell: powershell
 
       # Install the package
       - name: Install package
