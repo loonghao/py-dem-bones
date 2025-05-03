@@ -244,8 +244,7 @@ jobs:
             Write-Host "VC Redist path not found at $vcRedistPath"
           }
 
-      #
-      # 1:
+
       - name: Test Windows compatibility using nox
         shell: pwsh
         run: |
