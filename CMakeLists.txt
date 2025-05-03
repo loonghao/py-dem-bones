@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.15...3.30)
 project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
 
+# Set up module path for our own cmake modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
+
+# Enable ccache if available
+include(UseCCache)
+
 # Use scikit-build-core's FindPython support
 find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 
