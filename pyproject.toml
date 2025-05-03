@@ -99,7 +99,7 @@ CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON"
 PYBIND11_PYTHON_VERSION = "3.9"
 PYBIND11_FINDPYTHON = "ON"
 # Ensure pybind11 correctly handles Python Limited API
-PYBIND11_INTERNALS_VERSION = "10.0.0"
+PYBIND11_INTERNALS_VERSION = "10_0_0"
 # Disable strict mode for Python Limited API to allow access to more APIs
 PYBIND11_STRICT_PYTHON_LIMITED_API = "OFF"
 

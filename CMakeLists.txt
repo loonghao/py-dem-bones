@@ -217,32 +217,61 @@ pybind11_add_module(_py_dem_bones
 
 # Enable ABI3 compatibility mode, supporting Python 3.9+
 if(DEFINED PYTHON_LIMITED_API AND PYTHON_LIMITED_API)
-    # Define Python Limited API macro with special handling
-    # Note: Py_LIMITED_API must be defined before including Python.h
-    target_compile_definitions(_py_dem_bones PRIVATE
-        "Py_LIMITED_API=0x03090000"  # Python 3.9 API
-    )
+    # Special handling for macOS ARM64 platform
+    if(APPLE AND CMAKE_SYSTEM_PROCESSOR MATCHES "arm64")
+        message(STATUS "macOS ARM64 detected - disabling Python Limited API due to compatibility issues")
+        # For macOS ARM64, we'll still use the abi3 suffix but not define Py_LIMITED_API
+        # This is a workaround for known issues with Python Limited API on macOS ARM64
 
-    # If PYBIND11_STRICT_PYTHON_LIMITED_API is defined, use strict mode
-    if(DEFINED PYBIND11_STRICT_PYTHON_LIMITED_API AND NOT PYBIND11_STRICT_PYTHON_LIMITED_API)
-        # Disable strict mode to allow access to more APIs
+        # Set Python module properties, using abi3 tag
+        if(SKBUILD)
+            set_target_properties(_py_dem_bones PROPERTIES
+                SUFFIX ".abi3${PYTHON_MODULE_EXTENSION}"
+            )
+        endif()
+
+        # Use PYBIND11_USE_STABLE_ABI instead of Py_LIMITED_API
         target_compile_definitions(_py_dem_bones PRIVATE
-            "PYBIND11_STRICT_PYTHON_LIMITED_API=0"
+            "PYBIND11_USE_STABLE_ABI=1"
         )
-    endif()
 
-    # Set pybind11 internals version to avoid ABI compatibility issues
-    if(DEFINED PYBIND11_INTERNALS_VERSION)
+        # Set pybind11 internals version to avoid ABI compatibility issues
+        if(DEFINED PYBIND11_INTERNALS_VERSION)
+            target_compile_definitions(_py_dem_bones PRIVATE
+                "PYBIND11_INTERNALS_VERSION=10.0.0"
+            )
+        endif()
+    else
+        # For other platforms, use Python Limited API normally
+        message(STATUS "Enabling Python Limited API (abi3) for Python 3.9+")
+
+        # Define Python Limited API macro with special handling
+        # Note: Py_LIMITED_API must be defined before including Python.h
         target_compile_definitions(_py_dem_bones PRIVATE
-            "PYBIND11_INTERNALS_VERSION=${PYBIND11_INTERNALS_VERSION}"
+            "Py_LIMITED_API=0x03090000"  # Python 3.9 API
         )
-    endif()
 
-    # Set Python module properties, using abi3 tag
-    if(SKBUILD)
-        set_target_properties(_py_dem_bones PROPERTIES
-            SUFFIX ".abi3${PYTHON_MODULE_EXTENSION}"
-        )
+        # If PYBIND11_STRICT_PYTHON_LIMITED_API is defined, use strict mode
+        if(DEFINED PYBIND11_STRICT_PYTHON_LIMITED_API AND NOT PYBIND11_STRICT_PYTHON_LIMITED_API)
+            # Disable strict mode to allow access to more APIs
+            target_compile_definitions(_py_dem_bones PRIVATE
+                "PYBIND11_STRICT_PYTHON_LIMITED_API=0"
+            )
+        endif()
+
+        # Set pybind11 internals version to avoid ABI compatibility issues
+        if(DEFINED PYBIND11_INTERNALS_VERSION)
+            target_compile_definitions(_py_dem_bones PRIVATE
+                "PYBIND11_INTERNALS_VERSION=10.0.0"
+            )
+        endif()
+
+        # Set Python module properties, using abi3 tag
+        if(SKBUILD)
+            set_target_properties(_py_dem_bones PROPERTIES
+                SUFFIX ".abi3${PYTHON_MODULE_EXTENSION}"
+            )
+        endif()
     endif()
 endif()
 
