@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.10-slim  # 使用 Python 3.10 作为基础镜像
 
 LABEL maintainer="Long Hao <hal.long@outlook.com>"
 LABEL description="Python bindings for the Dem Bones library"

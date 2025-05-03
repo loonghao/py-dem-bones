@@ -4,13 +4,11 @@ project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
 # 使用 scikit-build-core 的 FindPython 支持
 find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 
-# 如果 Python 版本是 3.7，输出一些调试信息
-if(Python_VERSION MATCHES "^3\.7")
-  message(STATUS "Found Python 3.7: ${Python_VERSION}")
-  message(STATUS "  Python_EXECUTABLE: ${Python_EXECUTABLE}")
-  message(STATUS "  Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
-  message(STATUS "  Python_LIBRARIES: ${Python_LIBRARIES}")
-endif()
+# 输出 Python 版本信息
+message(STATUS "Found Python: ${Python_VERSION}")
+message(STATUS "  Python_EXECUTABLE: ${Python_EXECUTABLE}")
+message(STATUS "  Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
+message(STATUS "  Python_LIBRARIES: ${Python_LIBRARIES}")
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 14)
@@ -28,27 +26,27 @@ if(WIN32)
     else()
         message(STATUS "Using default build settings")
     endif()
-    
+
     # Set Windows platform-specific configuration for MSVC
     if(MSVC)
       # Add MSVC-specific flags
       add_compile_options(/MP /bigobj)
-      
+
       # Enable multi-threaded compilation
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-      
+
       # Set runtime library to match Python's expectations
       # Use Multi-threaded DLL runtime library (/MD) for Release builds
       set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
       # Use Multi-threaded Debug DLL runtime library (/MDd) for Debug builds
       set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
-      
+
       # 使用导出符号表文件
       set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
-      
+
       # 使用静态链接到Python库
       set(PYTHON_LINK_STATIC ON)
-      
+
       # 检查是否指定了平台工具集
       if(NOT CMAKE_GENERATOR_TOOLSET)
         # Set the default toolset based on the Visual Studio version
@@ -119,14 +117,14 @@ if(NOT pybind11_FOUND)
             add_library(${target_name} MODULE ${ARGN})
             target_include_directories(${target_name} PRIVATE ${PYBIND11_INCLUDE_DIR})
             target_compile_definitions(${target_name} PRIVATE PYBIND11_DETAILED_ERROR_MESSAGES)
-            
+
             # Use platform-specific extension
             if(WIN32)
                 set_target_properties(${target_name} PROPERTIES PREFIX "" SUFFIX ".pyd")
-                
+
                 # 确保正确链接到Python库
                 target_link_libraries(${target_name} PRIVATE ${Python_LIBRARIES})
-                
+
                 # 添加Windows特定的编译定义
                 target_compile_definitions(${target_name} PRIVATE
                     _WINDOWS
@@ -136,7 +134,7 @@ if(NOT pybind11_FOUND)
             else()
                 set_target_properties(${target_name} PROPERTIES PREFIX "" SUFFIX ".so")
             endif()
-            
+
             # Ensure linking to the correct Python library
             if(WIN32)
                 target_link_libraries(${target_name} PRIVATE ${Python_LIBRARIES})
@@ -211,14 +209,23 @@ if(Python_NumPy_FOUND)
 endif()
 
 # Add the pybind11 module
-pybind11_add_module(_py_dem_bones 
+pybind11_add_module(_py_dem_bones
     src/binding/py_dem_bones.cpp
     src/binding/py_dem_bones_ext.cpp
     src/binding/py_dem_bones_module.cpp
 )
 
-# Note: Do not directly define Py_LIMITED_API, as it will cause compilation errors in pybind11 internal classes and functions
-# We temporarily remove ABI3 compatibility mode, as it is not compatible with the current pybind11 code
+# 启用 ABI3 兼容模式，支持 Python 3.9+
+target_compile_definitions(_py_dem_bones PRIVATE
+    Py_LIMITED_API=0x03090000  # Python 3.9 ABI
+)
+
+# 设置 Python 模块属性，使用 abi3 标签
+if(SKBUILD)
+    set_target_properties(_py_dem_bones PROPERTIES
+        SUFFIX ".abi3${PYTHON_MODULE_EXTENSION}"
+    )
+endif()
 
 # Set target properties
 set_target_properties(_py_dem_bones PROPERTIES
@@ -232,20 +239,20 @@ if(WIN32)
     # If using MSVC, copy the Visual C++ runtime DLL
     if(MSVC)
         # 使用静态库
-        target_compile_options(_py_dem_bones PRIVATE 
+        target_compile_options(_py_dem_bones PRIVATE
             "/MT$<$<CONFIG:Debug>:d>"
         )
-        
+
         # 关闭自动导出所有符号
         set_property(TARGET _py_dem_bones PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS OFF)
-        
+
         # 指定导出符号的宏定义
-        target_compile_definitions(_py_dem_bones PRIVATE 
+        target_compile_definitions(_py_dem_bones PRIVATE
             "PYBIND11_EXPORT=__declspec(dllexport)"
         )
-        
+
         # 指定导出符号表文件
-        set_property(TARGET _py_dem_bones APPEND_STRING PROPERTY LINK_FLAGS 
+        set_property(TARGET _py_dem_bones APPEND_STRING PROPERTY LINK_FLAGS
             " /EXPORT:PyInit__py_dem_bones"
         )
     endif()

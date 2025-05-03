@@ -54,6 +54,19 @@ def coverage(session: nox.Session) -> None:
 
 
 @nox.session
+def test_abi3(session: nox.Session) -> None:
+    """Test ABI3 compatibility."""
+    # Install package in development mode with pip cache
+    session.install("-e", ".")
+
+    # Install pytest
+    session.install("pytest")
+
+    # Run the ABI3 tests
+    session.run("pytest", "tests/test_abi3.py", "-v")
+
+
+@nox.session
 def init_submodules(session: nox.Session) -> None:
     """Initialize git submodules with platform-specific handling."""
     from nox_actions.submodules import init_submodules
@@ -142,5 +155,6 @@ nox.session(build.clean, name="clean")
 nox.session(build_test, name="build-test")
 nox.session(build_no_test, name="build-no-test")
 nox.session(coverage, name="coverage")
+nox.session(test_abi3, name="test-abi3")
 nox.session(init_submodules, name="init-submodules")
 nox.session(test_windows, name="test-windows")
