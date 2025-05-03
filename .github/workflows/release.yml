@@ -256,7 +256,7 @@ jobs:
           CIBW_BUILD: "${{ matrix.python }}"
           CIBW_ARCHS: "${{ matrix.arch }}"
           CIBW_SKIP: "pp* *-musllinux* *-win32 *-manylinux_i686"
-          CIBW_BEFORE_BUILD: "pip install -U pip && pip install numpy 'pybind11>=2.10.0' 'scikit-build-core>=0.11.2' cmake"
+          CIBW_BEFORE_BUILD: "python -m pip install --upgrade pip && python -m pip install numpy 'pybind11>=2.10.0' 'scikit-build-core>=0.11.2' cmake"
           CIBW_BUILD_VERBOSITY: 3
           CIBW_ENVIRONMENT: "PYTHONIOENCODING=UTF-8 PIP_NO_BUILD_ISOLATION=1"
           CIBW_ENVIRONMENT_PASS_LINUX: "LANG LC_ALL"

@@ -31,7 +31,7 @@ def build(session: nox.Session) -> None:
 
     # Set environment variables for build
     env = os.environ.copy()
-    env["SKBUILD_BUILD_VERBOSE"] = "1"  # 使用新的环境变量
+    env["SKBUILD_BUILD_VERBOSE"] = "1"  # Use new environment variable
     env["FORCE_BDIST_WHEEL_PLAT"] = ""
 
     # Check Python version for special handling
@@ -113,15 +113,15 @@ def build_wheels(session: nox.Session) -> None:
     env["SKBUILD_BUILD_VERBOSE"] = "1"
     env["FORCE_BDIST_WHEEL_PLAT"] = ""
 
-    # 检测操作系统
+    # Detect operating system
     is_windows = platform.system() == "Windows"
 
     if is_windows:
-        session.log("检测到 Windows 环境，使用替代方法构建 wheel...")
-        # 在 Windows 上，使用标准的 build 方法
+        session.log("Detected Windows environment, using alternative method to build wheel...")
+        # On Windows, use the standard build method
         build(session)
 
-        # 如果 build 成功，将生成的 wheel 文件复制到 wheelhouse 目录
+        # If build is successful, copy the generated wheel files to the wheelhouse directory
         if os.path.exists(os.path.join(THIS_ROOT, "dist")):
             wheels = [
                 f
@@ -132,13 +132,13 @@ def build_wheels(session: nox.Session) -> None:
                 for wheel in wheels:
                     src = os.path.join(THIS_ROOT, "dist", wheel)
                     dst = os.path.join(THIS_ROOT, "wheelhouse", wheel)
-                    session.log(f"复制 wheel 文件: {wheel}")
+                    session.log(f"Copying wheel file: {wheel}")
                     shutil.copy2(src, dst)
             else:
-                session.log("未找到 wheel 文件")
+                session.log("No wheel files found")
         return
 
-    # 非 Windows 环境使用 cibuildwheel
+    # Use cibuildwheel for non-Windows environments
     session.log("Building wheels with cibuildwheel...")
     platform_arg = "auto"  # Build for current platform
 
