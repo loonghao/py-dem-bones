@@ -9,7 +9,7 @@ Features
 --------
 
 * Python bindings for the Dem Bones C++ library
-* Support for Python 3.7+
+* Support for Python 3.8+
 * Pythonic wrapper classes for easier integration
 * Comprehensive error handling
 * Cross-platform support (Windows, macOS, Linux)

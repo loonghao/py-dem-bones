@@ -4,7 +4,7 @@ Installation
 Requirements
 -----------
 
-- Python 3.7 or newer (including 3.8, 3.9, 3.10, 3.11, 3.12, and 3.13)
+- Python 3.8 or newer (including 3.9, 3.10, 3.11, 3.12, and 3.13)
 - NumPy 1.20.0 or newer
 - A C++ compiler supporting C++14 or newer
 
