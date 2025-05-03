@@ -133,66 +133,13 @@ jobs:
         env:
           # Build Python 3.9+ with abi3 support
           CIBW_BUILD: "cp39-* cp310-* cp311-* cp312-*"
-          CIBW_SKIP: "pp* *-musllinux* *-win32 *-manylinux_i686"
-
-          # Build verbosity and dependencies
-          CIBW_BUILD_VERBOSITY: 3
-          CIBW_BEFORE_BUILD: "python -m pip install -U pip setuptools wheel numpy pybind11 scikit-build-core cmake"
-
-          # Enable ccache for faster builds (Linux and macOS only)
-          CIBW_ENVIRONMENT: >-
-            PYTHONIOENCODING=UTF-8
-            PIP_NO_BUILD_ISOLATION=1
-
-          # Linux-specific settings
-          CIBW_ENVIRONMENT_PASS_LINUX: "LANG LC_ALL CCACHE_DIR"
-          CIBW_ENVIRONMENT_LINUX: >-
-            LANG=C.UTF-8
-            LC_ALL=C.UTF-8
-            PYTHONIOENCODING=UTF-8
-            CMAKE_PREFIX_PATH=/opt/python/{package.platname}
-            CCACHE_DIR=$HOME/.ccache
-            CC='ccache gcc'
-            CXX='ccache g++'
-          CIBW_BEFORE_ALL_LINUX: >-
-            yum install -y ccache && exit 0 ||
-            (apt-get update && apt-get install -y ccache && exit 0) ||
-            (apk add --no-cache ccache && exit 0) ||
-            echo "Failed to install ccache with any package manager"
-
-          CIBW_BEFORE_ALL_MACOS: >-
-            brew install ccache
-
-          # Windows-specific settings
-          CIBW_ENVIRONMENT_WINDOWS: "CMAKE_GENERATOR=Ninja CMAKE_POSITION_INDEPENDENT_CODE=ON"
-          CIBW_BEFORE_ALL_WINDOWS: >-
-            choco install -y ninja --force &&
-            (dir "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise" 2>nul ||
-            dir "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community" 2>nul ||
-            dir "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise" 2>nul ||
-            dir "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community" 2>nul ||
-            echo "Visual Studio installation not found in standard locations")
-
-          # macOS-specific settings
-          CIBW_ENVIRONMENT_MACOS: >-
-            MAKEFLAGS=-j4
-            FORCE_PYTHON_VERSION={python_version}
-            MACOSX_DEPLOYMENT_TARGET=10.14
-            CCACHE_DIR=$HOME/.ccache
-            CC='ccache clang'
-            CXX='ccache clang++'
-
-          # Repair commands
-          CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair -w {dest_dir} {wheel}"
-          CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
-
-          # Test commands
-          CIBW_TEST_COMMAND: "pytest {package}/tests/test_abi3.py -v"
-          CIBW_TEST_REQUIRES: "pytest"
-          CIBW_TEST_SKIP: "*-musllinux_i686 *_arm64 *_universal2:arm64"
 
           # Enable ARM builds on Linux
           CIBW_ARCHS_LINUX: "${{ runner.arch == 'X64' && 'auto' || 'auto aarch64' }}"
+
+          # Use nox for testing
+          CIBW_BEFORE_TEST: "python -m pip install nox"
+          CIBW_TEST_COMMAND: "python -m nox -s test-abi3"
 
       # Upload wheels
       - uses: actions/upload-artifact@v4

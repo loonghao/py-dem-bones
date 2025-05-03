@@ -56,11 +56,18 @@ def coverage(session: nox.Session) -> None:
 @nox.session
 def test_abi3(session: nox.Session) -> None:
     """Test ABI3 compatibility."""
-    # Install package in development mode with pip cache
-    session.install("-e", ".")
-
     # Install pytest
     session.install("pytest")
+
+    # Check if we're running in a cibuildwheel environment
+    in_cibw = os.environ.get("CIBUILDWHEEL", "0") == "1"
+
+    if not in_cibw:
+        # If not in cibuildwheel, install package in development mode
+        session.install("-e", ".")
+
+    # Import the module to verify it loads correctly
+    session.run("python", "-c", "import py_dem_bones; print(f'Loaded py_dem_bones version {py_dem_bones.__version__}')")
 
     # Run the ABI3 tests
     session.run("pytest", "tests/test_abi3.py", "-v")
@@ -77,9 +84,17 @@ def init_submodules(session: nox.Session) -> None:
 @nox.session
 def build_wheels(session: nox.Session) -> None:
     """Build wheels for multiple platforms using cibuildwheel."""
-    from nox_actions.build import build_wheels
+    # Install cibuildwheel
+    session.install("cibuildwheel>=2.16.0")
 
-    build_wheels(session)
+    # Clean previous build files
+    session.run("python", "-c", "import shutil; import os; [shutil.rmtree(p) for p in ['build', 'dist', '_skbuild', 'wheelhouse', 'py_dem_bones.egg-info'] if os.path.exists(p)]")
+
+    # Create output directory
+    session.run("python", "-c", "import os; os.makedirs('wheelhouse', exist_ok=True)")
+
+    # Build wheels using cibuildwheel
+    session.run("python", "-m", "cibuildwheel", "--platform", "auto", external=True)
 
 
 @nox.session

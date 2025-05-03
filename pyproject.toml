@@ -1,10 +1,8 @@
 [build-system]
 requires = [
-    "scikit-build-core>=0.5.0",
+    "scikit-build-core>=0.11.0",
     "pybind11>=2.10.0",
     "numpy>=1.20.0",
-    "setuptools>=42.0.0",
-    "wheel>=0.36.0",
 ]
 build-backend = "scikit_build_core.build"
 
@@ -25,7 +23,6 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -44,6 +41,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "nox>=2023.4.22",
+    "cibuildwheel>=2.16.0",
 ]
 test = [
     "pytest>=6.0.0",
@@ -81,35 +79,77 @@ Documentation = "https://loonghao.github.io/py-dem-bones"
 Issues = "https://github.com/loonghao/py-dem-bones/issues"
 Changelog = "https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md"
 
+# Core scikit-build-core configuration
 [tool.scikit-build]
+# Minimum version to ensure compatibility
+minimum-version = "0.11.0"
+# Source distribution configuration
 sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICENSE.md", "README.md", "extern/dem-bones/*", "extern/eigen/*"]
 sdist.exclude = ["tests/data/*"]
+# Build directory configuration
+build-dir = "build/{wheel_tag}"
+# Logging configuration
+logging.level = "INFO"
+build.verbose = true
 
+# CMake configuration
 [tool.scikit-build.cmake]
 version = ">=3.15"
 build-type = "Release"
 
+# CMake defines
 [tool.scikit-build.cmake.define]
-# Use Python Limited API with special handling
+# Python Limited API (abi3) configuration
 PYTHON_LIMITED_API = "ON"
 CMAKE_POSITION_INDEPENDENT_CODE = "ON"
-# Ensure correct symbol export on Windows
 CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON"
-# Use abi3 build, supporting Python 3.9+
 PYBIND11_PYTHON_VERSION = "3.9"
 PYBIND11_FINDPYTHON = "ON"
-# Ensure pybind11 correctly handles Python Limited API
 PYBIND11_INTERNALS_VERSION = "10_0_0"
-# Disable strict mode for Python Limited API to allow access to more APIs
 PYBIND11_STRICT_PYTHON_LIMITED_API = "OFF"
 
+# Wheel configuration
 [tool.scikit-build.wheel]
-# Configure wheel to use abi3 tag
+# Configure wheel to use abi3 tag for Python 3.9+
 py-api = "cp39"
 packages = ["src/py_dem_bones"]
 exclude = ["tests/*"]
-# 确保包含所有必要的 DLL 文件
 expand-macos-universal-tags = true
+
+# cibuildwheel configuration
+[tool.cibuildwheel]
+build-verbosity = 3
+skip = "pp* *-musllinux* *-win32 *-manylinux_i686"
+test-command = "pytest {package}/tests/test_abi3.py -v"
+test-requires = ["pytest"]
+test-skip = "*-musllinux_i686 *_arm64 *_universal2:arm64"
+
+# cibuildwheel environment variables
+[tool.cibuildwheel.environment]
+PYTHONIOENCODING = "UTF-8"
+PIP_NO_BUILD_ISOLATION = "1"
+SKBUILD_BUILD_VERBOSE = "1"
+
+# cibuildwheel Linux configuration
+[tool.cibuildwheel.linux]
+before-all = "yum install -y ccache && exit 0 || (apt-get update && apt-get install -y ccache && exit 0) || (apk add --no-cache ccache && exit 0) || echo 'Failed to install ccache with any package manager'"
+environment = { LANG="C.UTF-8", LC_ALL="C.UTF-8", CMAKE_PREFIX_PATH="/opt/python/{package.platname}", CCACHE_DIR="$HOME/.ccache", CC="ccache gcc", CXX="ccache g++" }
+environment-pass = ["LANG", "LC_ALL", "CCACHE_DIR"]
+
+# cibuildwheel macOS configuration
+[tool.cibuildwheel.macos]
+before-all = "brew install ccache"
+environment = { MAKEFLAGS="-j4", FORCE_PYTHON_VERSION="{python_version}", MACOSX_DEPLOYMENT_TARGET="10.14", CCACHE_DIR="$HOME/.ccache", CC="ccache clang", CXX="ccache clang++" }
+repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
+
+# cibuildwheel Windows configuration
+[tool.cibuildwheel.windows]
+before-all = "choco install -y ninja --force"
+environment = { CMAKE_GENERATOR="Ninja", CMAKE_POSITION_INDEPENDENT_CODE="ON" }
+
+# Configure specific Python versions
+[tool.cibuildwheel.config-settings]
+"build.targets" = ["_py_dem_bones"]
 
 [tool.commitizen]
 name = "cz_conventional_commits"
