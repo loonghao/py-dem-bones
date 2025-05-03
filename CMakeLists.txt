@@ -4,11 +4,13 @@ project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
 # Use scikit-build-core's FindPython support
 find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 
-# Output Python version information for debugging
-message(STATUS "Found Python: ${Python_VERSION}")
-message(STATUS "  Python_EXECUTABLE: ${Python_EXECUTABLE}")
-message(STATUS "  Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
-message(STATUS "  Python_LIBRARIES: ${Python_LIBRARIES}")
+# If Python version is 3.7, output some debug information
+if(Python_VERSION MATCHES "^3\.7")
+  message(STATUS "Found Python 3.7: ${Python_VERSION}")
+  message(STATUS "  Python_EXECUTABLE: ${Python_EXECUTABLE}")
+  message(STATUS "  Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
+  message(STATUS "  Python_LIBRARIES: ${Python_LIBRARIES}")
+endif()
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 14)
@@ -26,31 +28,27 @@ if(WIN32)
     else()
         message(STATUS "Using default build settings")
     endif()
-
+    
     # Set Windows platform-specific configuration for MSVC
     if(MSVC)
       # Add MSVC-specific flags
       add_compile_options(/MP /bigobj)
-
+      
       # Enable multi-threaded compilation
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-
+      
       # Set runtime library to match Python's expectations
       # Use Multi-threaded DLL runtime library (/MD) for Release builds
       set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
       # Use Multi-threaded Debug DLL runtime library (/MDd) for Debug builds
       set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
-
-      # Ensure we're using the correct runtime library
-      string(REPLACE "/MT" "/MD" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
-      string(REPLACE "/MTd" "/MDd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-
+      
       # Use export symbol table file
       set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
-
+      
       # Use static linking to Python library
       set(PYTHON_LINK_STATIC ON)
-
+      
       # Check if platform toolset is specified
       if(NOT CMAKE_GENERATOR_TOOLSET)
         # Set the default toolset based on the Visual Studio version
@@ -118,11 +116,11 @@ if(MSVC)
   # Force spdlog to use MD runtime
   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
   set(SPDLOG_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
-
+  
   # Ensure our module also uses MD runtime
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
-
+  
   # Remove any MT flags if present
   string(REPLACE "/MT" "/MD" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
   string(REPLACE "/MTd" "/MDd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
@@ -161,14 +159,14 @@ if(NOT pybind11_FOUND)
             add_library(${target_name} MODULE ${ARGN})
             target_include_directories(${target_name} PRIVATE ${PYBIND11_INCLUDE_DIR})
             target_compile_definitions(${target_name} PRIVATE PYBIND11_DETAILED_ERROR_MESSAGES)
-
+            
             # Use platform-specific extension
             if(WIN32)
                 set_target_properties(${target_name} PROPERTIES PREFIX "" SUFFIX ".pyd")
-
+                
                 # Ensure correct linking to Python library
                 target_link_libraries(${target_name} PRIVATE ${Python_LIBRARIES})
-
+                
                 # Add Windows-specific compile definitions
                 target_compile_definitions(${target_name} PRIVATE
                     _WINDOWS
@@ -178,7 +176,7 @@ if(NOT pybind11_FOUND)
             else()
                 set_target_properties(${target_name} PROPERTIES PREFIX "" SUFFIX ".so")
             endif()
-
+            
             # Ensure linking to the correct Python library
             if(WIN32)
                 target_link_libraries(${target_name} PRIVATE ${Python_LIBRARIES})
@@ -253,13 +251,11 @@ if(Python_NumPy_FOUND)
 endif()
 
 # Add the pybind11 module
-pybind11_add_module(_py_dem_bones
+pybind11_add_module(_py_dem_bones 
     src/binding/py_dem_bones.cpp
     src/binding/py_dem_bones_ext.cpp
     src/binding/py_dem_bones_module.cpp
 )
-
-# No special handling needed for Python versions as we only support 3.9+
 
 # Link OpenMP if found
 if(OpenMP_CXX_FOUND)
@@ -271,14 +267,14 @@ endif()
 target_link_libraries(_py_dem_bones PRIVATE spdlog::spdlog)
 target_compile_definitions(_py_dem_bones PRIVATE WITH_SPDLOG)
 
-# Ensure we're using the correct runtime library
-if(MSVC)
-    # Force MD/MDd runtime for compatibility
-    target_compile_options(_py_dem_bones PRIVATE
-        $<$<CONFIG:Release>:/MD>
-        $<$<CONFIG:Debug>:/MDd>
-    )
-endif()
+# We're not using ABI3 compatibility mode as it causes issues with pybind11
+# Uncomment this if you want to enable ABI3 compatibility
+# if(Python_VERSION VERSION_GREATER_EQUAL 3.7)
+#     target_compile_definitions(_py_dem_bones PRIVATE
+#         Py_LIMITED_API=0x03070000  # Python 3.7 API
+#     )
+#     message(STATUS "Enabling ABI3 compatibility mode for Python 3.7+")
+# endif()
 
 # Set extension module suffix
 if(WIN32)

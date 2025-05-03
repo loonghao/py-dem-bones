@@ -31,7 +31,7 @@ def build(session: nox.Session) -> None:
 
     # Set environment variables for build
     env = os.environ.copy()
-    env["SKBUILD_BUILD_VERBOSE"] = "1"  # 使用新的环境变量
+    env["SKBUILD_BUILD_VERBOSE"] = "1"  # Use new environment variable
     env["FORCE_BDIST_WHEEL_PLAT"] = ""
 
     # Check Python version for special handling
@@ -113,32 +113,7 @@ def build_wheels(session: nox.Session) -> None:
     env["SKBUILD_BUILD_VERBOSE"] = "1"
     env["FORCE_BDIST_WHEEL_PLAT"] = ""
 
-    # 检测操作系统
-    is_windows = platform.system() == "Windows"
-
-    if is_windows:
-        session.log("检测到 Windows 环境，使用替代方法构建 wheel...")
-        # 在 Windows 上，使用标准的 build 方法
-        build(session)
-
-        # 如果 build 成功，将生成的 wheel 文件复制到 wheelhouse 目录
-        if os.path.exists(os.path.join(THIS_ROOT, "dist")):
-            wheels = [
-                f
-                for f in os.listdir(os.path.join(THIS_ROOT, "dist"))
-                if f.endswith(".whl")
-            ]
-            if wheels:
-                for wheel in wheels:
-                    src = os.path.join(THIS_ROOT, "dist", wheel)
-                    dst = os.path.join(THIS_ROOT, "wheelhouse", wheel)
-                    session.log(f"复制 wheel 文件: {wheel}")
-                    shutil.copy2(src, dst)
-            else:
-                session.log("未找到 wheel 文件")
-        return
-
-    # 非 Windows 环境使用 cibuildwheel
+    # Use cibuildwheel for all environments
     session.log("Building wheels with cibuildwheel...")
     platform_arg = "auto"  # Build for current platform
 
@@ -155,9 +130,7 @@ def build_wheels(session: nox.Session) -> None:
         session.log("cibuildwheel build completed successfully")
     except Exception as e:
         session.log(f"cibuildwheel build failed: {e}")
-        session.log("Falling back to standard build...")
-        build(session)
-        return
+        session.error("Failed to build wheels with cibuildwheel. Please check the error message above.")
 
     # List the built wheels
     if os.path.exists(os.path.join(THIS_ROOT, "wheelhouse")):

@@ -4,8 +4,8 @@
 [build-system]
 # Build system dependencies
 requires = [
-    "scikit-build-core>=0.11.3",         # For Python 3.9+
-    "pybind11>=2.13.6",                  # For Python 3.9+
+    "scikit-build-core>=0.11.2",         # For Python 3.9+
+    "pybind11>=2.10.0",                  # For Python 3.9+
     "numpy>=1.20.0",             # Numerical computation library
     "setuptools>=42.0.0",        # Installation tools
     "wheel>=0.36.0",             # Wheel packaging tool
@@ -127,6 +127,8 @@ pybind11 = ">=2.10.0"  # For Python/C++ bindings
 
 # scikit-build configuration
 [tool.scikit-build]
+# Note: ABI3 mode is disabled as it may cause issues with some pybind11 features
+# wheel.py-api = "cp37"  # Disabled ABI3 mode
 wheel.packages = ["src/py_dem_bones"]  # Specify packaging path
 wheel.exclude = ["tests/*"]  # Exclude test files
 wheel.expand-macos-universal-tags = true  # Support macOS universal binaries

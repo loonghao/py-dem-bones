@@ -10,12 +10,6 @@
 
 #include "logger.h"  // Add logger header file
 
-// Python 3.7 compatibility
-#ifdef PYTHON_37_COMPATIBLE
-#define PY_MAJOR_VERSION 3
-#define PY_MINOR_VERSION 7
-#endif
-
 // Add OpenMP support if available
 #ifndef _OPENMP
 #ifdef _OPENMP
@@ -85,37 +79,37 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
             try {
                 // Log computation parameters
                 dem_bones::Logger::instance().info("Starting DemBones computation");
-                dem_bones::Logger::instance().debug("Computation parameters: nIters=" + std::to_string(self.nIters) +
-                                        ", nB=" + std::to_string(self.nB) +
+                dem_bones::Logger::instance().debug("Computation parameters: nIters=" + std::to_string(self.nIters) + 
+                                        ", nB=" + std::to_string(self.nB) + 
                                         ", nV=" + std::to_string(self.nV));
-
+                
                 // Record start time
                 auto start_time = std::chrono::high_resolution_clock::now();
-
+                
                 // Call the actual computation method
                 self.compute();
-
+                
                 // Calculate time spent
                 auto end_time = std::chrono::high_resolution_clock::now();
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-
+                
                 // Log success information
                 dem_bones::Logger::instance().info("Computation completed successfully in " + std::to_string(duration) + "ms");
-
+                
                 // Return success and empty error message
                 return py::make_tuple(true, "");
             } catch (const std::exception& e) {
                 // Log exception information
                 std::string error_msg = e.what();
                 dem_bones::Logger::instance().error("Computation failed with error: " + error_msg);
-
+                
                 // If there's an exception in C++ code, return false and error message
                 return py::make_tuple(false, error_msg);
             } catch (...) {
                 // Catch any other exceptions
                 std::string error_msg = "Unknown error occurred during computation";
                 dem_bones::Logger::instance().error(error_msg);
-
+                
                 return py::make_tuple(false, error_msg);
             }
         })
@@ -130,21 +124,21 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
             // Get the dimensions from the sparse weight matrix
             int nBones = self.nB;
             int nVerts = self.nV;
-
+            
             if (nBones <= 0 || nVerts <= 0) {
                 // Return empty array if dimensions are not valid
                 std::vector<ssize_t> shape = {0, 0};
                 return py::array_t<Scalar>(shape);
             }
-
+            
             // Create a numpy array with the right shape [nB, nV]
             std::vector<ssize_t> shape = {nBones, nVerts};
             py::array_t<Scalar> result(shape);
             auto data = result.mutable_data();
-
+            
             // Fill the array with zeros initially
             std::fill(data, data + nBones * nVerts, 0.0);
-
+            
             // Copy data from sparse matrix to dense array
             // Use OpenMP for parallelization if available and if the data size is large enough
             #ifdef _OPENMP
@@ -155,13 +149,13 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
                     int row = it.row();   // Bone index
                     int col = it.col();   // Vertex index
                     Scalar value = it.value();
-
+                    
                     if (row < nBones && col < nVerts) {
                         data[row * nVerts + col] = value;
                     }
                 }
             }
-
+            
             return result;
         })
         .def("set_weights", [](Class& self, const MatrixX& weights) {
@@ -186,18 +180,18 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
             // Get dimensions of transformation matrices
             int nFrames = self.nF;
             int nBones = self.nB;
-
+            
             if (nFrames <= 0 || nBones <= 0) {
                 // Return empty array if dimensions are not valid
                 std::vector<ssize_t> shape = {0, 4, 4};
                 return py::array_t<Scalar>(shape);
             }
-
+            
             // Create numpy array with correct shape [nF, 4, 4]
             std::vector<ssize_t> shape = {nFrames, 4, 4};
             py::array_t<Scalar> result(shape);
             auto r = result.template mutable_unchecked<3>();
-
+            
             // Initialize with identity matrices
             #ifdef _OPENMP
             #pragma omp parallel for if(nFrames > 10)
@@ -209,7 +203,7 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
                     }
                 }
             }
-
+            
             // Copy transformation data if available
             if (self.m.rows() > 0 && self.m.cols() > 0) {
                 // Copy data from flat matrix to 3D array
@@ -232,7 +226,7 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
                     }
                 }
             }
-
+            
             return result;
         })
         .def("set_transformations", [](Class& self, const MatrixX& transformations) {
