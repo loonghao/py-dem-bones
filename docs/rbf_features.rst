@@ -74,25 +74,25 @@ To use the RBF functionality in Maya:
        # Extract pose data
        source_poses = []
        target_poses = []
-       
+
        for pose in poses:
            # Set the pose
            cmds.setAttr(f"{pose['control']}.{pose['attribute']}", pose['value'])
-           
+
            # Get joint positions
            source_pos = cmds.xform(source_joint, q=True, ws=True, t=True)
            target_pos = cmds.xform(target_joint, q=True, ws=True, t=True)
-           
+
            source_poses.append([pose['value']])
            target_poses.append(target_pos)
-       
+
        # Create RBF interpolator
        rbf = RBFInterpolator(
            np.array(source_poses),
            np.array(target_poses),
            kernel='thin_plate_spline'
        )
-       
+
        return rbf
 
 Jupyter Notebook Integration
@@ -110,14 +110,14 @@ Compatibility
 
 The RBF functionality requires:
 
-* Python 3.7+
+* Python 3.8+
 * SciPy 1.7.0+
 * NumPy 1.20.0+
 
 For Maya integration, compatibility has been tested with:
 
 * Maya 2020+
-* Python 3.7+ (as provided by Maya)
+* Python 3.8+ (as provided by Maya)
 
 API Reference
 -----------

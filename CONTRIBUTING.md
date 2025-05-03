@@ -42,7 +42,7 @@ We welcome suggestions for enhancements! Please create an issue with:
 
 ### Prerequisites
 
-- Python 3.7 or higher
+- Python 3.8 or higher
 - C++ compiler (GCC, Clang, or MSVC)
 - CMake 3.15 or higher
 - Eigen3

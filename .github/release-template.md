@@ -43,7 +43,7 @@ pip install -e .
 
 ## 🐍 Python Compatibility
 
-- Python 3.7+
+- Python 3.8+
 
 ## ✨ Key Features
 

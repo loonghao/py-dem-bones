@@ -29,7 +29,7 @@ Python bindings for the [Dem Bones](https://github.com/electronicarts/dem-bones)
 ## Features
 
 - Python bindings for the Dem Bones C++ library (v1.2.1)
-- Support for Python 3.7+ (including 3.8, 3.9, 3.10, 3.11, 3.12, and 3.13)
+- Support for Python 3.8+ (including 3.9, 3.10, 3.11, 3.12, and 3.13)
 - Cross-platform support (Windows, Linux, macOS)
 - NumPy integration for efficient data handling
 - Pythonic wrapper classes with enhanced functionality
