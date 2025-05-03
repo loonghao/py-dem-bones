@@ -57,32 +57,61 @@ def main():
     try:
         import py_dem_bones
         print(f"Successfully imported py_dem_bones version {py_dem_bones.__version__}")
+
+        # Print some environment information
+        print(f"Python version: {sys.version}")
+        print(f"Platform: {sys.platform}")
+        print(f"OS: {os.name}")
+
+        # Try to import numpy to verify it's installed
+        try:
+            import numpy
+            print(f"NumPy version: {numpy.__version__}")
+        except ImportError:
+            print("NumPy not installed")
+
     except ImportError as e:
         print(f"Error importing py_dem_bones: {e}")
         sys.exit(1)
 
-    # Create a test suite
-    suite = unittest.TestSuite()
-    loader = unittest.TestLoader()
+    # Check if pytest is available
+    try:
+        import pytest
 
-    # Add all test modules
-    # If we have specific test modules, add them here
-    # For example:
-    # import test_basic
-    # suite.addTest(loader.loadTestsFromModule(test_basic))
+        # Run pytest with coverage
+        print("\nRunning tests with pytest and coverage...")
+        args = [
+            "-v",                  # Verbose output
+            "--cov=py_dem_bones",  # Coverage for py_dem_bones package
+            "--cov-report=term",   # Terminal coverage report
+            test_dir               # Test directory
+        ]
 
-    # For now, discover all tests in the test directory
-    discovered_tests = loader.discover(test_dir, pattern="test_*.py")
-    suite.addTest(discovered_tests)
+        # If we're in a CI environment, generate XML coverage report
+        if os.environ.get("CI", "false").lower() == "true":
+            args.append("--cov-report=xml")
 
-    # Run the tests
-    runner = unittest.TextTestRunner(verbosity=2)
-    result = runner.run(suite)
+        return pytest.main(args)
 
-    # Return success or failure
-    if not result.wasSuccessful():
-        return 1
-    return 0
+    except ImportError:
+        print("\nPytest not available, falling back to unittest...")
+
+        # Create a test suite
+        suite = unittest.TestSuite()
+        loader = unittest.TestLoader()
+
+        # Discover all tests in the test directory
+        discovered_tests = loader.discover(test_dir, pattern="test_*.py")
+        suite.addTest(discovered_tests)
+
+        # Run the tests
+        runner = unittest.TextTestRunner(verbosity=2)
+        result = runner.run(suite)
+
+        # Return success or failure
+        if not result.wasSuccessful():
+            return 1
+        return 0
 
 
 if __name__ == "__main__":
