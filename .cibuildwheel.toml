@@ -13,7 +13,9 @@ environment = {
     PYTHONIOENCODING = "UTF-8",
     PIP_NO_BUILD_ISOLATION = "1",
     # Use static linking to reduce DLL dependencies
-    CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON"
+    CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON",
+    # Disable loading DLLs from PATH to avoid conflicts
+    PYDEMB_PYTHON_LOAD_DLLS_FROM_PATH = "0"
 }
 # Install Ninja and other tools
 before-all = [
@@ -28,12 +30,22 @@ repair-wheel-command = "delvewheel repair -w {dest_dir} {wheel}"
 
 # Linux-specific configuration
 [linux]
+environment = {
+    LANG = "C.UTF-8",
+    LC_ALL = "C.UTF-8",
+    PYTHONIOENCODING = "UTF-8"
+}
 before-build = [
     "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core cmake"
 ]
+repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
 
 # macOS-specific configuration
 [macos]
+environment = {
+    MAKEFLAGS = "-j4"
+}
 before-build = [
     "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core cmake"
 ]
+repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
