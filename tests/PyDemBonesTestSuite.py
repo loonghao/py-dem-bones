@@ -84,12 +84,9 @@ def main():
             "-v",                  # Verbose output
             "--cov=py_dem_bones",  # Coverage for py_dem_bones package
             "--cov-report=term",   # Terminal coverage report
+            "--cov-report=xml",    # XML coverage report for CI
             test_dir               # Test directory
         ]
-
-        # If we're in a CI environment, generate XML coverage report
-        if os.environ.get("CI", "false").lower() == "true":
-            args.append("--cov-report=xml")
 
         return pytest.main(args)
 

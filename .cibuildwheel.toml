@@ -1,7 +1,7 @@
 # cibuildwheel configuration
 build-verbosity = 3
 test-requires = ["pytest", "pytest-cov", "numpy>=1.20.0"]
-test-command = "python {project}/tests/PyDemBonesTestSuite.py"
+test-command = "pytest {project}/tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v"
 
 # Windows-specific configuration
 [windows]
