@@ -115,8 +115,9 @@ jobs:
         with:
           platforms: all
 
-      # Set up ccache for faster builds
+      # Set up ccache for faster builds (Linux and macOS only)
       - name: Set up ccache
+        if: runner.os != 'Windows'
         uses: actions/cache@v4
         with:
           path: ~/.ccache
@@ -138,13 +139,10 @@ jobs:
           CIBW_BUILD_VERBOSITY: 3
           CIBW_BEFORE_BUILD: "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core cmake"
 
-          # Enable ccache for faster builds
+          # Enable ccache for faster builds (Linux and macOS only)
           CIBW_ENVIRONMENT: >-
             PYTHONIOENCODING=UTF-8
             PIP_NO_BUILD_ISOLATION=1
-            CCACHE_DIR=$HOME/.ccache
-            CC='ccache gcc'
-            CXX='ccache g++'
 
           # Linux-specific settings
           CIBW_ENVIRONMENT_PASS_LINUX: "LANG LC_ALL CCACHE_DIR"
@@ -153,25 +151,35 @@ jobs:
             LC_ALL=C.UTF-8
             PYTHONIOENCODING=UTF-8
             CMAKE_PREFIX_PATH=/opt/python/{package.platname}
+            CCACHE_DIR=$HOME/.ccache
+            CC='ccache gcc'
+            CXX='ccache g++'
           CIBW_BEFORE_ALL_LINUX: >-
             yum install -y ccache ||
             apt-get update && apt-get install -y ccache ||
             apk add --no-cache ccache
 
+          CIBW_BEFORE_ALL_MACOS: >-
+            brew install ccache
+
           # Windows-specific settings
           CIBW_ENVIRONMENT_WINDOWS: "CMAKE_GENERATOR=Ninja CMAKE_POSITION_INDEPENDENT_CODE=ON"
           CIBW_BEFORE_ALL_WINDOWS: >-
-            choco install -y ninja ccache &&
-            dir "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise" ||
-            dir "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community" ||
-            dir "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise" ||
-            dir "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community"
+            choco install -y ninja --force &&
+            (dir "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise" 2>nul ||
+            dir "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community" 2>nul ||
+            dir "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise" 2>nul ||
+            dir "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community" 2>nul ||
+            echo "Visual Studio installation not found in standard locations")
 
           # macOS-specific settings
           CIBW_ENVIRONMENT_MACOS: >-
             MAKEFLAGS=-j4
             FORCE_PYTHON_VERSION={python_version}
             MACOSX_DEPLOYMENT_TARGET=10.14
+            CCACHE_DIR=$HOME/.ccache
+            CC='ccache clang'
+            CXX='ccache clang++'
 
           # Repair commands
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair -w {dest_dir} {wheel}"
