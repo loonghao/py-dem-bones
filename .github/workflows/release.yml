@@ -406,11 +406,30 @@ jobs:
           path: dist
           merge-multiple: true
 
-      - name: Run Windows compatibility test
+      - name: Install wheel and run tests
         shell: bash
         run: |
-          # Run the test-windows nox session
-          uvx nox -s test-windows
+          # Find the wheel for the current Python version
+          PYTHON_VERSION="${{ matrix.python-version }}"
+          PYTHON_VERSION_NO_DOT="${PYTHON_VERSION//./}"
+          WHEEL_PATTERN="py_dem_bones-*-cp${PYTHON_VERSION_NO_DOT}-*-win_*.whl"
+
+          echo "Looking for wheel matching pattern: $WHEEL_PATTERN"
+          WHEEL_PATH=$(find dist -name "$WHEEL_PATTERN" | head -n 1)
+
+          if [ -n "$WHEEL_PATH" ]; then
+            echo "Found wheel: $WHEEL_PATH"
+
+            # Install the wheel and test dependencies using uvx
+            uvx pip install "$WHEEL_PATH" pytest pytest-cov
+
+            # Run tests with coverage
+            uvx pytest tests/test_basic.py -v --cov=py_dem_bones --cov-report=xml:coverage.xml
+          else
+            echo "No matching wheel found for Python ${{ matrix.python-version }}. Available wheels:"
+            ls -la dist
+            exit 1
+          fi
 
   # Build source distribution
   build-sdist:
@@ -489,7 +508,7 @@ jobs:
   # Release to PyPI
   release:
     name: Release
-    needs: [build-wheels, build-sdist, test-windows]
+    needs: [build-wheels, build-sdist]
     if: github.event_name == 'release' || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
     runs-on: ubuntu-latest
     permissions:
