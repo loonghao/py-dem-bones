@@ -155,9 +155,10 @@ jobs:
             CC='ccache gcc'
             CXX='ccache g++'
           CIBW_BEFORE_ALL_LINUX: >-
-            yum install -y ccache ||
-            apt-get update && apt-get install -y ccache ||
-            apk add --no-cache ccache
+            yum install -y ccache && exit 0 ||
+            (apt-get update && apt-get install -y ccache && exit 0) ||
+            (apk add --no-cache ccache && exit 0) ||
+            echo "Failed to install ccache with any package manager"
 
           CIBW_BEFORE_ALL_MACOS: >-
             brew install ccache

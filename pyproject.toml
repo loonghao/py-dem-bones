@@ -82,10 +82,6 @@ Issues = "https://github.com/loonghao/py-dem-bones/issues"
 Changelog = "https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md"
 
 [tool.scikit-build]
-wheel.packages = ["src/py_dem_bones"]
-wheel.exclude = ["tests/*"]
-# 确保包含所有必要的 DLL 文件
-wheel.expand-macos-universal-tags = true
 sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICENSE.md", "README.md", "extern/dem-bones/*", "extern/eigen/*"]
 sdist.exclude = ["tests/data/*"]
 
@@ -94,6 +90,7 @@ version = ">=3.15"
 build-type = "Release"
 
 [tool.scikit-build.cmake.define]
+# Use Python Limited API with special handling
 PYTHON_LIMITED_API = "ON"
 CMAKE_POSITION_INDEPENDENT_CODE = "ON"
 # Ensure correct symbol export on Windows
@@ -101,6 +98,18 @@ CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON"
 # Use abi3 build, supporting Python 3.9+
 PYBIND11_PYTHON_VERSION = "3.9"
 PYBIND11_FINDPYTHON = "ON"
+# Ensure pybind11 correctly handles Python Limited API
+PYBIND11_INTERNALS_VERSION = "10.0.0"
+# Disable strict mode for Python Limited API to allow access to more APIs
+PYBIND11_STRICT_PYTHON_LIMITED_API = "OFF"
+
+[tool.scikit-build.wheel]
+# Configure wheel to use abi3 tag
+py-api = "cp39"
+packages = ["src/py_dem_bones"]
+exclude = ["tests/*"]
+# 确保包含所有必要的 DLL 文件
+expand-macos-universal-tags = true
 
 [tool.commitizen]
 name = "cz_conventional_commits"

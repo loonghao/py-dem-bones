@@ -217,9 +217,26 @@ pybind11_add_module(_py_dem_bones
 
 # Enable ABI3 compatibility mode, supporting Python 3.9+
 if(DEFINED PYTHON_LIMITED_API AND PYTHON_LIMITED_API)
+    # Define Python Limited API macro with special handling
+    # Note: Py_LIMITED_API must be defined before including Python.h
     target_compile_definitions(_py_dem_bones PRIVATE
-        Py_LIMITED_API=0x03090000  # Python 3.9 ABI
+        "Py_LIMITED_API=0x03090000"  # Python 3.9 API
     )
+
+    # If PYBIND11_STRICT_PYTHON_LIMITED_API is defined, use strict mode
+    if(DEFINED PYBIND11_STRICT_PYTHON_LIMITED_API AND NOT PYBIND11_STRICT_PYTHON_LIMITED_API)
+        # Disable strict mode to allow access to more APIs
+        target_compile_definitions(_py_dem_bones PRIVATE
+            "PYBIND11_STRICT_PYTHON_LIMITED_API=0"
+        )
+    endif()
+
+    # Set pybind11 internals version to avoid ABI compatibility issues
+    if(DEFINED PYBIND11_INTERNALS_VERSION)
+        target_compile_definitions(_py_dem_bones PRIVATE
+            "PYBIND11_INTERNALS_VERSION=${PYBIND11_INTERNALS_VERSION}"
+        )
+    endif()
 
     # Set Python module properties, using abi3 tag
     if(SKBUILD)
