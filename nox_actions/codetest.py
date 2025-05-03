@@ -446,6 +446,45 @@ def build_no_test(session: nox.Session) -> None:
         session.log("Warning: No wheel found after build.")
 
 
+def coverage(session: nox.Session) -> None:
+    """Generate code coverage reports for CI.
+
+    This session runs tests with coverage and generates both terminal and XML reports.
+    The XML report can be used by tools like Codecov to track coverage over time.
+    """
+    # Install pytest and coverage dependencies
+    retry_command(
+        session,
+        session.install,
+        "pytest>=7.3.1",
+        "pytest-cov>=4.1.0",
+        "coverage>=7.0.0",
+        max_retries=3
+    )
+
+    # Install package in development mode
+    retry_command(session, session.install, "-e", ".", max_retries=3)
+
+    # Determine test root directory
+    test_root = os.path.join(THIS_ROOT, "tests")
+    if not os.path.exists(test_root):
+        test_root = os.path.join(THIS_ROOT, "src", MODULE_NAME, "test")
+
+    # Run pytest with coverage
+    session.run(
+        "pytest",
+        f"--cov={MODULE_NAME}",
+        "--cov-report=term",
+        "--cov-report=xml:coverage.xml",
+        f"--rootdir={test_root}",
+        "-v"
+    )
+
+    # Print coverage report summary
+    session.log("Coverage report generated successfully")
+    session.log("XML report saved to coverage.xml")
+
+
 def test_windows_compatibility(session: nox.Session) -> None:
     """Test Windows compatibility by building and testing on Windows.
 
@@ -501,10 +540,18 @@ def test_windows_compatibility(session: nox.Session) -> None:
     )
     session.run("python", "-c", import_statement)
 
-    # Run basic tests
+    # Run basic tests with coverage
     test_root = os.path.join(THIS_ROOT, "tests")
     if not os.path.exists(test_root):
         test_root = os.path.join(THIS_ROOT, "src", MODULE_NAME, "test")
 
-    session.log("Running tests...")
-    session.run("pytest", f"--rootdir={test_root}", "tests/test_basic.py", "-v")
+    session.log("Running tests with coverage...")
+    session.run(
+        "pytest",
+        f"--rootdir={test_root}",
+        "tests/test_basic.py",
+        "--cov=py_dem_bones",
+        "--cov-report=term",
+        "--cov-report=xml:coverage.xml",
+        "-v"
+    )
