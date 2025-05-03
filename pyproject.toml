@@ -88,24 +88,16 @@ wheel.exclude = ["tests/*"]
 wheel.expand-macos-universal-tags = true
 sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICENSE.md", "README.md", "extern/dem-bones/*", "extern/eigen/*"]
 sdist.exclude = ["tests/data/*"]
-# Enable verbose build output
-build.verbose = true
-# Use parallel build to speed up
-build.jobs = 4
 
 [tool.scikit-build.cmake]
 version = ">=3.15"
 build-type = "Release"
-# Use Ninja generator
-generator = "Ninja"
 
 [tool.scikit-build.cmake.define]
 PYTHON_LIMITED_API = "OFF"
 CMAKE_POSITION_INDEPENDENT_CODE = "ON"
 # Ensure symbols are properly exported on Windows
 CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON"
-# Use static runtime library on Windows
-CMAKE_MSVC_RUNTIME_LIBRARY = { value = "MultiThreaded$<$<CONFIG:Debug>:Debug>", windows = true }
 # Disable ABI3 mode
 SKBUILD_SOABI = "OFF"
 
