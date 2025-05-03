@@ -108,6 +108,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-eigen-
 
+      # Set up ccache
+      - name: Set up ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ runner.os }}-ccache
+          max-size: 1G
+
       # Build wheels using cibuildwheel action
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.23.1
@@ -352,7 +359,15 @@ jobs:
           python -m pip install pytest pytest-cov numpy
           python -m pip install dist/*.tar.gz
           python -c "import py_dem_bones; print(py_dem_bones.__version__)"
-          python -m pytest tests/test_basic.py -v || echo "Basic tests failed but continuing"
+          python -m pytest tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v || echo "Tests failed but continuing"
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          fail_ci_if_error: false
+          verbose: true
 
       - uses: actions/upload-artifact@v4
         with:
