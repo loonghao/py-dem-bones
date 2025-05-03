@@ -135,10 +135,10 @@ wheel.expand-macos-universal-tags = true  # Support macOS universal binaries
 # Files to include in the source distribution
 sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICENSE.md", "README.md", "extern/dem-bones/*", "extern/eigen/*"]
 sdist.exclude = ["tests/data/*"]  # Exclude test data
-# Enable parallel build by default
-build.jobs = "auto"  # Use all available cores for building
 # Enable verbose output for debugging
 build.verbose = false  # Set to true for verbose output when debugging
+# Build tool arguments (replaces the previous build-options)
+build.tool-args = ["-j2"]  # Limit parallel jobs to avoid memory issues
 # Set build directory for caching between builds
 build-dir = ".scikit-build"  # Cache builds for faster rebuilds
 # Ensure reproducible builds
@@ -148,10 +148,6 @@ sdist.reproducible = true  # Make SDist reproducible
 [tool.scikit-build.cmake]
 version = ">=3.15"  # Require CMake 3.15 or above
 build-type = "Release"  # Build type is Release
-# Use Ninja generator if available for faster builds
-generator = "Ninja"  # Falls back to platform default if Ninja is not available
-# Build options
-build-options = ["-j2"]  # Limit parallel jobs to avoid memory issues
 # Additional CMake arguments
 args = ["-DCMAKE_POSITION_INDEPENDENT_CODE=ON"]  # Ensure position independent code
 
@@ -159,6 +155,9 @@ args = ["-DCMAKE_POSITION_INDEPENDENT_CODE=ON"]  # Ensure position independent c
 [tool.scikit-build.ninja]
 version = ">=1.10"  # Require Ninja 1.10 or above
 make-fallback = true  # Fall back to make if Ninja is not available
+
+# Build tool arguments (replaces the previous build-options)
+# Note: This is added to the main tool.scikit-build section
 
 # CMake definitions
 [tool.scikit-build.cmake.define]
