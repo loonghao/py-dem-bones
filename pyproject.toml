@@ -96,9 +96,9 @@ build-type = "Release"
 [tool.scikit-build.cmake.define]
 PYTHON_LIMITED_API = "ON"
 CMAKE_POSITION_INDEPENDENT_CODE = "ON"
-# 确保在 Windows 上正确导出符号
+# Ensure correct symbol export on Windows
 CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON"
-# 使用 abi3 构建，支持 Python 3.9+
+# Use abi3 build, supporting Python 3.9+
 PYBIND11_PYTHON_VERSION = "3.9"
 PYBIND11_FINDPYTHON = "ON"
 
