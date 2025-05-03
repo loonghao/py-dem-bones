@@ -1,0 +1,39 @@
+# cibuildwheel configuration
+build-verbosity = 3
+test-requires = ["pytest", "numpy>=1.20.0"]
+test-command = "python {project}/tests/PyDemBonesTestSuite.py"
+
+# Windows-specific configuration
+[windows]
+# Use Ninja generator to speed up builds
+environment = {
+    CMAKE_GENERATOR = "Ninja",
+    CMAKE_POSITION_INDEPENDENT_CODE = "ON",
+    # Ensure DLLs can be loaded correctly
+    PYTHONIOENCODING = "UTF-8",
+    PIP_NO_BUILD_ISOLATION = "1",
+    # Use static linking to reduce DLL dependencies
+    CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON"
+}
+# Install Ninja and other tools
+before-all = [
+    "pip install ninja delvewheel wheel"
+]
+# Avoid updating pip itself, which can cause errors
+before-build = [
+    "pip install setuptools wheel numpy pybind11 scikit-build-core cmake"
+]
+# Use delvewheel to repair wheel packages
+repair-wheel-command = "delvewheel repair -w {dest_dir} {wheel}"
+
+# Linux-specific configuration
+[linux]
+before-build = [
+    "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core cmake"
+]
+
+# macOS-specific configuration
+[macos]
+before-build = [
+    "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core cmake"
+]

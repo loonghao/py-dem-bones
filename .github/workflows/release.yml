@@ -2,7 +2,7 @@ name: Build and Release
 
 on:
   push:
-    tags: 
+    tags:
       - 'v*'
       - '[0-9]+.[0-9]+.[0-9]+*'
     branches: [ main ]
@@ -92,13 +92,13 @@ jobs:
           - os: macos-13
           # macOS builds - Apple Silicon
           - os: macos-14
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
-      
+
       # Cache Eigen library
       - name: Cache Eigen library
         uses: actions/cache@v4
@@ -107,16 +107,20 @@ jobs:
           key: ${{ runner.os }}-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
           restore-keys: |
             ${{ runner.os }}-eigen-
-      
+
       # Build wheels using cibuildwheel action
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.23.1
         with:
           output-dir: wheelhouse
         env:
-          CIBW_BUILD: "cp37-* cp38-* cp39-* cp310-* cp311-* cp312-*"
+          CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-*"
           CIBW_SKIP: "pp* *-musllinux* *-win32 *-manylinux_i686"
-          CIBW_BEFORE_BUILD: "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core cmake"
+          # Different build commands for different platforms
+          CIBW_BEFORE_BUILD_LINUX: "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core cmake"
+          CIBW_BEFORE_BUILD_MACOS: "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core cmake"
+          # Windows: avoid updating pip itself
+          CIBW_BEFORE_BUILD_WINDOWS: "pip install setuptools wheel numpy pybind11 scikit-build-core cmake"
           CIBW_BUILD_VERBOSITY: 3
           CIBW_ENVIRONMENT: "PYTHONIOENCODING=UTF-8 PIP_NO_BUILD_ISOLATION=1"
           CIBW_ENVIRONMENT_PASS_LINUX: "LANG LC_ALL"
@@ -124,9 +128,12 @@ jobs:
           CIBW_ENVIRONMENT_WINDOWS: "CMAKE_GENERATOR=Ninja CMAKE_POSITION_INDEPENDENT_CODE=ON"
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair -w {dest_dir} {wheel}"
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
-          CIBW_BEFORE_ALL_WINDOWS: "choco install -y ninja && dir \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\" || dir \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\" || dir \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\" || dir \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\""
+          # Windows: install Ninja and delvewheel
+          CIBW_BEFORE_ALL_WINDOWS: "pip install delvewheel && choco install -y ninja && dir \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\" || dir \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\" || dir \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\" || dir \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\""
+          # Windows: use delvewheel to repair wheels
+          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
           CIBW_ENVIRONMENT_MACOS: "MAKEFLAGS=-j4 FORCE_PYTHON_VERSION={python_version}"
-      
+
       # Upload wheels
       - uses: actions/upload-artifact@v4
         with:
@@ -149,34 +156,34 @@ jobs:
         exclude:
           - os: macos-14
             python-version: '3.8'
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
-      
+
       - name: Download wheel artifacts
         uses: actions/download-artifact@v4
         with:
           name: wheels-${{ matrix.os }}
           path: ./wheelhouse
-      
+
       - name: Install nox
         run: |
           python -m pip install --upgrade pip
           python -m pip install nox
           python -m pip install numpy  # Required for tests
-      
+
       - name: Run tests with nox
         run: |
           python -m nox --session pytest_skip_install
-      
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
@@ -194,19 +201,19 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.8', '3.11']
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
-      
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
-      
+
       - name: Install build dependencies
         shell: pwsh
         run: |
@@ -217,7 +224,7 @@ jobs:
           python -m pip install cmake>=3.15 build wheel setuptools>=42.0.0 scikit-build-core>=0.5.0 pybind11>=2.10.0 numpy>=1.20.0
           # Verify CMake installation
           cmake --version
-      
+
       - name: Install Visual C++ Redistributable
         shell: pwsh
         run: |
@@ -225,7 +232,7 @@ jobs:
           Invoke-WebRequest -Uri https://aka.ms/vs/17/release/vc_redist.x64.exe -OutFile vc_redist.x64.exe
           Start-Process -FilePath "vc_redist.x64.exe" -ArgumentList "/quiet", "/norestart" -Wait
           Write-Host "Visual C++ Redistributable installed"
-          
+
           # Set environment variables to help locate DLLs
           $vcRedistPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Redist\MSVC"
           if (Test-Path $vcRedistPath) {
@@ -239,26 +246,26 @@ jobs:
           } else {
             Write-Host "VC Redist path not found at $vcRedistPath"
           }
-      
-      # 
-      # 1: 
+
+      #
+      # 1:
       - name: Test Windows compatibility using nox
         shell: pwsh
         run: |
           python -m nox -s test-windows
-      
+
       - name: Download wheel artifacts
         uses: actions/download-artifact@v4
         with:
           name: wheels-windows-latest
           path: dist
-      
+
       - name: List available wheels
         shell: pwsh
         run: |
           Write-Host "Available wheels in dist directory:"
           Get-ChildItem -Path dist -Filter "*.whl" | ForEach-Object { Write-Host "  $($_.Name)" }
-      
+
       - name: Test pre-built wheel
         shell: pwsh
         run: |
@@ -267,39 +274,39 @@ jobs:
           $shortVersion = if ($pythonVersion.Length -gt 2) { $pythonVersion.Substring(0, 2) } else { $pythonVersion }
           $wheelPattern = "py_dem_bones-*-cp${shortVersion}*win*.whl"
           Write-Host "Looking for wheel matching pattern: $wheelPattern"
-          
+
           $wheel = Get-ChildItem -Path dist -Filter $wheelPattern | Select-Object -First 1
           if ($wheel) {
             Write-Host "Found wheel: $($wheel.FullName)" -ForegroundColor Green
-            
+
             # Create wheelhouse directory and copy wheel package
             $wheelhouse = "wheelhouse"
             if (-not (Test-Path $wheelhouse)) {
               New-Item -ItemType Directory -Path $wheelhouse | Out-Null
             }
             Copy-Item $wheel.FullName -Destination $wheelhouse
-            
+
             # Debug DLL loading issues
             Write-Host "Running DLL loading debug script..." -ForegroundColor Cyan
             Copy-Item scripts/debug_dll_loading.py .
             python debug_dll_loading.py
-            
+
             # Check Python version compatibility
             $pythonFullVersion = python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" | Out-String
             $pythonFullVersion = $pythonFullVersion.Trim()
             $wheelPythonVersion = [regex]::Match($wheel.Name, "cp(\d\d)").Groups[1].Value
             $wheelPythonVersion = $wheelPythonVersion.Insert(1, ".")
-            
+
             Write-Host "Current Python version: $pythonFullVersion" -ForegroundColor Cyan
             Write-Host "Wheel Python version: $wheelPythonVersion" -ForegroundColor Cyan
-            
+
             if ($pythonFullVersion -ne $wheelPythonVersion) {
               Write-Host "WARNING: Python version mismatch!" -ForegroundColor Yellow
               Write-Host "Using Python $pythonFullVersion to test a wheel built for Python $wheelPythonVersion" -ForegroundColor Yellow
               Write-Host "This test will be skipped as versions are incompatible" -ForegroundColor Yellow
               exit 0
             }
-            
+
             # Use pytest_skip_install session to run tests
             Write-Host "Running tests with pytest_skip_install session..." -ForegroundColor Cyan
             python -m pip install nox
@@ -320,7 +327,7 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -329,19 +336,19 @@ jobs:
           cache-dependency-path: |
             **/pyproject.toml
             **/requirements*.txt
-      
+
       # Install system dependencies
       - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y cmake ninja-build gcc g++
         shell: bash
-      
+
       - name: Build SDist
         run: |
           python -m pip install build numpy pybind11 scikit-build-core cmake
           python -m build --sdist
-      
+
       - name: Test SDist
         run: |
           python -m pip install --upgrade pip
@@ -349,7 +356,7 @@ jobs:
           python -m pip install dist/*.tar.gz
           python -c "import py_dem_bones; print(py_dem_bones.__version__)"
           python -m pytest tests/test_basic.py -v || echo "Basic tests failed but continuing"
-      
+
       - uses: actions/upload-artifact@v4
         with:
           name: sdist
@@ -372,13 +379,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: dist
           merge-multiple: true
-      
+
       - name: Generate Release Notes
         id: release_notes
         run: |
@@ -391,7 +398,7 @@ jobs:
           echo "$TEMPLATE" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
         shell: bash
-      
+
       # Update release notes
       - name: Update Release Notes
         uses: softprops/action-gh-release@v2
@@ -401,7 +408,7 @@ jobs:
           fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       # Publish to PyPI
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
