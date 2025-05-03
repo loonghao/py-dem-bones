@@ -1,6 +1,6 @@
 [run]
 branch = True
-source =
+source = py_dem_bones
 
 [report]
 exclude_lines =
@@ -8,6 +8,32 @@ exclude_lines =
     pragma: no cover
     raise NotImplementedError
     if __name__ == .__main__.:
+    pass
+    raise ImportError
+    except ImportError
+    raise ValueError
+    raise TypeError
+    raise RuntimeError
+    raise AttributeError
+    raise KeyError
+    raise IndexError
+    raise Exception
+    raise AssertionError
+    raise NotImplementedError
+    raise SystemExit
+    except Exception
+    except:
 ignore_errors = True
 omit =
     tests/*
+    */test_*
+    */setup.py
+    */conftest.py
+    */__init__.py
+    */extern/*
+
+[html]
+directory = htmlcov
+
+[xml]
+output = coverage.xml
