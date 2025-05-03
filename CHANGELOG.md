@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.7.0 (2025-05-03)
+
+### Feat
+
+- add ccache support to accelerate builds
+- add coverage function to nox_actions/codetest.py
+- add test coverage reporting
+- enhance test suite and CI configuration
+- remove Python 3.7 support and fix Windows build issues
+
+### Fix
+
+- improve cibuildwheel configuration based on OpenColorIO
+- improve Windows build configuration
+- simplify scikit-build configuration to fix parsing errors
+- **deps**: update dependency black to v25
+
 ## 0.6.7 (2025-05-03)
 
 ### Fix

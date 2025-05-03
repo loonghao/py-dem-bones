@@ -103,7 +103,7 @@ SKBUILD_SOABI = "OFF"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.6.7"
+version = "0.7.0"
 tag-format = "$version"
 update_changelog_on_bump = true
 change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "ci", "build", "docs", "test", "chore"]
