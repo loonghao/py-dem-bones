@@ -1,14 +1,17 @@
 cmake_minimum_required(VERSION 3.15...3.30)
 project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
 
-# Use scikit-build-core's FindPython support
-find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
+# Find Python
+find_package(Python COMPONENTS Interpreter Development)
 
 # Output Python version information
 message(STATUS "Found Python: ${Python_VERSION}")
 message(STATUS "  Python_EXECUTABLE: ${Python_EXECUTABLE}")
 message(STATUS "  Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
 message(STATUS "  Python_LIBRARIES: ${Python_LIBRARIES}")
+
+# Include Python headers
+include_directories(SYSTEM ${Python_INCLUDE_DIRS})
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 14)
@@ -209,49 +212,16 @@ if(Python_NumPy_FOUND)
 endif()
 
 # Add the pybind11 module
-pybind11_add_module(_py_dem_bones
+add_library(_py_dem_bones MODULE
     src/binding/py_dem_bones.cpp
     src/binding/py_dem_bones_ext.cpp
     src/binding/py_dem_bones_module.cpp
 )
 
-# Enable ABI3 compatibility mode, supporting Python 3.9+
-if(DEFINED PYTHON_LIMITED_API AND PYTHON_LIMITED_API)
-    # Set Python module properties, using abi3 tag
-    if(SKBUILD)
-        set_target_properties(_py_dem_bones PROPERTIES
-            SUFFIX ".abi3${PYTHON_MODULE_EXTENSION}"
-        )
-    endif()
-
-    # Special handling for macOS ARM64 platform
-    if(APPLE AND CMAKE_SYSTEM_PROCESSOR MATCHES "arm64")
-        message(STATUS "macOS ARM64 detected - disabling Python Limited API due to compatibility issues")
-
-        # Use PYBIND11_USE_STABLE_ABI instead of Py_LIMITED_API
-        target_compile_definitions(_py_dem_bones PRIVATE "PYBIND11_USE_STABLE_ABI=1")
-
-        # Set pybind11 internals version to avoid ABI compatibility issues
-        if(DEFINED PYBIND11_INTERNALS_VERSION)
-            target_compile_definitions(_py_dem_bones PRIVATE "PYBIND11_INTERNALS_VERSION=10.0.0")
-        endif()
-    else
-        # For other platforms, use Python Limited API normally
-        message(STATUS "Enabling Python Limited API (abi3) for Python 3.9+")
-
-        # Define Python Limited API macro
-        target_compile_definitions(_py_dem_bones PRIVATE "Py_LIMITED_API=0x03090000")
-
-        # Disable strict mode to allow access to more APIs
-        if(DEFINED PYBIND11_STRICT_PYTHON_LIMITED_API AND NOT PYBIND11_STRICT_PYTHON_LIMITED_API)
-            target_compile_definitions(_py_dem_bones PRIVATE "PYBIND11_STRICT_PYTHON_LIMITED_API=0")
-        endif()
-
-        # Set pybind11 internals version
-        if(DEFINED PYBIND11_INTERNALS_VERSION)
-            target_compile_definitions(_py_dem_bones PRIVATE "PYBIND11_INTERNALS_VERSION=10.0.0")
-        endif()
-    endif()
+# Set platform-specific module properties
+set_target_properties(_py_dem_bones PROPERTIES PREFIX "")
+if(WIN32)
+    set_target_properties(_py_dem_bones PROPERTIES SUFFIX ".pyd")
 endif()
 
 # Set target properties
@@ -259,6 +229,30 @@ set_target_properties(_py_dem_bones PROPERTIES
     OUTPUT_NAME "_py_dem_bones"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/py_dem_bones"
 )
+
+# Set position independent code
+if(UNIX)
+    set_property(TARGET _py_dem_bones PROPERTY POSITION_INDEPENDENT_CODE ON)
+endif()
+
+# Link against Python libraries on Windows only
+if(WIN32)
+    if(Python_LIBRARIES)
+        target_link_libraries(_py_dem_bones PRIVATE ${Python_LIBRARIES})
+    else()
+        message(WARNING "Python libraries not found, linking may fail on Windows")
+    endif()
+endif()
+
+# On macOS, use dynamic lookup to avoid linking against a specific Python library
+if(APPLE)
+    set_target_properties(_py_dem_bones PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
+
+# pybind11 recommends intentionally NOT linking against libpython on Linux and
+# macOS, to prevent segfaults when potentially working with multiple Python
+# installations. See note in:
+# https://pybind11.readthedocs.io/en/stable/compiling.html#building-manually
 
 # Windows-specific DLL handling
 if(WIN32)

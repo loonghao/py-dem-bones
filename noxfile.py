@@ -53,24 +53,7 @@ def coverage(session: nox.Session) -> None:
     coverage(session)
 
 
-@nox.session
-def test_abi3(session: nox.Session) -> None:
-    """Test ABI3 compatibility."""
-    # Install pytest
-    session.install("pytest")
 
-    # Check if we're running in a cibuildwheel environment
-    in_cibw = os.environ.get("CIBUILDWHEEL", "0") == "1"
-
-    if not in_cibw:
-        # If not in cibuildwheel, install package in development mode
-        session.install("-e", ".")
-
-    # Import the module to verify it loads correctly
-    session.run("python", "-c", "import py_dem_bones; print(f'Loaded py_dem_bones version {py_dem_bones.__version__}')")
-
-    # Run the ABI3 tests
-    session.run("pytest", "tests/test_abi3.py", "-v")
 
 
 @nox.session
@@ -170,6 +153,6 @@ nox.session(build.clean, name="clean")
 nox.session(build_test, name="build-test")
 nox.session(build_no_test, name="build-no-test")
 nox.session(coverage, name="coverage")
-nox.session(test_abi3, name="test-abi3")
+
 nox.session(init_submodules, name="init-submodules")
 nox.session(test_windows, name="test-windows")
