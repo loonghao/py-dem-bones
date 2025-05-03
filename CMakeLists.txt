@@ -216,15 +216,17 @@ pybind11_add_module(_py_dem_bones
 )
 
 # 启用 ABI3 兼容模式，支持 Python 3.9+
-target_compile_definitions(_py_dem_bones PRIVATE
-    Py_LIMITED_API=0x03090000  # Python 3.9 ABI
-)
-
-# 设置 Python 模块属性，使用 abi3 标签
-if(SKBUILD)
-    set_target_properties(_py_dem_bones PROPERTIES
-        SUFFIX ".abi3${PYTHON_MODULE_EXTENSION}"
+if(DEFINED PYTHON_LIMITED_API AND PYTHON_LIMITED_API)
+    target_compile_definitions(_py_dem_bones PRIVATE
+        Py_LIMITED_API=0x03090000  # Python 3.9 ABI
     )
+
+    # 设置 Python 模块属性，使用 abi3 标签
+    if(SKBUILD)
+        set_target_properties(_py_dem_bones PROPERTIES
+            SUFFIX ".abi3${PYTHON_MODULE_EXTENSION}"
+        )
+    endif()
 endif()
 
 # Set target properties
