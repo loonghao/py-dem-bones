@@ -171,10 +171,11 @@ void bind_dem_bones_ext(py::module& m, const std::string& type_suffix) {
             int nBones = self.nB;
             int nVerts = self.nV;
 
-            // If dimensions are invalid, return empty array with shape (0, 0)
+            // If dimensions are invalid, return empty array
             if (nBones <= 0 || nVerts <= 0) {
-                py::array_t<Scalar> result({0, 0});
-                return result;
+                // Create an empty array without using initializer list
+                std::vector<ssize_t> shape = {0, 0};
+                return py::array_t<Scalar>(shape);
             }
 
             // Create result array
@@ -215,10 +216,11 @@ void bind_dem_bones_ext(py::module& m, const std::string& type_suffix) {
             int nFrames = self.nF;
             int nBones = self.nB;
 
-            // If dimensions are invalid, return empty array with shape (0, 4, 4)
+            // If dimensions are invalid, return empty array
             if (nFrames <= 0 || nBones <= 0) {
-                py::array_t<Scalar> result({0, 4, 4});
-                return result;
+                // Create an empty array without using initializer list
+                std::vector<ssize_t> shape = {0, 4, 4};
+                return py::array_t<Scalar>(shape);
             }
 
             // Create result array for the first bone's transformations
