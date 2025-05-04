@@ -27,7 +27,7 @@ runs:
   using: "composite"
   steps:
     - name: Build wheels
-      uses: pypa/cibuildwheel@v2.23.1
+      uses: pypa/cibuildwheel@v2.23.3
       with:
         output-dir: ${{ inputs.output-dir }}
       env:
