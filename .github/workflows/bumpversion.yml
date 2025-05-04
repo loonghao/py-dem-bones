@@ -4,15 +4,36 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/*.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - 'LICENSE*'
+      - '.readthedocs.yml'
+      - 'CITATION.cff'
+      - 'CODE_OF_CONDUCT.md'
+      - 'CONTRIBUTING.md'
+      - '**.rst'
+      - '.hound.yml'
+      - '.gitignore'
+      - '.gitmodules'
+      - '.coveragerc'
+      - 'codecov.yml'
+      - '.flake8'
+      - '.pylintrc'
+      - 'renovate.json'
 
 jobs:
   bump-version:
-    if: "!startsWith(github.event.head_commit.message, 'bump:')"
+    if: "!startsWith(github.event.head_commit.message, 'bump:') && !startsWith(github.event.head_commit.message, 'chore(release)')"
     runs-on: ubuntu-latest
     name: "Bump version and create changelog with commitizen"
+    permissions:
+      contents: write
     steps:
       - name: Check out
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: '${{ secrets.PERSONAL_ACCESS_TOKEN }}'
@@ -25,11 +46,26 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install commitizen
+          python -m pip install commitizen setuptools_scm
 
       - name: Create bump and changelog
+        id: bump
         run: |
+          # Get current version before bump
+          CURRENT_VERSION=$(cz version --project)
+          echo "Current version: $CURRENT_VERSION"
+
+          # Bump version
           cz bump --yes
+
+          # Get new version after bump
+          NEW_VERSION=$(cz version --project)
+          echo "New version: $NEW_VERSION"
+
+          # Set output for later steps
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+          # Push changes
           git push
           git push --tags
         env:
@@ -37,3 +73,17 @@ jobs:
           GIT_COMMITTER_EMAIL: "actions@github.com"
           GIT_AUTHOR_NAME: "GitHub Actions"
           GIT_AUTHOR_EMAIL: "actions@github.com"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.bump.outputs.new_version }}
+          name: "Release ${{ steps.bump.outputs.new_version }}"
+          body: |
+            Automated release by GitHub Actions
+
+            See [CHANGELOG.md](https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md) for details.
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

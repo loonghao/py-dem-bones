@@ -114,8 +114,14 @@ jobs:
       - name: Build SDist
         run: |
           python -m pip install build numpy pybind11 scikit-build-core cmake setuptools_scm
-          # Ensure consistent version handling
-          export SETUPTOOLS_SCM_PRETEND_VERSION="0.8.0"
+          # Get version from tag if available
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+            echo "Building with version from tag: $VERSION"
+            export SETUPTOOLS_SCM_PRETEND_VERSION="$VERSION"
+          else
+            echo "No tag found, using fallback version"
+          fi
           python -m build --sdist
 
       - name: Test SDist
@@ -186,6 +192,9 @@ jobs:
           python: ${{ matrix.python }}
           config-file: ${{ env.CIBW_CONFIG_FILE }}
           build-verbosity: ${{ env.CIBW_BUILD_VERBOSITY }}
+        env:
+          # Get version from tag if available
+          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
 
       # Upload wheels
       - uses: ./.github/actions/upload-wheels
@@ -248,6 +257,9 @@ jobs:
           python: ${{ matrix.python }}
           config-file: ${{ env.CIBW_CONFIG_FILE }}
           build-verbosity: ${{ env.CIBW_BUILD_VERBOSITY }}
+        env:
+          # Get version from tag if available
+          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
 
       # Upload wheels
       - uses: ./.github/actions/upload-wheels
@@ -310,6 +322,9 @@ jobs:
           python: ${{ matrix.python }}
           config-file: ${{ env.CIBW_CONFIG_FILE }}
           build-verbosity: ${{ env.CIBW_BUILD_VERBOSITY }}
+        env:
+          # Get version from tag if available
+          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
 
       # Upload wheels
       - uses: ./.github/actions/upload-wheels
@@ -371,6 +386,9 @@ jobs:
           python: ${{ matrix.python }}
           config-file: ${{ env.CIBW_CONFIG_FILE }}
           build-verbosity: ${{ env.CIBW_BUILD_VERBOSITY }}
+        env:
+          # Get version from tag if available
+          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
 
       # Upload wheels
       - uses: ./.github/actions/upload-wheels
