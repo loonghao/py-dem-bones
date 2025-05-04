@@ -100,12 +100,9 @@ tag_regex = "^(?P<version>[0-9]+\\.[0-9]+\\.[0-9]+)(?P<dev>-[a-zA-Z0-9]+)?$"
 tag_format = "{version}"
 local_scheme = "no-local-version"
 fallback_version = "0.7.0"
+version_file = "src/py_dem_bones/__version__.py"
 
 generate = [
-    { path = "src/py_dem_bones/__version__.py", location = "source", template = """\"\"\"Version information.\"\"\"
-
-__version__ = \"${version}\"
-""" },
     { path = "docs/conf.py", location = "source", "template-match" = "release = '.*'", "template-replace" = "release = '${version}'" },
     { path = "docs/conf.py", location = "source", "template-match" = "version = '.*'", "template-replace" = "version = '${version}'" },
     { path = ".github/CITATION.cff", location = "source", "template-match" = "version: .*", "template-replace" = "version: ${version}" }
