@@ -491,6 +491,13 @@ class DemBonesWrapper:
             num_vertices = vertices.shape[1]
             poses = np.zeros((3, num_vertices, num_targets))
 
+        # Check if poses has the expected shape (3D array)
+        if len(poses.shape) < 3:
+            # If poses is not a 3D array, create a new one
+            num_targets = max(self._dem_bones.nS, target_idx + 1)
+            num_vertices = vertices.shape[1]
+            poses = np.zeros((3, num_vertices, num_targets))
+
         # Ensure poses array is large enough
         if target_idx >= poses.shape[2]:
             new_poses = np.zeros((3, poses.shape[1], target_idx + 1))
@@ -634,10 +641,6 @@ class DemBonesWrapper:
         if self.num_vertices <= 0:
             raise ParameterError("Number of vertices must be set and positive")
 
-        # Check number of bones
-        if self.num_bones <= 0:
-            raise ParameterError("Number of bones must be set and positive")
-
         # Check rest pose
         rest_pose = self._dem_bones.get_rest_pose()
         if rest_pose.size == 0:
@@ -649,6 +652,10 @@ class DemBonesWrapper:
             raise ParameterError(
                 "At least one target pose must be set before computation. Use set_target_vertices() to add target poses."
             )
+
+        # Check number of bones
+        if self.num_bones <= 0:
+            raise ParameterError("Number of bones must be set and positive")
 
     def clear(self):
         """Clear all data and reset the computation."""
