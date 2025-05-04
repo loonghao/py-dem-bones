@@ -1,9 +1,12 @@
 # -- Import mock modules for examples -----------------------------------------
 import os
 import sys
+import re
+from pathlib import Path
 
 # Add project root directory to Python path for module imports
 sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
 
 # Set template directory
 templates_path = ['_templates']
@@ -11,17 +14,52 @@ templates_path = ['_templates']
 # Set static files directory
 html_static_path = ['_static']
 
+# Function to get version from __version__.py
+def get_version():
+    """Get version from __version__.py or setuptools_scm."""
+    # Try to get version from installed package
+    try:
+        from py_dem_bones import __version__
+        return __version__
+    except ImportError:
+        pass
+
+    # Try to get version from __version__.py file
+    version_file = Path(__file__).parent.parent / "src" / "py_dem_bones" / "__version__.py"
+    if version_file.exists():
+        version_regex = r"__version__\s*=\s*['\"]([^'\"]*)['\"]"
+        with open(version_file, "r", encoding="utf-8") as f:
+            content = f.read()
+            match = re.search(version_regex, content)
+            if match:
+                return match.group(1)
+
+    # Try to get version from pyproject.toml
+    try:
+        import tomli
+        pyproject_file = Path(__file__).parent.parent / "pyproject.toml"
+        if pyproject_file.exists():
+            with open(pyproject_file, "rb") as f:
+                pyproject = tomli.load(f)
+                return pyproject.get("tool", {}).get("setuptools_scm", {}).get("fallback_version", "0.8.0")
+    except ImportError:
+        pass
+
+    # Default version if all else fails
+    return "0.8.0"
+
 # Import mock modules for handling imports in examples
 try:
     import py_dem_bones
+    has_py_dem_bones = True
 except ImportError:
     # If unable to import actual modules, use mock modules
-    import sys
+    has_py_dem_bones = False
     from unittest.mock import MagicMock
 
     class MockDemBones:
         """Mock DemBones class for documentation."""
-        
+
         def __init__(self):
             """Initialize DemBones."""
             self.nIters = 20
@@ -33,16 +71,16 @@ except ImportError:
             self.nV = 0
             self.nB = 0
             self.nF = 0
-    
+
     class MockModule(MagicMock):
         """Mock module for sphinx-gallery."""
-        
+
         @classmethod
         def __getattr__(cls, name):
             if name == "DemBones":
                 return MockDemBones
             return MagicMock()
-    
+
     # Add mock modules
     MOCK_MODULES = ['py_dem_bones', 'py_dem_bones._py_dem_bones']
     for mod_name in MOCK_MODULES:
@@ -53,11 +91,15 @@ project = 'py-dem-bones'
 copyright = '2024, Long Hao'
 author = 'Long Hao'
 
-# The full version, including alpha/beta/rc tags
-release = '0.6.5'
+# Get version from __version__.py
+version_str = get_version()
 
-# Major version
-version = '0.6.5'
+# The full version, including alpha/beta/rc tags
+release = version_str
+
+# Major version (first two components of version)
+version_parts = version_str.split('.')
+version = '.'.join(version_parts[:2]) if len(version_parts) >= 2 else version_str
 
 # -- General configuration ---------------------------------------------------
 extensions = [
@@ -80,9 +122,9 @@ if google_analytics_id:
 
 # List of modules to mock import, to avoid import errors
 autodoc_mock_imports = [
-    'numpy', 
-    'pandas', 
-    'matplotlib', 
+    'numpy',
+    'pandas',
+    'matplotlib',
     'scipy',
     'cv2',
     'PIL',
@@ -167,7 +209,7 @@ html_static_path = ["_static"]
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
 html_sidebars = {
-    "**": ["sidebar/brand.html", "sidebar/search.html", "sidebar/scroll-start.html", 
+    "**": ["sidebar/brand.html", "sidebar/search.html", "sidebar/scroll-start.html",
            "sidebar/navigation.html", "sidebar/scroll-end.html"],
 }
 
@@ -240,8 +282,24 @@ stubs_dir = os.path.join(os.path.abspath('..'), 'src', 'py_dem_bones-stubs')
 if os.path.exists(stubs_dir):
     sys.path.insert(0, stubs_dir)
 
-# Try to import module, if failed, it won't affect documentation building
+# Print version information
+print(f"Building documentation for py-dem-bones version: {release}")
+
+# Install tomli if needed for version detection
 try:
-    import py_dem_bones
+    import tomli
+    # Use tomli to verify it's imported correctly
+    tomli_version = getattr(tomli, '__version__', 'unknown')
+    print(f"Using tomli version: {tomli_version}")
 except ImportError:
+    try:
+        import pip
+        pip.main(['install', 'tomli'])
+        import tomli
+        print(f"Installed tomli version: {getattr(tomli, '__version__', 'unknown')}")
+    except Exception as e:
+        print(f"Warning: Failed to install tomli: {e}")
+
+# Check if module is available
+if not has_py_dem_bones:
     print("Warning: Failed to import py_dem_bones module. API documentation may be incomplete.")

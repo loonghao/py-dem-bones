@@ -61,6 +61,7 @@ docs = [
     "matplotlib>=3.5.0",
     "myst-sphinx-gallery>=0.3.0",
     "myst-nb>=1.0.0",
+    "tomli>=2.0.0",
 ]
 docs-linux = [
     "cairosvg>=2.7.0",
@@ -165,7 +166,8 @@ update_changelog_on_bump = true
 change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "ci", "build", "docs", "test", "chore"]
 version_files = [
     "pyproject.toml:fallback_version",
-    "src/py_dem_bones/__version__.py:__version__"
+    "src/py_dem_bones/__version__.py:__version__",
+    "docs/conf.py:version_str = "
 ]
 # Version bump rules
 major_version_zero = true  # Treat breaking changes as minor releases when major version is 0
