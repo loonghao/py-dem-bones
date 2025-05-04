@@ -412,9 +412,13 @@ jobs:
           python -m pip install wheelhouse/*.whl
           python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
 
-      - name: Run tests
+      - name: Install nox
         run: |
-          python -m pytest tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v
+          python -m pip install nox
+
+      - name: Run tests with nox
+        run: |
+          python -m nox -s pytest_skip_install
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
@@ -477,10 +481,15 @@ jobs:
           python -m pip install (Get-ChildItem -Path ./wheelhouse/*.whl).FullName
           python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
 
-      - name: Run tests
+      - name: Install nox
         shell: pwsh
         run: |
-          python -m pytest tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v
+          python -m pip install nox
+
+      - name: Run tests with nox
+        shell: pwsh
+        run: |
+          python -m nox -s pytest_skip_install
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
@@ -541,9 +550,13 @@ jobs:
           python -m pip install wheelhouse/*.whl
           python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
 
-      - name: Run tests
+      - name: Install nox
         run: |
-          python -m pytest tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v
+          python -m pip install nox
+
+      - name: Run tests with nox
+        run: |
+          python -m nox -s pytest_skip_install
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
@@ -602,9 +615,13 @@ jobs:
           python -m pip install wheelhouse/*.whl
           python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
 
-      - name: Run tests
+      - name: Install nox
         run: |
-          python -m pytest tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v
+          python -m pip install nox
+
+      - name: Run tests with nox
+        run: |
+          python -m nox -s pytest_skip_install
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
