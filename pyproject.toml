@@ -10,7 +10,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "py-dem-bones"
-version = "0.6.5"
+dynamic = ["version"]
 description = "Python bindings for the Dem Bones library"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -89,6 +89,21 @@ wheel.expand-macos-universal-tags = true
 sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICENSE.md", "README.md", "extern/dem-bones/*", "extern/eigen/*"]
 sdist.exclude = ["tests/data/*"]
 
+[tool.scikit-build.metadata.version]
+provider = "git"
+# Use git tags for versioning
+use-release = true
+# Format: v1.2.3 or 1.2.3
+tag-regex = "^v?(?P<version>[0-9]+\\.[0-9]+\\.[0-9]+)(?P<dev>-[a-zA-Z0-9]+)?$"
+# Write version to __version__.py
+write-to = "src/py_dem_bones/__version__.py:__version__"
+# Also update docs/conf.py
+write-to-files = [
+    "docs/conf.py:release = ",
+    "docs/conf.py:version = ",
+    ".github/CITATION.cff:version: "
+]
+
 [tool.scikit-build.cmake]
 version = ">=3.15"
 build-type = "Release"
@@ -103,17 +118,11 @@ SKBUILD_SOABI = "OFF"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.7.0"
-tag-format = "$version"
+version_provider = "scm"
+tag-format = "v$version"
 update_changelog_on_bump = true
 change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "ci", "build", "docs", "test", "chore"]
-version-files = [
-    "pyproject.toml:version",
-    "src/py_dem_bones/__version__.py:__version__",
-    "docs/conf.py:release",
-    "docs/conf.py:version",
-    ".github/CITATION.cff:version",
-]
+# Version files are now managed by scikit-build-core
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
