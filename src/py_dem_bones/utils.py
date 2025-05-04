@@ -36,7 +36,9 @@ def numpy_to_eigen(array: np.ndarray) -> np.ndarray:
     return array
 
 
-def eigen_to_numpy(array: np.ndarray, shape: Optional[Tuple[int, ...]] = None) -> np.ndarray:
+def eigen_to_numpy(
+    array: np.ndarray, shape: Optional[Tuple[int, ...]] = None
+) -> np.ndarray:
     """
     Convert an Eigen matrix to a numpy array.
 
@@ -52,7 +54,9 @@ def eigen_to_numpy(array: np.ndarray, shape: Optional[Tuple[int, ...]] = None) -
     return array
 
 
-def validate_matrix_shape(matrix: np.ndarray, expected_shape: Tuple[int, ...], name: str = "matrix") -> None:
+def validate_matrix_shape(
+    matrix: np.ndarray, expected_shape: Tuple[int, ...], name: str = "matrix"
+) -> None:
     """
     Validate that a matrix has the expected shape.
 
@@ -83,7 +87,9 @@ def validate_bone_index(index: int, max_bones: int) -> None:
         raise IndexError(f"Bone index {index} out of range (0 to {max_bones-1})")
 
 
-def create_transformation_matrix(rotation: np.ndarray, translation: np.ndarray) -> np.ndarray:
+def create_transformation_matrix(
+    rotation: np.ndarray, translation: np.ndarray
+) -> np.ndarray:
     """
     Create a 4x4 transformation matrix from a rotation matrix and translation vector.
 
@@ -106,7 +112,9 @@ def create_transformation_matrix(rotation: np.ndarray, translation: np.ndarray) 
     return transform
 
 
-def extract_rotation_translation(transform: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+def extract_rotation_translation(
+    transform: np.ndarray,
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Extract rotation matrix and translation vector from a 4x4 transformation matrix.
 

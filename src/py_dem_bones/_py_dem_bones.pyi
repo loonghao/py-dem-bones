@@ -1,6 +1,7 @@
 """
 Python bindings for the Dem Bones library
 """
+
 from __future__ import annotations
 import numpy
 
