@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.8.1 (2025-05-04)
+
+### Feat
+
+- improve Windows build support with cibuildwheel
+- optimize py_dem_bones code with enhanced functionality
+
+### Fix
+
+- Fix target_vertices_operations test by improving set_target_name method
+- Fix remaining unit test failures
+- Improve ccache configuration for better CI performance
+- Fix three failing unit tests
+- prevent segmentation faults in get_weights
+- prevent segmentation faults in get_weights
+- resolve test failures
+- resolve build and test issues
+- add ssize_t definition for Windows compatibility
+- resolve isort linting issues and CMake warnings
+- use std::vector<ssize_t> for array shape to avoid ambiguity
+- ensure empty arrays have correct shape to avoid segfault
+- resolve ambiguous array_t constructor calls in binding code
+- add version file generation to pyproject.toml
+- correct setuptools_scm provider in pyproject.toml
+- correct setuptools_scm provider in pyproject.toml
+- enable experimental features in scikit-build-core
+- replace bare except with specific exception handling
+- ensure consistent version handling with setuptools_scm
+
 ## 0.8.0 (2025-05-04)
 
 ### Feat
