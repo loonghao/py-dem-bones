@@ -3,6 +3,18 @@ build-verbosity = 3
 test-requires = ["pytest", "pytest-cov", "numpy>=1.20.0"]
 test-command = "pytest {project}/tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v"
 
+# Common configuration for all platforms
+environment-pass = [
+    # Pass through ccache environment variables
+    "CCACHE_DIR",
+    "CCACHE_MAXSIZE",
+    "CCACHE_SLOPPINESS",
+    "CCACHE_COMPRESS",
+    "CCACHE_COMPILERCHECK",
+    "CCACHE_NOHASHDIR",
+    "CCACHE_BASEDIR"
+]
+
 # Windows-specific configuration
 [windows]
 # Use Ninja generator to speed up builds
@@ -16,19 +28,30 @@ environment = {
     CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON",
     # Disable loading DLLs from PATH to avoid conflicts
     PYDEMB_PYTHON_LOAD_DLLS_FROM_PATH = "0",
-    # Enable ccache
-    CCACHE_MAXSIZE = "1G",
-    CCACHE_SLOPPINESS = "pch_defines,time_macros",
-    CCACHE_COMPRESS = "1"
+    # Enable ccache with optimized settings
+    CCACHE_MAXSIZE = "5G",
+    CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime",
+    CCACHE_COMPRESS = "1",
+    CCACHE_COMPILERCHECK = "content",
+    CCACHE_NOHASHDIR = "1",
+    # Use parallel compilation
+    CMAKE_BUILD_PARALLEL_LEVEL = "4"
 }
 # Install Ninja, ccache and other tools
 before-all = [
     "pip install ninja delvewheel wheel",
-    "choco install -y ccache"
+    "choco install -y ccache",
+    "ccache --version",
+    "ccache -p",  # Print ccache configuration
+    "ccache -z"   # Zero statistics
 ]
 # Avoid updating pip itself, which can cause errors
 before-build = [
-    "pip install setuptools wheel numpy pybind11 scikit-build-core setuptools_scm cmake"
+    "pip install setuptools wheel numpy pybind11 scikit-build-core setuptools_scm cmake",
+    "ccache -s"   # Print ccache statistics before build
+]
+after-build = [
+    "ccache -s"   # Print ccache statistics after build
 ]
 # Use delvewheel to repair wheel packages
 repair-wheel-command = "delvewheel repair -w {dest_dir} {wheel}"
@@ -39,33 +62,54 @@ environment = {
     LANG = "C.UTF-8",
     LC_ALL = "C.UTF-8",
     PYTHONIOENCODING = "UTF-8",
-    # Enable ccache
-    CCACHE_MAXSIZE = "1G",
-    CCACHE_SLOPPINESS = "pch_defines,time_macros",
-    CCACHE_COMPRESS = "1"
+    # Enable ccache with optimized settings
+    CCACHE_MAXSIZE = "5G",
+    CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime",
+    CCACHE_COMPRESS = "1",
+    CCACHE_COMPILERCHECK = "content",
+    CCACHE_NOHASHDIR = "1",
+    # Use parallel compilation
+    CMAKE_BUILD_PARALLEL_LEVEL = "4"
 }
 before-all = [
-    "yum install -y ccache || apt-get update && apt-get install -y ccache || true"
+    "yum install -y ccache || apt-get update && apt-get install -y ccache || true",
+    "ccache --version || echo 'ccache not found'",
+    "ccache -p || echo 'ccache not configured'",  # Print ccache configuration
+    "ccache -z || echo 'ccache zero failed'"      # Zero statistics
 ]
 before-build = [
-    "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core setuptools_scm cmake"
+    "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core setuptools_scm cmake",
+    "ccache -s || echo 'ccache stats failed'"     # Print ccache statistics before build
+]
+after-build = [
+    "ccache -s || echo 'ccache stats failed'"     # Print ccache statistics after build
 ]
 repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
 
 # macOS-specific configuration
 [macos]
 environment = {
-    MAKEFLAGS = "-j4",
-    # Enable ccache
-    CCACHE_MAXSIZE = "1G",
-    CCACHE_SLOPPINESS = "pch_defines,time_macros",
+    # Enable ccache with optimized settings
+    CCACHE_MAXSIZE = "5G",
+    CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime",
     CCACHE_COMPRESS = "1",
-    CCACHE_CPP2 = "yes"
+    CCACHE_CPP2 = "yes",
+    CCACHE_COMPILERCHECK = "content",
+    CCACHE_NOHASHDIR = "1",
+    # Use parallel compilation
+    CMAKE_BUILD_PARALLEL_LEVEL = "4"
 }
 before-all = [
-    "brew install ccache || true"
+    "brew install ccache || true",
+    "ccache --version",
+    "ccache -p",  # Print ccache configuration
+    "ccache -z"   # Zero statistics
 ]
 before-build = [
-    "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core setuptools_scm cmake"
+    "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core setuptools_scm cmake",
+    "ccache -s"   # Print ccache statistics before build
+]
+after-build = [
+    "ccache -s"   # Print ccache statistics after build
 ]
 repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
