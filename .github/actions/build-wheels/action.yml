@@ -33,23 +33,25 @@ runs:
       env:
         # Platform-specific settings
         CIBW_BUILD: >-
-          ${{ inputs.python }}-${{ 
-            inputs.platform == 'linux' && 'manylinux*' || 
-            inputs.platform == 'windows' && 'win*' || 
-            inputs.platform == 'macos-intel' && 'macosx_x86_64' || 
-            inputs.platform == 'macos-arm' && 'macosx_arm64' 
+          ${{ inputs.python }}-${{
+            inputs.platform == 'linux' && 'manylinux*' ||
+            inputs.platform == 'windows' && 'win*' ||
+            inputs.platform == 'macos-intel' && 'macosx_x86_64' ||
+            inputs.platform == 'macos-arm' && 'macosx_arm64'
           }}
         # Skip PyPy and other platforms
         CIBW_SKIP: >-
-          pp* ${{ 
-            inputs.platform == 'linux' && '*-musllinux* *-manylinux_i686' || 
-            inputs.platform == 'windows' && '*-win32' || 
-            '' 
+          pp* ${{
+            inputs.platform == 'linux' && '*-musllinux* *-manylinux_i686' ||
+            inputs.platform == 'windows' && '*-win32' ||
+            ''
           }}
         # Use config file for most settings
         CIBW_CONFIG_FILE: ${{ inputs.config-file }}
         # Set build verbosity
         CIBW_BUILD_VERBOSITY: ${{ inputs.build-verbosity }}
+        # Ensure consistent version handling
+        SETUPTOOLS_SCM_PRETEND_VERSION: "0.8.0"
         # Windows: install Ninja and delvewheel
         CIBW_BEFORE_ALL_WINDOWS: >-
           ${{ inputs.platform == 'windows' && 'pip install delvewheel && choco install -y ninja && dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise" || dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community" || dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise" || dir "C:\Program Files\Microsoft Visual Studio\2022\Community"' || '' }}

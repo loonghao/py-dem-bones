@@ -12,8 +12,16 @@ environment-pass = [
     "CCACHE_COMPRESS",
     "CCACHE_COMPILERCHECK",
     "CCACHE_NOHASHDIR",
-    "CCACHE_BASEDIR"
+    "CCACHE_BASEDIR",
+    # Pass through version control variables
+    "SETUPTOOLS_SCM_PRETEND_VERSION"
 ]
+
+# Common environment variables for all platforms
+environment = {
+    # Ensure consistent version handling
+    SETUPTOOLS_SCM_PRETEND_VERSION = "0.8.0"
+}
 
 # Windows-specific configuration
 [windows]
@@ -35,7 +43,9 @@ environment = {
     CCACHE_COMPILERCHECK = "content",
     CCACHE_NOHASHDIR = "1",
     # Use parallel compilation
-    CMAKE_BUILD_PARALLEL_LEVEL = "4"
+    CMAKE_BUILD_PARALLEL_LEVEL = "4",
+    # Ensure consistent version handling (same as global)
+    SETUPTOOLS_SCM_PRETEND_VERSION = "0.8.0"
 }
 # Install Ninja, ccache and other tools
 before-all = [
@@ -69,7 +79,9 @@ environment = {
     CCACHE_COMPILERCHECK = "content",
     CCACHE_NOHASHDIR = "1",
     # Use parallel compilation
-    CMAKE_BUILD_PARALLEL_LEVEL = "4"
+    CMAKE_BUILD_PARALLEL_LEVEL = "4",
+    # Ensure consistent version handling (same as global)
+    SETUPTOOLS_SCM_PRETEND_VERSION = "0.8.0"
 }
 before-all = [
     "yum install -y ccache || apt-get update && apt-get install -y ccache || true",
@@ -97,7 +109,9 @@ environment = {
     CCACHE_COMPILERCHECK = "content",
     CCACHE_NOHASHDIR = "1",
     # Use parallel compilation
-    CMAKE_BUILD_PARALLEL_LEVEL = "4"
+    CMAKE_BUILD_PARALLEL_LEVEL = "4",
+    # Ensure consistent version handling (same as global)
+    SETUPTOOLS_SCM_PRETEND_VERSION = "0.8.0"
 }
 before-all = [
     "brew install ccache || true",
