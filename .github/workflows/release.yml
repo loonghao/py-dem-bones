@@ -84,14 +84,30 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Linux builds
+          # Linux builds - manylinux2014 (CY2022-CY2023)
           - os: ubuntu-latest
+            platform: manylinux2014
+            python-versions: "cp38-* cp39-* cp310-* cp311-* cp312-*"
+
+          # Linux builds - manylinux_2_28 (CY2024)
+          - os: ubuntu-latest
+            platform: manylinux_2_28
+            python-versions: "cp38-* cp39-* cp310-* cp311-* cp312-*"
+
           # Windows builds
-          - os: windows-latest
-          # macOS builds - Intel
+          - os: windows-2022
+            platform: windows
+            python-versions: "cp38-* cp39-* cp310-* cp311-* cp312-*"
+
+          # macOS builds - Intel (x86_64)
           - os: macos-13
-          # macOS builds - Apple Silicon
+            platform: macos-intel
+            python-versions: "cp38-* cp39-* cp310-* cp311-* cp312-*"
+
+          # macOS builds - Apple Silicon (arm64)
           - os: macos-14
+            platform: macos-arm
+            python-versions: "cp38-* cp39-* cp310-* cp311-* cp312-*"
 
     steps:
       - uses: actions/checkout@v4
@@ -121,14 +137,16 @@ jobs:
         with:
           output-dir: wheelhouse
         env:
-          # Build for Python 3.8+ only
-          CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-*"
+          # Build for Python versions specified in matrix
+          CIBW_BUILD: ${{ matrix.python-versions }}
           # Skip PyPy, musllinux, win32, and manylinux_i686
           CIBW_SKIP: "pp* *-musllinux* *-win32 *-manylinux_i686"
           # Use config file for most settings
           CIBW_CONFIG_FILE: "{package}/.cibuildwheel.toml"
           # Set build verbosity
           CIBW_BUILD_VERBOSITY: 3
+          # Set manylinux image for Linux builds
+          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.platform == 'manylinux2014' && 'manylinux2014' || matrix.platform == 'manylinux_2_28' && 'manylinux_2_28' || '' }}
           # Windows: install Ninja and delvewheel
           CIBW_BEFORE_ALL_WINDOWS: >
             pip install delvewheel &&
@@ -141,7 +159,7 @@ jobs:
       # Upload wheels
       - uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ matrix.os }}
+          name: wheels-${{ matrix.platform }}-${{ matrix.os }}
           path: ./wheelhouse/*.whl
           if-no-files-found: error
 
@@ -155,8 +173,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-13, macos-14]
-        python-version: ['3.8', '3.10', '3.12']
+        os: [ubuntu-latest, windows-2022, macos-13, macos-14]
+        python-version: ['3.8', '3.10', '3.11', '3.12']
         exclude:
           - os: macos-14
             python-version: '3.8'
@@ -175,8 +193,9 @@ jobs:
       - name: Download wheel artifacts
         uses: actions/download-artifact@v4
         with:
-          name: wheels-${{ matrix.os }}
+          pattern: wheels-*-${{ matrix.os }}
           path: ./wheelhouse
+          merge-multiple: true
 
       - name: Install nox
         run: |
@@ -201,11 +220,11 @@ jobs:
     name: Test Windows compatibility
     needs: [build-wheels]
     if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'release' || github.event_name == 'workflow_dispatch' }}
-    runs-on: windows-latest
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.8', '3.11']
+        python-version: ['3.8', '3.10', '3.11', '3.12']
 
     steps:
       - uses: actions/checkout@v4
@@ -261,8 +280,9 @@ jobs:
       - name: Download wheel artifacts
         uses: actions/download-artifact@v4
         with:
-          name: wheels-windows-latest
+          pattern: wheels-windows-*
           path: dist
+          merge-multiple: true
 
       - name: List available wheels
         shell: pwsh
@@ -335,7 +355,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: '3.11'
           cache: 'pip'
           cache-dependency-path: |
             **/pyproject.toml
@@ -402,12 +422,22 @@ jobs:
         id: release_notes
         run: |
           VERSION=${GITHUB_REF#refs/tags/}
-          CHANGES=$(grep -A 100 "## $VERSION" CHANGELOG.md | grep -B 100 -m 2 "^## " | grep -v "^## $VERSION" | grep -v "^## " | sed '/^$/d')
-          TEMPLATE=$(cat .github/release-template.md)
-          TEMPLATE="${TEMPLATE//\$RELEASE_VERSION/$VERSION}"
-          TEMPLATE="${TEMPLATE//\$CHANGES/$CHANGES}"
+          if grep -q "## $VERSION" CHANGELOG.md; then
+            CHANGES=$(grep -A 100 "## $VERSION" CHANGELOG.md | grep -B 100 -m 2 "^## " | grep -v "^## $VERSION" | grep -v "^## " | sed '/^$/d')
+          else
+            CHANGES="No specific changes listed for this version in CHANGELOG.md"
+          fi
+
+          if [ -f .github/release-template.md ]; then
+            TEMPLATE=$(cat .github/release-template.md)
+            TEMPLATE="${TEMPLATE//\$RELEASE_VERSION/$VERSION}"
+            TEMPLATE="${TEMPLATE//\$CHANGES/$CHANGES}"
+          else
+            TEMPLATE="# Release $VERSION\n\n$CHANGES"
+          fi
+
           echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
-          echo "$TEMPLATE" >> $GITHUB_ENV
+          echo -e "$TEMPLATE" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
         shell: bash
 
@@ -415,7 +445,7 @@ jobs:
       - name: Update Release Notes
         uses: softprops/action-gh-release@v2
         with:
-          body: ${{ env.RELEASE_NOTES }}
+          body: ${{ env.RELEASE_NOTES || format('Release {0}', github.ref_name) }}
           files: dist/*
           fail_on_unmatched_files: true
         env:
