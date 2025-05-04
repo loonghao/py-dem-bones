@@ -46,7 +46,7 @@ environment = {
     CCACHE_COMPRESS = "1"
 }
 before-all = [
-    "yum install -y ccache || apt-get update && apt-get install -y ccache || true"
+    "yum install -y ccache python3-devel || apt-get update && apt-get install -y ccache python3-dev || true"
 ]
 before-build = [
     "pip install -U pip setuptools wheel numpy pybind11 cmake ninja",

@@ -17,7 +17,7 @@ else()
     endif()
 endif()
 
-# Use scikit-build-core's FindPython support
+# Find Python with development components
 find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 
 # Output Python version information
@@ -25,6 +25,9 @@ message(STATUS "Found Python: ${Python_VERSION}")
 message(STATUS "  Python_EXECUTABLE: ${Python_EXECUTABLE}")
 message(STATUS "  Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
 message(STATUS "  Python_LIBRARIES: ${Python_LIBRARIES}")
+
+# Add Python include directories
+include_directories(${Python_INCLUDE_DIRS})
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 14)

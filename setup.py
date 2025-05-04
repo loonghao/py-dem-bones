@@ -84,6 +84,24 @@ class CMakeBuild(build_ext):
         debug = int(os.environ.get("DEBUG", 0)) if self.debug is None else self.debug
         cfg = "Debug" if debug else "Release"
 
+        # Special handling for cibuildwheel environment
+        python_include = None
+        if os.environ.get("CIBUILDWHEEL", "0") == "1":
+            # Try to find Python.h in standard locations for cibuildwheel
+            possible_include_dirs = [
+                os.path.join(os.path.dirname(sys.executable), "include"),
+                os.path.join(os.path.dirname(os.path.dirname(sys.executable)), "include"),
+                "/opt/python/{}/include/python{}".format(
+                    os.path.basename(os.path.dirname(sys.executable)),
+                    ".".join(map(str, sys.version_info[:2]))
+                ),
+            ]
+            for dir in possible_include_dirs:
+                if os.path.exists(os.path.join(dir, "Python.h")):
+                    python_include = dir
+                    print(f"Found Python.h in: {python_include}")
+                    break
+
         # CMake lets you override the generator - we need to check this.
         # Can be set with Conda-Build, for example.
         cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
@@ -99,6 +117,9 @@ class CMakeBuild(build_ext):
             "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
             # Enable FetchContent for downloading dependencies
             "-DFETCHCONTENT_QUIET=OFF",
+            # Ensure Python development headers are found
+            "-DPython_FIND_FRAMEWORK=LAST",
+            "-DPython_FIND_VIRTUALENV=FIRST",
         ]
 
         build_args = []
@@ -107,6 +128,10 @@ class CMakeBuild(build_ext):
         # (needed e.g. to build for ARM OSx on conda-forge)
         if "CMAKE_ARGS" in os.environ:
             cmake_args += [item for item in os.environ["CMAKE_ARGS"].split(" ") if item]
+
+        # Add Python include directory if found
+        if python_include:
+            cmake_args.append(f"-DPython_INCLUDE_DIRS={python_include}")
 
         if self.compiler.compiler_type != "msvc":
             # Using Ninja-build since it a) is available as a wheel and b)
