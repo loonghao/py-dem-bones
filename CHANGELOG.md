@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.8.0 (2025-05-04)
+
+### Feat
+
+- optimize GitHub Actions workflow with reusable components
+- implement parallel build-and-test workflow
+- use nox pytest_skip_install session for all tests
+- implement parallel testing for each build
+- optimize cibuildwheel build process with parallel jobs
+
+### Fix
+
+- update __dem_bones_version__ to match official version 1.2.1
+- add __dem_bones_version__ to C++ module and update imports
+- add hardcoded __dem_bones_version__ to version file
+- add __dem_bones_version__ to version file
+- update setuptools_scm configuration to fix build errors
+- remove unsupported tag_format parameter from setuptools_scm config
+- use setuptools_scm version_file for version generation
+- move setuptools_scm config to its own section
+- simplify TOML format for better compatibility
+- quote hyphenated keys in TOML
+- correct generate configuration format in pyproject.toml
+- correct generate configuration in pyproject.toml
+- optimize version configuration using setuptools_scm
+- update version format to not use 'v' prefix
+- restore scikit-build-core and implement dynamic version updates
+
 ## 0.7.0 (2025-05-03)
 
 ### Feat
