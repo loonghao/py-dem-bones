@@ -71,7 +71,8 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
 
             // If dimensions are invalid, return empty array
             if (nBones <= 0 || nVerts <= 0) {
-                return py::array_t<Scalar>({0, 0});
+                py::array_t<Scalar> result;
+                return result;
             }
 
             // Create result array
@@ -114,7 +115,8 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
 
             // If dimensions are invalid, return empty array
             if (nFrames <= 0 || nBones <= 0) {
-                return py::array_t<Scalar>({0, 4, 4});
+                py::array_t<Scalar> result;
+                return result;
             }
 
             // Create result array for the first bone's transformations
