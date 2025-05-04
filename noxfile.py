@@ -1,5 +1,8 @@
 # Import built-in modules
+import glob
 import os
+import platform
+import shutil
 import sys
 
 # Import third-party modules
@@ -82,12 +85,11 @@ def cibuildwheel_local(session: nox.Session) -> None:
     and tests the wheel.
     """
     # Install cibuildwheel and dependencies
-    session.install("cibuildwheel", "wheel", "setuptools>=42.0.0", "setuptools_scm>=8.0.0")
+    session.install(
+        "cibuildwheel", "wheel", "setuptools>=42.0.0", "setuptools_scm>=8.0.0"
+    )
 
     # Clean previous build files
-    import shutil
-    import os
-
     clean_dirs = ["build", "dist", "_skbuild", "wheelhouse", "py_dem_bones.egg-info"]
     for dir_name in clean_dirs:
         dir_path = os.path.join(os.path.dirname(__file__), dir_name)
@@ -99,7 +101,6 @@ def cibuildwheel_local(session: nox.Session) -> None:
     os.makedirs("wheelhouse", exist_ok=True)
 
     # Detect current platform
-    import platform
     current_platform = platform.system().lower()
     if current_platform == "darwin":
         current_platform = "macos"
@@ -117,7 +118,10 @@ def cibuildwheel_local(session: nox.Session) -> None:
     env["SETUPTOOLS_SCM_PRETEND_VERSION"] = "0.8.0"
 
     # Make sure git recognizes the directory as safe
-    session.run("git", "config", "--global", "--add", "safe.directory", os.path.abspath(os.path.dirname(__file__)), external=True)
+    repo_path = os.path.abspath(os.path.dirname(__file__))
+    session.run(
+        "git", "config", "--global", "--add", "safe.directory", repo_path, external=True
+    )
 
     # Run cibuildwheel directly
     session.log(f"Building wheel for Python {python_version} on {current_platform}...")
@@ -147,13 +151,21 @@ def cibuildwheel_local(session: nox.Session) -> None:
                 raise RuntimeError("CMakeLists.txt not found")
 
             # Install additional dependencies
-            session.install("wheel", "setuptools", "cmake", "ninja", "pybind11", "numpy")
+            session.install(
+                "wheel", "setuptools", "cmake", "ninja", "pybind11", "numpy"
+            )
 
             # Run setup.py directly with verbose output
             session.log("Running setup.py bdist_wheel...")
             session.run(
-                "python", "setup.py", "bdist_wheel", "-v",
-                env=env, external=True, silent=True, success_codes=[0, 1]
+                "python",
+                "setup.py",
+                "bdist_wheel",
+                "-v",
+                env=env,
+                external=True,
+                silent=True,
+                success_codes=[0, 1],
             )
 
             # Check if dist directory exists and contains wheels
@@ -177,16 +189,28 @@ def cibuildwheel_local(session: nox.Session) -> None:
             if not os.path.exists("wheelhouse") or not os.listdir("wheelhouse"):
                 session.log("Falling back to pip wheel...")
                 session.run(
-                    "pip", "wheel", ".", "-w", "wheelhouse",
-                    "--no-deps", "-v", external=True
+                    "pip",
+                    "wheel",
+                    ".",
+                    "-w",
+                    "wheelhouse",
+                    "--no-deps",
+                    "-v",
+                    external=True,
                 )
         except Exception as e:
             session.log(f"setup.py build failed: {e}")
             session.log("Falling back to pip wheel...")
             try:
                 session.run(
-                    "pip", "wheel", ".", "-w", "wheelhouse",
-                    "--no-deps", "-v", external=True
+                    "pip",
+                    "wheel",
+                    ".",
+                    "-w",
+                    "wheelhouse",
+                    "--no-deps",
+                    "-v",
+                    external=True,
                 )
             except Exception as e2:
                 session.log(f"pip wheel also failed: {e2}")
@@ -195,11 +219,15 @@ def cibuildwheel_local(session: nox.Session) -> None:
         # On other platforms, use cibuildwheel
         try:
             session.run(
-                "python", "-m", "cibuildwheel",
-                "--platform", current_platform,
-                "--output-dir", "wheelhouse",
+                "python",
+                "-m",
+                "cibuildwheel",
+                "--platform",
+                current_platform,
+                "--output-dir",
+                "wheelhouse",
                 env=env,
-                external=True
+                external=True,
             )
             session.log("cibuildwheel build completed successfully")
         except Exception as e:
@@ -214,11 +242,15 @@ def cibuildwheel_local(session: nox.Session) -> None:
 
             try:
                 session.run(
-                    "python", "-m", "cibuildwheel",
-                    "--platform", current_platform,
-                    "--output-dir", "wheelhouse",
+                    "python",
+                    "-m",
+                    "cibuildwheel",
+                    "--platform",
+                    current_platform,
+                    "--output-dir",
+                    "wheelhouse",
                     env=env,
-                    external=True
+                    external=True,
                 )
             except Exception as e2:
                 session.log(f"Second attempt also failed: {e2}")
@@ -226,10 +258,7 @@ def cibuildwheel_local(session: nox.Session) -> None:
 
                 # Try direct pip wheel as a fallback
                 session.run(
-                    "pip", "wheel", ".",
-                    "-w", "wheelhouse",
-                    "--no-deps",
-                    external=True
+                    "pip", "wheel", ".", "-w", "wheelhouse", "--no-deps", external=True
                 )
 
     # Install and test the wheel
@@ -241,7 +270,9 @@ def cibuildwheel_local(session: nox.Session) -> None:
 
         # Test import
         session.log("Testing import...")
-        session.run("python", "-c", "import py_dem_bones; print(py_dem_bones.__version__)")
+        session.run(
+            "python", "-c", "import py_dem_bones; print(py_dem_bones.__version__)"
+        )
 
         # Run basic tests
         session.install("pytest")
@@ -254,8 +285,6 @@ def cibuildwheel_local(session: nox.Session) -> None:
 @nox.session
 def verify_wheels(session: nox.Session) -> None:
     """Verify wheel files for correct platform tags."""
-    import glob
-
     session.install("wheel")
 
     # Find all wheel files
@@ -317,7 +346,7 @@ nox.session(docs.docs, name="docs")
 nox.session(docs.docs_serve, name="docs-server")
 nox.session(build.build, name="build")
 nox.session(build_wheels, name="build-wheels")
-nox.session(cibuildwheel_local, name="cibuildwheel")  # 添加新的cibuildwheel会话
+nox.session(cibuildwheel_local, name="cibuildwheel")  # Add new cibuildwheel session
 nox.session(verify_wheels, name="verify-wheels")
 nox.session(publish, name="publish")
 nox.session(build.install, name="install")

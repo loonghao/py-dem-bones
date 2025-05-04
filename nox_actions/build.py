@@ -105,7 +105,7 @@ def build_wheels(session: nox.Session) -> None:
         "scikit-build-core>=0.5.0",
         "pybind11>=2.10.0",
         "numpy>=1.20.0",
-        max_retries=3
+        max_retries=3,
     )
 
     # Clean previous build files
@@ -143,7 +143,9 @@ def build_wheels(session: nox.Session) -> None:
     env["CIBW_BUILD"] = f"{python_tag}-*"
 
     # Make sure git recognizes the directory as safe
-    session.run("git", "config", "--global", "--add", "safe.directory", THIS_ROOT, external=True)
+    session.run(
+        "git", "config", "--global", "--add", "safe.directory", THIS_ROOT, external=True
+    )
 
     # Run build process
     session.log("Building wheels...")
@@ -161,7 +163,7 @@ def build_wheels(session: nox.Session) -> None:
             "cmake",
             "ninja",
             "wheel",
-            max_retries=3
+            max_retries=3,
         )
 
         # Set environment variables for setup.py
@@ -272,7 +274,9 @@ def build_wheels(session: nox.Session) -> None:
         wheels = [f for f in os.listdir("wheelhouse") if f.endswith(".whl")]
         if wheels:
             wheel_path = os.path.join("wheelhouse", wheels[0])
-            session.run("pip", "install", wheel_path, "--force-reinstall", external=True)
+            session.run(
+                "pip", "install", wheel_path, "--force-reinstall", external=True
+            )
             session.log(f"Successfully installed {wheel_path}")
 
             # Test the installed package
@@ -281,7 +285,7 @@ def build_wheels(session: nox.Session) -> None:
                 "python",
                 "-c",
                 f"import {MODULE_NAME}; print(f'Successfully imported {MODULE_NAME} ' + {MODULE_NAME}.__version__)",
-                external=True
+                external=True,
             )
         else:
             session.log("No wheels found to install!")

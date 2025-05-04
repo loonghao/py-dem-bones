@@ -224,6 +224,18 @@ pybind11_add_module(_py_dem_bones
 # Note: Do not directly define Py_LIMITED_API, as it will cause compilation errors in pybind11 internal classes and functions
 # We temporarily remove ABI3 compatibility mode, as it is not compatible with the current pybind11 code
 
+# Handle PYTHON_LIMITED_API variable from scikit-build-core
+if(DEFINED PYTHON_LIMITED_API AND PYTHON_LIMITED_API)
+    message(STATUS "Python limited API requested, but not supported by this project")
+    # We acknowledge the variable but don't use it
+endif()
+
+# Handle SKBUILD_SOABI variable from scikit-build-core
+if(DEFINED SKBUILD_SOABI AND SKBUILD_SOABI)
+    message(STATUS "SKBUILD_SOABI set to: ${SKBUILD_SOABI}")
+    # We acknowledge the variable but don't use it
+endif()
+
 # Set target properties
 set_target_properties(_py_dem_bones PROPERTIES
     OUTPUT_NAME "_py_dem_bones"
@@ -276,7 +288,21 @@ if(MSVC)
         /bigobj # Support for large object files
     )
 elseif(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    target_compile_options(_py_dem_bones PRIVATE -Wall -Wextra -Wno-conversion)
+    target_compile_options(_py_dem_bones PRIVATE
+        -Wall
+        -Wextra
+        -Wno-conversion
+        -Wno-unused-parameter
+        -Wno-unused-local-typedef
+        -Wno-delete-non-abstract-non-virtual-dtor
+        -Wno-deprecated-declarations
+    )
 else()
-    target_compile_options(_py_dem_bones PRIVATE -Wall -Wextra -Wno-conversion)
+    target_compile_options(_py_dem_bones PRIVATE
+        -Wall
+        -Wextra
+        -Wno-conversion
+        -Wno-unused-parameter
+        -Wno-unused-local-typedef
+    )
 endif()

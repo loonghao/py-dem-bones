@@ -24,7 +24,15 @@ def lint(session: nox.Session) -> None:
 
     # Run linting checks
     session.run(
-        "isort", "--check-only", "--skip", "extern", "src", "nox_actions", "noxfile.py"
+        "isort",
+        "--check-only",
+        "--profile",
+        "black",
+        "--skip",
+        "extern",
+        "src",
+        "nox_actions",
+        "noxfile.py",
     )
     session.run("ruff", "check", "src", "nox_actions", "noxfile.py")
 
@@ -58,4 +66,13 @@ def lint_fix(session: nox.Session) -> None:
         "nox_actions",
         "noxfile.py",
     )
-    session.run("isort", "--skip", "extern", "src", "nox_actions", "noxfile.py")
+    session.run(
+        "isort",
+        "--profile",
+        "black",
+        "--skip",
+        "extern",
+        "src",
+        "nox_actions",
+        "noxfile.py",
+    )
