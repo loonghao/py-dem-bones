@@ -100,31 +100,48 @@ local-scheme = "no-local-version"
 fallback-version = "0.7.0"
 
 # Generate version files
-[[tool.scikit-build.generate]]
-path = "src/py_dem_bones/__version__.py"
-location = "source"
-template = '''"""Version information."""
+generate = [
+    {
+        path = "src/py_dem_bones/__version__.py",
+        location = "source",
+        template = '''"""Version information."""
 
 __version__ = "${version}"
 '''
+    },
+    {
+        path = "docs/conf.py",
+        location = "source",
+        template = '''# -- Project information -----------------------------------------------------
+project = 'py-dem-bones'
+copyright = '2024, Long Hao'
+author = 'Long Hao'
 
-[[tool.scikit-build.generate]]
-path = "docs/conf.py"
-location = "source"
-template-match = "release = '.*'"
-template-replace = "release = '${version}'"
+# The full version, including alpha/beta/rc tags
+release = '${version}'
 
-[[tool.scikit-build.generate]]
-path = "docs/conf.py"
-location = "source"
-template-match = "version = '.*'"
-template-replace = "version = '${version}'"
-
-[[tool.scikit-build.generate]]
-path = ".github/CITATION.cff"
-location = "source"
-template-match = "version: .*"
-template-replace = "version: ${version}"
+# Major version
+version = '${version}'
+'''
+    },
+    {
+        path = ".github/CITATION.cff",
+        location = "source",
+        template = '''cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "py-dem-bones"
+abstract: "Python bindings for the Dem Bones library"
+authors:
+  - family-names: "Long"
+    given-names: "Hao"
+    email: "hal.long@outlook.com"
+version: ${version}
+date-released: 2024-03-05
+license: BSD-3-Clause
+repository-code: "https://github.com/loonghao/py-dem-bones"
+'''
+    }
+]
 
 [tool.scikit-build.cmake]
 version = ">=3.15"
