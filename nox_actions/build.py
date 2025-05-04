@@ -85,10 +85,28 @@ def build(session: nox.Session) -> None:
 
 
 def build_wheels(session: nox.Session) -> None:
-    """Build wheels for multiple platforms using cibuildwheel."""
-    # Install cibuildwheel
-    session.log("Installing cibuildwheel...")
-    retry_command(session, session.install, "cibuildwheel", "wheel", max_retries=3)
+    """Build wheels for multiple platforms using cibuildwheel.
+
+    This function uses cibuildwheel to build wheels for the current platform.
+    Configuration is read from .cibuildwheel.toml.
+
+    Args:
+        session: The nox session object.
+    """
+    # Install cibuildwheel and dependencies
+    session.log("Installing cibuildwheel and dependencies...")
+    retry_command(
+        session,
+        session.install,
+        "cibuildwheel",
+        "wheel",
+        "setuptools>=42.0.0",
+        "setuptools_scm>=8.0.0",
+        "scikit-build-core>=0.5.0",
+        "pybind11>=2.10.0",
+        "numpy>=1.20.0",
+        max_retries=3
+    )
 
     # Clean previous build files
     clean_dirs = ["build", "dist", "_skbuild", "wheelhouse", f"{MODULE_NAME}.egg-info"]
@@ -105,60 +123,132 @@ def build_wheels(session: nox.Session) -> None:
     env = os.environ.copy()
     env["CIBW_BUILD_VERBOSITY"] = "3"
     env["SKBUILD_BUILD_VERBOSE"] = "1"
-    env["FORCE_BDIST_WHEEL_PLAT"] = ""
 
-    # 检测操作系统
-    is_windows = platform.system() == "Windows"
+    # Add version information for setuptools_scm
+    env["SETUPTOOLS_SCM_PRETEND_VERSION"] = "0.8.0"
 
-    if is_windows:
-        session.log("检测到 Windows 环境，使用替代方法构建 wheel...")
-        # 在 Windows 上，使用标准的 build 方法
-        build(session)
+    # Detect current platform
+    current_platform = platform.system().lower()
+    if current_platform == "darwin":
+        current_platform = "macos"
 
-        # 如果 build 成功，将生成的 wheel 文件复制到 wheelhouse 目录
-        if os.path.exists(os.path.join(THIS_ROOT, "dist")):
-            wheels = [
-                f
-                for f in os.listdir(os.path.join(THIS_ROOT, "dist"))
-                if f.endswith(".whl")
-            ]
-            if wheels:
-                for wheel in wheels:
-                    src = os.path.join(THIS_ROOT, "dist", wheel)
-                    dst = os.path.join(THIS_ROOT, "wheelhouse", wheel)
-                    session.log(f"复制 wheel 文件: {wheel}")
-                    shutil.copy2(src, dst)
-            else:
-                session.log("未找到 wheel 文件")
-        return
+    session.log(f"Detected platform: {current_platform}")
 
-    # 非 Windows 环境使用 cibuildwheel
-    session.log("Building wheels with cibuildwheel...")
-    platform_arg = "auto"  # Build for current platform
+    # Get Python version for filtering
+    python_version = platform.python_version()
+    python_tag = f"cp{python_version.split('.')[0]}{python_version.split('.')[1]}"
+    session.log(f"Building for Python {python_version} (tag: {python_tag})")
 
-    try:
-        session.run(
-            "python",
-            "-m",
-            "cibuildwheel",
-            "--platform",
-            platform_arg,
-            env=env,
-            external=True,
+    # Set build filter to only build for current Python version
+    env["CIBW_BUILD"] = f"{python_tag}-*"
+
+    # Make sure git recognizes the directory as safe
+    session.run("git", "config", "--global", "--add", "safe.directory", THIS_ROOT, external=True)
+
+    # Run build process
+    session.log("Building wheels...")
+
+    # On Windows, use setup.py directly
+    if current_platform == "windows":
+        session.log("Using setup.py directly on Windows...")
+
+        # Install build dependencies
+        retry_command(
+            session,
+            session.install,
+            "numpy",
+            "pybind11",
+            "cmake",
+            "ninja",
+            "wheel",
+            max_retries=3
         )
-        session.log("cibuildwheel build completed successfully")
-    except Exception as e:
-        session.log(f"cibuildwheel build failed: {e}")
-        session.log("Falling back to standard build...")
-        build(session)
-        return
+
+        # Set environment variables for setup.py
+        env["CMAKE_GENERATOR"] = "Ninja"
+        env["CMAKE_POSITION_INDEPENDENT_CODE"] = "ON"
+        env["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = "ON"
+
+        # Create dist directory
+        os.makedirs("dist", exist_ok=True)
+
+        try:
+            # Run setup.py directly
+            session.run(
+                "python",
+                "setup.py",
+                "bdist_wheel",
+                env=env,
+                external=True,
+            )
+
+            # Copy wheel to wheelhouse
+            for wheel_file in os.listdir("dist"):
+                if wheel_file.endswith(".whl"):
+                    src = os.path.join("dist", wheel_file)
+                    dst = os.path.join("wheelhouse", wheel_file)
+                    session.log(f"Copying {src} to {dst}")
+                    shutil.copy2(src, dst)
+
+            session.log("setup.py build completed successfully")
+        except Exception as e:
+            session.log(f"setup.py build failed: {e}")
+            session.log("Falling back to standard build...")
+            build(session)
+            return
+    else:
+        # On other platforms, use cibuildwheel
+        try:
+            session.run(
+                "python",
+                "-m",
+                "cibuildwheel",
+                "--platform",
+                current_platform,  # Build for current platform only
+                "--output-dir",
+                "wheelhouse",
+                env=env,
+                external=True,
+            )
+            session.log("cibuildwheel build completed successfully")
+        except Exception as e:
+            session.log(f"cibuildwheel build failed: {e}")
+            session.log("Trying with additional debug information...")
+
+            # Try again with more debug information
+            env["SETUPTOOLS_SCM_DEBUG"] = "1"
+            env["SETUPTOOLS_LOGGING_LEVEL"] = "DEBUG"
+            env["SCIKIT_BUILD_CORE_LOGGING_LEVEL"] = "DEBUG"
+
+            try:
+                session.run(
+                    "python",
+                    "-m",
+                    "cibuildwheel",
+                    "--platform",
+                    current_platform,
+                    "--output-dir",
+                    "wheelhouse",
+                    env=env,
+                    external=True,
+                )
+            except Exception as e2:
+                session.log(f"Second attempt also failed: {e2}")
+                session.log("Falling back to standard build...")
+                build(session)
+                return
 
     # List the built wheels
     if os.path.exists(os.path.join(THIS_ROOT, "wheelhouse")):
         wheels = os.listdir(os.path.join(THIS_ROOT, "wheelhouse"))
-        for wheel in wheels:
-            if wheel.endswith(".whl"):
-                session.log(f"Built wheel: {wheel}")
+        if wheels:
+            session.log("Built wheels:")
+            for wheel in wheels:
+                if wheel.endswith(".whl"):
+                    session.log(f"  - {wheel}")
+        else:
+            session.log("No wheels were built!")
+            return
 
     # Verify wheel tags
     session.log("Verifying wheel tags...")
@@ -175,6 +265,28 @@ def build_wheels(session: nox.Session) -> None:
                 )
     except Exception as e:
         session.log(f"Wheel verification failed: {e}")
+
+    # Install the wheel for testing
+    session.log("Installing wheel for testing...")
+    try:
+        wheels = [f for f in os.listdir("wheelhouse") if f.endswith(".whl")]
+        if wheels:
+            wheel_path = os.path.join("wheelhouse", wheels[0])
+            session.run("pip", "install", wheel_path, "--force-reinstall", external=True)
+            session.log(f"Successfully installed {wheel_path}")
+
+            # Test the installed package
+            session.log("Testing installed package...")
+            session.run(
+                "python",
+                "-c",
+                f"import {MODULE_NAME}; print(f'Successfully imported {MODULE_NAME} ' + {MODULE_NAME}.__version__)",
+                external=True
+            )
+        else:
+            session.log("No wheels found to install!")
+    except Exception as e:
+        session.log(f"Wheel installation or testing failed: {e}")
 
 
 def install(session: nox.Session) -> None:

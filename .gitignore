@@ -87,3 +87,8 @@ _cmake_build/
 /PRD.md
 /wheelhouse/
 /docs/auto_examples/
+
+# Local development files (not for CI)
+/setup.py
+/setup.cfg
+/build_local_wheel.py
