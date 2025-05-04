@@ -459,7 +459,7 @@ def coverage(session: nox.Session) -> None:
         "pytest>=7.3.1",
         "pytest-cov>=4.1.0",
         "coverage>=7.0.0",
-        max_retries=3
+        max_retries=3,
     )
 
     # Install package in development mode
@@ -477,7 +477,7 @@ def coverage(session: nox.Session) -> None:
         "--cov-report=term",
         "--cov-report=xml:coverage.xml",
         f"--rootdir={test_root}",
-        "-v"
+        "-v",
     )
 
     # Print coverage report summary
@@ -553,5 +553,5 @@ def test_windows_compatibility(session: nox.Session) -> None:
         "--cov=py_dem_bones",
         "--cov-report=term",
         "--cov-report=xml:coverage.xml",
-        "-v"
+        "-v",
     )

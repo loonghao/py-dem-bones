@@ -1,0 +1,26 @@
+name: 'Upload Wheels'
+description: 'Uploads built wheels as artifacts'
+
+inputs:
+  platform:
+    description: 'Platform (linux, windows, macos-intel, macos-arm)'
+    required: true
+    default: 'linux'
+  python:
+    description: 'Python version (cp38, cp39, etc.)'
+    required: true
+    default: 'cp310'
+  path:
+    description: 'Path to wheels'
+    required: false
+    default: './wheelhouse/*.whl'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Upload wheels
+      uses: actions/upload-artifact@v4
+      with:
+        name: wheels-${{ inputs.platform }}-${{ inputs.python }}
+        path: ${{ inputs.path }}
+        if-no-files-found: error

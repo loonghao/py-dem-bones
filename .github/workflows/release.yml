@@ -74,6 +74,13 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+# Global variables
+env:
+  # Common settings
+  CIBW_CONFIG_FILE: "{package}/.cibuildwheel.toml"
+  CIBW_BUILD_VERBOSITY: 3
+  CCACHE_MAX_SIZE: 2G
+
 jobs:
   # Build source distribution
   build-sdist:
@@ -86,14 +93,9 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-python-build
         with:
           python-version: '3.10'
-          cache: 'pip'
-          cache-dependency-path: |
-            **/pyproject.toml
-            **/requirements*.txt
 
       # Install system dependencies
       - name: Install system dependencies
@@ -103,11 +105,11 @@ jobs:
         shell: bash
 
       # Set up ccache
-      - name: Set up ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+      - uses: ./.github/actions/setup-ccache
         with:
-          key: sdist-ccache
-          max-size: 2G
+          platform: sdist
+          python: cp310
+          max-size: ${{ env.CCACHE_MAX_SIZE }}
 
       - name: Build SDist
         run: |
@@ -122,7 +124,7 @@ jobs:
           python -c "import py_dem_bones; print(py_dem_bones.__version__)"
           python -m pytest tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v || echo "Tests failed but continuing"
 
-      - name: Upload coverage report
+      - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -164,77 +166,39 @@ jobs:
           fetch-depth: 0
 
       # Cache Eigen library
-      - name: Cache Eigen library
-        uses: actions/cache@v4
+      - uses: ./.github/actions/cache-eigen
         with:
-          path: extern/eigen
-          key: Linux-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
-          restore-keys: |
-            Linux-eigen-
+          platform: Linux
 
       # Set up ccache
-      - name: Set up ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+      - uses: ./.github/actions/setup-ccache
         with:
-          key: Linux-ccache-${{ matrix.python }}
-          max-size: 2G
+          platform: Linux
+          python: ${{ matrix.python }}
+          max-size: ${{ env.CCACHE_MAX_SIZE }}
 
       # Build wheels using cibuildwheel action
-      - name: Build wheels
-        uses: pypa/cibuildwheel@v2.23.1
+      - uses: ./.github/actions/build-wheels
         with:
-          output-dir: wheelhouse
-        env:
-          # Build only the specified Python version
-          CIBW_BUILD: "${{ matrix.python }}-manylinux*"
-          # Skip PyPy, musllinux, and manylinux_i686
-          CIBW_SKIP: "pp* *-musllinux* *-manylinux_i686"
-          # Use config file for most settings
-          CIBW_CONFIG_FILE: "{package}/.cibuildwheel.toml"
-          # Set build verbosity
-          CIBW_BUILD_VERBOSITY: 3
+          platform: linux
+          python: ${{ matrix.python }}
+          config-file: ${{ env.CIBW_CONFIG_FILE }}
+          build-verbosity: ${{ env.CIBW_BUILD_VERBOSITY }}
 
       # Upload wheels
-      - uses: actions/upload-artifact@v4
+      - uses: ./.github/actions/upload-wheels
         with:
-          name: wheels-linux-${{ matrix.python }}
-          path: ./wheelhouse/*.whl
-          if-no-files-found: error
+          platform: linux
+          python: ${{ matrix.python }}
 
       # Test the wheel immediately after building
-      - name: Set up Python ${{ matrix.python-version }} for testing
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-python-build
         with:
           python-version: ${{ matrix.python-version }}
-          cache: 'pip'
 
-      - name: List wheels
-        run: |
-          ls -la ./wheelhouse/
-          echo "Found $(ls ./wheelhouse/*.whl | wc -l) wheels"
-
-      - name: Install wheel and dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pytest pytest-cov numpy
-          python -m pip install wheelhouse/*.whl
-          python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
-
-      - name: Install nox
-        run: |
-          python -m pip install nox
-
-      - name: Run tests with nox
-        run: |
-          python -m nox -s pytest_skip_install
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
+      - uses: ./.github/actions/test-wheel
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          fail_ci_if_error: false
-          verbose: true
+          platform: linux
 
   # Build and test wheels for Windows
   build-wheels-windows:
@@ -264,89 +228,39 @@ jobs:
           fetch-depth: 0
 
       # Cache Eigen library
-      - name: Cache Eigen library
-        uses: actions/cache@v4
+      - uses: ./.github/actions/cache-eigen
         with:
-          path: extern/eigen
-          key: Windows-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
-          restore-keys: |
-            Windows-eigen-
+          platform: Windows
 
       # Set up ccache
-      - name: Set up ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+      - uses: ./.github/actions/setup-ccache
         with:
-          key: Windows-ccache-${{ matrix.python }}
-          max-size: 2G
+          platform: Windows
+          python: ${{ matrix.python }}
+          max-size: ${{ env.CCACHE_MAX_SIZE }}
 
       # Build wheels using cibuildwheel action
-      - name: Build wheels
-        uses: pypa/cibuildwheel@v2.23.1
+      - uses: ./.github/actions/build-wheels
         with:
-          output-dir: wheelhouse
-        env:
-          # Build only the specified Python version
-          CIBW_BUILD: "${{ matrix.python }}-win*"
-          # Skip PyPy and win32
-          CIBW_SKIP: "pp* *-win32"
-          # Use config file for most settings
-          CIBW_CONFIG_FILE: "{package}/.cibuildwheel.toml"
-          # Set build verbosity
-          CIBW_BUILD_VERBOSITY: 3
-          # Windows: install Ninja and delvewheel
-          CIBW_BEFORE_ALL_WINDOWS: >
-            pip install delvewheel &&
-            choco install -y ninja &&
-            dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise" ||
-            dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community" ||
-            dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise" ||
-            dir "C:\Program Files\Microsoft Visual Studio\2022\Community"
+          platform: windows
+          python: ${{ matrix.python }}
+          config-file: ${{ env.CIBW_CONFIG_FILE }}
+          build-verbosity: ${{ env.CIBW_BUILD_VERBOSITY }}
 
       # Upload wheels
-      - uses: actions/upload-artifact@v4
+      - uses: ./.github/actions/upload-wheels
         with:
-          name: wheels-windows-${{ matrix.python }}
-          path: ./wheelhouse/*.whl
-          if-no-files-found: error
+          platform: windows
+          python: ${{ matrix.python }}
 
       # Test the wheel immediately after building
-      - name: Set up Python ${{ matrix.python-version }} for testing
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-python-build
         with:
           python-version: ${{ matrix.python-version }}
-          cache: 'pip'
 
-      - name: List wheels
-        shell: pwsh
-        run: |
-          Get-ChildItem -Path ./wheelhouse/ -Recurse
-          Write-Host "Found $((Get-ChildItem -Path ./wheelhouse/ -Filter *.whl).Count) wheels"
-
-      - name: Install wheel and dependencies
-        shell: pwsh
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pytest pytest-cov numpy
-          python -m pip install (Get-ChildItem -Path ./wheelhouse/*.whl).FullName
-          python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
-
-      - name: Install nox
-        shell: pwsh
-        run: |
-          python -m pip install nox
-
-      - name: Run tests with nox
-        shell: pwsh
-        run: |
-          python -m nox -s pytest_skip_install
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
+      - uses: ./.github/actions/test-wheel
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          fail_ci_if_error: false
-          verbose: true
+          platform: windows
 
   # Build and test wheels for macOS Intel
   build-wheels-macos:
@@ -376,77 +290,39 @@ jobs:
           fetch-depth: 0
 
       # Cache Eigen library
-      - name: Cache Eigen library
-        uses: actions/cache@v4
+      - uses: ./.github/actions/cache-eigen
         with:
-          path: extern/eigen
-          key: macOS-Intel-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
-          restore-keys: |
-            macOS-Intel-eigen-
+          platform: macOS-Intel
 
       # Set up ccache
-      - name: Set up ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+      - uses: ./.github/actions/setup-ccache
         with:
-          key: macOS-Intel-ccache-${{ matrix.python }}
-          max-size: 2G
+          platform: macOS-Intel
+          python: ${{ matrix.python }}
+          max-size: ${{ env.CCACHE_MAX_SIZE }}
 
       # Build wheels using cibuildwheel action
-      - name: Build wheels
-        uses: pypa/cibuildwheel@v2.23.1
+      - uses: ./.github/actions/build-wheels
         with:
-          output-dir: wheelhouse
-        env:
-          # Build only the specified Python version for x86_64
-          CIBW_BUILD: "${{ matrix.python }}-macosx_x86_64"
-          # Skip PyPy
-          CIBW_SKIP: "pp*"
-          # Use config file for most settings
-          CIBW_CONFIG_FILE: "{package}/.cibuildwheel.toml"
-          # Set build verbosity
-          CIBW_BUILD_VERBOSITY: 3
+          platform: macos-intel
+          python: ${{ matrix.python }}
+          config-file: ${{ env.CIBW_CONFIG_FILE }}
+          build-verbosity: ${{ env.CIBW_BUILD_VERBOSITY }}
 
       # Upload wheels
-      - uses: actions/upload-artifact@v4
+      - uses: ./.github/actions/upload-wheels
         with:
-          name: wheels-macos-intel-${{ matrix.python }}
-          path: ./wheelhouse/*.whl
-          if-no-files-found: error
+          platform: macos-intel
+          python: ${{ matrix.python }}
 
       # Test the wheel immediately after building
-      - name: Set up Python ${{ matrix.python-version }} for testing
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-python-build
         with:
           python-version: ${{ matrix.python-version }}
-          cache: 'pip'
 
-      - name: List wheels
-        run: |
-          ls -la ./wheelhouse/
-          echo "Found $(ls ./wheelhouse/*.whl | wc -l) wheels"
-
-      - name: Install wheel and dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pytest pytest-cov numpy
-          python -m pip install wheelhouse/*.whl
-          python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
-
-      - name: Install nox
-        run: |
-          python -m pip install nox
-
-      - name: Run tests with nox
-        run: |
-          python -m nox -s pytest_skip_install
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
+      - uses: ./.github/actions/test-wheel
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          fail_ci_if_error: false
-          verbose: true
+          platform: macos
 
   # Build and test wheels for macOS Apple Silicon
   build-wheels-macos-arm:
@@ -475,83 +351,39 @@ jobs:
           fetch-depth: 0
 
       # Cache Eigen library
-      - name: Cache Eigen library
-        uses: actions/cache@v4
+      - uses: ./.github/actions/cache-eigen
         with:
-          path: extern/eigen
-          key: macOS-ARM-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
-          restore-keys: |
-            macOS-ARM-eigen-
+          platform: macOS-ARM
 
       # Set up ccache
-      - name: Set up ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+      - uses: ./.github/actions/setup-ccache
         with:
-          key: macOS-ARM-ccache-${{ matrix.python }}
-          max-size: 2G
+          platform: macOS-ARM
+          python: ${{ matrix.python }}
+          max-size: ${{ env.CCACHE_MAX_SIZE }}
 
       # Build wheels using cibuildwheel action
-      - name: Build wheels
-        uses: pypa/cibuildwheel@v2.23.1
+      - uses: ./.github/actions/build-wheels
         with:
-          output-dir: wheelhouse
-        env:
-          # Build only the specified Python version for arm64
-          CIBW_BUILD: "${{ matrix.python }}-macosx_arm64"
-          # Skip PyPy
-          CIBW_SKIP: "pp*"
-          # Use config file for most settings
-          CIBW_CONFIG_FILE: "{package}/.cibuildwheel.toml"
-          # Set build verbosity
-          CIBW_BUILD_VERBOSITY: 3
+          platform: macos-arm
+          python: ${{ matrix.python }}
+          config-file: ${{ env.CIBW_CONFIG_FILE }}
+          build-verbosity: ${{ env.CIBW_BUILD_VERBOSITY }}
 
       # Upload wheels
-      - uses: actions/upload-artifact@v4
+      - uses: ./.github/actions/upload-wheels
         with:
-          name: wheels-macos-arm-${{ matrix.python }}
-          path: ./wheelhouse/*.whl
-          if-no-files-found: error
+          platform: macos-arm
+          python: ${{ matrix.python }}
 
       # Test the wheel immediately after building
-      - name: Set up Python ${{ matrix.python-version }} for testing
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-python-build
         with:
           python-version: ${{ matrix.python-version }}
-          cache: 'pip'
 
-      - name: List wheels
-        run: |
-          ls -la ./wheelhouse/
-          echo "Found $(ls ./wheelhouse/*.whl | wc -l) wheels"
-
-      - name: Install wheel and dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pytest pytest-cov numpy
-          python -m pip install wheelhouse/*.whl
-          python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
-
-      - name: Install nox
-        run: |
-          python -m pip install nox
-
-      - name: Run tests with nox
-        run: |
-          python -m nox -s pytest_skip_install
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
+      - uses: ./.github/actions/test-wheel
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          fail_ci_if_error: false
-          verbose: true
-
-
-
-
-
-
+          platform: macos
 
   # Create GitHub Release and publish to PyPI
   release:

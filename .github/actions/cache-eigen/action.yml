@@ -1,0 +1,19 @@
+name: 'Cache Eigen Library'
+description: 'Caches the Eigen library for faster builds'
+
+inputs:
+  platform:
+    description: 'Platform (Linux, Windows, macOS-Intel, macOS-ARM)'
+    required: true
+    default: 'Linux'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Cache Eigen library
+      uses: actions/cache@v4
+      with:
+        path: extern/eigen
+        key: ${{ inputs.platform }}-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
+        restore-keys: |
+          ${{ inputs.platform }}-eigen-

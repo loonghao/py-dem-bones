@@ -1,0 +1,75 @@
+name: 'Test Wheel'
+description: 'Tests a built wheel'
+
+inputs:
+  platform:
+    description: 'Platform (linux, windows, macos)'
+    required: true
+    default: 'linux'
+
+runs:
+  using: "composite"
+  steps:
+    - name: List wheels (Unix)
+      if: inputs.platform != 'windows'
+      shell: bash
+      run: |
+        ls -la ./wheelhouse/
+        echo "Found $(ls ./wheelhouse/*.whl | wc -l) wheels"
+
+    - name: List wheels (Windows)
+      if: inputs.platform == 'windows'
+      shell: pwsh
+      run: |
+        Get-ChildItem -Path ./wheelhouse/ -Recurse
+        Write-Host "Found $((Get-ChildItem -Path ./wheelhouse/ -Filter *.whl).Count) wheels"
+
+    - name: Install wheel and dependencies (Unix)
+      if: inputs.platform != 'windows'
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest pytest-cov numpy
+        python -m pip install wheelhouse/*.whl
+        python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
+
+    - name: Install wheel and dependencies (Windows)
+      if: inputs.platform == 'windows'
+      shell: pwsh
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest pytest-cov numpy
+        python -m pip install (Get-ChildItem -Path ./wheelhouse/*.whl).FullName
+        python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
+
+    - name: Install nox (Unix)
+      if: inputs.platform != 'windows'
+      shell: bash
+      run: |
+        python -m pip install nox
+
+    - name: Install nox (Windows)
+      if: inputs.platform == 'windows'
+      shell: pwsh
+      run: |
+        python -m pip install nox
+
+    - name: Run tests with nox (Unix)
+      if: inputs.platform != 'windows'
+      shell: bash
+      run: |
+        python -m nox -s pytest_skip_install
+
+    - name: Run tests with nox (Windows)
+      if: inputs.platform == 'windows'
+      shell: pwsh
+      run: |
+        python -m nox -s pytest_skip_install
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ github.token }}
+        files: ./coverage.xml
+        fail_ci_if_error: false
+        verbose: true

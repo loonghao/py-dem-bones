@@ -1,0 +1,85 @@
+name: Build and Test Wheels
+
+on:
+  workflow_call:
+    inputs:
+      platform:
+        description: 'Platform (linux, windows, macos-intel, macos-arm)'
+        required: true
+        type: string
+      runner:
+        description: 'Runner to use (ubuntu-latest, windows-latest, macos-13, macos-14)'
+        required: true
+        type: string
+      python-versions:
+        description: 'Python versions to build for'
+        required: false
+        type: string
+        default: '["cp38", "cp39", "cp310", "cp311", "cp312"]'
+      python-versions-exclude:
+        description: 'Python versions to exclude'
+        required: false
+        type: string
+        default: '[]'
+
+jobs:
+  build-wheels:
+    name: Build ${{ matrix.python }} wheels on ${{ inputs.platform }}
+    runs-on: ${{ inputs.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ${{ fromJson(inputs.python-versions) }}
+        exclude: ${{ fromJson(inputs.python-versions-exclude) }}
+        include:
+          - python: cp38
+            python-version: '3.8'
+          - python: cp39
+            python-version: '3.9'
+          - python: cp310
+            python-version: '3.10'
+          - python: cp311
+            python-version: '3.11'
+          - python: cp312
+            python-version: '3.12'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      # Cache Eigen library
+      - uses: ./.github/actions/cache-eigen
+        with:
+          platform: ${{ inputs.platform }}
+
+      # Set up ccache
+      - uses: ./.github/actions/setup-ccache
+        with:
+          platform: ${{ inputs.platform }}
+          python: ${{ matrix.python }}
+          max-size: 2G
+
+      # Build wheels using cibuildwheel action
+      - uses: ./.github/actions/build-wheels
+        with:
+          platform: ${{ inputs.platform }}
+          python: ${{ matrix.python }}
+          config-file: "{package}/.cibuildwheel.toml"
+          build-verbosity: 3
+
+      # Upload wheels
+      - uses: ./.github/actions/upload-wheels
+        with:
+          platform: ${{ inputs.platform }}
+          python: ${{ matrix.python }}
+
+      # Test the wheel immediately after building
+      - uses: ./.github/actions/setup-python-build
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - uses: ./.github/actions/test-wheel
+        with:
+          platform: ${{ inputs.platform == 'windows' && 'windows' || 'macos' }}
