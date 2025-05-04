@@ -233,7 +233,13 @@ class DemBonesWrapper:
             int: The assigned target index
         """
         if index is None:
-            index = self._targets.get(name, len(self._targets))
+            # If the name already exists, use its index
+            if name in self._targets:
+                index = self._targets[name]
+            else:
+                # Otherwise, use the next available index (max of existing indices + 1)
+                # This ensures we don't reuse indices that are already in use
+                index = self._dem_bones.nS if self._dem_bones.nS > 0 else 0
 
         # Update the number of shapes if needed
         if index >= self._dem_bones.nS:
