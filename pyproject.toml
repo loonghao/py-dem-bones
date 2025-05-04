@@ -93,8 +93,8 @@ sdist.exclude = ["tests/data/*"]
 provider = "git"
 # Use git tags for versioning
 use-release = true
-# Format: v1.2.3 or 1.2.3
-tag-regex = "^v?(?P<version>[0-9]+\\.[0-9]+\\.[0-9]+)(?P<dev>-[a-zA-Z0-9]+)?$"
+# Format: 1.2.3 (without 'v' prefix)
+tag-regex = "^(?P<version>[0-9]+\\.[0-9]+\\.[0-9]+)(?P<dev>-[a-zA-Z0-9]+)?$"
 # Write version to __version__.py
 write-to = "src/py_dem_bones/__version__.py:__version__"
 # Also update docs/conf.py
@@ -119,7 +119,7 @@ SKBUILD_SOABI = "OFF"
 [tool.commitizen]
 name = "cz_conventional_commits"
 version_provider = "scm"
-tag-format = "v$version"
+tag-format = "$version"
 update_changelog_on_bump = true
 change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "ci", "build", "docs", "test", "chore"]
 # Version files are now managed by scikit-build-core
