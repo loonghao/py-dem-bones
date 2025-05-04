@@ -7,7 +7,7 @@ and convenience methods.
 """
 
 # Import standard library modules
-from typing import Dict, List, Optional, Tuple, Union, Callable
+from typing import Callable, Optional, Union
 
 # Import third-party modules
 import numpy as np
@@ -15,18 +15,7 @@ import numpy as np
 # Import local modules
 from py_dem_bones._py_dem_bones import DemBones as _DemBones
 from py_dem_bones._py_dem_bones import DemBonesExt as _DemBonesExt
-from py_dem_bones.exceptions import (
-    ComputationError,
-    IndexError,
-    NameError,
-    ParameterError,
-)
-from py_dem_bones.utils import (
-    numpy_to_eigen,
-    eigen_to_numpy,
-    validate_matrix_shape,
-    validate_bone_index,
-)
+from py_dem_bones.exceptions import ComputationError, IndexError, NameError, ParameterError
 
 
 class DemBonesWrapper:
@@ -616,7 +605,9 @@ class DemBonesWrapper:
         # Check animated poses
         animated_poses = self._dem_bones.get_animated_poses()
         if animated_poses.size == 0:
-            raise ParameterError("At least one target pose must be set before computation")
+            raise ParameterError(
+                "At least one target pose must be set before computation"
+            )
 
     def clear(self):
         """Clear all data and reset the computation."""
@@ -652,7 +643,7 @@ class DemBonesWrapper:
             weights = self.get_weights()
             if weights.size > 0:
                 data["weights"] = weights.tolist()
-        except:
+        except Exception:  # Catch specific exceptions when possible
             pass
 
         # Export transformations if available
@@ -660,7 +651,7 @@ class DemBonesWrapper:
             transforms = self.get_transformations()
             if transforms.size > 0:
                 data["transformations"] = transforms.tolist()
-        except:
+        except Exception:  # Catch specific exceptions when possible
             pass
 
         # Export bind matrices if available
@@ -783,7 +774,9 @@ class DemBonesExtWrapper(DemBonesWrapper):
 
         # Validate bone index
         if bone_idx >= self.num_bones:
-            raise IndexError(f"Bone index {bone_idx} out of range (0-{self.num_bones-1})")
+            raise IndexError(
+                f"Bone index {bone_idx} out of range (0-{self.num_bones-1})"
+            )
 
         # Handle parent bone
         if parent is None:
@@ -796,7 +789,9 @@ class DemBonesExtWrapper(DemBonesWrapper):
 
         # Validate parent index if not a root
         if parent_idx >= self.num_bones:
-            raise IndexError(f"Parent bone index {parent_idx} out of range (0-{self.num_bones-1})")
+            raise IndexError(
+                f"Parent bone index {parent_idx} out of range (0-{self.num_bones-1})"
+            )
 
         # Check for circular references
         if parent_idx != -1:
@@ -810,7 +805,9 @@ class DemBonesExtWrapper(DemBonesWrapper):
 
             while current != -1:
                 if current in visited:
-                    raise ValueError(f"Circular parent-child relationship detected for bone {bone_idx}")
+                    raise ValueError(
+                        f"Circular parent-child relationship detected for bone {bone_idx}"
+                    )
                 visited.add(current)
                 current = temp_map.get(current, -1)
 
@@ -845,12 +842,16 @@ class DemBonesExtWrapper(DemBonesWrapper):
         root_bones = children_map.get(-1, [])
 
         def build_tree(bone_idx):
-            bone_name = self.bone_names[bone_idx] if bone_idx < len(self.bone_names) else f"Bone_{bone_idx}"
+            bone_name = (
+                self.bone_names[bone_idx]
+                if bone_idx < len(self.bone_names)
+                else f"Bone_{bone_idx}"
+            )
             children = children_map.get(bone_idx, [])
             return {
                 "name": bone_name,
                 "index": bone_idx,
-                "children": [build_tree(child) for child in children]
+                "children": [build_tree(child) for child in children],
             }
 
         return [build_tree(root) for root in root_bones]
