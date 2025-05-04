@@ -31,6 +31,7 @@ class DemBonesWrapper:
         self._dem_bones = _DemBones()
         self._bones = {}  # Mapping of bone names to indices
         self._targets = {}  # Mapping of target names to indices
+        self._weights_computed = False  # Flag to track if weights have been computed
 
     # Basic properties (delegated to C++ object)
 
@@ -353,6 +354,13 @@ class DemBonesWrapper:
             # Return empty array for invalid dimensions
             return np.zeros((0, 0), dtype=np.float64)
 
+        # Check if compute has been run
+        # If not, return zeros with the correct shape
+        # This avoids calling C++ code that might access uninitialized memory
+        if not hasattr(self, "_weights_computed") or not self._weights_computed:
+            # Return zeros with the correct shape
+            return np.zeros((self.num_bones, self.num_vertices), dtype=np.float64)
+
         try:
             # Otherwise get weights from C++ binding
             weights = self._dem_bones.get_weights()
@@ -404,6 +412,9 @@ class DemBonesWrapper:
 
         # Cache weights so get_weights can return the same value
         self._cached_weights = weights.copy()
+
+        # Set flag indicating weights have been set
+        self._weights_computed = True
 
         # Update weights in C++ binding
         self._dem_bones.set_weights(weights)
@@ -598,6 +609,9 @@ class DemBonesWrapper:
             if hasattr(self, "_cached_weights"):
                 delattr(self, "_cached_weights")
 
+            # Set flag indicating weights have been computed
+            self._weights_computed = True
+
             return result
         except ComputationError:
             # Re-raise ComputationError as is
@@ -644,6 +658,9 @@ class DemBonesWrapper:
             delattr(self, "_cached_weights")
         if hasattr(self, "_bind_matrices"):
             delattr(self, "_bind_matrices")
+
+        # Reset computation flags
+        self._weights_computed = False
 
     def export_to_dict(self):
         """
