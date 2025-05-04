@@ -31,7 +31,9 @@ class DCCInterface(abc.ABC):
     # ABC implementation details
     __abstractmethods__: typing.ClassVar[frozenset]
 
-    def __init__(self, dem_bones: Optional[Union[DemBonesWrapper, DemBonesExtWrapper]] = None) -> None:
+    def __init__(
+        self, dem_bones: Optional[Union[DemBonesWrapper, DemBonesExtWrapper]] = None
+    ) -> None:
         """
         Initialize the DCC interface.
 
@@ -39,7 +41,6 @@ class DCCInterface(abc.ABC):
             dem_bones (DemBonesWrapper or DemBonesExtWrapper, optional):
                 The DemBones instance to use. If None, a new instance will be created.
         """
-
     @property
     def dem_bones(self) -> Union[DemBonesWrapper, DemBonesExtWrapper]:
         """
@@ -48,7 +49,6 @@ class DCCInterface(abc.ABC):
         Returns:
             DemBonesWrapper or DemBonesExtWrapper: The DemBones instance
         """
-
     @dem_bones.setter
     def dem_bones(self, value: Union[DemBonesWrapper, DemBonesExtWrapper]) -> None:
         """
@@ -57,8 +57,9 @@ class DCCInterface(abc.ABC):
         Args:
             value (DemBonesWrapper or DemBonesExtWrapper): The DemBones instance
         """
-
-    def apply_coordinate_system_transform(self, data: np.ndarray, from_dcc: bool = True) -> np.ndarray:
+    def apply_coordinate_system_transform(
+        self, data: np.ndarray, from_dcc: bool = True
+    ) -> np.ndarray:
         """
         Apply coordinate system transformations.
 
@@ -75,9 +76,10 @@ class DCCInterface(abc.ABC):
         Returns:
             numpy.ndarray: The transformed data
         """
-
     @abstractmethod
-    def convert_matrices(self, matrices: np.ndarray, from_dcc: bool = True) -> np.ndarray:
+    def convert_matrices(
+        self, matrices: np.ndarray, from_dcc: bool = True
+    ) -> np.ndarray:
         """
         Convert between DCC-specific and DemBones matrix formats.
 
@@ -93,7 +95,6 @@ class DCCInterface(abc.ABC):
         Returns:
             numpy.ndarray: The converted matrices
         """
-
     @abstractmethod
     def from_dcc_data(self, **kwargs) -> bool:
         """
@@ -108,7 +109,6 @@ class DCCInterface(abc.ABC):
         Returns:
             bool: True if import was successful
         """
-
     @abstractmethod
     def to_dcc_data(self, **kwargs) -> Dict[str, Any]:
         """
@@ -123,7 +123,6 @@ class DCCInterface(abc.ABC):
         Returns:
             dict: Dictionary containing exported data
         """
-
     def get_dcc_info(self) -> Dict[str, Any]:
         """
         Get information about the DCC software.
@@ -131,7 +130,6 @@ class DCCInterface(abc.ABC):
         Returns:
             dict: Dictionary containing information about the DCC software
         """
-
     def validate_dcc_data(self, **kwargs) -> Tuple[bool, str]:
         """
         Validate DCC data before import.
@@ -143,7 +141,6 @@ class DCCInterface(abc.ABC):
             tuple: (is_valid, error_message)
         """
 
-
 class BaseDCCInterface(DCCInterface):
     """
     Base implementation of the DCC interface.
@@ -153,7 +150,9 @@ class BaseDCCInterface(DCCInterface):
     Y-up orientation, which is common in many 3D applications.
     """
 
-    def __init__(self, dem_bones: Optional[Union[DemBonesWrapper, DemBonesExtWrapper]] = None) -> None:
+    def __init__(
+        self, dem_bones: Optional[Union[DemBonesWrapper, DemBonesExtWrapper]] = None
+    ) -> None:
         """
         Initialize the base DCC interface.
 
@@ -161,7 +160,6 @@ class BaseDCCInterface(DCCInterface):
             dem_bones (DemBonesWrapper or DemBonesExtWrapper, optional):
                 The DemBones instance to use. If None, a new instance will be created.
         """
-
     def get_dcc_info(self) -> Dict[str, Any]:
         """
         Get information about the DCC software.
@@ -169,9 +167,13 @@ class BaseDCCInterface(DCCInterface):
         Returns:
             dict: Dictionary containing information about the DCC software
         """
-
-    def from_dcc_data(self, rest_pose: np.ndarray, target_poses: List[np.ndarray],
-                     bone_names: Optional[List[str]] = None, **kwargs) -> bool:
+    def from_dcc_data(
+        self,
+        rest_pose: np.ndarray,
+        target_poses: List[np.ndarray],
+        bone_names: Optional[List[str]] = None,
+        **kwargs,
+    ) -> bool:
         """
         Import data from DCC software into DemBones.
 
@@ -184,7 +186,6 @@ class BaseDCCInterface(DCCInterface):
         Returns:
             bool: True if import was successful
         """
-
     def to_dcc_data(self, **kwargs) -> Dict[str, Any]:
         """
         Export DemBones data to DCC software.
@@ -195,8 +196,9 @@ class BaseDCCInterface(DCCInterface):
         Returns:
             dict: Dictionary containing exported data
         """
-
-    def convert_matrices(self, matrices: np.ndarray, from_dcc: bool = True) -> np.ndarray:
+    def convert_matrices(
+        self, matrices: np.ndarray, from_dcc: bool = True
+    ) -> np.ndarray:
         """
         Convert between DCC-specific and DemBones matrix formats.
 
@@ -208,7 +210,6 @@ class BaseDCCInterface(DCCInterface):
         Returns:
             numpy.ndarray: The converted matrices
         """
-
     def set_coordinate_system(self, transform_matrix: np.ndarray) -> None:
         """
         Set the coordinate system transformation matrix.

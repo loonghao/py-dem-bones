@@ -5,6 +5,7 @@ Custom exceptions for py-dem-bones.
 This module defines custom exceptions used throughout the py-dem-bones library
 to provide more specific error information and improve error handling.
 """
+
 from __future__ import annotations
 
 __all__ = [

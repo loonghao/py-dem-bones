@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import numpy as np
 
 # Import local modules
-from py_dem_bones.base import DemBonesWrapper, DemBonesExtWrapper
+from py_dem_bones.base import DemBonesExtWrapper, DemBonesWrapper
 
 
 class DCCInterface(ABC):
@@ -26,7 +26,9 @@ class DCCInterface(ABC):
     DCC software application.
     """
 
-    def __init__(self, dem_bones: Optional[Union[DemBonesWrapper, DemBonesExtWrapper]] = None):
+    def __init__(
+        self, dem_bones: Optional[Union[DemBonesWrapper, DemBonesExtWrapper]] = None
+    ):
         """
         Initialize the DCC interface.
 
@@ -70,7 +72,6 @@ class DCCInterface(ABC):
         Returns:
             bool: True if import was successful
         """
-        pass
 
     @abstractmethod
     def to_dcc_data(self, **kwargs) -> bool:
@@ -86,10 +87,11 @@ class DCCInterface(ABC):
         Returns:
             bool: True if export was successful
         """
-        pass
 
     @abstractmethod
-    def convert_matrices(self, matrices: np.ndarray, from_dcc: bool = True) -> np.ndarray:
+    def convert_matrices(
+        self, matrices: np.ndarray, from_dcc: bool = True
+    ) -> np.ndarray:
         """
         Convert between DCC-specific and DemBones matrix formats.
 
@@ -105,9 +107,10 @@ class DCCInterface(ABC):
         Returns:
             numpy.ndarray: The converted matrices
         """
-        pass
 
-    def apply_coordinate_system_transform(self, data: np.ndarray, from_dcc: bool = True) -> np.ndarray:
+    def apply_coordinate_system_transform(
+        self, data: np.ndarray, from_dcc: bool = True
+    ) -> np.ndarray:
         """
         Apply coordinate system transformations.
 
@@ -161,7 +164,9 @@ class BaseDCCInterface(DCCInterface):
     Y-up orientation, which is common in many 3D applications.
     """
 
-    def __init__(self, dem_bones: Optional[Union[DemBonesWrapper, DemBonesExtWrapper]] = None):
+    def __init__(
+        self, dem_bones: Optional[Union[DemBonesWrapper, DemBonesExtWrapper]] = None
+    ):
         """
         Initialize the base DCC interface.
 
@@ -192,8 +197,13 @@ class BaseDCCInterface(DCCInterface):
             "coordinate_system": "Right-handed, Y-up",
         }
 
-    def from_dcc_data(self, rest_pose: np.ndarray, target_poses: List[np.ndarray],
-                     bone_names: Optional[List[str]] = None, **kwargs) -> bool:
+    def from_dcc_data(
+        self,
+        rest_pose: np.ndarray,
+        target_poses: List[np.ndarray],
+        bone_names: Optional[List[str]] = None,
+        **kwargs,
+    ) -> bool:
         """
         Import data from DCC software into DemBones.
 
@@ -212,8 +222,10 @@ class BaseDCCInterface(DCCInterface):
         try:
             # Convert coordinate system if needed
             rest_pose = self.apply_coordinate_system_transform(rest_pose, from_dcc=True)
-            target_poses = [self.apply_coordinate_system_transform(pose, from_dcc=True)
-                           for pose in target_poses]
+            target_poses = [
+                self.apply_coordinate_system_transform(pose, from_dcc=True)
+                for pose in target_poses
+            ]
 
             # Set bone names if provided
             if bone_names:
@@ -263,7 +275,9 @@ class BaseDCCInterface(DCCInterface):
             print(f"Error exporting DCC data: {str(e)}")
             return {"success": False, "error": str(e)}
 
-    def convert_matrices(self, matrices: np.ndarray, from_dcc: bool = True) -> np.ndarray:
+    def convert_matrices(
+        self, matrices: np.ndarray, from_dcc: bool = True
+    ) -> np.ndarray:
         """
         Convert between DCC-specific and DemBones matrix formats.
 
@@ -280,23 +294,39 @@ class BaseDCCInterface(DCCInterface):
             # DCC to DemBones
             if len(matrices.shape) == 2 and matrices.shape == (4, 4):
                 # Single matrix
-                return self._coord_transform @ matrices @ np.linalg.inv(self._coord_transform)
+                return (
+                    self._coord_transform
+                    @ matrices
+                    @ np.linalg.inv(self._coord_transform)
+                )
             elif len(matrices.shape) == 3 and matrices.shape[1:] == (4, 4):
                 # Array of matrices
                 result = np.zeros_like(matrices)
                 for i in range(matrices.shape[0]):
-                    result[i] = self._coord_transform @ matrices[i] @ np.linalg.inv(self._coord_transform)
+                    result[i] = (
+                        self._coord_transform
+                        @ matrices[i]
+                        @ np.linalg.inv(self._coord_transform)
+                    )
                 return result
         else:
             # DemBones to DCC
             if len(matrices.shape) == 2 and matrices.shape == (4, 4):
                 # Single matrix
-                return np.linalg.inv(self._coord_transform) @ matrices @ self._coord_transform
+                return (
+                    np.linalg.inv(self._coord_transform)
+                    @ matrices
+                    @ self._coord_transform
+                )
             elif len(matrices.shape) == 3 and matrices.shape[1:] == (4, 4):
                 # Array of matrices
                 result = np.zeros_like(matrices)
                 for i in range(matrices.shape[0]):
-                    result[i] = np.linalg.inv(self._coord_transform) @ matrices[i] @ self._coord_transform
+                    result[i] = (
+                        np.linalg.inv(self._coord_transform)
+                        @ matrices[i]
+                        @ self._coord_transform
+                    )
                 return result
 
         # If we get here, the input format wasn't recognized
@@ -309,7 +339,10 @@ class BaseDCCInterface(DCCInterface):
         Args:
             transform_matrix (numpy.ndarray): 4x4 transformation matrix
         """
-        if not isinstance(transform_matrix, np.ndarray) or transform_matrix.shape != (4, 4):
+        if not isinstance(transform_matrix, np.ndarray) or transform_matrix.shape != (
+            4,
+            4,
+        ):
             raise ValueError("Transform matrix must be a 4x4 numpy array")
 
         self._coord_transform = transform_matrix.copy()
