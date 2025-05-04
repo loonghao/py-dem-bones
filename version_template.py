@@ -21,5 +21,5 @@ __version_tuple__: VERSION_TUPLE
 version_tuple: VERSION_TUPLE
 
 __version__ = version = '{version}'
-__dem_bones_version__ = "v1.2.1-2-g09b899b"  # Hardcoded Dem Bones library version
+__dem_bones_version__ = "1.2.1"  # Hardcoded Dem Bones library version
 __version_tuple__ = version_tuple = {version_tuple}
