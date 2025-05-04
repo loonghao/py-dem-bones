@@ -8,7 +8,10 @@
 // Define ssize_t for Windows compatibility
 #ifdef _WIN32
     #include <BaseTsd.h>
-    typedef SSIZE_T ssize_t;
+    // Use Py_ssize_t instead of redefining ssize_t which conflicts with Python's definition
+    #ifndef Py_ssize_t
+        #define Py_ssize_t SSIZE_T
+    #endif
 #endif
 
 namespace py = pybind11;
@@ -180,7 +183,7 @@ void bind_dem_bones_ext(py::module& m, const std::string& type_suffix) {
             // If dimensions are invalid, return empty array
             if (nBones <= 0 || nVerts <= 0) {
                 // Create an empty array without using initializer list
-                std::vector<ssize_t> shape = {0, 0};
+                std::vector<py::ssize_t> shape = {0, 0};
                 return py::array_t<Scalar>(shape);
             }
 
@@ -225,7 +228,7 @@ void bind_dem_bones_ext(py::module& m, const std::string& type_suffix) {
             // If dimensions are invalid, return empty array
             if (nFrames <= 0 || nBones <= 0) {
                 // Create an empty array without using initializer list
-                std::vector<ssize_t> shape = {0, 4, 4};
+                std::vector<py::ssize_t> shape = {0, 4, 4};
                 return py::array_t<Scalar>(shape);
             }
 
