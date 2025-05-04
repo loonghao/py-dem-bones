@@ -69,9 +69,9 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
             int nBones = self.nB;
             int nVerts = self.nV;
 
-            // If dimensions are invalid, return empty array
+            // If dimensions are invalid, return empty array with shape (0, 0)
             if (nBones <= 0 || nVerts <= 0) {
-                py::array_t<Scalar> result;
+                py::array_t<Scalar> result({0, 0});
                 return result;
             }
 
@@ -113,9 +113,9 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
             int nFrames = self.nF;
             int nBones = self.nB;
 
-            // If dimensions are invalid, return empty array
+            // If dimensions are invalid, return empty array with shape (0, 4, 4)
             if (nFrames <= 0 || nBones <= 0) {
-                py::array_t<Scalar> result;
+                py::array_t<Scalar> result({0, 4, 4});
                 return result;
             }
 
