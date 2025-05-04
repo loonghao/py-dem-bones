@@ -112,20 +112,20 @@ __version__ = \"${version}\"
     {
         path = "docs/conf.py",
         location = "source",
-        template-match = "release = '.*'",
-        template-replace = "release = '${version}'"
+        "template-match" = "release = '.*'",
+        "template-replace" = "release = '${version}'"
     },
     {
         path = "docs/conf.py",
         location = "source",
-        template-match = "version = '.*'",
-        template-replace = "version = '${version}'"
+        "template-match" = "version = '.*'",
+        "template-replace" = "version = '${version}'"
     },
     {
         path = ".github/CITATION.cff",
         location = "source",
-        template-match = "version: .*",
-        template-replace = "version: ${version}"
+        "template-match" = "version: .*",
+        "template-replace" = "version: ${version}"
     }
 ]
 
