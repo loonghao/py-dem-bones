@@ -1,4 +1,4 @@
-include LICENSE
+include LICENSE.md
 include README.md
 include README_zh.md
 include CHANGELOG.md
@@ -7,14 +7,28 @@ include 3RDPARTYLICENSES_zh.md
 include pyproject.toml
 include CMakeLists.txt
 include setup.py
+include .cibuildwheel.toml
 
+# Include Python source files
 recursive-include src/py_dem_bones *.py
-recursive-include src/binding *.cpp *.h
-recursive-include extern/dem-bones/include *.h
 
-recursive-include docs *.rst *.py
+# Include C++ source files
+recursive-include src/binding *.cpp *.h *.hpp
+
+# Include Dem-Bones library
+recursive-include extern/dem-bones *
+
+# Include Eigen library
+recursive-include extern/eigen *
+
+# Include documentation and examples
+recursive-include docs *.rst *.py *.md
 recursive-include examples *.py
 
+# Include CMake files
+recursive-include cmake *
+
+# Exclude build artifacts and IDE files
 prune docs/_build
 prune docs/_static
 prune docs/_templates
@@ -23,3 +37,10 @@ prune src/py_dem_bones/__pycache__
 prune .github
 prune .vscode
 prune .idea
+prune build
+prune dist
+prune *.egg-info
+prune __pycache__
+prune .pytest_cache
+prune .coverage
+prune htmlcov
