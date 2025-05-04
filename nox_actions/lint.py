@@ -14,9 +14,9 @@ def lint(session: nox.Session) -> None:
     retry_command(
         session,
         session.install,
-        "black<23.3.0",
-        "ruff<0.0.270",
-        "isort<5.12.0",
+        "black>=23.0.0",
+        "ruff>=0.0.270",
+        "isort>=5.12.0",
         "autoflake>=2.0.0",
         max_retries=3,
     )
@@ -36,9 +36,9 @@ def lint_fix(session: nox.Session) -> None:
     retry_command(
         session,
         session.install,
-        "black<23.3.0",
-        "ruff<0.0.270",
-        "isort<5.12.0",
+        "black>=23.0.0",
+        "ruff>=0.0.270",
+        "isort>=5.12.0",
         "autoflake>=2.0.0",
         max_retries=3,
     )
