@@ -564,10 +564,14 @@ class DemBonesWrapper:
         Raises:
             ComputationError: If the computation fails
         """
-        # Validate input data before computing
-        self._validate_computation_inputs()
-
         try:
+            # Validate input data before computing
+            try:
+                self._validate_computation_inputs()
+            except ParameterError as e:
+                # Wrap ParameterError in ComputationError with 'compute' in the message
+                raise ComputationError(f"Cannot compute: {str(e)}")
+
             # If a callback is provided, we need to monitor progress
             if callback is not None:
                 # Get the total number of iterations
@@ -595,7 +599,11 @@ class DemBonesWrapper:
                 delattr(self, "_cached_weights")
 
             return result
+        except ComputationError:
+            # Re-raise ComputationError as is
+            raise
         except Exception as e:
+            # Wrap any other exception in ComputationError
             raise ComputationError(f"Computation failed: {str(e)}")
 
     def _validate_computation_inputs(self):
