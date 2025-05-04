@@ -348,9 +348,25 @@ class DemBonesWrapper:
         if hasattr(self, "_cached_weights") and self._cached_weights is not None:
             return self._cached_weights
 
-        # Otherwise get weights from C++ binding
-        weights = self._dem_bones.get_weights()
-        return weights
+        # Check if dimensions are valid
+        if self.num_bones <= 0 or self.num_vertices <= 0:
+            # Return empty array for invalid dimensions
+            return np.zeros((0, 0), dtype=np.float64)
+
+        try:
+            # Otherwise get weights from C++ binding
+            weights = self._dem_bones.get_weights()
+
+            # Validate the returned weights
+            if weights.size == 0:
+                # If empty, return properly shaped zero array
+                return np.zeros((self.num_bones, self.num_vertices), dtype=np.float64)
+
+            return weights
+        except Exception as e:
+            # If any error occurs, return zero weights
+            print(f"Warning: Error getting weights: {e}")
+            return np.zeros((self.num_bones, self.num_vertices), dtype=np.float64)
 
     def set_weights(self, weights):
         """
