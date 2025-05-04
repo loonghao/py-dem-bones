@@ -55,8 +55,30 @@ jobs:
           CURRENT_VERSION=$(cz version --project)
           echo "Current version: $CURRENT_VERSION"
 
-          # Bump version
-          cz bump --yes
+          # Analyze commits to determine increment type
+          # Check for breaking changes
+          BREAKING_CHANGES=$(git log --grep="BREAKING CHANGE" --since="$(git describe --tags --abbrev=0)" --pretty=format:"%s" | wc -l)
+          # Check for new features
+          FEATURES=$(git log --grep="^feat" --since="$(git describe --tags --abbrev=0)" --pretty=format:"%s" | wc -l)
+          # Check for bug fixes
+          FIXES=$(git log --grep="^fix" --since="$(git describe --tags --abbrev=0)" --pretty=format:"%s" | wc -l)
+
+          # Determine increment type
+          INCREMENT="patch"  # Default to patch
+          if [ "$BREAKING_CHANGES" -gt 0 ]; then
+            INCREMENT="major"
+            echo "Found breaking changes, will do a major version bump"
+          elif [ "$FEATURES" -gt 0 ]; then
+            INCREMENT="minor"
+            echo "Found new features, will do a minor version bump"
+          else
+            echo "Found fixes or other changes, will do a patch version bump"
+          fi
+
+          echo "Increment type: $INCREMENT"
+
+          # Bump version with determined increment
+          cz bump --increment $INCREMENT --yes
 
           # Get new version after bump
           NEW_VERSION=$(cz version --project)
@@ -64,6 +86,7 @@ jobs:
 
           # Set output for later steps
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "increment_type=$INCREMENT" >> $GITHUB_OUTPUT
 
           # Push changes
           git push
@@ -74,15 +97,38 @@ jobs:
           GIT_AUTHOR_NAME: "GitHub Actions"
           GIT_AUTHOR_EMAIL: "actions@github.com"
 
+      - name: Generate Release Notes
+        id: release_notes
+        run: |
+          # Get the changelog for the new version
+          VERSION="${{ steps.bump.outputs.new_version }}"
+          INCREMENT="${{ steps.bump.outputs.increment_type }}"
+
+          # Extract changes from CHANGELOG.md for this version
+          CHANGES=$(grep -A 100 "## $VERSION" CHANGELOG.md | grep -B 100 -m 2 "^## " | grep -v "^## $VERSION" | grep -v "^## " | sed '/^$/d')
+
+          # Create release notes
+          NOTES="## Release $VERSION ($INCREMENT version bump)\n\n"
+          NOTES+="### Changes in this release:\n\n"
+          NOTES+="$CHANGES\n\n"
+          NOTES+="### Commit Statistics:\n"
+          NOTES+="- Breaking changes: $(git log --grep='BREAKING CHANGE' --since='$(git describe --tags --abbrev=0)' --pretty=format:'%h' | wc -l | xargs)\n"
+          NOTES+="- New features: $(git log --grep='^feat' --since='$(git describe --tags --abbrev=0)' --pretty=format:'%h' | wc -l | xargs)\n"
+          NOTES+="- Bug fixes: $(git log --grep='^fix' --since='$(git describe --tags --abbrev=0)' --pretty=format:'%h' | wc -l | xargs)\n"
+          NOTES+="- Other changes: $(git log --grep='^(docs|style|refactor|perf|test|build|ci|chore)' --since='$(git describe --tags --abbrev=0)' --pretty=format:'%h' | wc -l | xargs)\n\n"
+          NOTES+="See [CHANGELOG.md](https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md) for full details."
+
+          # Save notes to output
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.bump.outputs.new_version }}
-          name: "Release ${{ steps.bump.outputs.new_version }}"
-          body: |
-            Automated release by GitHub Actions
-
-            See [CHANGELOG.md](https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md) for details.
+          name: "Release ${{ steps.bump.outputs.new_version }} (${{ steps.bump.outputs.increment_type }})"
+          body: ${{ steps.release_notes.outputs.notes }}
           draft: false
           prerelease: false
         env:

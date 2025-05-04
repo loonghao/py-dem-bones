@@ -160,10 +160,19 @@ SKBUILD_SOABI = "OFF"
 [tool.commitizen]
 name = "cz_conventional_commits"
 version_provider = "scm"
-tag-format = "$version"
+tag-format = "$version"  # Format: 1.2.3 (without 'v' prefix)
 update_changelog_on_bump = true
 change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "ci", "build", "docs", "test", "chore"]
-# Version files are now managed by scikit-build-core
+version_files = [
+    "pyproject.toml:fallback_version",
+    "src/py_dem_bones/__version__.py:__version__"
+]
+# Version bump rules
+major_version_zero = true  # Treat breaking changes as minor releases when major version is 0
+bump_message = "bump: version $current_version → $new_version"
+# Commit message rules
+commit_parser = "^(?P<change_type>feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(?:\\((?P<scope>[^()\r\n]*)\\)|\\()?(?P<breaking>!)?:\\s(?P<message>.*)?"
+version_scheme = "semver"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
