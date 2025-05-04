@@ -6,13 +6,27 @@ of the C++ bindings with additional features such as named bones, error handling
 and convenience methods.
 """
 
+# Import standard library modules
+from typing import Dict, List, Optional, Tuple, Union, Callable
+
 # Import third-party modules
 import numpy as np
 
 # Import local modules
 from py_dem_bones._py_dem_bones import DemBones as _DemBones
 from py_dem_bones._py_dem_bones import DemBonesExt as _DemBonesExt
-from py_dem_bones.exceptions import ComputationError, IndexError, NameError, ParameterError
+from py_dem_bones.exceptions import (
+    ComputationError,
+    IndexError,
+    NameError,
+    ParameterError,
+)
+from py_dem_bones.utils import (
+    numpy_to_eigen,
+    eigen_to_numpy,
+    validate_matrix_shape,
+    validate_bone_index,
+)
 
 
 class DemBonesWrapper:
@@ -532,9 +546,12 @@ class DemBonesWrapper:
 
         self._dem_bones.set_transformations(flat_transforms)
 
-    def compute(self):
+    def compute(self, callback: Optional[Callable[[float], None]] = None):
         """
         Compute the skinning weights and transformations.
+
+        Args:
+            callback (callable, optional): A function to call with progress updates (0.0 to 1.0)
 
         Returns:
             bool: True if computation succeeded
@@ -542,13 +559,64 @@ class DemBonesWrapper:
         Raises:
             ComputationError: If the computation fails
         """
+        # Validate input data before computing
+        self._validate_computation_inputs()
+
         try:
-            result = self._dem_bones.compute()
+            # If a callback is provided, we need to monitor progress
+            if callback is not None:
+                # Get the total number of iterations
+                total_iters = self.num_iterations
+                if total_iters <= 0:
+                    total_iters = 100  # Default if not set
+
+                # Initial progress
+                callback(0.0)
+
+                # Start computation
+                result = self._dem_bones.compute()
+
+                # Final progress
+                callback(1.0)
+            else:
+                # No callback, just compute
+                result = self._dem_bones.compute()
+
             if not result:
                 raise ComputationError("DemBones.compute() returned failure")
+
+            # Clear any cached weights since we've computed new ones
+            if hasattr(self, "_cached_weights"):
+                delattr(self, "_cached_weights")
+
             return result
         except Exception as e:
             raise ComputationError(f"Computation failed: {str(e)}")
+
+    def _validate_computation_inputs(self):
+        """
+        Validate that all required inputs are set before computation.
+
+        Raises:
+            ParameterError: If any required inputs are missing or invalid
+        """
+        # Check number of vertices
+        if self.num_vertices <= 0:
+            raise ParameterError("Number of vertices must be set and positive")
+
+        # Check number of bones
+        if self.num_bones <= 0:
+            raise ParameterError("Number of bones must be set and positive")
+
+        # Check rest pose
+        rest_pose = self._dem_bones.get_rest_pose()
+        if rest_pose.size == 0:
+            raise ParameterError("Rest pose must be set before computation")
+
+        # Check animated poses
+        animated_poses = self._dem_bones.get_animated_poses()
+        if animated_poses.size == 0:
+            raise ParameterError("At least one target pose must be set before computation")
 
     def clear(self):
         """Clear all data and reset the computation."""
@@ -556,13 +624,112 @@ class DemBonesWrapper:
         self._bones = {}
         self._targets = {}
 
+        # Clear any cached data
+        if hasattr(self, "_cached_weights"):
+            delattr(self, "_cached_weights")
+        if hasattr(self, "_bind_matrices"):
+            delattr(self, "_bind_matrices")
+
+    def export_to_dict(self):
+        """
+        Export the current state to a dictionary for serialization.
+
+        Returns:
+            dict: Dictionary containing all data needed to reconstruct the state
+        """
+        data = {
+            "num_bones": self.num_bones,
+            "num_vertices": self.num_vertices,
+            "num_iterations": self.num_iterations,
+            "max_influences": self.max_influences,
+            "weight_smoothness": self.weight_smoothness,
+            "bone_names": self.bone_names,
+            "target_names": self.target_names,
+        }
+
+        # Export weights if available
+        try:
+            weights = self.get_weights()
+            if weights.size > 0:
+                data["weights"] = weights.tolist()
+        except:
+            pass
+
+        # Export transformations if available
+        try:
+            transforms = self.get_transformations()
+            if transforms.size > 0:
+                data["transformations"] = transforms.tolist()
+        except:
+            pass
+
+        # Export bind matrices if available
+        if hasattr(self, "_bind_matrices"):
+            data["bind_matrices"] = [m.tolist() for m in self._bind_matrices]
+
+        return data
+
+    def import_from_dict(self, data):
+        """
+        Import state from a dictionary.
+
+        Args:
+            data (dict): Dictionary containing state data
+
+        Returns:
+            bool: True if import was successful
+        """
+        # Clear current state
+        self.clear()
+
+        # Set basic parameters
+        if "num_bones" in data:
+            self.num_bones = data["num_bones"]
+        if "num_vertices" in data:
+            self.num_vertices = data["num_vertices"]
+        if "num_iterations" in data:
+            self.num_iterations = data["num_iterations"]
+        if "max_influences" in data:
+            self.max_influences = data["max_influences"]
+        if "weight_smoothness" in data:
+            self.weight_smoothness = data["weight_smoothness"]
+
+        # Set bone names
+        if "bone_names" in data:
+            for i, name in enumerate(data["bone_names"]):
+                if name:  # Only set non-empty names
+                    self.set_bone_name(name, i)
+
+        # Set target names
+        if "target_names" in data:
+            for i, name in enumerate(data["target_names"]):
+                if name:  # Only set non-empty names
+                    self.set_target_name(name, i)
+
+        # Set weights if available
+        if "weights" in data:
+            weights = np.array(data["weights"])
+            self.set_weights(weights)
+
+        # Set transformations if available
+        if "transformations" in data:
+            transforms = np.array(data["transformations"])
+            self.set_transformations(transforms)
+
+        # Set bind matrices if available
+        if "bind_matrices" in data:
+            self._bind_matrices = [np.array(m) for m in data["bind_matrices"]]
+
+        return True
+
 
 class DemBonesExtWrapper(DemBonesWrapper):
     """
     Python wrapper for the DemBonesExt C++ class.
 
     This class extends DemBonesWrapper with additional functionality provided by
-    the DemBonesExt C++ class, such as advanced skinning algorithms.
+    the DemBonesExt C++ class, such as advanced skinning algorithms and hierarchical
+    skeleton support.
     """
 
     def __init__(self):
@@ -570,9 +737,10 @@ class DemBonesExtWrapper(DemBonesWrapper):
         super().__init__()
         # Replace the base C++ object with the extended version
         self._dem_bones = _DemBonesExt()
+        # Initialize parent-child relationships
+        self._parent_map = {}  # Maps bone index to parent bone index
 
     # Additional properties and methods specific to DemBonesExt
-    # can be added here as the C++ bindings evolve
 
     @property
     def bind_update(self):
@@ -585,3 +753,193 @@ class DemBonesExtWrapper(DemBonesWrapper):
         if not isinstance(value, int) or value < 0:
             raise ParameterError("Bind update must be a non-negative integer")
         self._dem_bones.bindUpdate = value
+
+    @property
+    def parent_bones(self):
+        """
+        Get the parent bone indices for all bones.
+
+        Returns:
+            dict: Dictionary mapping bone indices to their parent bone indices
+        """
+        return self._parent_map.copy()
+
+    def set_parent_bone(self, bone: Union[str, int], parent: Union[str, int, None]):
+        """
+        Set the parent bone for a bone.
+
+        Args:
+            bone (str or int): The bone name or index
+            parent (str, int, or None): The parent bone name or index, or None for root bones
+
+        Returns:
+            tuple: (bone_index, parent_index) of the updated relationship
+        """
+        # Convert bone names to indices if needed
+        if isinstance(bone, str):
+            bone_idx = self.get_bone_index(bone)
+        else:
+            bone_idx = bone
+
+        # Validate bone index
+        if bone_idx >= self.num_bones:
+            raise IndexError(f"Bone index {bone_idx} out of range (0-{self.num_bones-1})")
+
+        # Handle parent bone
+        if parent is None:
+            # Root bone (no parent)
+            parent_idx = -1
+        elif isinstance(parent, str):
+            parent_idx = self.get_bone_index(parent)
+        else:
+            parent_idx = parent
+
+        # Validate parent index if not a root
+        if parent_idx >= self.num_bones:
+            raise IndexError(f"Parent bone index {parent_idx} out of range (0-{self.num_bones-1})")
+
+        # Check for circular references
+        if parent_idx != -1:
+            # Temporary map to check for cycles
+            temp_map = self._parent_map.copy()
+            temp_map[bone_idx] = parent_idx
+
+            # Check for cycles
+            current = parent_idx
+            visited = set([bone_idx])
+
+            while current != -1:
+                if current in visited:
+                    raise ValueError(f"Circular parent-child relationship detected for bone {bone_idx}")
+                visited.add(current)
+                current = temp_map.get(current, -1)
+
+        # Update parent map
+        self._parent_map[bone_idx] = parent_idx
+
+        # Update C++ parent array
+        parent_array = np.ones(self.num_bones, dtype=np.int32) * -1
+        for b, p in self._parent_map.items():
+            if 0 <= b < self.num_bones:
+                parent_array[b] = p
+
+        self._dem_bones.parent = parent_array
+
+        return (bone_idx, parent_idx)
+
+    def get_bone_hierarchy(self):
+        """
+        Get the complete bone hierarchy as a tree structure.
+
+        Returns:
+            dict: Nested dictionary representing the bone hierarchy
+        """
+        # Build a map of parent to children
+        children_map = {}
+        for bone, parent in self._parent_map.items():
+            if parent not in children_map:
+                children_map[parent] = []
+            children_map[parent].append(bone)
+
+        # Build the tree starting from root bones
+        root_bones = children_map.get(-1, [])
+
+        def build_tree(bone_idx):
+            bone_name = self.bone_names[bone_idx] if bone_idx < len(self.bone_names) else f"Bone_{bone_idx}"
+            children = children_map.get(bone_idx, [])
+            return {
+                "name": bone_name,
+                "index": bone_idx,
+                "children": [build_tree(child) for child in children]
+            }
+
+        return [build_tree(root) for root in root_bones]
+
+    def set_bone_names_with_hierarchy(self, hierarchy):
+        """
+        Set bone names and hierarchy from a nested structure.
+
+        Args:
+            hierarchy (list): List of dictionaries representing the bone hierarchy
+
+        Returns:
+            int: Number of bones set
+        """
+        # Clear existing bones and hierarchy
+        self._bones = {}
+        self._parent_map = {}
+
+        # Process the hierarchy
+        def process_node(node, parent_idx=-1):
+            name = node.get("name", f"Bone_{len(self._bones)}")
+            bone_idx = self.set_bone_name(name)
+
+            # Set parent relationship
+            if parent_idx != -1:
+                self.set_parent_bone(bone_idx, parent_idx)
+
+            # Process children
+            for child in node.get("children", []):
+                process_node(child, bone_idx)
+
+        # Process all root nodes
+        for root in hierarchy:
+            process_node(root)
+
+        return len(self._bones)
+
+    def export_to_dict(self):
+        """
+        Export the current state to a dictionary for serialization.
+
+        Returns:
+            dict: Dictionary containing all data needed to reconstruct the state
+        """
+        # Get base class data
+        data = super().export_to_dict()
+
+        # Add DemBonesExt specific data
+        data["bind_update"] = self.bind_update
+        data["parent_map"] = self._parent_map
+
+        # Add bone hierarchy
+        data["bone_hierarchy"] = self.get_bone_hierarchy()
+
+        return data
+
+    def import_from_dict(self, data):
+        """
+        Import state from a dictionary.
+
+        Args:
+            data (dict): Dictionary containing state data
+
+        Returns:
+            bool: True if import was successful
+        """
+        # Import base class data
+        super().import_from_dict(data)
+
+        # Import DemBonesExt specific data
+        if "bind_update" in data:
+            self.bind_update = data["bind_update"]
+
+        # Import parent map
+        if "parent_map" in data:
+            self._parent_map = {}
+            for bone, parent in data["parent_map"].items():
+                self._parent_map[int(bone)] = int(parent)
+
+            # Update C++ parent array
+            parent_array = np.ones(self.num_bones, dtype=np.int32) * -1
+            for b, p in self._parent_map.items():
+                if 0 <= b < self.num_bones:
+                    parent_array[b] = p
+
+            self._dem_bones.parent = parent_array
+
+        # Import bone hierarchy (overrides parent_map if both are present)
+        if "bone_hierarchy" in data:
+            self.set_bone_names_with_hierarchy(data["bone_hierarchy"])
+
+        return True
