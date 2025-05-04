@@ -94,15 +94,12 @@ def prepare_environment_for_docs(session: nox.Session) -> Path:
 
 def install_doc_dependencies(session):
     """Install dependencies for building documentation."""
-    session.install(
-        "sphinx",
-        "furo",  #
-        "myst-parser",
-        "sphinx-autodoc-typehints",
-        "sphinxcontrib-googleanalytics",
-        "sphinx-copybutton",  #
-        "sphinx-design",  #
-    )
+    # Install the package with docs extras
+    retry_command(session, session.install, "-e", ".[docs]", max_retries=3)
+
+    # Ensure sphinx-autobuild is installed for docs-server
+    if not any(arg.startswith("sphinx-autobuild") for arg in session.posargs):
+        retry_command(session, session.install, "sphinx-autobuild", max_retries=3)
 
 
 def docs(session: nox.Session) -> None:
