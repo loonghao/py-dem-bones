@@ -5,6 +5,7 @@ requires = [
     "numpy>=1.20.0",
     "setuptools>=42.0.0",
     "wheel>=0.36.0",
+    "setuptools_scm>=8.0.0",
 ]
 build-backend = "scikit_build_core.build"
 
@@ -90,19 +91,40 @@ sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICEN
 sdist.exclude = ["tests/data/*"]
 
 [tool.scikit-build.metadata.version]
-provider = "git"
-# Use git tags for versioning
-use-release = true
+provider = "scikit_build_core.metadata.setuptools_scm"
 # Format: 1.2.3 (without 'v' prefix)
 tag-regex = "^(?P<version>[0-9]+\\.[0-9]+\\.[0-9]+)(?P<dev>-[a-zA-Z0-9]+)?$"
-# Write version to __version__.py
-write-to = "src/py_dem_bones/__version__.py:__version__"
-# Also update docs/conf.py
-write-to-files = [
-    "docs/conf.py:release = ",
-    "docs/conf.py:version = ",
-    ".github/CITATION.cff:version: "
-]
+# Don't add 'v' prefix to tags
+tag-format = "{version}"
+local-scheme = "no-local-version"
+fallback-version = "0.7.0"
+
+# Generate version files
+[[tool.scikit-build.generate]]
+path = "src/py_dem_bones/__version__.py"
+location = "source"
+template = '''"""Version information."""
+
+__version__ = "${version}"
+'''
+
+[[tool.scikit-build.generate]]
+path = "docs/conf.py"
+location = "source"
+template-match = "release = '.*'"
+template-replace = "release = '${version}'"
+
+[[tool.scikit-build.generate]]
+path = "docs/conf.py"
+location = "source"
+template-match = "version = '.*'"
+template-replace = "version = '${version}'"
+
+[[tool.scikit-build.generate]]
+path = ".github/CITATION.cff"
+location = "source"
+template-match = "version: .*"
+template-replace = "version: ${version}"
 
 [tool.scikit-build.cmake]
 version = ">=3.15"
