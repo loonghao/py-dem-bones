@@ -21,5 +21,12 @@ runs:
     - name: Set up ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: ${{ inputs.platform }}-ccache-${{ inputs.python }}
+        key: ${{ inputs.platform }}-ccache-${{ inputs.python }}-${{ hashFiles('**/*.cpp', '**/*.h', 'CMakeLists.txt', 'cmake/**') }}
+        restore-keys: |
+          ${{ inputs.platform }}-ccache-${{ inputs.python }}-
+          ${{ inputs.platform }}-ccache-
         max-size: ${{ inputs.max-size }}
+
+    - name: Clear ccache stats
+      run: ccache -z
+      shell: bash
