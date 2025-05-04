@@ -91,6 +91,8 @@ wheel.exclude = ["tests/*"]
 wheel.expand-macos-universal-tags = true
 sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICENSE.md", "README.md", "extern/dem-bones/*", "extern/eigen/*"]
 sdist.exclude = ["tests/data/*"]
+# Enable experimental features
+experimental = true
 
 [tool.scikit-build.metadata.version]
 provider = "setuptools_scm"
