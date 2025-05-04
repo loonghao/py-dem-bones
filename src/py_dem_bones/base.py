@@ -459,6 +459,9 @@ class DemBonesWrapper:
             target_idx = self.set_target_name(target)
         else:
             target_idx = target
+            # Ensure the number of targets is updated when using index directly
+            if target_idx >= self._dem_bones.nS:
+                self._dem_bones.nS = target_idx + 1
 
         if not isinstance(vertices, np.ndarray):
             try:
@@ -644,7 +647,7 @@ class DemBonesWrapper:
         animated_poses = self._dem_bones.get_animated_poses()
         if animated_poses.size == 0:
             raise ParameterError(
-                "At least one target pose must be set before computation"
+                "At least one target pose must be set before computation. Use set_target_vertices() to add target poses."
             )
 
     def clear(self):
@@ -881,6 +884,11 @@ class DemBonesExtWrapper(DemBonesWrapper):
 
         # Build the tree starting from root bones
         root_bones = children_map.get(-1, [])
+
+        # If no explicit root bones are defined but we have bones,
+        # use the first bone as the root
+        if not root_bones and self.num_bones > 0:
+            root_bones = [0]  # Use bone 0 as the default root
 
         def build_tree(bone_idx):
             bone_name = (
