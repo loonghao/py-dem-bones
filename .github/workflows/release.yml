@@ -361,21 +361,27 @@ jobs:
           path: ./wheelhouse/*.whl
           if-no-files-found: error
 
-  # Run tests during PR
-  test-code:
-    name: Test code on ${{ matrix.os }} with Python ${{ matrix.python-version }}
-    # Only run tests during PR
-    if: github.event_name == 'pull_request'
-    needs: [build-wheels-linux, build-wheels-windows, build-wheels-macos, build-wheels-macos-arm]
-    runs-on: ${{ matrix.os }}
+  # Test Linux wheels
+  test-linux-wheels:
+    name: Test Linux ${{ matrix.python }} wheel
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+    needs: [build-wheels-linux]
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-13, macos-14]
-        python-version: ['3.8', '3.10', '3.12']
-        exclude:
-          - os: macos-14
+        python: [cp38, cp39, cp310, cp311, cp312]
+        include:
+          - python: cp38
             python-version: '3.8'
+          - python: cp39
+            python-version: '3.9'
+          - python: cp310
+            python-version: '3.10'
+          - python: cp311
+            python-version: '3.11'
+          - python: cp312
+            python-version: '3.12'
 
     steps:
       - uses: actions/checkout@v4
@@ -391,18 +397,24 @@ jobs:
       - name: Download wheel artifacts
         uses: actions/download-artifact@v4
         with:
-          name: wheels-${{ matrix.os }}
+          name: wheels-linux-${{ matrix.python }}
           path: ./wheelhouse
 
-      - name: Install nox
+      - name: List wheels
+        run: |
+          ls -la ./wheelhouse/
+          echo "Found $(ls ./wheelhouse/*.whl | wc -l) wheels"
+
+      - name: Install wheel and dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install nox
-          python -m pip install numpy  # Required for tests
+          python -m pip install pytest pytest-cov numpy
+          python -m pip install wheelhouse/*.whl
+          python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
 
-      - name: Run tests with nox
+      - name: Run tests
         run: |
-          python -m nox --session pytest_skip_install
+          python -m pytest tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
@@ -412,21 +424,31 @@ jobs:
           fail_ci_if_error: false
           verbose: true
 
-  # Test Windows compatibility
-  test-windows:
-    name: Test Windows compatibility
+  # Test Windows wheels
+  test-windows-wheels:
+    name: Test Windows ${{ matrix.python }} wheel
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'release' || github.event_name == 'workflow_dispatch'
     needs: [build-wheels-windows]
-    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'release' || github.event_name == 'workflow_dispatch' }}
     runs-on: windows-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.8', '3.11']
+        python: [cp38, cp39, cp310, cp311, cp312]
+        include:
+          - python: cp38
+            python-version: '3.8'
+          - python: cp39
+            python-version: '3.9'
+          - python: cp310
+            python-version: '3.10'
+          - python: cp311
+            python-version: '3.11'
+          - python: cp312
+            python-version: '3.12'
 
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
           fetch-depth: 0
 
       - name: Set up Python ${{ matrix.python-version }}
@@ -435,114 +457,171 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
 
-      - name: Install build dependencies
+      - name: Download wheel artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-windows-${{ matrix.python }}
+          path: ./wheelhouse
+
+      - name: List wheels
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path ./wheelhouse/ -Recurse
+          Write-Host "Found $((Get-ChildItem -Path ./wheelhouse/ -Filter *.whl).Count) wheels"
+
+      - name: Install wheel and dependencies
         shell: pwsh
         run: |
           python -m pip install --upgrade pip
-          # Install nox for test management
-          python -m pip install nox
-          # Install CMake and other build dependencies
-          python -m pip install cmake>=3.15 build wheel setuptools>=42.0.0 scikit-build-core>=0.5.0 pybind11>=2.10.0 numpy>=1.20.0
-          # Verify CMake installation
-          cmake --version
+          python -m pip install pytest pytest-cov numpy
+          python -m pip install (Get-ChildItem -Path ./wheelhouse/*.whl).FullName
+          python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
 
-      - name: Install Visual C++ Redistributable
+      - name: Run tests
         shell: pwsh
         run: |
-          # Download and install the latest Visual C++ Redistributable
-          Invoke-WebRequest -Uri https://aka.ms/vs/17/release/vc_redist.x64.exe -OutFile vc_redist.x64.exe
-          Start-Process -FilePath "vc_redist.x64.exe" -ArgumentList "/quiet", "/norestart" -Wait
-          Write-Host "Visual C++ Redistributable installed"
+          python -m pytest tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v
 
-          # Set environment variables to help locate DLLs
-          $vcRedistPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Redist\MSVC"
-          if (Test-Path $vcRedistPath) {
-            $latestVersion = Get-ChildItem $vcRedistPath | Sort-Object Name -Descending | Select-Object -First 1
-            $dllPath = Join-Path $latestVersion.FullName "x64\Microsoft.VC142.CRT"
-            Write-Host "Adding DLL path to PATH: $dllPath"
-            $env:PATH = "$dllPath;$env:PATH"
-            # Also set VCToolsRedistDir for CMake to find
-            $env:VCToolsRedistDir = "$($latestVersion.FullName)\"
-            Write-Host "Set VCToolsRedistDir=$env:VCToolsRedistDir"
-          } else {
-            Write-Host "VC Redist path not found at $vcRedistPath"
-          }
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          fail_ci_if_error: false
+          verbose: true
 
+  # Test macOS Intel wheels
+  test-macos-intel-wheels:
+    name: Test macOS Intel ${{ matrix.python }} wheel
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+    needs: [build-wheels-macos]
+    runs-on: macos-13
+    strategy:
+      fail-fast: false
+      matrix:
+        python: [cp38, cp39, cp310, cp311, cp312]
+        include:
+          - python: cp38
+            python-version: '3.8'
+          - python: cp39
+            python-version: '3.9'
+          - python: cp310
+            python-version: '3.10'
+          - python: cp311
+            python-version: '3.11'
+          - python: cp312
+            python-version: '3.12'
 
-      - name: Test Windows compatibility using nox
-        shell: pwsh
-        run: |
-          python -m nox -s test-windows
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
 
       - name: Download wheel artifacts
         uses: actions/download-artifact@v4
         with:
-          name: wheels-windows-latest
-          path: dist
+          name: wheels-macos-intel-${{ matrix.python }}
+          path: ./wheelhouse
 
-      - name: List available wheels
-        shell: pwsh
+      - name: List wheels
         run: |
-          Write-Host "Available wheels in dist directory:"
-          Get-ChildItem -Path dist -Filter "*.whl" | ForEach-Object { Write-Host "  $($_.Name)" }
+          ls -la ./wheelhouse/
+          echo "Found $(ls ./wheelhouse/*.whl | wc -l) wheels"
 
-      - name: Test pre-built wheel
-        shell: pwsh
+      - name: Install wheel and dependencies
         run: |
-          # Find the wheel for the current Python version
-          $pythonVersion = "${{ matrix.python-version }}".Replace(".", "")
-          $shortVersion = if ($pythonVersion.Length -gt 2) { $pythonVersion.Substring(0, 2) } else { $pythonVersion }
-          $wheelPattern = "py_dem_bones-*-cp${shortVersion}*win*.whl"
-          Write-Host "Looking for wheel matching pattern: $wheelPattern"
+          python -m pip install --upgrade pip
+          python -m pip install pytest pytest-cov numpy
+          python -m pip install wheelhouse/*.whl
+          python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
 
-          $wheel = Get-ChildItem -Path dist -Filter $wheelPattern | Select-Object -First 1
-          if ($wheel) {
-            Write-Host "Found wheel: $($wheel.FullName)" -ForegroundColor Green
+      - name: Run tests
+        run: |
+          python -m pytest tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v
 
-            # Create wheelhouse directory and copy wheel package
-            $wheelhouse = "wheelhouse"
-            if (-not (Test-Path $wheelhouse)) {
-              New-Item -ItemType Directory -Path $wheelhouse | Out-Null
-            }
-            Copy-Item $wheel.FullName -Destination $wheelhouse
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          fail_ci_if_error: false
+          verbose: true
 
-            # Debug DLL loading issues
-            Write-Host "Running DLL loading debug script..." -ForegroundColor Cyan
-            Copy-Item scripts/debug_dll_loading.py .
-            python debug_dll_loading.py
+  # Test macOS ARM wheels
+  test-macos-arm-wheels:
+    name: Test macOS ARM ${{ matrix.python }} wheel
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+    needs: [build-wheels-macos-arm]
+    runs-on: macos-14
+    strategy:
+      fail-fast: false
+      matrix:
+        python: [cp39, cp310, cp311, cp312]
+        include:
+          - python: cp39
+            python-version: '3.9'
+          - python: cp310
+            python-version: '3.10'
+          - python: cp311
+            python-version: '3.11'
+          - python: cp312
+            python-version: '3.12'
 
-            # Check Python version compatibility
-            $pythonFullVersion = python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" | Out-String
-            $pythonFullVersion = $pythonFullVersion.Trim()
-            $wheelPythonVersion = [regex]::Match($wheel.Name, "cp(\d\d)").Groups[1].Value
-            $wheelPythonVersion = $wheelPythonVersion.Insert(1, ".")
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-            Write-Host "Current Python version: $pythonFullVersion" -ForegroundColor Cyan
-            Write-Host "Wheel Python version: $wheelPythonVersion" -ForegroundColor Cyan
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
 
-            if ($pythonFullVersion -ne $wheelPythonVersion) {
-              Write-Host "WARNING: Python version mismatch!" -ForegroundColor Yellow
-              Write-Host "Using Python $pythonFullVersion to test a wheel built for Python $wheelPythonVersion" -ForegroundColor Yellow
-              Write-Host "This test will be skipped as versions are incompatible" -ForegroundColor Yellow
-              exit 0
-            }
+      - name: Download wheel artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-macos-arm-${{ matrix.python }}
+          path: ./wheelhouse
 
-            # Use pytest_skip_install session to run tests
-            Write-Host "Running tests with pytest_skip_install session..." -ForegroundColor Cyan
-            python -m pip install nox
-            python -m nox -s pytest_skip_install
-          } else {
-            Write-Host "No matching wheel found for Python ${{ matrix.python-version }}. Available wheels:" -ForegroundColor Red
-            Get-ChildItem -Path dist
-            exit 1
-          }
+      - name: List wheels
+        run: |
+          ls -la ./wheelhouse/
+          echo "Found $(ls ./wheelhouse/*.whl | wc -l) wheels"
+
+      - name: Install wheel and dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest pytest-cov numpy
+          python -m pip install wheelhouse/*.whl
+          python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
+
+      - name: Run tests
+        run: |
+          python -m pytest tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          fail_ci_if_error: false
+          verbose: true
+
+
 
 
 
   # Create GitHub Release and publish to PyPI
   release:
     name: Release
-    needs: [build-wheels-linux, build-wheels-windows, build-wheels-macos, build-wheels-macos-arm, build-sdist]
+    needs: [build-wheels-linux, build-wheels-windows, build-wheels-macos, build-wheels-macos-arm, build-sdist, test-linux-wheels, test-windows-wheels, test-macos-intel-wheels, test-macos-arm-wheels]
     if: github.event_name == 'release' || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
     runs-on: ubuntu-latest
     permissions:
