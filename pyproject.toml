@@ -100,11 +100,20 @@ local_scheme = "no-local-version"
 fallback_version = "0.7.0"
 version_file = "src/py_dem_bones/__version__.py"
 
-generate = [
-    { path = "docs/conf.py", location = "source", "template-match" = "release = '.*'", "template-replace" = "release = '${version}'" },
-    { path = "docs/conf.py", location = "source", "template-match" = "version = '.*'", "template-replace" = "version = '${version}'" },
-    { path = ".github/CITATION.cff", location = "source", "template-match" = "version: .*", "template-replace" = "version: ${version}" }
-]
+[[tool.scikit-build.generate]]
+path = "docs/conf.py"
+location = "source"
+template = '''release = '${version}' '''
+
+[[tool.scikit-build.generate]]
+path = "docs/conf.py"
+location = "source"
+template = '''version = '${version}' '''
+
+[[tool.scikit-build.generate]]
+path = ".github/CITATION.cff"
+location = "source"
+template = '''version: ${version}'''
 
 [tool.scikit-build.cmake]
 version = ">=3.15"
