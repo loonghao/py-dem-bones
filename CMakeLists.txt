@@ -5,7 +5,17 @@ project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 
 # Enable ccache if available
-include(UseCCache)
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/UseCCache.cmake")
+    include(UseCCache)
+else()
+    # Simple ccache detection if module is not available
+    find_program(CCACHE_PROGRAM ccache)
+    if(CCACHE_PROGRAM)
+        message(STATUS "Found ccache: ${CCACHE_PROGRAM}")
+        set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+        set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+    endif()
+endif()
 
 # Use scikit-build-core's FindPython support
 find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
@@ -185,10 +195,50 @@ if(NOT EIGEN3_FOUND)
             if(EXISTS "${NUMPY_INCLUDE_DIR}")
                 set(EIGEN3_INCLUDE_DIR "${NUMPY_INCLUDE_DIR}/eigen3")
                 if(NOT EXISTS "${EIGEN3_INCLUDE_DIR}")
-                    message(FATAL_ERROR "Eigen3 not found. Please run 'git submodule update --init --recursive' to fetch the Eigen dependency.")
+                    # If Eigen is not found, download it
+                    message(STATUS "Eigen3 not found. Downloading Eigen...")
+
+                    # Create extern directory if it doesn't exist
+                    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/extern")
+                        file(MAKE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/extern")
+                    endif()
+
+                    # Download Eigen
+                    include(FetchContent)
+                    FetchContent_Declare(
+                        eigen
+                        GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+                        GIT_TAG 3.4.0
+                        SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extern/eigen"
+                    )
+                    FetchContent_MakeAvailable(eigen)
+
+                    # Set Eigen include directory
+                    set(EIGEN3_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extern/eigen")
+                    set(EIGEN3_FOUND TRUE)
                 endif()
             else()
-                message(FATAL_ERROR "Eigen3 not found. Please run 'git submodule update --init --recursive' to fetch the Eigen dependency.")
+                # If Eigen is not found, download it
+                message(STATUS "Eigen3 not found. Downloading Eigen...")
+
+                # Create extern directory if it doesn't exist
+                if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/extern")
+                    file(MAKE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/extern")
+                endif()
+
+                # Download Eigen
+                include(FetchContent)
+                FetchContent_Declare(
+                    eigen
+                    GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+                    GIT_TAG 3.4.0
+                    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extern/eigen"
+                )
+                FetchContent_MakeAvailable(eigen)
+
+                # Set Eigen include directory
+                set(EIGEN3_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extern/eigen")
+                set(EIGEN3_FOUND TRUE)
             endif()
         endif()
     endif()

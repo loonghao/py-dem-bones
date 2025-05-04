@@ -97,6 +97,8 @@ class CMakeBuild(build_ext):
             "-DBUILD_SHARED_LIBS=ON",
             # Make sure we build everything for the requested architecture(s)
             "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
+            # Enable FetchContent for downloading dependencies
+            "-DFETCHCONTENT_QUIET=OFF",
         ]
 
         build_args = []
