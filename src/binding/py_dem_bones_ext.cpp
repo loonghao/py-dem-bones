@@ -285,6 +285,5 @@ void init_dem_bones_ext(py::module& m) {
     // Optionally bind single precision version
     bind_dem_bones_ext<float, float>(m, "F");
 
-    // Disable mixed precision version for now due to Eigen type conversion issues
-    // bind_dem_bones_ext<double, float>(m, "DF");
+
 }

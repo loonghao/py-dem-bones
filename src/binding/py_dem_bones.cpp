@@ -50,10 +50,7 @@ void bind_dem_bones(py::module& m, const std::string& type_suffix) {
         .def_property_readonly("iter", [](const Class& self) { return self.iter; })
         .def_property_readonly("iterTransformations", [](const Class& self) { return self.iterTransformations; })
         .def_property_readonly("iterWeights", [](const Class& self) { return self.iterWeights; })
-        // Remove property_readonly for w for now
-        // .def_property_readonly("w", [](const Class& self) {
-        //     return Eigen::MatrixXd(self.w); // Convert sparse to dense
-        // })
+
 
         // Methods - direct call to C++ methods
         .def("compute", &Class::compute)
@@ -177,6 +174,5 @@ void init_dem_bones(py::module& m) {
     // Optionally bind single precision version
     bind_dem_bones<float, float>(m, "F");
 
-    // Disable mixed precision version for now due to Eigen type conversion issues
-    // bind_dem_bones<double, float>(m, "DF");
+
 }

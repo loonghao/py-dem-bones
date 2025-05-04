@@ -267,12 +267,12 @@ class DemBonesWrapper:
         if bone >= self.num_bones:
             raise IndexError(f"Bone index {bone} out of range (0-{self.num_bones-1})")
 
-        # 我们需要为每个骨骼维护一个单独的绑定矩阵
-        # 由于 C++ 绑定不支持这一点，我们在 Python 端维护这些矩阵
+        # We need to maintain a separate bind matrix for each bone
+        # Since the C++ binding doesn't support this, we maintain these matrices in Python
         if not hasattr(self, "_bind_matrices"):
             self._bind_matrices = [np.eye(4) for _ in range(self.num_bones)]
 
-        # 确保我们有足够的绑定矩阵
+        # Ensure we have enough bind matrices
         while len(self._bind_matrices) <= bone:
             self._bind_matrices.append(np.eye(4))
 
@@ -299,42 +299,42 @@ class DemBonesWrapper:
         if not isinstance(matrix, np.ndarray) or matrix.shape != (4, 4):
             raise ParameterError("Matrix must be a 4x4 numpy array")
 
-        # 我们需要为每个骨骼维护一个单独的绑定矩阵
-        # 由于 C++ 绑定不支持这一点，我们在 Python 端维护这些矩阵
+        # We need to maintain a separate bind matrix for each bone
+        # Since the C++ binding doesn't support this, we maintain these matrices in Python
         if not hasattr(self, "_bind_matrices"):
             self._bind_matrices = [np.eye(4) for _ in range(self.num_bones)]
 
-        # 确保我们有足够的绑定矩阵
+        # Ensure we have enough bind matrices
         while len(self._bind_matrices) <= bone:
             self._bind_matrices.append(np.eye(4))
 
-        # 更新绑定矩阵
+        # Update bind matrix
         self._bind_matrices[bone] = matrix.copy()
 
-        # 获取当前变换矩阵
+        # Get current transformation matrix
         transformations = self._dem_bones.get_transformations()
 
-        # 如果没有变换矩阵，创建一个新的数组
+        # If there's no transformation matrix, create a new array
         if transformations.shape[0] == 0:
-            self._dem_bones.nF = 1  # 只有一帧（绑定姿势）
+            self._dem_bones.nF = 1  # Only one frame (bind pose)
 
-            # 创建一个新的变换矩阵数组
-            # 在 C++ 绑定中，我们期望一个 2D 矩阵
-            # 其中每 3 行表示一个骨骼的前 3 行变换矩阵
+            # Create a new transformation matrix array
+            # In the C++ binding, we expect a 2D matrix
+            # where each 3 rows represent the first 3 rows of a bone's transformation matrix
             flat_transforms = np.zeros((3 * self.num_bones, 4))
 
-            # 对于每个骨骼，设置其变换矩阵
+            # For each bone, set its transformation matrix
             for b in range(self.num_bones):
                 if b < len(self._bind_matrices):
-                    # 只复制前 3 行，最后一行 [0,0,0,1] 是隐含的
+                    # Only copy the first 3 rows, the last row [0,0,0,1] is implicit
                     flat_transforms[b * 3 : (b + 1) * 3, :] = self._bind_matrices[b][
                         :3, :
                     ]
                 else:
-                    # 对于没有绑定矩阵的骨骼，使用单位矩阵
+                    # For bones without a bind matrix, use identity matrix
                     flat_transforms[b * 3 : (b + 1) * 3, :] = np.eye(4)[:3, :]
 
-            # 更新 DemBones 中的变换矩阵
+            # Update transformation matrix in DemBones
             self._dem_bones.set_transformations(flat_transforms)
 
     def get_weights(self):
@@ -344,11 +344,11 @@ class DemBonesWrapper:
         Returns:
             numpy.ndarray: The weights matrix with shape [num_bones, num_vertices]
         """
-        # 如果我们有缓存的权重，返回它
+        # If we have cached weights, return them
         if hasattr(self, "_cached_weights") and self._cached_weights is not None:
             return self._cached_weights
 
-        # 否则从 C++ 绑定获取权重
+        # Otherwise get weights from C++ binding
         weights = self._dem_bones.get_weights()
         return weights
 
@@ -386,10 +386,10 @@ class DemBonesWrapper:
         if np.any(mask):
             weights[:, mask] = weights[:, mask] / sums[mask]
 
-        # 缓存权重，以便 get_weights 可以返回相同的值
+        # Cache weights so get_weights can return the same value
         self._cached_weights = weights.copy()
 
-        # 更新 C++ 绑定中的权重
+        # Update weights in C++ binding
         self._dem_bones.set_weights(weights)
 
     def set_rest_pose(self, vertices):
@@ -470,9 +470,9 @@ class DemBonesWrapper:
         # Update the target pose
         poses[:, :, target_idx] = vertices
 
-        # 将 3D 数组转换为 C++ 绑定期望的格式
-        # 在 C++ 中，我们期望一个 2D 矩阵，其中行是顶点坐标，列是顶点索引
-        # 我们需要将 [3, num_vertices, num_targets] 重塑为 [3, num_vertices * num_targets]
+        # Convert 3D array to the format expected by C++ binding
+        # In C++, we expect a 2D matrix where rows are vertex coordinates and columns are vertex indices
+        # We need to reshape [3, num_vertices, num_targets] to [3, num_vertices * num_targets]
         num_vertices = poses.shape[1]
         num_targets = poses.shape[2]
         flat_poses = np.zeros((3, num_vertices * num_targets))
@@ -490,14 +490,14 @@ class DemBonesWrapper:
         Returns:
             numpy.ndarray: Array of 4x4 transformation matrices with shape [num_frames, 4, 4]
         """
-        # 获取 C++ 绑定中的变换矩阵
+        # Get transformation matrices from C++ binding
         transforms = self._dem_bones.get_transformations()
 
-        # 如果没有变换矩阵，返回空数组
+        # If there are no transformation matrices, return empty array
         if transforms.shape[0] == 0:
             return np.zeros((0, 4, 4))
 
-        # C++ 绑定已经返回了 [num_frames, 4, 4] 格式的数组，直接返回
+        # C++ binding already returns array in [num_frames, 4, 4] format, return directly
         return transforms
 
     def set_transformations(self, transformations):
