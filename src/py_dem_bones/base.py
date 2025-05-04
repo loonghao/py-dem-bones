@@ -525,12 +525,12 @@ class DemBonesWrapper:
         if transformations.shape[0] > self.num_frames:
             self._dem_bones.nF = transformations.shape[0]
 
-        # 将 3D 数组转换为 C++ 绑定期望的格式
+        # Convert 3D array to C++ binding expected format
         num_frames = transformations.shape[0]
         flat_transforms = np.zeros((num_frames * 3, 4))
 
         for f in range(num_frames):
-            # 只复制前 3 行，最后一行 [0,0,0,1] 是隐含的
+            # Only copy the first 3 rows, the last row [0,0,0,1] is implicit
             flat_transforms[f * 3 : f * 3 + 3, :] = transformations[f, :3, :]
 
         self._dem_bones.set_transformations(flat_transforms)

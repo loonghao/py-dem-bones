@@ -25,4 +25,4 @@ version_tuple: VERSION_TUPLE
 
 __version__ = version = "0.8.0"
 __dem_bones_version__ = "1.2.1"
-__version_tuple__ = version_tuple = ('0', '8', '0')
+__version_tuple__ = version_tuple = ("0", "8", "0")
