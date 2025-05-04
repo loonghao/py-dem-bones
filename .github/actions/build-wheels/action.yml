@@ -50,8 +50,7 @@ runs:
         CIBW_CONFIG_FILE: ${{ inputs.config-file }}
         # Set build verbosity
         CIBW_BUILD_VERBOSITY: ${{ inputs.build-verbosity }}
-        # Ensure consistent version handling
-        SETUPTOOLS_SCM_PRETEND_VERSION: "0.8.0"
+        # Version handling is managed by the workflow
         # Windows: install Ninja and delvewheel
         CIBW_BEFORE_ALL_WINDOWS: >-
           ${{ inputs.platform == 'windows' && 'pip install delvewheel && choco install -y ninja && dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise" || dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community" || dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise" || dir "C:\Program Files\Microsoft Visual Studio\2022\Community"' || '' }}
