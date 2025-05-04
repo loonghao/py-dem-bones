@@ -7,6 +7,7 @@ include 3RDPARTYLICENSES_zh.md
 include pyproject.toml
 include CMakeLists.txt
 include setup.py
+include version_template.py
 
 recursive-include src/py_dem_bones *.py
 recursive-include src/binding *.cpp *.h

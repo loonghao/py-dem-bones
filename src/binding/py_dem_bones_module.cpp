@@ -8,7 +8,10 @@ void init_dem_bones_ext(py::module& m);
 
 PYBIND11_MODULE(_py_dem_bones, m) {
     m.doc() = "Python bindings for the Dem Bones library";
-    
+
+    // Add version information
+    m.attr("__dem_bones_version__") = "v1.2.1-2-g09b899b";
+
     // Initialize submodules
     init_dem_bones(m);
     init_dem_bones_ext(m);
