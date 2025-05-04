@@ -104,42 +104,28 @@ generate = [
     {
         path = "src/py_dem_bones/__version__.py",
         location = "source",
-        template = '''"""Version information."""
+        template = """\"\"\"Version information.\"\"\"
 
-__version__ = "${version}"
-'''
+__version__ = \"${version}\"
+"""
     },
     {
         path = "docs/conf.py",
         location = "source",
-        template = '''# -- Project information -----------------------------------------------------
-project = 'py-dem-bones'
-copyright = '2024, Long Hao'
-author = 'Long Hao'
-
-# The full version, including alpha/beta/rc tags
-release = '${version}'
-
-# Major version
-version = '${version}'
-'''
+        template-match = "release = '.*'",
+        template-replace = "release = '${version}'"
+    },
+    {
+        path = "docs/conf.py",
+        location = "source",
+        template-match = "version = '.*'",
+        template-replace = "version = '${version}'"
     },
     {
         path = ".github/CITATION.cff",
         location = "source",
-        template = '''cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
-title: "py-dem-bones"
-abstract: "Python bindings for the Dem Bones library"
-authors:
-  - family-names: "Long"
-    given-names: "Hao"
-    email: "hal.long@outlook.com"
-version: ${version}
-date-released: 2024-03-05
-license: BSD-3-Clause
-repository-code: "https://github.com/loonghao/py-dem-bones"
-'''
+        template-match = "version: .*",
+        template-replace = "version: ${version}"
     }
 ]
 
