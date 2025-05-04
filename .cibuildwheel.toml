@@ -35,10 +35,11 @@ environment = {
     PYDEMB_PYTHON_LOAD_DLLS_FROM_PATH = "0",
     # Enable ccache with optimized settings
     CCACHE_MAXSIZE = "5G",
-    CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime",
+    CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime,file_stat_matches",
     CCACHE_COMPRESS = "1",
     CCACHE_COMPILERCHECK = "content",
     CCACHE_NOHASHDIR = "1",
+    CCACHE_BASEDIR = "{package}",
     # Use parallel compilation
     CMAKE_BUILD_PARALLEL_LEVEL = "4"
 }
@@ -69,10 +70,11 @@ environment = {
     PYTHONIOENCODING = "UTF-8",
     # Enable ccache with optimized settings
     CCACHE_MAXSIZE = "5G",
-    CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime",
+    CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime,file_stat_matches",
     CCACHE_COMPRESS = "1",
     CCACHE_COMPILERCHECK = "content",
     CCACHE_NOHASHDIR = "1",
+    CCACHE_BASEDIR = "{package}",
     # Use parallel compilation
     CMAKE_BUILD_PARALLEL_LEVEL = "4"
 }
@@ -96,11 +98,12 @@ repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
 environment = {
     # Enable ccache with optimized settings
     CCACHE_MAXSIZE = "5G",
-    CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime",
+    CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime,file_stat_matches",
     CCACHE_COMPRESS = "1",
     CCACHE_CPP2 = "yes",
     CCACHE_COMPILERCHECK = "content",
     CCACHE_NOHASHDIR = "1",
+    CCACHE_BASEDIR = "{package}",
     # Use parallel compilation
     CMAKE_BUILD_PARALLEL_LEVEL = "4"
 }
