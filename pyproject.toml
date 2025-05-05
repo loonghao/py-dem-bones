@@ -137,12 +137,11 @@ __version_tuple__ = version_tuple = tuple("{version}".split("."))
 [[tool.scikit-build.generate]]
 path = "docs/conf.py"
 location = "source"
-template = '''release = '${version}' '''
-
-[[tool.scikit-build.generate]]
-path = "docs/conf.py"
-location = "source"
-template = '''version = '${version}' '''
+template = '''
+# Version information
+version = '${version}'
+release = '${version}'
+'''
 
 [[tool.scikit-build.generate]]
 path = ".github/CITATION.cff"
@@ -171,7 +170,7 @@ update_changelog_on_bump = true
 change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "ci", "build", "docs", "test", "chore"]
 version_files = [
     "pyproject.toml:fallback_version",
-    "src/py_dem_bones/__version__.py:__version__ = version =",
+    # __version__.py is now handled by setuptools_scm directly
     "docs/conf.py:version = "
 ]
 # Version bump rules
