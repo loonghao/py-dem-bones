@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>RBF Features &#8212; Project name not set 0.8.2.dev4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=a3916b97"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api.html" />
+    <link rel="prev" title="Examples" href="examples.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="rbf-features">
+<h1>RBF Features<a class="headerlink" href="#rbf-features" title="Link to this heading">¶</a></h1>
+<section id="introduction-to-rbf-in-py-dem-bones">
+<h2>Introduction to RBF in py-dem-bones<a class="headerlink" href="#introduction-to-rbf-in-py-dem-bones" title="Link to this heading">¶</a></h2>
+<p>py-dem-bones integrates SciPy’s Radial Basis Function (RBF) capabilities with Dem-Bones skeletal weight calculations to support advanced animation workflows. This integration enables:</p>
+<ol class="arabic simple">
+<li><p>Using Dem-Bones to calculate basic bone weights and transformations</p></li>
+<li><p>Leveraging SciPy’s RBFInterpolator to create parameter-driven auxiliary joints</p></li>
+<li><p>Implementing functionality similar to Chad Vernon RBF nodes, but using standard Python scientific computing libraries</p></li>
+</ol>
+</section>
+<section id="key-advantages">
+<h2>Key Advantages<a class="headerlink" href="#key-advantages" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Uses production-grade SciPy implementation instead of custom RBF code</p></li>
+<li><p>Supports multiple RBF kernel function options (thin plate spline, multiquadric, gaussian, etc.)</p></li>
+<li><p>Seamlessly integrates with the Python scientific computing ecosystem</p></li>
+<li><p>Maintained and updated by the scientific computing community</p></li>
+</ul>
+</section>
+<section id="rbf-kernel-functions">
+<h2>RBF Kernel Functions<a class="headerlink" href="#rbf-kernel-functions" title="Link to this heading">¶</a></h2>
+<p>The following kernel functions are available through SciPy’s RBFInterpolator:</p>
+<ul class="simple">
+<li><p><strong>thin_plate_spline</strong>: φ(r) = r²log(r), suitable for smooth interpolation with minimal curvature</p></li>
+<li><p><strong>multiquadric</strong>: φ(r) = sqrt(1 + (εr)²), good for general-purpose interpolation</p></li>
+<li><p><strong>inverse_multiquadric</strong>: φ(r) = 1/sqrt(1 + (εr)²), creates smoother interpolations</p></li>
+<li><p><strong>gaussian</strong>: φ(r) = exp(-(εr)²), creates very smooth interpolations with local influence</p></li>
+<li><p><strong>linear</strong>: φ(r) = r, simple linear interpolation between points</p></li>
+<li><p><strong>cubic</strong>: φ(r) = r³, provides smooth interpolation with more local control</p></li>
+<li><p><strong>quintic</strong>: φ(r) = r⁵, higher-order polynomial with smoother derivatives</p></li>
+</ul>
+<p>Where r is the distance between points and ε is a shape parameter that controls the influence radius.</p>
+</section>
+<section id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Link to this heading">¶</a></h2>
+<p>Here’s a basic example of using RBF interpolation with py-dem-bones:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">RBF Interpolation Example</span><a class="headerlink" href="#id1" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="ch">#!/usr/bin/env python</span>
+<span class="linenos">  2</span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="linenos">  3</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">  4</span><span class="sd">RBF Integration with DemBones Demo</span>
+<span class="linenos">  5</span>
+<span class="linenos">  6</span><span class="sd">This example demonstrates how to combine DemBones with SciPy&#39;s RBF functionality, similar to Chad Vernon&#39;s implementation.</span>
+<span class="linenos">  7</span><span class="sd">We will use DemBones to calculate bone weights and transformations, then use RBF interpolators to drive auxiliary joints.</span>
+<span class="linenos">  8</span>
+<span class="linenos">  9</span><span class="sd">To run this example, you need to install the following dependencies:</span>
+<span class="linenos"> 10</span><span class="sd">    pip install py-dem-bones numpy matplotlib scipy</span>
+<span class="linenos"> 11</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 12</span>
+<span class="linenos"> 13</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 14</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="linenos"> 15</span><span class="kn">from</span><span class="w"> </span><span class="nn">mpl_toolkits.mplot3d</span><span class="w"> </span><span class="kn">import</span> <span class="n">Axes3D</span>
+<span class="linenos"> 16</span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">RBFInterpolator</span>
+<span class="linenos"> 17</span><span class="kn">import</span><span class="w"> </span><span class="nn">py_dem_bones</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pdb</span>
+<span class="linenos"> 18</span>
+<span class="linenos"> 19</span>
+<span class="linenos"> 20</span><span class="k">def</span><span class="w"> </span><span class="nf">create_simple_mesh</span><span class="p">():</span>
+<span class="linenos"> 21</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 22</span><span class="sd">    Create a simple test mesh (cube)</span>
+<span class="linenos"> 23</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 24</span>    <span class="c1"># Create cube vertices</span>
+<span class="linenos"> 25</span>    <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="linenos"> 26</span>        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c1"># 0</span>
+<span class="linenos"> 27</span>        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c1"># 1</span>
+<span class="linenos"> 28</span>        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c1"># 2</span>
+<span class="linenos"> 29</span>        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c1"># 3</span>
+<span class="linenos"> 30</span>        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># 4</span>
+<span class="linenos"> 31</span>        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># 5</span>
+<span class="linenos"> 32</span>        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># 6</span>
+<span class="linenos"> 33</span>        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># 7</span>
+<span class="linenos"> 34</span>    <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="linenos"> 35</span>    
+<span class="linenos"> 36</span>    <span class="k">return</span> <span class="n">vertices</span>
+<span class="linenos"> 37</span>
+<span class="linenos"> 38</span>
+<span class="linenos"> 39</span><span class="k">def</span><span class="w"> </span><span class="nf">create_deformed_mesh</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">deformation_amount</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
+<span class="linenos"> 40</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 41</span><span class="sd">    Create a deformed mesh</span>
+<span class="linenos"> 42</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 43</span>    <span class="c1"># Deform the upper part of the cube</span>
+<span class="linenos"> 44</span>    <span class="n">deformed</span> <span class="o">=</span> <span class="n">vertices</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="linenos"> 45</span>    <span class="c1"># Deform the upper part (vertices 4-7)</span>
+<span class="linenos"> 46</span>    <span class="n">deformed</span><span class="p">[</span><span class="mi">4</span><span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">deformation_amount</span>  <span class="c1"># Offset along X axis</span>
+<span class="linenos"> 47</span>    <span class="n">deformed</span><span class="p">[</span><span class="mi">4</span><span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">deformation_amount</span>  <span class="c1"># Offset along Z axis</span>
+<span class="linenos"> 48</span>    
+<span class="linenos"> 49</span>    <span class="k">return</span> <span class="n">deformed</span>
+<span class="linenos"> 50</span>
+<span class="linenos"> 51</span>
+<span class="linenos"> 52</span><span class="k">def</span><span class="w"> </span><span class="nf">compute_dem_bones</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">,</span> <span class="n">deformed_pose</span><span class="p">,</span> <span class="n">num_bones</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="linenos"> 53</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 54</span><span class="sd">    Use DemBones to calculate skinning weights and bone transformations</span>
+<span class="linenos"> 55</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 56</span>    <span class="c1"># Create DemBones instance</span>
+<span class="linenos"> 57</span>    <span class="n">dem_bones</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">DemBones</span><span class="p">()</span>
+<span class="linenos"> 58</span>    
+<span class="linenos"> 59</span>    <span class="c1"># Set parameters</span>
+<span class="linenos"> 60</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nIters</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="linenos"> 61</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nInitIters</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos"> 62</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nTransIters</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="linenos"> 63</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nWeightsIters</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="linenos"> 64</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nnz</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># Number of non-zero weights per vertex</span>
+<span class="linenos"> 65</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">weightsSmooth</span> <span class="o">=</span> <span class="mf">1e-4</span>
+<span class="linenos"> 66</span>    
+<span class="linenos"> 67</span>    <span class="c1"># Set data</span>
+<span class="linenos"> 68</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nV</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">)</span>  <span class="c1"># Number of vertices</span>
+<span class="linenos"> 69</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nB</span> <span class="o">=</span> <span class="n">num_bones</span>  <span class="c1"># Number of bones</span>
+<span class="linenos"> 70</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nF</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Number of frames</span>
+<span class="linenos"> 71</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nS</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Number of subjects</span>
+<span class="linenos"> 72</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">fStart</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>  <span class="c1"># Starting frame index for each subject</span>
+<span class="linenos"> 73</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">subjectID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>  <span class="c1"># Subject ID for each frame</span>
+<span class="linenos"> 74</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">rest_pose</span>  <span class="c1"># Rest pose</span>
+<span class="linenos"> 75</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">deformed_pose</span>  <span class="c1"># Deformed pose</span>
+<span class="linenos"> 76</span>    
+<span class="linenos"> 77</span>    <span class="c1"># Compute skinning decomposition</span>
+<span class="linenos"> 78</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+<span class="linenos"> 79</span>    
+<span class="linenos"> 80</span>    <span class="c1"># Get results</span>
+<span class="linenos"> 81</span>    <span class="n">weights</span> <span class="o">=</span> <span class="n">dem_bones</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
+<span class="linenos"> 82</span>    <span class="n">transformations</span> <span class="o">=</span> <span class="n">dem_bones</span><span class="o">.</span><span class="n">get_transformations</span><span class="p">()</span>
+<span class="linenos"> 83</span>    
+<span class="linenos"> 84</span>    <span class="k">return</span> <span class="n">weights</span><span class="p">,</span> <span class="n">transformations</span>
+<span class="linenos"> 85</span>
+<span class="linenos"> 86</span>
+<span class="linenos"> 87</span><span class="k">def</span><span class="w"> </span><span class="nf">create_rbf_interpolator</span><span class="p">(</span><span class="n">key_poses</span><span class="p">,</span> <span class="n">key_values</span><span class="p">,</span> <span class="n">rbf_function</span><span class="o">=</span><span class="s1">&#39;thin_plate_spline&#39;</span><span class="p">):</span>
+<span class="linenos"> 88</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 89</span><span class="sd">    Create RBF interpolator, similar to Chad Vernon&#39;s RBF nodes</span>
+<span class="linenos"> 90</span><span class="sd">    </span>
+<span class="linenos"> 91</span><span class="sd">    Parameters:</span>
+<span class="linenos"> 92</span><span class="sd">        key_poses: Input values for key poses (n_samples, n_features)</span>
+<span class="linenos"> 93</span><span class="sd">        key_values: Output values for each key pose (n_samples, m)</span>
+<span class="linenos"> 94</span><span class="sd">        rbf_function: RBF function type, options include:</span>
+<span class="linenos"> 95</span><span class="sd">            - &#39;thin_plate_spline&#39;: Thin plate spline (default)</span>
+<span class="linenos"> 96</span><span class="sd">            - &#39;multiquadric&#39;: Multiquadric</span>
+<span class="linenos"> 97</span><span class="sd">            - &#39;inverse_multiquadric&#39;: Inverse multiquadric</span>
+<span class="linenos"> 98</span><span class="sd">            - &#39;gaussian&#39;: Gaussian function</span>
+<span class="linenos"> 99</span><span class="sd">            - &#39;linear&#39;: Linear function</span>
+<span class="linenos">100</span><span class="sd">            - &#39;cubic&#39;: Cubic function</span>
+<span class="linenos">101</span><span class="sd">            - &#39;quintic&#39;: Quintic function</span>
+<span class="linenos">102</span><span class="sd">    </span>
+<span class="linenos">103</span><span class="sd">    Returns:</span>
+<span class="linenos">104</span><span class="sd">        RBF interpolator</span>
+<span class="linenos">105</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">106</span>    <span class="c1"># Use SciPy&#39;s RBFInterpolator, which is a more modern alternative to the Rbf class</span>
+<span class="linenos">107</span>    <span class="k">return</span> <span class="n">RBFInterpolator</span><span class="p">(</span>
+<span class="linenos">108</span>        <span class="n">key_poses</span><span class="p">,</span> 
+<span class="linenos">109</span>        <span class="n">key_values</span><span class="p">,</span>
+<span class="linenos">110</span>        <span class="n">kernel</span><span class="o">=</span><span class="n">rbf_function</span><span class="p">,</span>
+<span class="linenos">111</span>        <span class="n">smoothing</span><span class="o">=</span><span class="mf">0.0</span>  <span class="c1"># No smoothing, exact interpolation</span>
+<span class="linenos">112</span>    <span class="p">)</span>
+<span class="linenos">113</span>
+<span class="linenos">114</span>
+<span class="linenos">115</span><span class="k">def</span><span class="w"> </span><span class="nf">visualize_results</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">,</span> <span class="n">deformed_pose</span><span class="p">,</span> <span class="n">dem_bones_weights</span><span class="p">,</span> <span class="n">helper_joint_positions</span><span class="p">):</span>
+<span class="linenos">116</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">117</span><span class="sd">    Visualize results</span>
+<span class="linenos">118</span><span class="sd">    </span>
+<span class="linenos">119</span><span class="sd">    Parameters:</span>
+<span class="linenos">120</span><span class="sd">        rest_pose: Vertex positions in rest pose</span>
+<span class="linenos">121</span><span class="sd">        deformed_pose: Vertex positions in deformed pose</span>
+<span class="linenos">122</span><span class="sd">        dem_bones_weights: Bone weights calculated by DemBones</span>
+<span class="linenos">123</span><span class="sd">        helper_joint_positions: Auxiliary joint positions calculated by RBF interpolator</span>
+<span class="linenos">124</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">125</span>    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="linenos">126</span>    
+<span class="linenos">127</span>    <span class="c1"># First subplot: Original mesh</span>
+<span class="linenos">128</span>    <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">131</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="linenos">129</span>    <span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">rest_pose</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rest_pose</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="linenos">130</span>    <span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Original Mesh&#39;</span><span class="p">)</span>
+<span class="linenos">131</span>    <span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
+<span class="linenos">132</span>    <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span>
+<span class="linenos">133</span>    <span class="n">ax1</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">)</span>
+<span class="linenos">134</span>    
+<span class="linenos">135</span>    <span class="c1"># Second subplot: Deformed mesh</span>
+<span class="linenos">136</span>    <span class="n">ax2</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">132</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="linenos">137</span>    <span class="n">ax2</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">deformed_pose</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">deformed_pose</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">deformed_pose</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="linenos">138</span>    <span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Deformed Mesh&#39;</span><span class="p">)</span>
+<span class="linenos">139</span>    <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
+<span class="linenos">140</span>    <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span>
+<span class="linenos">141</span>    <span class="n">ax2</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">)</span>
+<span class="linenos">142</span>    
+<span class="linenos">143</span>    <span class="c1"># Third subplot: Weights and auxiliary joints</span>
+<span class="linenos">144</span>    <span class="n">ax3</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">133</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="linenos">145</span>    <span class="c1"># Use weight values as colors</span>
+<span class="linenos">146</span>    <span class="n">colors</span> <span class="o">=</span> <span class="n">dem_bones_weights</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Use weights of the first bone as colors</span>
+<span class="linenos">147</span>    <span class="n">scatter</span> <span class="o">=</span> <span class="n">ax3</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+<span class="linenos">148</span>        <span class="n">deformed_pose</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> 
+<span class="linenos">149</span>        <span class="n">deformed_pose</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> 
+<span class="linenos">150</span>        <span class="n">deformed_pose</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> 
+<span class="linenos">151</span>        <span class="n">c</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> 
+<span class="linenos">152</span>        <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> 
+<span class="linenos">153</span>        <span class="n">s</span><span class="o">=</span><span class="mi">100</span>
+<span class="linenos">154</span>    <span class="p">)</span>
+<span class="linenos">155</span>    <span class="c1"># Add auxiliary joint positions</span>
+<span class="linenos">156</span>    <span class="n">ax3</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+<span class="linenos">157</span>        <span class="n">helper_joint_positions</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="linenos">158</span>        <span class="n">helper_joint_positions</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="linenos">159</span>        <span class="n">helper_joint_positions</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="linenos">160</span>        <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span>
+<span class="linenos">161</span>        <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
+<span class="linenos">162</span>        <span class="n">s</span><span class="o">=</span><span class="mi">200</span>
+<span class="linenos">163</span>    <span class="p">)</span>
+<span class="linenos">164</span>    <span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Bone Weights and Auxiliary Joints&#39;</span><span class="p">)</span>
+<span class="linenos">165</span>    <span class="n">ax3</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
+<span class="linenos">166</span>    <span class="n">ax3</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span>
+<span class="linenos">167</span>    <span class="n">ax3</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">)</span>
+<span class="linenos">168</span>    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">scatter</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Bone Weights&#39;</span><span class="p">)</span>
+<span class="linenos">169</span>    
+<span class="linenos">170</span>    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="linenos">171</span>    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="linenos">172</span>
+<span class="linenos">173</span>
+<span class="linenos">174</span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<span class="linenos">175</span>    <span class="c1"># Create test data</span>
+<span class="linenos">176</span>    <span class="n">rest_pose</span> <span class="o">=</span> <span class="n">create_simple_mesh</span><span class="p">()</span>
+<span class="linenos">177</span>    <span class="n">deformed_pose</span> <span class="o">=</span> <span class="n">create_deformed_mesh</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">)</span>
+<span class="linenos">178</span>    
+<span class="linenos">179</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Computing DemBones weights and transformations...&quot;</span><span class="p">)</span>
+<span class="linenos">180</span>    <span class="n">weights</span><span class="p">,</span> <span class="n">transformations</span> <span class="o">=</span> <span class="n">compute_dem_bones</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">,</span> <span class="n">deformed_pose</span><span class="p">)</span>
+<span class="linenos">181</span>    
+<span class="linenos">182</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Bone weights:&quot;</span><span class="p">)</span>
+<span class="linenos">183</span>    <span class="nb">print</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+<span class="linenos">184</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Bone transformations:&quot;</span><span class="p">)</span>
+<span class="linenos">185</span>    <span class="nb">print</span><span class="p">(</span><span class="n">transformations</span><span class="p">)</span>
+<span class="linenos">186</span>    
+<span class="linenos">187</span>    <span class="c1"># Create RBF interpolation data</span>
+<span class="linenos">188</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">2. Creating RBF interpolator...&quot;</span><span class="p">)</span>
+<span class="linenos">189</span>    
+<span class="linenos">190</span>    <span class="c1"># Define input key poses</span>
+<span class="linenos">191</span>    <span class="c1"># In a real scenario, these might be controller positions or other control values</span>
+<span class="linenos">192</span>    <span class="n">key_poses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="linenos">193</span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># Default pose</span>
+<span class="linenos">194</span>        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># X-direction extreme</span>
+<span class="linenos">195</span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>  <span class="c1"># Y-direction extreme</span>
+<span class="linenos">196</span>    <span class="p">])</span>
+<span class="linenos">197</span>    
+<span class="linenos">198</span>    <span class="c1"># Define output values - auxiliary joint positions</span>
+<span class="linenos">199</span>    <span class="c1"># These are the positions of auxiliary joints corresponding to each key pose</span>
+<span class="linenos">200</span>    <span class="n">key_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="linenos">201</span>        <span class="c1"># Auxiliary joint positions for default pose</span>
+<span class="linenos">202</span>        <span class="p">[[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]],</span>
+<span class="linenos">203</span>        <span class="c1"># Auxiliary joint positions for X-direction extreme</span>
+<span class="linenos">204</span>        <span class="p">[[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">]],</span>
+<span class="linenos">205</span>        <span class="c1"># Auxiliary joint positions for Y-direction extreme</span>
+<span class="linenos">206</span>        <span class="p">[[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">]],</span>
+<span class="linenos">207</span>    <span class="p">])</span>
+<span class="linenos">208</span>    
+<span class="linenos">209</span>    <span class="c1"># Create RBF interpolator</span>
+<span class="linenos">210</span>    <span class="n">rbf</span> <span class="o">=</span> <span class="n">create_rbf_interpolator</span><span class="p">(</span><span class="n">key_poses</span><span class="p">,</span> <span class="n">key_values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">rbf_function</span><span class="o">=</span><span class="s1">&#39;thin_plate_spline&#39;</span><span class="p">)</span>
+<span class="linenos">211</span>    
+<span class="linenos">212</span>    <span class="c1"># Test RBF interpolation</span>
+<span class="linenos">213</span>    <span class="n">test_pose</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>  <span class="c1"># Test pose</span>
+<span class="linenos">214</span>    <span class="n">interpolated</span> <span class="o">=</span> <span class="n">rbf</span><span class="p">(</span><span class="n">test_pose</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># Get interpolation result</span>
+<span class="linenos">215</span>    
+<span class="linenos">216</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input test pose:&quot;</span><span class="p">,</span> <span class="n">test_pose</span><span class="p">)</span>
+<span class="linenos">217</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Interpolated auxiliary joint positions:&quot;</span><span class="p">)</span>
+<span class="linenos">218</span>    <span class="nb">print</span><span class="p">(</span><span class="n">interpolated</span><span class="p">)</span>
+<span class="linenos">219</span>    
+<span class="linenos">220</span>    <span class="c1"># Visualize results</span>
+<span class="linenos">221</span>    <span class="n">visualize_results</span><span class="p">(</span><span class="n">rest_pose</span><span class="p">,</span> <span class="n">deformed_pose</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">interpolated</span><span class="p">)</span>
+<span class="linenos">222</span>    
+<span class="linenos">223</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">3. Testing RBF interpolation for different poses:&quot;</span><span class="p">)</span>
+<span class="linenos">224</span>    <span class="c1"># Test RBF interpolation for different poses</span>
+<span class="linenos">225</span>    <span class="n">test_poses</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos">226</span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># Default pose</span>
+<span class="linenos">227</span>        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># X-direction extreme</span>
+<span class="linenos">228</span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>  <span class="c1"># Y-direction extreme</span>
+<span class="linenos">229</span>        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>  <span class="c1"># Middle pose</span>
+<span class="linenos">230</span>        <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">],</span>  <span class="c1"># Other pose</span>
+<span class="linenos">231</span>    <span class="p">]</span>
+<span class="linenos">232</span>    
+<span class="linenos">233</span>    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pose</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">test_poses</span><span class="p">):</span>
+<span class="linenos">234</span>        <span class="n">test_pose</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">pose</span><span class="p">])</span>
+<span class="linenos">235</span>        <span class="n">result</span> <span class="o">=</span> <span class="n">rbf</span><span class="p">(</span><span class="n">test_pose</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="linenos">236</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Test pose </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">pose</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">237</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Interpolated auxiliary joint positions:&quot;</span><span class="p">)</span>
+<span class="linenos">238</span>        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="linenos">239</span>
+<span class="linenos">240</span>
+<span class="linenos">241</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="linenos">242</span>    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="maya-integration">
+<h2>Maya Integration<a class="headerlink" href="#maya-integration" title="Link to this heading">¶</a></h2>
+<p>To use the RBF functionality in Maya:</p>
+<ol class="arabic simple">
+<li><p>Implement the MayaDCCInterface to handle Maya-specific data structures</p></li>
+<li><p>Replace matplotlib visualizations with Maya nodes/views</p></li>
+<li><p>Consider Maya’s Python environment compatibility</p></li>
+</ol>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Maya RBF Integration Example (Simplified)</span><a class="headerlink" href="#id2" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">maya.cmds</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cmds</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py_dem_bones.interfaces.dcc</span><span class="w"> </span><span class="kn">import</span> <span class="n">DCCInterface</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">RBFInterpolator</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MayaDCCInterface</span><span class="p">(</span><span class="n">DCCInterface</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dcc_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Implementation for Maya data extraction</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dcc_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Implementation for Maya data application</span>
+        <span class="k">pass</span>
+
+<span class="c1"># Create RBF setup between two poses</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_rbf_setup</span><span class="p">(</span><span class="n">source_joint</span><span class="p">,</span> <span class="n">target_joint</span><span class="p">,</span> <span class="n">poses</span><span class="p">):</span>
+    <span class="c1"># Extract pose data</span>
+    <span class="n">source_poses</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">target_poses</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">pose</span> <span class="ow">in</span> <span class="n">poses</span><span class="p">:</span>
+        <span class="c1"># Set the pose</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pose</span><span class="p">[</span><span class="s1">&#39;control&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">pose</span><span class="p">[</span><span class="s1">&#39;attribute&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pose</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Get joint positions</span>
+        <span class="n">source_pos</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">source_joint</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">target_pos</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">target_joint</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">source_poses</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">pose</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]])</span>
+        <span class="n">target_poses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target_pos</span><span class="p">)</span>
+
+    <span class="c1"># Create RBF interpolator</span>
+    <span class="n">rbf</span> <span class="o">=</span> <span class="n">RBFInterpolator</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">source_poses</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">target_poses</span><span class="p">),</span>
+        <span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;thin_plate_spline&#39;</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rbf</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="jupyter-notebook-integration">
+<h2>Jupyter Notebook Integration<a class="headerlink" href="#jupyter-notebook-integration" title="Link to this heading">¶</a></h2>
+<p>A Jupyter Notebook version of the RBF demo is available for interactive exploration. The notebook includes:</p>
+<ul class="simple">
+<li><p>Interactive visualizations</p></li>
+<li><p>Step-by-step explanations with markdown</p></li>
+<li><p>Compatibility with Google Colab</p></li>
+<li><p>Installation instructions for dependencies</p></li>
+</ul>
+</section>
+<section id="compatibility">
+<h2>Compatibility<a class="headerlink" href="#compatibility" title="Link to this heading">¶</a></h2>
+<p>The RBF functionality requires:</p>
+<ul class="simple">
+<li><p>Python 3.8+</p></li>
+<li><p>SciPy 1.7.0+</p></li>
+<li><p>NumPy 1.20.0+</p></li>
+</ul>
+<p>For Maya integration, compatibility has been tested with:</p>
+<ul class="simple">
+<li><p>Maya 2020+</p></li>
+<li><p>Python 3.8+ (as provided by Maya)</p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading">¶</a></h2>
+<p>For detailed API documentation, see the <a class="reference internal" href="python_api.html"><span class="doc">Python API</span></a> section.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">RBF Features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_api.html">Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rbf_api.html">RBF API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ci_cd.html">CI/CD Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="examples.html" title="previous chapter">Examples</a></li>
+      <li>Next: <a href="api.html" title="next chapter">API Reference</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/rbf_features.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
