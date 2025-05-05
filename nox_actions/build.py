@@ -126,8 +126,17 @@ def build_wheels(session: nox.Session) -> None:
     env["CIBW_BUILD_VERBOSITY"] = "3"
     env["SKBUILD_BUILD_VERBOSE"] = "1"
 
-    # Add version information for setuptools_scm
-    env["SETUPTOOLS_SCM_PRETEND_VERSION"] = "0.8.0"
+    # Get version from commitizen if available
+    try:
+        import subprocess
+        version = subprocess.check_output(["cz", "version", "--project"], text=True).strip()
+        env["SETUPTOOLS_SCM_PRETEND_VERSION"] = version
+        session.log(f"Using version from commitizen: {version}")
+    except Exception as e:
+        session.log(f"Failed to get version from commitizen: {e}")
+        # Fallback to a default version
+        env["SETUPTOOLS_SCM_PRETEND_VERSION"] = "0.12.3"
+        session.log(f"Using fallback version: {env['SETUPTOOLS_SCM_PRETEND_VERSION']}")
 
     # Detect current platform
     current_platform = platform.system().lower()
