@@ -1,9 +1,11 @@
 # Import built-in modules
+# Import standard library modules
 import time
 
 # Import third-party modules
 import nox
 
+# Import local modules
 from nox_actions.utils import retry_command
 
 

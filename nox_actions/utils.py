@@ -1,4 +1,5 @@
 # Import built-in modules
+# Import standard library modules
 import os
 import platform
 import sys
@@ -253,6 +254,7 @@ def get_package_version():
         str: The package version.
     """
     try:
+        # Import third-party modules
         import tomli
 
         with open(os.path.join(THIS_ROOT, "pyproject.toml"), "rb") as f:
@@ -261,6 +263,7 @@ def get_package_version():
     except (ImportError, FileNotFoundError, KeyError):
         try:
             # Try to get version from setup.py
+            # Import standard library modules
             import re
 
             setup_py = os.path.join(THIS_ROOT, "setup.py")

@@ -1,4 +1,5 @@
 # Import built-in modules
+# Import standard library modules
 import glob
 import os
 import platform
@@ -27,6 +28,7 @@ from nox_actions import build, codetest, docs, lint  # noqa: E402
 @nox.session
 def basic_test(session: nox.Session) -> None:
     """Run a basic test to verify that the package can be imported and used."""
+    # Import local modules
     from nox_actions.codetest import basic_test
 
     basic_test(session)
@@ -35,6 +37,7 @@ def basic_test(session: nox.Session) -> None:
 @nox.session
 def build_test(session: nox.Session) -> None:
     """Build the project and run unit tests."""
+    # Import local modules
     from nox_actions.codetest import build_test
 
     build_test(session)
@@ -43,6 +46,7 @@ def build_test(session: nox.Session) -> None:
 @nox.session
 def build_no_test(session: nox.Session) -> None:
     """Build the project without running tests (for VFX platforms)."""
+    # Import local modules
     from nox_actions.codetest import build_no_test
 
     build_no_test(session)
@@ -51,6 +55,7 @@ def build_no_test(session: nox.Session) -> None:
 @nox.session
 def coverage(session: nox.Session) -> None:
     """Generate code coverage reports for CI."""
+    # Import local modules
     from nox_actions.codetest import coverage
 
     coverage(session)
@@ -59,6 +64,7 @@ def coverage(session: nox.Session) -> None:
 @nox.session
 def init_submodules(session: nox.Session) -> None:
     """Initialize git submodules with platform-specific handling."""
+    # Import local modules
     from nox_actions.submodules import init_submodules
 
     init_submodules(session)
@@ -71,6 +77,7 @@ def build_wheels(session: nox.Session) -> None:
     This session builds wheels for the current Python version and platform
     using cibuildwheel. Configuration is read from .cibuildwheel.toml.
     """
+    # Import local modules
     from nox_actions.build import build_wheels
 
     build_wheels(session)
@@ -330,6 +337,7 @@ def publish(session: nox.Session) -> None:
 @nox.session
 def test_windows(session: nox.Session) -> None:
     """Test Windows compatibility by building and testing on Windows."""
+    # Import local modules
     from nox_actions.codetest import test_windows_compatibility
 
     test_windows_compatibility(session)

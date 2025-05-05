@@ -1,12 +1,15 @@
 """Documentation related nox actions."""
+# Import standard library modules
 import os
 import platform
 import shutil
 import time
 from pathlib import Path
 
+# Import third-party modules
 import nox
 
+# Import local modules
 from nox_actions.utils import get_package_name, retry_command
 
 

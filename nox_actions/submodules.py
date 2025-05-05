@@ -1,6 +1,7 @@
 """Git submodule initialization utilities."""
 
 # Import built-in modules
+# Import standard library modules
 import os
 import platform
 import shutil

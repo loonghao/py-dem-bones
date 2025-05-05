@@ -1,4 +1,5 @@
 # Import built-in modules
+# Import standard library modules
 import os
 import platform
 import shutil
@@ -7,6 +8,7 @@ import time
 # Import third-party modules
 import nox
 
+# Import local modules
 from nox_actions.utils import MODULE_NAME, THIS_ROOT, build_cpp_extension, retry_command
 
 
