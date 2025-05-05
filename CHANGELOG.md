@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.12.1 (2025-05-05)
+
+### Fix
+
+- unify isort and ruff configurations to fix lint issues
+- update commitizen and setuptools_scm configuration
+- remove changelog_increment_filename parameter
+- simplify version management using commitizen github action
+- update commitizen configuration to match official documentation
+- integrate commitizen for unified version management
+- resolve build warnings and metadata mismatch issues
+
 ## 0.12.0 (2025-05-05)
 
 ### Fix

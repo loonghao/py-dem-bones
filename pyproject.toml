@@ -120,7 +120,7 @@ SKBUILD_SOABI = "OFF"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.12.0"  # Current version, will be updated by commitizen
+version = "0.12.1"  # Current version, will be updated by commitizen
 version_provider = "commitizen"
 tag-format = "$version"  # Format: 1.2.3 (without 'v' prefix)
 update_changelog_on_bump = true

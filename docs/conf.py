@@ -54,10 +54,10 @@ copyright = '2024, Long Hao'
 author = 'Long Hao'
 
 # The full version, including alpha/beta/rc tags
-release = '0.12.0'
+release = '0.12.1'
 
 # Major version
-version = '0.12.0'
+version = '0.12.1'
 
 # -- General configuration ---------------------------------------------------
 extensions = [
