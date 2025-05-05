@@ -3,7 +3,7 @@ requires = [
     "scikit-build-core>=0.5.0",
     "pybind11>=2.10.0",
     "numpy>=1.20.0",
-    "setuptools>=42.0.0",
+    "setuptools>=61.0.0",  # Required by setuptools_scm>=8.0.0
     "wheel>=0.36.0",
     "setuptools_scm>=8.0.0",
 ]
@@ -170,7 +170,7 @@ update_changelog_on_bump = true
 change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "ci", "build", "docs", "test", "chore"]
 version_files = [
     "pyproject.toml:fallback_version",
-    # __version__.py is now handled by setuptools_scm directly
+    # __version__.py is handled by setuptools_scm in the bumpversion workflow
     "docs/conf.py:version = "
 ]
 # Version bump rules

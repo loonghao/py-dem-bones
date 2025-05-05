@@ -93,7 +93,17 @@ jobs:
 
           # Update __version__.py file with setuptools_scm
           python -c "from setuptools_scm import get_version; print(f'Version from setuptools_scm: {get_version()}')"
+
+          # Ensure setuptools is updated to a compatible version
+          python -m pip install --upgrade "setuptools>=61.0.0"
+
+          # Update version files using setuptools_scm
           python -c "import setuptools_scm; setuptools_scm.dump_version(root='.', version='$NEW_VERSION', write_to='src/py_dem_bones/__version__.py')"
+
+          # Update docs/conf.py manually since it's not being updated by setuptools_scm
+          echo "# Version information" > docs/conf.py
+          echo "version = '$NEW_VERSION'" >> docs/conf.py
+          echo "release = '$NEW_VERSION'" >> docs/conf.py
 
           # Check if version files were updated
           echo "Checking version files..."
