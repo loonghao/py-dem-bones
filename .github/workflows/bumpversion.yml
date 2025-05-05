@@ -78,6 +78,13 @@ jobs:
           echo "Increment type: $INCREMENT"
 
           # Bump version with determined increment
+          # This will:
+          # 1. Update version in pyproject.toml
+          # 2. Update version in docs/conf.py
+          # 3. Create/update src/py_dem_bones/__version__.py
+          # 4. Update CHANGELOG.md
+          # 5. Create a git tag
+          # 6. Commit all changes
           cz bump --increment $INCREMENT --yes
 
           # Get new version after bump
@@ -88,29 +95,7 @@ jobs:
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "increment_type=$INCREMENT" >> $GITHUB_OUTPUT
 
-          # Ensure version files are updated correctly
-          echo "Ensuring version files are updated correctly..."
-
-          # Update __version__.py file with setuptools_scm
-          python -m pip install --upgrade "setuptools>=61.0.0"
-          python -c "from setuptools_scm import get_version; print(f'Version from setuptools_scm: {get_version()}')"
-          python -c "import setuptools_scm; setuptools_scm.dump_version(root='.', version='$NEW_VERSION', write_to='src/py_dem_bones/__version__.py')"
-
-          # Update docs/conf.py manually
-          echo "# Version information" > docs/conf.py
-          echo "version = '$NEW_VERSION'" >> docs/conf.py
-          echo "release = '$NEW_VERSION'" >> docs/conf.py
-
-          # Check if version files were updated
-          echo "Checking version files..."
-          grep -q "$NEW_VERSION" src/py_dem_bones/__version__.py || { echo "Version not updated in __version__.py"; exit 1; }
-          grep -q "$NEW_VERSION" docs/conf.py || { echo "Version not updated in docs/conf.py"; exit 1; }
-
-          # Commit any changes to version files with [skip ci] to avoid triggering other workflows
-          git add src/py_dem_bones/__version__.py docs/conf.py
-          git commit -m "chore: ensure version files are updated to $NEW_VERSION [skip ci]" || echo "No changes to commit"
-
-          # Push changes
+          # Push changes including the new tag
           git push
           git push --tags
         env:

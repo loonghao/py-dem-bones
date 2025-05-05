@@ -117,7 +117,7 @@ jobs:
 
       - name: Build SDist
         run: |
-          python -m pip install build numpy pybind11 scikit-build-core cmake setuptools_scm
+          python -m pip install build numpy pybind11 scikit-build-core cmake setuptools_scm commitizen
 
           # Get version information
           if [[ "$GITHUB_REF" == refs/tags/* ]]; then
@@ -125,34 +125,18 @@ jobs:
             echo "Building with version from tag: $VERSION"
             export SETUPTOOLS_SCM_PRETEND_VERSION="$VERSION"
 
-            # Ensure version file is updated
-            python -m pip install --upgrade "setuptools>=61.0.0"
-            python -c "import setuptools_scm; setuptools_scm.dump_version(root='.', version='$VERSION', write_to='src/py_dem_bones/__version__.py')"
+            # Use commitizen to ensure all version files are updated
+            cz version --project $VERSION
 
-            # Update docs/conf.py manually
-            echo "# Version information" > docs/conf.py
-            echo "version = '$VERSION'" >> docs/conf.py
-            echo "release = '$VERSION'" >> docs/conf.py
-            echo "Version file updated with $VERSION"
+            echo "Version files updated with $VERSION"
           else
-            # For non-tag builds, get the version from setuptools_scm directly
+            # For non-tag builds, get the version from commitizen
             echo "No tag found, determining version from git..."
-            python -c "from setuptools_scm import get_version; VERSION=get_version(); print(f'Version from setuptools_scm: {VERSION}')"
-
-            # Get the version and use it consistently
-            VERSION=$(python -c "from setuptools_scm import get_version; print(get_version(version_scheme='release-branch-semver', local_scheme='no-local-version'))")
+            VERSION=$(cz version --project)
             echo "Using version: $VERSION"
 
             # Set environment variable for consistent version across build steps
             export SETUPTOOLS_SCM_PRETEND_VERSION="$VERSION"
-
-            # Update version files
-            python -c "import setuptools_scm; setuptools_scm.dump_version(root='.', version='$VERSION', write_to='src/py_dem_bones/__version__.py')"
-
-            # Update docs/conf.py manually
-            echo "# Version information" > docs/conf.py
-            echo "version = '$VERSION'" >> docs/conf.py
-            echo "release = '$VERSION'" >> docs/conf.py
           fi
 
           # Show the generated version file
