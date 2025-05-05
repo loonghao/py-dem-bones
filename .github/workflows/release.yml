@@ -128,15 +128,22 @@ jobs:
           fi
           python -m build --sdist
 
-      - name: Test SDist
+      - name: Verify SDist
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest pytest-cov numpy
           python -m pip install dist/*.tar.gz
-          python -c "import py_dem_bones; print(py_dem_bones.__version__)"
-          python -m pytest tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v || echo "Tests failed but continuing"
+          python -c "import py_dem_bones; print(f'Installed py_dem_bones version: {py_dem_bones.__version__}, dem_bones version: {py_dem_bones.__dem_bones_version__}')"
 
+      # Only run tests in PR context
+      - name: Test SDist
+        if: github.event_name == 'pull_request'
+        run: |
+          python -m pip install pytest pytest-cov numpy
+          python -m pytest tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v
+
+      # Only upload coverage in PR context
       - name: Upload coverage reports to Codecov
+        if: github.event_name == 'pull_request'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

@@ -55,18 +55,22 @@ runs:
         python -m pip install nox
 
     - name: Run tests with nox (Unix)
-      if: inputs.platform != 'windows'
+      # Only run tests in PR context
+      if: inputs.platform != 'windows' && github.event_name == 'pull_request'
       shell: bash
       run: |
         python -m nox -s pytest_skip_install
 
     - name: Run tests with nox (Windows)
-      if: inputs.platform == 'windows'
+      # Only run tests in PR context
+      if: inputs.platform == 'windows' && github.event_name == 'pull_request'
       shell: pwsh
       run: |
         python -m nox -s pytest_skip_install
 
     - name: Upload coverage reports to Codecov
+      # Only upload coverage in PR context
+      if: github.event_name == 'pull_request'
       uses: codecov/codecov-action@v5
       with:
         token: ${{ github.token }}
