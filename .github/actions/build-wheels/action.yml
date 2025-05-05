@@ -26,6 +26,28 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Install commitizen
+      shell: bash
+      run: |
+        python -m pip install commitizen
+
+        # If SETUPTOOLS_SCM_PRETEND_VERSION is set, use it to set version
+        if [ -n "$SETUPTOOLS_SCM_PRETEND_VERSION" ]; then
+          echo "Using version from SETUPTOOLS_SCM_PRETEND_VERSION: $SETUPTOOLS_SCM_PRETEND_VERSION"
+          cz version --project $SETUPTOOLS_SCM_PRETEND_VERSION
+        else
+          # Otherwise, get version from commitizen
+          VERSION=$(cz version --project)
+          echo "Using version from commitizen: $VERSION"
+          export SETUPTOOLS_SCM_PRETEND_VERSION="$VERSION"
+        fi
+
+        # Show the generated version file
+        if [ -f "src/py_dem_bones/__version__.py" ]; then
+          echo "Version file content:"
+          cat src/py_dem_bones/__version__.py
+        fi
+
     - name: Build wheels
       uses: pypa/cibuildwheel@v2.23.1
       with:
