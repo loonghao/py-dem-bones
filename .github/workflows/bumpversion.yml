@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install commitizen setuptools_scm
+          python -m pip install commitizen setuptools_scm build wheel
 
       - name: Create bump and changelog
         id: bump
@@ -88,48 +88,26 @@ jobs:
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "increment_type=$INCREMENT" >> $GITHUB_OUTPUT
 
+          # Ensure version files are updated correctly
+          echo "Ensuring version files are updated correctly..."
+
+          # Update __version__.py file with setuptools_scm
+          python -c "from setuptools_scm import get_version; print(f'Version from setuptools_scm: {get_version()}')"
+          python -c "import setuptools_scm; setuptools_scm.dump_version('src/py_dem_bones', '$NEW_VERSION')"
+
+          # Check if version files were updated
+          echo "Checking version files..."
+          grep -q "$NEW_VERSION" src/py_dem_bones/__version__.py || { echo "Version not updated in __version__.py"; exit 1; }
+
+          # Commit any changes to version files
+          git add src/py_dem_bones/__version__.py
+          git commit -m "chore: ensure version files are updated to $NEW_VERSION" || echo "No changes to commit"
+
           # Push changes
           git push
           git push --tags
         env:
-          GIT_COMMITTER_NAME: "GitHub Actions"
+          GIT_COMMITTER_NAME: "github-actions[bot]"
           GIT_COMMITTER_EMAIL: "actions@github.com"
-          GIT_AUTHOR_NAME: "GitHub Actions"
+          GIT_AUTHOR_NAME: "github-actions[bot]"
           GIT_AUTHOR_EMAIL: "actions@github.com"
-
-      - name: Generate Release Notes
-        id: release_notes
-        run: |
-          # Get the changelog for the new version
-          VERSION="${{ steps.bump.outputs.new_version }}"
-          INCREMENT="${{ steps.bump.outputs.increment_type }}"
-
-          # Extract changes from CHANGELOG.md for this version
-          CHANGES=$(grep -A 100 "## $VERSION" CHANGELOG.md | grep -B 100 -m 2 "^## " | grep -v "^## $VERSION" | grep -v "^## " | sed '/^$/d')
-
-          # Create release notes
-          NOTES="## Release $VERSION ($INCREMENT version bump)\n\n"
-          NOTES+="### Changes in this release:\n\n"
-          NOTES+="$CHANGES\n\n"
-          NOTES+="### Commit Statistics:\n"
-          NOTES+="- Breaking changes: $(git log --grep='BREAKING CHANGE' --since='$(git describe --tags --abbrev=0)' --pretty=format:'%h' | wc -l | xargs)\n"
-          NOTES+="- New features: $(git log --grep='^feat' --since='$(git describe --tags --abbrev=0)' --pretty=format:'%h' | wc -l | xargs)\n"
-          NOTES+="- Bug fixes: $(git log --grep='^fix' --since='$(git describe --tags --abbrev=0)' --pretty=format:'%h' | wc -l | xargs)\n"
-          NOTES+="- Other changes: $(git log --grep='^(docs|style|refactor|perf|test|build|ci|chore)' --since='$(git describe --tags --abbrev=0)' --pretty=format:'%h' | wc -l | xargs)\n\n"
-          NOTES+="See [CHANGELOG.md](https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md) for full details."
-
-          # Save notes to output
-          echo "notes<<EOF" >> $GITHUB_OUTPUT
-          echo -e "$NOTES" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.bump.outputs.new_version }}
-          name: "Release ${{ steps.bump.outputs.new_version }} (${{ steps.bump.outputs.increment_type }})"
-          body: ${{ steps.release_notes.outputs.notes }}
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
