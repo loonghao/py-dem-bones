@@ -126,7 +126,7 @@ jobs:
             export SETUPTOOLS_SCM_PRETEND_VERSION="$VERSION"
 
             # Use commitizen to ensure all version files are updated
-            cz version --project $VERSION
+            cz version --project -- "$VERSION"
 
             echo "Version files updated with $VERSION"
           else
