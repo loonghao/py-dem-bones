@@ -19,6 +19,10 @@ environment-pass = [
 
 # Common environment variables for all platforms
 # Version handling is managed by the workflow
+environment = {
+    # Ensure consistent version handling
+    SETUPTOOLS_SCM_PRETEND_VERSION_FALLBACK = "0.8.1"
+}
 
 # Windows-specific configuration
 [windows]
@@ -68,6 +72,8 @@ environment = {
     LANG = "C.UTF-8",
     LC_ALL = "C.UTF-8",
     PYTHONIOENCODING = "UTF-8",
+    # Ensure consistent version handling
+    SETUPTOOLS_SCM_PRETEND_VERSION_FALLBACK = "0.8.1",
     # Enable ccache with optimized settings
     CCACHE_MAXSIZE = "5G",
     CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime,file_stat_matches",
