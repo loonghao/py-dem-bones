@@ -92,15 +92,11 @@ jobs:
           echo "Ensuring version files are updated correctly..."
 
           # Update __version__.py file with setuptools_scm
-          python -c "from setuptools_scm import get_version; print(f'Version from setuptools_scm: {get_version()}')"
-
-          # Ensure setuptools is updated to a compatible version
           python -m pip install --upgrade "setuptools>=61.0.0"
-
-          # Update version files using setuptools_scm
+          python -c "from setuptools_scm import get_version; print(f'Version from setuptools_scm: {get_version()}')"
           python -c "import setuptools_scm; setuptools_scm.dump_version(root='.', version='$NEW_VERSION', write_to='src/py_dem_bones/__version__.py')"
 
-          # Update docs/conf.py manually since it's not being updated by setuptools_scm
+          # Update docs/conf.py manually
           echo "# Version information" > docs/conf.py
           echo "version = '$NEW_VERSION'" >> docs/conf.py
           echo "release = '$NEW_VERSION'" >> docs/conf.py
@@ -108,6 +104,7 @@ jobs:
           # Check if version files were updated
           echo "Checking version files..."
           grep -q "$NEW_VERSION" src/py_dem_bones/__version__.py || { echo "Version not updated in __version__.py"; exit 1; }
+          grep -q "$NEW_VERSION" docs/conf.py || { echo "Version not updated in docs/conf.py"; exit 1; }
 
           # Commit any changes to version files with [skip ci] to avoid triggering other workflows
           git add src/py_dem_bones/__version__.py docs/conf.py
