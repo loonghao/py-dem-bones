@@ -136,14 +136,15 @@ SKBUILD_SOABI = "OFF"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version_provider = "scm"
+version_provider = "commitizen"
 tag-format = "$version"  # Format: 1.2.3 (without 'v' prefix)
 update_changelog_on_bump = true
 change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "ci", "build", "docs", "test", "chore"]
 version_files = [
-    "pyproject.toml:fallback_version",
+    "pyproject.toml:version",
     "docs/conf.py:version = ",
-    "docs/conf.py:release = "
+    "docs/conf.py:release = ",
+    ".github/CITATION.cff:version: "
 ]
 # Configure Commitizen to create/update __version__.py file
 create_files = [
@@ -176,13 +177,13 @@ version_tuple: VERSION_TUPLE
 
 __version__ = version = "{version}"
 __dem_bones_version__ = "1.2.1"  # Hardcoded Dem Bones library version
-__version_tuple__ = version_tuple = tuple("{version}".split("."))
+__version_tuple__ = version_tuple = tuple(int(x) if x.isdigit() else x for x in "{version}".split("."))
 """
     }
 ]
 # Version bump rules
 major_version_zero = true  # Treat breaking changes as minor releases when major version is 0
-bump_message = "bump: version $current_version → $new_version"
+bump_message = "chore(release): $new_version [skip ci]"
 # Commit message rules
 commit_parser = "^(?P<change_type>feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(?:\\((?P<scope>[^()\r\n]*)\\)|\\()?(?P<breaking>!)?:\\s(?P<message>.*)?"
 version_scheme = "semver"
