@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>API Reference &#8212; Project name not set 0.11.1.dev4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=a8952726"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Python API Reference" href="python_api.html" />
+    <link rel="prev" title="RBF Features" href="rbf_features.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading">¶</a></h1>
+<p>This page provides an overview of the py-dem-bones API. For detailed Python API documentation, see the <a class="reference internal" href="python_api.html"><span class="doc">Python API Reference</span></a> page.</p>
+<section id="python-api-overview">
+<h2>Python API Overview<a class="headerlink" href="#python-api-overview" title="Link to this heading">¶</a></h2>
+<section id="core-classes">
+<h3>Core Classes<a class="headerlink" href="#core-classes" title="Link to this heading">¶</a></h3>
+<p>The core classes provide direct bindings to the C++ implementation:</p>
+<ul class="simple">
+<li><p><strong>DemBones</strong>: The main class for skinning decomposition</p></li>
+<li><p><strong>DemBonesExt</strong>: Extended version with support for hierarchical skeletons</p></li>
+</ul>
+</section>
+<section id="wrapper-classes">
+<h3>Wrapper Classes<a class="headerlink" href="#wrapper-classes" title="Link to this heading">¶</a></h3>
+<p>The wrapper classes provide a more Pythonic interface to the core functionality:</p>
+<ul class="simple">
+<li><p><strong>DemBonesWrapper</strong>: Python-friendly wrapper for DemBones</p></li>
+<li><p><strong>DemBonesExtWrapper</strong>: Python-friendly wrapper for DemBonesExt</p></li>
+</ul>
+</section>
+<section id="exception-classes">
+<h3>Exception Classes<a class="headerlink" href="#exception-classes" title="Link to this heading">¶</a></h3>
+<p>The exception classes provide structured error handling:</p>
+<ul class="simple">
+<li><p><strong>DemBonesError</strong>: Base class for all py-dem-bones exceptions</p></li>
+<li><p><strong>ParameterError</strong>: Raised for invalid parameter values</p></li>
+<li><p><strong>ComputationError</strong>: Raised when computation fails</p></li>
+<li><p><strong>IndexError</strong>: Raised for invalid indices</p></li>
+<li><p><strong>NameError</strong>: Raised for name-related errors</p></li>
+<li><p><strong>ConfigurationError</strong>: Raised for configuration errors</p></li>
+<li><p><strong>NotImplementedError</strong>: Raised for unimplemented features</p></li>
+<li><p><strong>IOError</strong>: Raised for input/output errors</p></li>
+</ul>
+</section>
+<section id="utility-functions">
+<h3>Utility Functions<a class="headerlink" href="#utility-functions" title="Link to this heading">¶</a></h3>
+<p>The utility functions provide helper functionality:</p>
+<ul class="simple">
+<li><p><strong>numpy_to_eigen</strong>: Convert a NumPy array to an Eigen-compatible format</p></li>
+<li><p><strong>eigen_to_numpy</strong>: Convert an Eigen matrix to a NumPy array</p></li>
+</ul>
+</section>
+<section id="interfaces">
+<h3>Interfaces<a class="headerlink" href="#interfaces" title="Link to this heading">¶</a></h3>
+<p>The interfaces provide integration with external software:</p>
+<ul class="simple">
+<li><p><strong>DCCInterface</strong>: Abstract base class for DCC software integration</p></li>
+</ul>
+</section>
+</section>
+<section id="c-api">
+<h2>C++ API<a class="headerlink" href="#c-api" title="Link to this heading">¶</a></h2>
+<p>The C++ API is the foundation of py-dem-bones and includes the following main components:</p>
+<ul class="simple">
+<li><p><strong>DemBones</strong>: The core class for skinning decomposition</p></li>
+<li><p><strong>DemBonesExt</strong>: Extended version with support for hierarchical skeletons</p></li>
+<li><p><strong>Eigen Integration</strong>: Utilities for working with Eigen matrices</p></li>
+<li><p><strong>Error Handling</strong>: C++ exception classes and error codes</p></li>
+</ul>
+<p>For more details on the C++ implementation, please refer to the <a class="reference external" href="https://github.com/electronicarts/dem-bones">Dem Bones repository</a>.</p>
+</section>
+<section id="usage-examples">
+<h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading">¶</a></h2>
+<section id="basic-usage">
+<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">py_dem_bones</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pdb</span>
+
+<span class="c1"># Create a DemBonesWrapper instance</span>
+<span class="n">dem_bones</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">DemBonesWrapper</span><span class="p">()</span>
+
+<span class="c1"># Set parameters</span>
+<span class="n">dem_bones</span><span class="o">.</span><span class="n">num_iterations</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">dem_bones</span><span class="o">.</span><span class="n">num_init_iterations</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">dem_bones</span><span class="o">.</span><span class="n">max_influences</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">dem_bones</span><span class="o">.</span><span class="n">weight_smoothness</span> <span class="o">=</span> <span class="mf">1e-4</span>
+
+<span class="c1"># Set up data</span>
+<span class="c1"># ...</span>
+
+<span class="c1"># Compute skinning decomposition</span>
+<span class="n">dem_bones</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+
+<span class="c1"># Get results</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="n">dem_bones</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
+<span class="n">transformations</span> <span class="o">=</span> <span class="n">dem_bones</span><span class="o">.</span><span class="n">get_transformations</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-usage">
+<h3>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Link to this heading">¶</a></h3>
+<p>For advanced usage examples, including hierarchical skeletons and custom constraints, see the <a class="reference internal" href="examples.html"><span class="doc">Examples</span></a> page.</p>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rbf_features.html">RBF Features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_api.html">Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rbf_api.html">RBF API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ci_cd.html">CI/CD Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="rbf_features.html" title="previous chapter">RBF Features</a></li>
+      <li>Next: <a href="python_api.html" title="next chapter">Python API Reference</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/api.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
