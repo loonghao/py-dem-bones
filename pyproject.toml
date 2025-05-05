@@ -131,12 +131,6 @@ version_files = [
     "docs/conf.py:release = ",
     ".github/CITATION.cff:version: "
 ]
-# Version bump rules
-major_version_zero = true  # Treat breaking changes as minor releases when major version is 0
-bump_message = "chore(release): $new_version [skip ci]"
-# Commit message rules
-commit_parser = "^(?P<change_type>feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(?:\\((?P<scope>[^()\r\n]*)\\)|\\()?(?P<breaking>!)?:\\s(?P<message>.*)?"
-version_scheme = "semver"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
