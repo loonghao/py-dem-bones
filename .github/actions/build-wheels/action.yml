@@ -36,11 +36,16 @@ runs:
           echo "Using version from SETUPTOOLS_SCM_PRETEND_VERSION: $SETUPTOOLS_SCM_PRETEND_VERSION"
           # Fix: Use -- to separate the version argument to avoid it being interpreted as git args
           cz version --project -- "$SETUPTOOLS_SCM_PRETEND_VERSION"
+
+          # Ensure the version is properly exported for all build steps
+          echo "SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION" >> $GITHUB_ENV
         else
           # Otherwise, get version from commitizen
           VERSION=$(cz version --project)
           echo "Using version from commitizen: $VERSION"
-          export SETUPTOOLS_SCM_PRETEND_VERSION="$VERSION"
+
+          # Ensure the version is properly exported for all build steps
+          echo "SETUPTOOLS_SCM_PRETEND_VERSION=$VERSION" >> $GITHUB_ENV
         fi
 
         # Show the generated version file
