@@ -25,6 +25,7 @@ on:
       - '.flake8'
       - '.pylintrc'
       - 'renovate.json'
+      - 'src/py_dem_bones/__version__.py'  # Ignore version file updates to avoid duplicate builds
   release:
     types: [published]
   pull_request:
@@ -48,6 +49,7 @@ on:
       - '.flake8'
       - '.pylintrc'
       - 'renovate.json'
+      - 'src/py_dem_bones/__version__.py'  # Ignore version file updates to avoid duplicate builds
   workflow_dispatch:
     inputs:
       fast-mode:

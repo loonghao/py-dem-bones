@@ -26,7 +26,7 @@ on:
 
 jobs:
   bump-version:
-    if: "!startsWith(github.event.head_commit.message, 'bump:') && !startsWith(github.event.head_commit.message, 'chore(release)')"
+    if: "!startsWith(github.event.head_commit.message, 'bump:') && !startsWith(github.event.head_commit.message, 'chore(release)') && !startsWith(github.event.head_commit.message, 'chore: ensure version files are updated to')"
     runs-on: ubuntu-latest
     name: "Bump version and create changelog with commitizen"
     permissions:
@@ -109,9 +109,9 @@ jobs:
           echo "Checking version files..."
           grep -q "$NEW_VERSION" src/py_dem_bones/__version__.py || { echo "Version not updated in __version__.py"; exit 1; }
 
-          # Commit any changes to version files
+          # Commit any changes to version files with [skip ci] to avoid triggering other workflows
           git add src/py_dem_bones/__version__.py docs/conf.py
-          git commit -m "chore: ensure version files are updated to $NEW_VERSION" || echo "No changes to commit"
+          git commit -m "chore: ensure version files are updated to $NEW_VERSION [skip ci]" || echo "No changes to commit"
 
           # Push changes
           git push
