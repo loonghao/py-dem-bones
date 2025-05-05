@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Examples &#8212; Project name not set 0.8.2.dev8 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=7c73423f"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="RBF Features" href="rbf_features.html" />
+    <link rel="prev" title="Usage" href="usage.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h1>
+<p>This page provides examples of how to use py-dem-bones in various scenarios.</p>
+<section id="basic-skinning-decomposition">
+<h2>Basic Skinning Decomposition<a class="headerlink" href="#basic-skinning-decomposition" title="Link to this heading">¶</a></h2>
+<p>This example demonstrates how to perform basic skinning decomposition on a simple mesh:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Basic Skinning Decomposition Example</span><a class="headerlink" href="#id1" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 2</span><span class="sd">Example of using py-dem-bones for basic skinning decomposition.</span>
+<span class="linenos"> 3</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="kn">import</span><span class="w"> </span><span class="nn">py_dem_bones</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pdb</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="k">def</span><span class="w"> </span><span class="nf">create_cube</span><span class="p">():</span>
+<span class="linenos">11</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a simple cube mesh.&quot;&quot;&quot;</span>
+<span class="linenos">12</span>    <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="linenos">13</span>        <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>  <span class="c1"># 0</span>
+<span class="linenos">14</span>        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>   <span class="c1"># 1</span>
+<span class="linenos">15</span>        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>    <span class="c1"># 2</span>
+<span class="linenos">16</span>        <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>   <span class="c1"># 3</span>
+<span class="linenos">17</span>        <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>   <span class="c1"># 4</span>
+<span class="linenos">18</span>        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>    <span class="c1"># 5</span>
+<span class="linenos">19</span>        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>     <span class="c1"># 6</span>
+<span class="linenos">20</span>        <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>     <span class="c1"># 7</span>
+<span class="linenos">21</span>    <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="linenos">22</span>
+<span class="linenos">23</span>    <span class="k">return</span> <span class="n">vertices</span>
+<span class="linenos">24</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span><span class="k">def</span><span class="w"> </span><span class="nf">create_deformed_cube</span><span class="p">(</span><span class="n">scale_y</span><span class="p">):</span>
+<span class="linenos">27</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a deformed cube by stretching it along the y-axis.&quot;&quot;&quot;</span>
+<span class="linenos">28</span>    <span class="n">vertices</span> <span class="o">=</span> <span class="n">create_cube</span><span class="p">()</span>
+<span class="linenos">29</span>    <span class="n">deformed</span> <span class="o">=</span> <span class="n">vertices</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="linenos">30</span>    <span class="n">deformed</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">scale_y</span>
+<span class="linenos">31</span>    <span class="k">return</span> <span class="n">deformed</span>
+<span class="linenos">32</span>
+<span class="linenos">33</span>
+<span class="linenos">34</span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<span class="linenos">35</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the example.&quot;&quot;&quot;</span>
+<span class="linenos">36</span>    <span class="c1"># Create rest pose and animated poses</span>
+<span class="linenos">37</span>    <span class="n">rest_pose</span> <span class="o">=</span> <span class="n">create_cube</span><span class="p">()</span>
+<span class="linenos">38</span>    <span class="n">animated_poses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span>
+<span class="linenos">39</span>        <span class="n">create_deformed_cube</span><span class="p">(</span><span class="mf">1.2</span><span class="p">),</span>  <span class="c1"># Frame 1</span>
+<span class="linenos">40</span>        <span class="n">create_deformed_cube</span><span class="p">(</span><span class="mf">1.5</span><span class="p">),</span>  <span class="c1"># Frame 2</span>
+<span class="linenos">41</span>        <span class="n">create_deformed_cube</span><span class="p">(</span><span class="mf">1.8</span><span class="p">)</span>   <span class="c1"># Frame 3</span>
+<span class="linenos">42</span>    <span class="p">])</span>
+<span class="linenos">43</span>
+<span class="linenos">44</span>    <span class="c1"># Create DemBones instance</span>
+<span class="linenos">45</span>    <span class="n">dem_bones</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">DemBones</span><span class="p">()</span>
+<span class="linenos">46</span>
+<span class="linenos">47</span>    <span class="c1"># Set parameters</span>
+<span class="linenos">48</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nIters</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="linenos">49</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nInitIters</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos">50</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nTransIters</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="linenos">51</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nWeightsIters</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="linenos">52</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nnz</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="linenos">53</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">weightsSmooth</span> <span class="o">=</span> <span class="mf">1e-4</span>
+<span class="linenos">54</span>
+<span class="linenos">55</span>    <span class="c1"># Set data</span>
+<span class="linenos">56</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nV</span> <span class="o">=</span> <span class="mi">8</span>  <span class="c1"># 8 vertices in a cube</span>
+<span class="linenos">57</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nB</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># 2 bones</span>
+<span class="linenos">58</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nF</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># 3 frames</span>
+<span class="linenos">59</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">nS</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># 1 subject</span>
+<span class="linenos">60</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">fStart</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="linenos">61</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">subjectID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="linenos">62</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">rest_pose</span>
+<span class="linenos">63</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">animated_poses</span>
+<span class="linenos">64</span>
+<span class="linenos">65</span>    <span class="c1"># Compute skinning decomposition</span>
+<span class="linenos">66</span>    <span class="n">dem_bones</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+<span class="linenos">67</span>
+<span class="linenos">68</span>    <span class="c1"># Get results</span>
+<span class="linenos">69</span>    <span class="n">weights</span> <span class="o">=</span> <span class="n">dem_bones</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
+<span class="linenos">70</span>    <span class="n">transformations</span> <span class="o">=</span> <span class="n">dem_bones</span><span class="o">.</span><span class="n">get_transformations</span><span class="p">()</span>
+<span class="linenos">71</span>
+<span class="linenos">72</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Skinning weights:&quot;</span><span class="p">)</span>
+<span class="linenos">73</span>    <span class="nb">print</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+<span class="linenos">74</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Bone transformations:&quot;</span><span class="p">)</span>
+<span class="linenos">75</span>    <span class="nb">print</span><span class="p">(</span><span class="n">transformations</span><span class="p">)</span>
+<span class="linenos">76</span>
+<span class="linenos">77</span>
+<span class="linenos">78</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="linenos">79</span>    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="working-with-hierarchical-skeletons">
+<h2>Working with Hierarchical Skeletons<a class="headerlink" href="#working-with-hierarchical-skeletons" title="Link to this heading">¶</a></h2>
+<p>This example demonstrates how to work with hierarchical skeletons:</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Hierarchical Skeleton Example</span><a class="headerlink" href="#id2" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">  2</span><span class="sd">Example of using py-dem-bones with hierarchical skeletons.</span>
+<span class="linenos">  3</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">  4</span>
+<span class="linenos">  5</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos">  6</span>
+<span class="linenos">  7</span><span class="kn">import</span><span class="w"> </span><span class="nn">py_dem_bones</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pdb</span>
+<span class="linenos">  8</span>
+<span class="linenos">  9</span>
+<span class="linenos"> 10</span><span class="k">def</span><span class="w"> </span><span class="nf">create_articulated_mesh</span><span class="p">():</span>
+<span class="linenos"> 11</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a simple articulated mesh (two connected boxes).&quot;&quot;&quot;</span>
+<span class="linenos"> 12</span>    <span class="c1"># First box: vertices 0-7</span>
+<span class="linenos"> 13</span>    <span class="n">box1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="linenos"> 14</span>        <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+<span class="linenos"> 15</span>        <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+<span class="linenos"> 16</span>        <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+<span class="linenos"> 17</span>        <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+<span class="linenos"> 18</span>        <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="linenos"> 19</span>        <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="linenos"> 20</span>        <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="linenos"> 21</span>        <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="linenos"> 22</span>    <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="linenos"> 23</span>
+<span class="linenos"> 24</span>    <span class="c1"># Second box: vertices 8-15</span>
+<span class="linenos"> 25</span>    <span class="n">box2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="linenos"> 26</span>        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+<span class="linenos"> 27</span>        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+<span class="linenos"> 28</span>        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+<span class="linenos"> 29</span>        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+<span class="linenos"> 30</span>        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="linenos"> 31</span>        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="linenos"> 32</span>        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="linenos"> 33</span>        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="linenos"> 34</span>    <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="linenos"> 35</span>
+<span class="linenos"> 36</span>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">box1</span><span class="p">,</span> <span class="n">box2</span><span class="p">])</span>
+<span class="linenos"> 37</span>
+<span class="linenos"> 38</span>
+<span class="linenos"> 39</span><span class="k">def</span><span class="w"> </span><span class="nf">create_deformed_articulated_mesh</span><span class="p">(</span><span class="n">angle_deg</span><span class="p">):</span>
+<span class="linenos"> 40</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a deformed articulated mesh by rotating the second box.&quot;&quot;&quot;</span>
+<span class="linenos"> 41</span>    <span class="n">vertices</span> <span class="o">=</span> <span class="n">create_articulated_mesh</span><span class="p">()</span>
+<span class="linenos"> 42</span>    <span class="n">angle_rad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">angle_deg</span><span class="p">)</span>
+<span class="linenos"> 43</span>
+<span class="linenos"> 44</span>    <span class="c1"># Keep the first box fixed</span>
+<span class="linenos"> 45</span>    <span class="n">deformed</span> <span class="o">=</span> <span class="n">vertices</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="linenos"> 46</span>
+<span class="linenos"> 47</span>    <span class="c1"># Rotate the second box around the y-axis</span>
+<span class="linenos"> 48</span>    <span class="n">cos_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)</span>
+<span class="linenos"> 49</span>    <span class="n">sin_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)</span>
+<span class="linenos"> 50</span>
+<span class="linenos"> 51</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">):</span>
+<span class="linenos"> 52</span>        <span class="n">x</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="linenos"> 53</span>        <span class="n">deformed</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">cos_a</span> <span class="o">-</span> <span class="n">z</span> <span class="o">*</span> <span class="n">sin_a</span>
+<span class="linenos"> 54</span>        <span class="n">deformed</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">sin_a</span> <span class="o">+</span> <span class="n">z</span> <span class="o">*</span> <span class="n">cos_a</span>
+<span class="linenos"> 55</span>
+<span class="linenos"> 56</span>    <span class="k">return</span> <span class="n">deformed</span>
+<span class="linenos"> 57</span>
+<span class="linenos"> 58</span>
+<span class="linenos"> 59</span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<span class="linenos"> 60</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the example.&quot;&quot;&quot;</span>
+<span class="linenos"> 61</span>    <span class="c1"># Create rest pose and animated poses</span>
+<span class="linenos"> 62</span>    <span class="n">rest_pose</span> <span class="o">=</span> <span class="n">create_articulated_mesh</span><span class="p">()</span>
+<span class="linenos"> 63</span>    <span class="n">animated_poses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span>
+<span class="linenos"> 64</span>        <span class="n">create_deformed_articulated_mesh</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span>  <span class="c1"># Frame 1</span>
+<span class="linenos"> 65</span>        <span class="n">create_deformed_articulated_mesh</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>  <span class="c1"># Frame 2</span>
+<span class="linenos"> 66</span>        <span class="n">create_deformed_articulated_mesh</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>   <span class="c1"># Frame 3</span>
+<span class="linenos"> 67</span>    <span class="p">])</span>
+<span class="linenos"> 68</span>
+<span class="linenos"> 69</span>    <span class="c1"># Create DemBonesExt instance</span>
+<span class="linenos"> 70</span>    <span class="n">dem_bones_ext</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">DemBonesExt</span><span class="p">()</span>
+<span class="linenos"> 71</span>
+<span class="linenos"> 72</span>    <span class="c1"># Set parameters</span>
+<span class="linenos"> 73</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">nIters</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="linenos"> 74</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">nInitIters</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos"> 75</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">nTransIters</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="linenos"> 76</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">nWeightsIters</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="linenos"> 77</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">nnz</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="linenos"> 78</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">weightsSmooth</span> <span class="o">=</span> <span class="mf">1e-4</span>
+<span class="linenos"> 79</span>
+<span class="linenos"> 80</span>    <span class="c1"># Set data</span>
+<span class="linenos"> 81</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">nV</span> <span class="o">=</span> <span class="mi">16</span>  <span class="c1"># 16 vertices in the articulated mesh</span>
+<span class="linenos"> 82</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">nB</span> <span class="o">=</span> <span class="mi">2</span>   <span class="c1"># 2 bones</span>
+<span class="linenos"> 83</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">nF</span> <span class="o">=</span> <span class="mi">3</span>   <span class="c1"># 3 frames</span>
+<span class="linenos"> 84</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">nS</span> <span class="o">=</span> <span class="mi">1</span>   <span class="c1"># 1 subject</span>
+<span class="linenos"> 85</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">fStart</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="linenos"> 86</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">subjectID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="linenos"> 87</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">rest_pose</span>
+<span class="linenos"> 88</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">animated_poses</span>
+<span class="linenos"> 89</span>
+<span class="linenos"> 90</span>    <span class="c1"># Set hierarchical skeleton data</span>
+<span class="linenos"> 91</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>  <span class="c1"># Bone 1 is the child of Bone 0</span>
+<span class="linenos"> 92</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">boneName</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Box1&quot;</span><span class="p">,</span> <span class="s2">&quot;Box2&quot;</span><span class="p">]</span>
+<span class="linenos"> 93</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">bindUpdate</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="linenos"> 94</span>
+<span class="linenos"> 95</span>    <span class="c1"># Compute skinning decomposition</span>
+<span class="linenos"> 96</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+<span class="linenos"> 97</span>
+<span class="linenos"> 98</span>    <span class="c1"># Get results</span>
+<span class="linenos"> 99</span>    <span class="n">weights</span> <span class="o">=</span> <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
+<span class="linenos">100</span>    <span class="n">transformations</span> <span class="o">=</span> <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">get_transformations</span><span class="p">()</span>
+<span class="linenos">101</span>
+<span class="linenos">102</span>    <span class="c1"># Compute local rotations and translations</span>
+<span class="linenos">103</span>    <span class="n">dem_bones_ext</span><span class="o">.</span><span class="n">computeRTB</span><span class="p">()</span>
+<span class="linenos">104</span>
+<span class="linenos">105</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Skinning weights:&quot;</span><span class="p">)</span>
+<span class="linenos">106</span>    <span class="nb">print</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+<span class="linenos">107</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Bone transformations:&quot;</span><span class="p">)</span>
+<span class="linenos">108</span>    <span class="nb">print</span><span class="p">(</span><span class="n">transformations</span><span class="p">)</span>
+<span class="linenos">109</span>
+<span class="linenos">110</span>
+<span class="linenos">111</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="linenos">112</span>    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="dcc-integration-examples">
+<h2>DCC Integration Examples<a class="headerlink" href="#dcc-integration-examples" title="Link to this heading">¶</a></h2>
+<p>py-dem-bones can be integrated with various Digital Content Creation (DCC) software:</p>
+<ul class="simple">
+<li><p>Maya Integration: <span class="xref std std-doc">View Example</span></p></li>
+<li><p>Blender Integration: <span class="xref std std-doc">View Example</span></p></li>
+<li><p>Houdini Integration: <span class="xref std std-doc">View Example</span></p></li>
+<li><p>3ds Max Integration: <span class="xref std std-doc">View Example</span></p></li>
+<li><p>Unreal Engine Integration: <span class="xref std std-doc">View Example</span></p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rbf_features.html">RBF Features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_api.html">Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rbf_api.html">RBF API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ci_cd.html">CI/CD Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="usage.html" title="previous chapter">Usage</a></li>
+      <li>Next: <a href="rbf_features.html" title="next chapter">RBF Features</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/examples.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
