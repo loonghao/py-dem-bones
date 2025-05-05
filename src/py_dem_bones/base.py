@@ -656,7 +656,8 @@ class DemBonesWrapper:
         animated_poses = self._dem_bones.get_animated_poses()
         if animated_poses.size == 0:
             raise ParameterError(
-                "At least one target pose must be set before computation. Use set_target_vertices() to add target poses."
+                "At least one target pose must be set before computation. "
+                "Use set_target_vertices() to add target poses."
             )
 
         # Check number of bones
