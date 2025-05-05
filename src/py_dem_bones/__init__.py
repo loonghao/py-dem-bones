@@ -7,9 +7,7 @@ with bone transformations from a set of example meshes.
 
 # Import local modules
 from py_dem_bones.__version__ import __version__
-from py_dem_bones._py_dem_bones import DemBones as _DemBones
-from py_dem_bones._py_dem_bones import DemBonesExt as _DemBonesExt
-from py_dem_bones._py_dem_bones import __dem_bones_version__
+from py_dem_bones._py_dem_bones import DemBones as _DemBones, DemBonesExt as _DemBonesExt, __dem_bones_version__
 from py_dem_bones.base import DemBonesExtWrapper, DemBonesWrapper
 from py_dem_bones.exceptions import (
     ComputationError,

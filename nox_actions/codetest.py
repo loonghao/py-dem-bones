@@ -1,4 +1,5 @@
 # Import built-in modules
+# Import standard library modules
 import glob
 import os
 import platform
@@ -8,6 +9,7 @@ import time
 # Import third-party modules
 import nox
 
+# Import local modules
 from nox_actions.utils import MODULE_NAME, THIS_ROOT, build_cpp_extension, retry_command
 
 
@@ -81,6 +83,7 @@ def pytest_skip_install(session: nox.Session) -> None:
 
                 # Also add the site-packages directory to PATH
                 # This is where the installed package and its DLLs will be located
+                # Import standard library modules
                 import site
 
                 site_packages = site.getsitepackages()
@@ -212,6 +215,7 @@ def pytest_skip_install(session: nox.Session) -> None:
                                 dll_name = os.path.basename(dll_file)
                                 # Copy to Python directory
                                 python_dll_path = os.path.join(python_dir, dll_name)
+                                # Import standard library modules
                                 import shutil
 
                                 shutil.copy2(dll_file, python_dll_path)
@@ -236,6 +240,7 @@ def pytest_skip_install(session: nox.Session) -> None:
 
                 # After installing the wheel, try to extract any DLLs from it and add them to PATH
                 if platform.system() == "Windows":
+                    # Import standard library modules
                     import zipfile
 
                     try:
@@ -246,6 +251,7 @@ def pytest_skip_install(session: nox.Session) -> None:
                             ]
                             if dll_files:
                                 # Extract DLLs to a temporary directory
+                                # Import standard library modules
                                 import tempfile
 
                                 dll_dir = tempfile.mkdtemp()
@@ -264,6 +270,7 @@ def pytest_skip_install(session: nox.Session) -> None:
                                 # 尝试复制DLL到Python的DLLs目录
                                 python_dlls_dir = os.path.join(python_dir, "DLLs")
                                 if os.path.exists(python_dlls_dir):
+                                    # Import standard library modules
                                     import shutil
 
                                     for dll_file in dll_files:
@@ -285,6 +292,7 @@ def pytest_skip_install(session: nox.Session) -> None:
 
                 # 尝试在site-packages目录中查找_py_dem_bones.pyd文件
                 try:
+                    # Import standard library modules
                     import site
 
                     site_packages = site.getsitepackages()
@@ -296,6 +304,7 @@ def pytest_skip_install(session: nox.Session) -> None:
                             session.log(f"Found _py_dem_bones.pyd at {pyd_path}")
                             # 使用Dependency Walker或类似工具检查依赖
                             try:
+                                # Import standard library modules
                                 import subprocess
 
                                 # 使用dumpbin检查DLL依赖（如果可用）
