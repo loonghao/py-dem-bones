@@ -81,7 +81,7 @@ def build_wheel():
     # Set environment variables
     env = os.environ.copy()
     env["SKBUILD_BUILD_VERBOSE"] = "1"
-    env["SETUPTOOLS_SCM_PRETEND_VERSION"] = "0.8.0"  # Set version for setuptools_scm
+    env["SETUPTOOLS_SCM_PRETEND_VERSION"] = "0.11.1"  # Set version for setuptools_scm
 
     # Install build dependencies
     print("Installing build dependencies...")
