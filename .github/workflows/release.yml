@@ -1,11 +1,13 @@
 name: Build and Release
 
 on:
+  # Only trigger on tag push, not on branch push
+  # This prevents duplicate builds when merging to main
+  # The bumpversion.yml workflow will create tags that trigger this workflow
   push:
     tags:
       - 'v*'
       - '[0-9]+.[0-9]+.[0-9]+*'
-    branches: [ main ]
     paths-ignore:
       - '**.md'
       - 'docs/**'
