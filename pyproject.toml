@@ -103,8 +103,7 @@ tag_regex = "^(?P<version>[0-9]+\\.[0-9]+\\.[0-9]+)(?P<dev>-[a-zA-Z0-9]+)?$"
 local_scheme = "no-local-version"
 # Don't use dev0 suffix for non-tagged versions to avoid metadata mismatches
 version_scheme = "release-branch-semver"
-# Write version to file for setuptools_scm
-write_to = "src/py_dem_bones/__version__.py"
+# No longer writing version to file, managed by commitizen instead
 
 [tool.scikit-build.cmake]
 version = ">=3.15"
