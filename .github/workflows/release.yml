@@ -122,7 +122,8 @@ jobs:
             echo "Building with version from tag: $VERSION"
             export SETUPTOOLS_SCM_PRETEND_VERSION="$VERSION"
             # Ensure version file is updated
-            python -c "import setuptools_scm; setuptools_scm.dump_version('src/py_dem_bones', '$VERSION')"
+            python -m pip install --upgrade "setuptools>=61.0.0"
+            python -c "import setuptools_scm; setuptools_scm.dump_version(root='.', version='$VERSION', write_to='src/py_dem_bones/__version__.py')"
             echo "Version file updated with $VERSION"
             cat src/py_dem_bones/__version__.py
           else
