@@ -100,7 +100,7 @@ jobs:
           grep -q "$NEW_VERSION" src/py_dem_bones/__version__.py || { echo "Version not updated in __version__.py"; exit 1; }
 
           # Commit any changes to version files
-          git add src/py_dem_bones/__version__.py
+          git add src/py_dem_bones/__version__.py docs/conf.py
           git commit -m "chore: ensure version files are updated to $NEW_VERSION" || echo "No changes to commit"
 
           # Push changes
