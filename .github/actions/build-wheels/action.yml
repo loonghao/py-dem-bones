@@ -48,11 +48,9 @@ runs:
           echo "SETUPTOOLS_SCM_PRETEND_VERSION=$VERSION" >> $GITHUB_ENV
         fi
 
-        # Show the generated version file
-        if [ -f "src/py_dem_bones/__version__.py" ]; then
-          echo "Version file content:"
-          cat src/py_dem_bones/__version__.py
-        fi
+        # Show the version file content
+        echo "Version file content:"
+        cat src/py_dem_bones/__version__.py
 
     - name: Build wheels
       uses: pypa/cibuildwheel@v2.23.1
