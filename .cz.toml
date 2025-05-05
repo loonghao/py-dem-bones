@@ -1,0 +1,3 @@
+[tool]
+# Use commitizen section from pyproject.toml
+is_in_pyproject = true

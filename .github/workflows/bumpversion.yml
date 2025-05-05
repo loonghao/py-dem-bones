@@ -49,55 +49,13 @@ jobs:
           python -m pip install commitizen setuptools_scm build wheel
 
       - name: Create bump and changelog
-        id: bump
-        run: |
-          # Get current version before bump
-          CURRENT_VERSION=$(cz version --project)
-          echo "Current version: $CURRENT_VERSION"
-
-          # Analyze commits to determine increment type
-          # Check for breaking changes
-          BREAKING_CHANGES=$(git log --grep="BREAKING CHANGE" --since="$(git describe --tags --abbrev=0)" --pretty=format:"%s" | wc -l)
-          # Check for new features
-          FEATURES=$(git log --grep="^feat" --since="$(git describe --tags --abbrev=0)" --pretty=format:"%s" | wc -l)
-          # Check for bug fixes
-          FIXES=$(git log --grep="^fix" --since="$(git describe --tags --abbrev=0)" --pretty=format:"%s" | wc -l)
-
-          # Determine increment type
-          INCREMENT="patch"  # Default to patch
-          if [ "$BREAKING_CHANGES" -gt 0 ]; then
-            INCREMENT="major"
-            echo "Found breaking changes, will do a major version bump"
-          elif [ "$FEATURES" -gt 0 ]; then
-            INCREMENT="minor"
-            echo "Found new features, will do a minor version bump"
-          else
-            echo "Found fixes or other changes, will do a patch version bump"
-          fi
-
-          echo "Increment type: $INCREMENT"
-
-          # Bump version with determined increment
-          # This will:
-          # 1. Update version in pyproject.toml
-          # 2. Update version in docs/conf.py
-          # 3. Create/update src/py_dem_bones/__version__.py
-          # 4. Update CHANGELOG.md
-          # 5. Create a git tag
-          # 6. Commit all changes
-          cz bump --increment $INCREMENT --yes
-
-          # Get new version after bump
-          NEW_VERSION=$(cz version --project)
-          echo "New version: $NEW_VERSION"
-
-          # Set output for later steps
-          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
-          echo "increment_type=$INCREMENT" >> $GITHUB_OUTPUT
-
-          # Push changes including the new tag
-          git push
-          git push --tags
+        id: cz
+        uses: commitizen-tools/commitizen-action@master
+        with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          changelog_increment_filename: body.md
+          push: true
+          commit: true
         env:
           GIT_COMMITTER_NAME: "github-actions[bot]"
           GIT_COMMITTER_EMAIL: "actions@github.com"

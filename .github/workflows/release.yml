@@ -115,10 +115,12 @@ jobs:
           python: cp310
           max-size: ${{ env.CCACHE_MAX_SIZE }}
 
-      - name: Build SDist
+      - name: Install dependencies
         run: |
           python -m pip install build numpy pybind11 scikit-build-core cmake setuptools_scm commitizen
 
+      - name: Set version using commitizen
+        run: |
           # Get version information
           if [[ "$GITHUB_REF" == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/}
@@ -143,6 +145,8 @@ jobs:
           echo "Version file content:"
           cat src/py_dem_bones/__version__.py
 
+      - name: Build SDist
+        run: |
           # Build the source distribution
           python -m build --sdist
 
