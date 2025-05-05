@@ -115,7 +115,7 @@ def cibuildwheel_local(session: nox.Session) -> None:
     env["CIBW_BUILD_VERBOSITY"] = "3"
 
     # Add version information for setuptools_scm
-    env["SETUPTOOLS_SCM_PRETEND_VERSION"] = "0.8.0"
+    env["SETUPTOOLS_SCM_PRETEND_VERSION"] = "0.11.1"
 
     # Make sure git recognizes the directory as safe
     repo_path = os.path.abspath(os.path.dirname(__file__))

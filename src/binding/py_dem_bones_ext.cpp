@@ -22,8 +22,8 @@ void bind_dem_bones_ext(py::module& m, const std::string& type_suffix) {
     using MatrixX = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>;
     using VectorX = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
     using Matrix4 = Eigen::Matrix<Scalar, 4, 4>;
-    using Vector4 = Eigen::Matrix<Scalar, 4, 1>;
-    // Vector3 is not used in this file, so we'll remove it
+    // Vector4 is not used in this file, so we'll remove it
+    // using Vector4 = Eigen::Matrix<Scalar, 4, 1>;
     using SparseMatrix = Eigen::SparseMatrix<Scalar>;
 
     std::string class_name = std::string("DemBonesExt") + type_suffix;

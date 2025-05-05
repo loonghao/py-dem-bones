@@ -118,11 +118,13 @@ jobs:
       - name: Build SDist
         run: |
           python -m pip install build numpy pybind11 scikit-build-core cmake setuptools_scm
-          # Get version from tag if available
+
+          # Get version information
           if [[ "$GITHUB_REF" == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/}
             echo "Building with version from tag: $VERSION"
             export SETUPTOOLS_SCM_PRETEND_VERSION="$VERSION"
+
             # Ensure version file is updated
             python -m pip install --upgrade "setuptools>=61.0.0"
             python -c "import setuptools_scm; setuptools_scm.dump_version(root='.', version='$VERSION', write_to='src/py_dem_bones/__version__.py')"
@@ -132,10 +134,32 @@ jobs:
             echo "version = '$VERSION'" >> docs/conf.py
             echo "release = '$VERSION'" >> docs/conf.py
             echo "Version file updated with $VERSION"
-            cat src/py_dem_bones/__version__.py
           else
-            echo "No tag found, using fallback version"
+            # For non-tag builds, get the version from setuptools_scm directly
+            echo "No tag found, determining version from git..."
+            python -c "from setuptools_scm import get_version; VERSION=get_version(); print(f'Version from setuptools_scm: {VERSION}')"
+
+            # Get the version and use it consistently
+            VERSION=$(python -c "from setuptools_scm import get_version; print(get_version(version_scheme='release-branch-semver', local_scheme='no-local-version'))")
+            echo "Using version: $VERSION"
+
+            # Set environment variable for consistent version across build steps
+            export SETUPTOOLS_SCM_PRETEND_VERSION="$VERSION"
+
+            # Update version files
+            python -c "import setuptools_scm; setuptools_scm.dump_version(root='.', version='$VERSION', write_to='src/py_dem_bones/__version__.py')"
+
+            # Update docs/conf.py manually
+            echo "# Version information" > docs/conf.py
+            echo "version = '$VERSION'" >> docs/conf.py
+            echo "release = '$VERSION'" >> docs/conf.py
           fi
+
+          # Show the generated version file
+          echo "Version file content:"
+          cat src/py_dem_bones/__version__.py
+
+          # Build the source distribution
           python -m build --sdist
 
       - name: Verify SDist
