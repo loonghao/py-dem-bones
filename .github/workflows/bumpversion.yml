@@ -93,7 +93,7 @@ jobs:
 
           # Update __version__.py file with setuptools_scm
           python -c "from setuptools_scm import get_version; print(f'Version from setuptools_scm: {get_version()}')"
-          python -c "import setuptools_scm; setuptools_scm.dump_version('src/py_dem_bones', '$NEW_VERSION')"
+          python -c "import setuptools_scm; setuptools_scm.dump_version(version='$NEW_VERSION', write_to='src/py_dem_bones/__version__.py')"
 
           # Check if version files were updated
           echo "Checking version files..."
