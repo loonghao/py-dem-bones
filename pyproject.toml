@@ -68,7 +68,7 @@ docs-linux = [
 ]
 lint = [
     "black<25.1.1",
-    "ruff<0.0.270",
+    "ruff<0.11.12",
     "isort<6.0.2",
     "autoflake>=2.0.0",
 ]
