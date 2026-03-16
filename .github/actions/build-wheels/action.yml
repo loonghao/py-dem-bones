@@ -53,7 +53,7 @@ runs:
         cat src/py_dem_bones/__version__.py
 
     - name: Build wheels
-      uses: pypa/cibuildwheel@v2.23.1
+      uses: pypa/cibuildwheel@v2.23.4
       with:
         output-dir: ${{ inputs.output-dir }}
       env:
