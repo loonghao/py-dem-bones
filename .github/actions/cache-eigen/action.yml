@@ -11,7 +11,7 @@ runs:
   using: "composite"
   steps:
     - name: Cache Eigen library
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: extern/eigen
         key: ${{ inputs.platform }}-eigen-${{ hashFiles('.github/scripts/*/setup_eigen.sh') }}
