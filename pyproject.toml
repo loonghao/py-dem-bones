@@ -117,20 +117,6 @@ CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON"
 # Disable ABI3 mode
 SKBUILD_SOABI = "OFF"
 
-[tool.commitizen]
-name = "cz_conventional_commits"
-version = "0.12.4"  # Current version, will be updated by commitizen
-version_provider = "commitizen"
-tag-format = "$version"  # Format: 1.2.3 (without 'v' prefix)
-update_changelog_on_bump = true
-change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "ci", "build", "docs", "test", "chore"]
-version_files = [
-    "src/py_dem_bones/__version__.py:__version__ = version = ",
-    "docs/conf.py:version = ",
-    "docs/conf.py:release = ",
-    ".github/CITATION.cff:version: "
-]
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
