@@ -1,0 +1,11 @@
+# Build-time pip constraints for the manylinux2014 (glibc 2.17) container.
+#
+# NumPy >= 2.3.0 stopped publishing manylinux2014/cp312 wheels (they now target
+# manylinux_2_27+, i.e. glibc 2.27), so pip inside the manylinux2014 image can
+# only resolve the source distribution. NumPy >= 2.5.0 then fails metadata
+# generation because its meson build requires GCC >= 10.3 while manylinux2014
+# ships GCC 10.2.1.
+#
+# Build-time NumPy is only used for its headers (numpy.get_include()), so capping
+# it does not affect the wheels we ship.
+numpy<2.3
