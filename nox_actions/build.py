@@ -3,6 +3,7 @@
 import os
 import platform
 import shutil
+import subprocess
 import time
 
 # Import third-party modules
@@ -128,7 +129,6 @@ def build_wheels(session: nox.Session) -> None:
 
     # Get version from commitizen if available
     try:
-        import subprocess
         version = subprocess.check_output(["cz", "version", "--project"], text=True).strip()
         env["SETUPTOOLS_SCM_PRETEND_VERSION"] = version
         session.log(f"Using version from commitizen: {version}")

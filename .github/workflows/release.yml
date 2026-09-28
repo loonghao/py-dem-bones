@@ -185,6 +185,7 @@ jobs:
     name: Build ${{ matrix.python }} wheels on Linux
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.fast-mode == 'true') && (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'release' || github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
@@ -250,6 +251,7 @@ jobs:
     name: Build ${{ matrix.python }} wheels on Windows
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.fast-mode == 'true') && (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'release' || github.event_name == 'workflow_dispatch') }}
     runs-on: windows-latest
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
@@ -314,7 +316,11 @@ jobs:
   build-wheels-macos:
     name: Build ${{ matrix.python }} wheels on macOS Intel
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.fast-mode == 'true') && (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'release' || github.event_name == 'workflow_dispatch') }}
-    runs-on: macos-13
+    # The macos-13 label no longer provides runners, so the job used to sit in the
+    # queue until GitHub cancelled it 24h later. macos-15-intel is the current
+    # Intel (x86_64) hosted runner.
+    runs-on: macos-15-intel
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
@@ -380,6 +386,7 @@ jobs:
     name: Build ${{ matrix.python }} wheels on macOS ARM
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.fast-mode == 'true') && (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'release' || github.event_name == 'workflow_dispatch') }}
     runs-on: macos-14
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
