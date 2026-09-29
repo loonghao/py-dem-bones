@@ -5,9 +5,11 @@ is confined to :func:`solve_skinning`, so DCC adapters need only provide points
 in a consistent space and vertex order.
 """
 
+# Import standard library modules
 from dataclasses import dataclass
 from typing import Optional
 
+# Import third-party modules
 import numpy as np
 
 
@@ -93,6 +95,7 @@ def solve_skinning(
         raise ValueError("iterations must be a nonnegative integer")
 
     if solver is None:
+        # Import local modules
         from py_dem_bones._py_dem_bones import DemBones
 
         solver = DemBones()
