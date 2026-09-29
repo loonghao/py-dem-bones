@@ -13,6 +13,11 @@
       "bump-minor-pre-major": true,
       "extra-files": [
         {
+          "type": "toml",
+          "path": "pyproject.toml",
+          "jsonpath": "$.project.version"
+        },
+        {
           "type": "generic",
           "path": "src/py_dem_bones/__version__.py"
         },

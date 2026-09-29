@@ -3,19 +3,19 @@
 Welcome to py-dem-bones's documentation!
 =======================================
 
-**py-dem-bones** is a Python binding for the Dem Bones library, which provides an automated algorithm to extract the Linear Blend Skinning (LBS) with bone transformations from a set of example meshes.
+**py-dem-bones** binds the Dem Bones native solver and provides a host-independent NumPy contract for turning ordered mesh poses into linear blend skinning weights and bone transformations.
 
 Features
 --------
 
 * Python bindings for the Dem Bones C++ library
 * Support for Python 3.8+
-* Pythonic wrapper classes for easier integration
+* Host-independent mesh sequence API for DCC adapters
 * Comprehensive error handling
 * Cross-platform support (Windows, macOS, Linux)
 * Pre-built wheels for common platforms
 * Efficient conversion between NumPy arrays and Eigen matrices
-* Integration with SciPy's RBF functionality for advanced animation workflows
+* Complete transform output for every frame and bone
 
 .. toctree::
    :maxdepth: 1
@@ -23,6 +23,7 @@ Features
 
    installation
    usage
+   dcc_integration
    examples
    rbf_features
 
@@ -60,26 +61,10 @@ Basic Usage
    import numpy as np
    import py_dem_bones as pdb
 
-   # Create a DemBonesWrapper instance
-   dem_bones = pdb.DemBonesWrapper()
-
-   # Set parameters
-   dem_bones.num_iterations = 30
-   dem_bones.num_init_iterations = 10
-   dem_bones.num_transform_iterations = 5
-   dem_bones.num_weights_iterations = 3
-   dem_bones.max_nonzeros_per_vertex = 4
-   dem_bones.weights_smoothness = 1e-4
-
-   # Set up data
-   # ...
-
-   # Compute skinning decomposition
-   dem_bones.compute()
-
-   # Get results
-   weights = dem_bones.get_weights()
-   transformations = dem_bones.get_transformations()
+   rest = np.array([[0., 0., 0.], [1., 0., 0.], [0., 1., 0.], [0., 0., 1.]])
+   poses = np.stack([rest, rest + [0., 0., 0.2]])
+   result = pdb.solve_skinning(rest, poses, bone_count=2)
+   print(result.weights.shape, result.transforms.shape)
 
 Indices and tables
 ==================

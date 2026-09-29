@@ -3,16 +3,14 @@ requires = [
     "scikit-build-core>=0.5.0",
     "pybind11>=2.10.0",
     "numpy>=1.20.0",
-    "setuptools>=61.0.0",  # Required by setuptools_scm>=8.0.0
     "wheel>=0.36.0",
-    "setuptools_scm>=8.0.0",
 ]
 build-backend = "scikit_build_core.build"
 
 [project]
 name = "py-dem-bones"
-dynamic = ["version"]
-description = "Python bindings for the Dem Bones library"
+version = "0.12.4" # x-release-please-version
+description = "Cross-DCC Python bindings for Dem Bones skinning decomposition"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "BSD-3-Clause"}
@@ -52,6 +50,7 @@ test = [
 ]
 docs = [
     "sphinx>=7.0.0",
+    "furo>=2024.1.29",
     "pydata-sphinx-theme>=0.14.1",
     "sphinx-autobuild>=2021.3.14",
     "pybind11-stubgen>=0.16.0",
@@ -93,17 +92,6 @@ sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICEN
 sdist.exclude = ["tests/data/*"]
 # Enable experimental features
 experimental = true
-
-[tool.scikit-build.metadata.version]
-provider = "scikit_build_core.metadata.setuptools_scm"
-
-[tool.setuptools_scm]
-# Format: 1.2.3 (without 'v' prefix)
-tag_regex = "^(?P<version>[0-9]+\\.[0-9]+\\.[0-9]+)(?P<dev>-[a-zA-Z0-9]+)?$"
-local_scheme = "no-local-version"
-# Don't use dev0 suffix for non-tagged versions to avoid metadata mismatches
-version_scheme = "release-branch-semver"
-# No longer writing version to file, managed by commitizen instead
 
 [tool.scikit-build.cmake]
 version = ">=3.15"
