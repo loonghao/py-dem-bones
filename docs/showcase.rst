@@ -10,8 +10,9 @@ through DCC-MCP in Maya, Blender, Houdini and Unreal Engine 5.8.
 The image uses the lighter Designer skin material in native Cycles with a
 real CC0 HDRI and SSS. Blender's full sequence, SSS off/on comparison and
 packed texture readback have passed native acceptance. Arnold retains its
-first material iteration; updated Maya, complete Mantra and Unreal SSS
-sequences still require live acceptance.
+first material iteration. Unreal's 48-frame HDRI/Subsurface preview and rigid
+chain evaluation have passed. Houdini has completed its 48-frame Mantra
+SSS sequence and higher-sampling still. Updated Maya still requires live acceptance.
 
 See the :doc:`rendered gallery and validation ledger <showcase/arm-skin/README>`
 for exact host results and remaining work, and the `DCC-MCP example guide

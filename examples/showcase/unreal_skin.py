@@ -35,11 +35,11 @@ def setup(texture_dir, hdri_path):
     cube = image(Path(hdri_path), False)
     if not isinstance(cube, unreal.TextureCube):
         raise RuntimeError("HDRI import did not produce a TextureCube")
-    material = unreal.AssetToolsHelpers.get_asset_tools().create_asset(
-        "DesignerSkin", "/Game/DemBonesShowcase/Skin", unreal.Material, unreal.MaterialFactoryNew()
-    )
+    asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
+    package, name = asset_tools.create_unique_asset_name("/Game/DemBonesShowcase/Skin/DesignerSkin", "")
+    material = asset_tools.create_asset(name, package.rsplit("/", 1)[0], unreal.Material, unreal.MaterialFactoryNew())
     if material is None:
-        raise RuntimeError("Use a fresh preview project or remove its previous owned DesignerSkin material")
+        raise RuntimeError("Unreal could not create the isolated skin preview material")
     material.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_SUBSURFACE)
     for texture, prop, sampler in [
         (base, unreal.MaterialProperty.MP_BASE_COLOR, unreal.MaterialSamplerType.SAMPLERTYPE_COLOR),
@@ -77,12 +77,20 @@ def setup(texture_dir, hdri_path):
     component = light.get_component_by_class(unreal.SkyLightComponent)
     component.set_editor_property("source_type", unreal.SkyLightSourceType.SLS_SPECIFIED_CUBEMAP)
     component.set_cubemap(cube)
-    component.set_intensity(2)
+    component.set_intensity(0.5)
     component.recapture_sky()
+    for studio_actor in state["studio_actors"]:
+        studio_light = studio_actor.get_component_by_class(unreal.DirectionalLightComponent)
+        if studio_light is not None:
+            studio_light.set_intensity(studio_light.get_editor_property("intensity") * 0.5)
     state["studio_actors"].append(light)
+    state["capture_exposure_bias"] = 1.0
     return {
         "material": material.get_path_name(),
         "shading_model": str(material.get_editor_property("shading_model")),
         "cubemap": cube.get_path_name(),
         "integration": "native Subsurface model; rest-space planar UVs",
+        "capture_exposure_bias": state["capture_exposure_bias"],
+        "hdri_intensity": 0.5,
+        "directional_intensity_scale": 0.5,
     }

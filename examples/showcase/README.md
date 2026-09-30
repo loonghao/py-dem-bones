@@ -72,10 +72,20 @@ reconciliation service.
 
 For Houdini, call `houdini_studio.setup(output)` then
 `renderer = houdini_skin.setup(output, textures, hdri)`. Use Mantra for arm
-SSS. `houdini_skin.render_frame(renderer, output, frame)` renders one bounded
-frame with foreground completion. Invoke one frame per DCC-MCP call and
-inspect the file before advancing; a long 48-frame synchronous call can
-outlive the transport timeout. The complete Mantra sequence remains pending.
+SSS. Set the ROP's `vm_picture` to a fresh `frame_$F3.exr` output pattern using
+`houdini_nodes__set_node_parms`, then use the adapter's typed background job:
+
+```json
+{"rop_path":"/out/DemBonesSkinRender","frame_range":[1,48],"background":true}
+```
+
+Call `houdini_render__render_rop` with that payload and retain its job ID.
+Poll `houdini_render__get_render_job`; require `state=completed` and
+`output_verification.state=verified` before decoding the EXRs or publishing.
+This official Hython worker snapshots the current scene and keeps the MCP
+main-thread dispatcher available. `houdini_skin.render_frame` remains useful
+for a single foreground probe. A long synchronous 48-frame call can outlive
+the transport timeout.
 
 ## Unreal's explicit bridge
 
@@ -88,15 +98,16 @@ the adapter's `extra_skill_paths`, then discover and activate
 | --- | --- | --- |
 | `inspect_runtime` | none | read-only SDK capability check |
 | `run_showcase` | `output_dir`, `case_name` | native DynamicMesh sampling, profile readback and 48 evaluated poses |
-| `apply_skin` | `texture_dir`, `hdri_path` | owned material and HDRI configuration; use once in a fresh project |
-| `render_frame` | `frame` from 1 to 48 | one native SceneCapture2D export |
+| `apply_skin` | `texture_dir`, `hdri_path` | isolated material and HDRI configuration in the test project |
+| `render_frame` | `frame` from 1 to 48 | synchronous native ImageWrite PNG; refuses existing output files |
 
 Copy the actual advertised slugs and schemas from `search`/`describe`.
 `run_showcase` automatically configures skin for the arm. The example keeps
 stable SDK vertex IDs and an explicit sampler/writer bridge. It does not
-export a SkeletalMesh, bind hierarchy or animation asset. HDRI/SSS capture
-timing and exposure still need live acceptance; the published Unreal GIF
-uses the previously completed lit preview. Unreal chain acceptance is pending.
+export a SkeletalMesh, bind hierarchy or animation asset. The published Unreal
+GIF contains 48 native HDRI/legacy Subsurface captures; PNG chunk CRCs and
+complete containers were verified. Native rigid-chain weight readback and
+48-pose evaluation also pass. Camera show-only lists reset between cases.
 
 ## Encoding and acceptance
 
@@ -112,3 +123,14 @@ The committed [validation](../../docs/showcase/arm-skin/validation.json)
 records native PNG digests, GIF frame counts, measured errors and pending
 acceptance. Assets carry their own CC0 provenance. This example is a
 demonstration inspired by SSDR, not the paper's original benchmark suite.
+
+### Designer compiled package acceptance
+
+Load `material.sbsar` with `designer_session__open_package`, obtain its actual
+resource URL using `list_resources`, then `create_graph` and `instance_resource`
+with the fresh graph UID. Describe native ports and connect them to output nodes
+before computing; an unconnected instance does not produce output textures.
+Map identifiers to channel usages from the saved SBS metadata. Set an explicit
+1024² size with `render_graph_maps`, then use bounded `export_native_maps` and
+wait for its Core job to complete. Compare each output hash and actual PNG
+header with the published maps. This acceptance passed for all five channels.

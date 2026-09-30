@@ -1,0 +1,10 @@
+{
+  "native_headless_sop_frames_verified": 48,
+  "vertices": 2087,
+  "faces": 2068,
+  "rest_uv_present": true,
+  "native_cache_max_difference": 0.0,
+  "sssdist": 0.03,
+  "weight": 0.65,
+  "control": "Official Hython SDK through houdini_scripting__execute_python"
+}

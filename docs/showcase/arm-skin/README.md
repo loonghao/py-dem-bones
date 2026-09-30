@@ -11,9 +11,10 @@ reconstructed animation in Maya, Blender, Houdini and Unreal Engine 5.8.
 **Look development is in progress.** Blender's complete sequence uses the
 lighter Designer palette and SSS scale `0.03`. Its packed scene was reopened
 through DCC-MCP; the bound textures and HDRI match the published asset hashes.
-Maya retains the first palette and scale `0.09`. The updated Maya material,
-complete Houdini Mantra arm sequence and Unreal SSS sequence await native
-acceptance. See [validation](validation.json) and
+Unreal's complete sequence binds the current Designer palette, native HDRI
+and legacy Subsurface material. Maya retains the first palette and scale
+`0.09`. Houdini has completed its 48-frame Mantra HDRI/SSS sequence and
+12 × 12 sample still. The updated Maya material awaits native acceptance. See [validation](validation.json) and
 [file hashes](manifest.json) for the exact completed evidence.
 
 ## Native animation gallery
@@ -22,15 +23,15 @@ acceptance. See [validation](validation.json) and
 | --- | --- |
 | ![Source left, reconstructed right](blender-arm.gif) | ![Reconstructed arm in Arnold](maya-arm.gif) |
 
-| Houdini 22.0 — OpenGL tentacle preview | Unreal 5.8 — lit DynamicMesh arm preview |
+| Houdini 22.0 — Mantra, HDRI + SSS | Unreal 5.8 — HDRI + Subsurface DynamicMesh preview |
 | --- | --- |
-| ![Native tentacle SOP evaluation](houdini-tentacle.gif) | ![Native lit DynamicMesh deformation](unreal-arm.gif) |
+| ![Native Mantra reconstructed arm](houdini-arm.gif) | ![Native HDRI Subsurface DynamicMesh deformation](unreal-arm.gif) |
 
 All GIFs contain 48 native frames at 800 × 450, approximately four seconds at
 12 fps. Encoding uses a 128-color palette; no generated imagery, retiming,
-synthetic in-between frames or geometry correction is applied. Houdini's
-OpenGL clip and Unreal's lit clip are deformation previews. They do not
-demonstrate the final HDRI skin material.
+synthetic in-between frames or geometry correction is applied. The separate
+[Houdini OpenGL tentacle clip](houdini-tentacle.gif) is a deformation preview. Unreal uses its native legacy Subsurface
+model; this is a DynamicMesh preview, not a SkeletalMesh animation export.
 
 ### Native SSS comparison
 
@@ -51,8 +52,11 @@ native reopened material's bound bytes, relative paths and SSS settings.
 Eight alternating links contain 2,560 vertices and 2,560 polygons. Each source
 link has one rigid influence. The solved Blender animation has maximum
 relative edge stretch `0.002655%`, below the `0.1%` acceptance limit. The native
-Maya and Houdini caches also pass this limit. Unreal chain acceptance remains
-pending. This is prescribed rigid motion, not a collision or dynamics test.
+Maya, Houdini and Unreal also pass this limit. Unreal's 48-pose native SDK
+evaluation has maximum relative edge stretch below `1e-12`.
+This is prescribed rigid motion, not a collision or dynamics test.
+
+![Native Unreal rigid chain preview](unreal-chain-preview.png)
 
 The chain and tentacle illustrate rigid and smoothly blended motion inspired
 by [SSDR](https://binh.graphics/papers/2012sa-ssdr/). They are our procedural
@@ -119,8 +123,12 @@ Designer 16.0.0's native graph uses Perlin Noise for broad color variation
 and Gaussian Spots 1 for pores. RGBA gradient keys establish the skin palette
 and roughness; pores feed Height and an OpenGL normal filter at intensity
 `0.025`. Metallic is zero. The native DCC-MCP export job completed and the
-SBSAR archive passes its container integrity check. Reopening and recomputing
-the saved packages still needs verification.
+SBSAR archive passes its container integrity check. The saved SBS was closed,
+reopened and recomputed through the official SDK at explicit 1024² resolution.
+All five source exports match the published bytes;
+[native readback](designer-native-readback.json) records the evidence.
+The SBSAR was also loaded and instantiated in a fresh native graph. All five
+connected outputs have matching byte hashes and verified PNG dimensions/depth.
 
 ```mermaid
 flowchart LR
@@ -142,7 +150,7 @@ Adobe standard library using `sbs://`; library source files are not included.
 | --- | --- | --- | --- |
 | [Base Color](../../../examples/showcase/materials/skin/BaseColor.png) | 1024² | RGBA16 | sRGB |
 | [Roughness](../../../examples/showcase/materials/skin/Roughness.png) | 1024² | RGBA16 | linear data |
-| [Metallic](../../../examples/showcase/materials/skin/Metallic.png) | 1024² | RGBA16 | linear data |
+| [Metallic](../../../examples/showcase/materials/skin/Metallic.png) | 1024² | RGB8 | linear data |
 | [Height](../../../examples/showcase/materials/skin/Height.png) | 1024² | Gray16 | linear data |
 | [Normal](../../../examples/showcase/materials/skin/Normal.png) | 1024² | RGBA16 | linear data, OpenGL +Y |
 
@@ -159,7 +167,7 @@ The native equirectangular HDRI is
 are included. Blender uses an Environment Texture, Maya an Arnold sky dome
 with a Raw file texture, Houdini an environment light, and Unreal a native
 TextureCube on a SkyLight. Host-specific area/directional lights supplement
-the Blender and Maya previews.
+the Blender, Maya and Unreal previews.
 
 | Renderer | Bound SD maps | Mapping / SSS |
 | --- | --- | --- |
@@ -172,16 +180,23 @@ The completed Cycles clip uses scatter scale `0.03`; Arnold retains `0.09`.
 These are artistic scene settings, not
 measured skin coefficients. Cycles uses denoising and 64 animation samples;
 Arnold uses AA 3 and diffuse samples 2 with color-managed PNG output. The
-single Mantra preview uses 6 × 6 pixel samples. Its linear EXR is displayed
+Mantra animation uses 6 × 6 pixel samples; its frame-12 still uses 12 × 12.
+Its linear EXR is displayed
 with an approximate gamma 2.2 conversion, not an identical cross-renderer
-color transform. Unreal's HDRI/SSS capture exposure is still under review.
+color transform. Unreal uses HDRI intensity `0.5`, half the example's
+directional light intensities and manual exposure bias `1.0`. Its native
+`ImageWriteBlueprintLibrary` exports all 48 PNGs synchronously, with valid
+chunk CRCs and no trailing bytes; source images are preserved unchanged.
 
-![Completed single-frame Mantra SSS first pass](houdini-mantra-first-pass.png)
+![Native Unreal HDRI and Subsurface arm](unreal-hdri-sss.png)
 
-The Mantra image is a completed single frame. The interrupted animation is
-excluded. Blender's relative packed textures have passed native scene reopen
+![Native Mantra HDRI and SSS arm, 12 × 12 pixel samples](houdini-hdri-sss.png)
+
+The background Mantra job verified all 48 new EXR files with zero warnings.
+The earlier interrupted sequence is excluded. Blender's relative packed
+textures have passed native scene reopen
 and byte readback. Public native scene delivery, UV/tangent review and the
-remaining renderer sequences still require acceptance.
+updated Maya sequence still require acceptance.
 
 ## Reproduce and resume
 
@@ -191,4 +206,6 @@ an exactly selected live DCC-MCP instance. Application UI uses the project
 DCC-CUA route only when the official application API cannot express the
 operation. When an official API exists but DCC-MCP lacks a tool, implement
 and validate the typed adapter capability first. Maya and Houdini startup
-integration is currently being repaired before further native rendering.
+integration repairs are tracked in the owning adapters. Official Hython
+headless rendering is available; its [48-pose SOP readback](houdini-native-readback.json)
+matches the accepted geometry cache exactly. The updated native scene is saved.
