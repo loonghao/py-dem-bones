@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "native_reopen": true,
+  "bound_images": [
+    {
+      "file": "BaseColor.png",
+      "relative_path": "//materials/skin/BaseColor.png",
+      "packed_sha256": "5f12ab9dd39d06d00bd2a319861af71d4fa15008cb3ffaff9a100f2c8005d42d"
+    },
+    {
+      "file": "Roughness.png",
+      "relative_path": "//materials/skin/Roughness.png",
+      "packed_sha256": "b5f317a77acaab954621cd946352d1972ded6b78b03384cad885d0941c7d3b9a"
+    },
+    {
+      "file": "Height.png",
+      "relative_path": "//materials/skin/Height.png",
+      "packed_sha256": "a66300095b1eca2bd83c6be72e2c0a990a9e3bacaaa63d60daae94ad24240c00"
+    }
+  ],
+  "hdri_packed_sha256": "36724313c0fc66dab126ff90f081b85a0b1ef47be65eda1417bd20b033f0573f",
+  "sss_weight": 0.65,
+  "sss_scale": 0.03
+}

@@ -47,8 +47,10 @@ scene when a prior case name exists.
 ## Skin and lighting configuration
 
 The following setup uses the newly exported lighter material palette and
-SSS scale `0.03`. Its final native render acceptance is pending; the published
-GIFs are the earlier `0.09` iteration, retained with its Base Color map.
+SSS scale `0.03`. Blender's complete native sequence and identical-lighting
+SSS off/on comparison have passed acceptance, including a packed scene reopen
+and bound texture byte readback. Maya retains the earlier `0.09` iteration
+with its Base Color map; its updated material acceptance is pending.
 
 ```python
 from pathlib import Path

@@ -7,10 +7,11 @@ through DCC-MCP in Maya, Blender, Houdini and Unreal Engine 5.8.
 .. image:: showcase/arm-skin/render.png
    :alt: Native Cycles source arm on the left and reconstructed arm on the right
 
-The image is the first Designer skin material iteration. Its native Cycles
-and Arnold sequences use a real CC0 HDRI and SSS. The lighter material palette,
-SSS off/on comparison, complete Mantra arm sequence and Unreal SSS sequence
-still require live acceptance.
+The image uses the lighter Designer skin material in native Cycles with a
+real CC0 HDRI and SSS. Blender's full sequence, SSS off/on comparison and
+packed texture readback have passed native acceptance. Arnold retains its
+first material iteration; updated Maya, complete Mantra and Unreal SSS
+sequences still require live acceptance.
 
 See the :doc:`rendered gallery and validation ledger <showcase/arm-skin/README>`
 for exact host results and remaining work, and the `DCC-MCP example guide

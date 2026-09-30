@@ -1,6 +1,6 @@
 # Arm skinning: Designer materials and native DCC previews
 
-![Cycles source and reconstructed arm, first material iteration](render.png)
+![Cycles source and reconstructed arm, lighter Designer skin](render.png)
 
 The left arm uses our authored weights; the right arm uses Dem Bones weights
 and solved joint animation. This is a native Blender Cycles render. The free
@@ -8,16 +8,17 @@ and solved joint animation. This is a native Blender Cycles render. The free
 and 2,068 polygons. We author nine influences and 48 poses, then validate the
 reconstructed animation in Maya, Blender, Houdini and Unreal Engine 5.8.
 
-**Look development is in progress.** Blender and Maya sequences below use the
-first Designer color palette and SSS scale `0.09`. The saved material has a
-lighter palette; the next render uses scale `0.03`. That iteration, the SSS
-on/off comparison, the complete Houdini Mantra arm sequence and the Unreal
-SSS sequence await native acceptance. See [validation](validation.json) and
+**Look development is in progress.** Blender's complete sequence uses the
+lighter Designer palette and SSS scale `0.03`. Its packed scene was reopened
+through DCC-MCP; the bound textures and HDRI match the published asset hashes.
+Maya retains the first palette and scale `0.09`. The updated Maya material,
+complete Houdini Mantra arm sequence and Unreal SSS sequence await native
+acceptance. See [validation](validation.json) and
 [file hashes](manifest.json) for the exact completed evidence.
 
 ## Native animation gallery
 
-| Blender 5.2 — Cycles, HDRI + SSS first pass | Maya 2026 — Arnold, HDRI + SSS first pass |
+| Blender 5.2 — Cycles, HDRI + SSS | Maya 2026 — Arnold, HDRI + SSS first pass |
 | --- | --- |
 | ![Source left, reconstructed right](blender-arm.gif) | ![Reconstructed arm in Arnold](maya-arm.gif) |
 
@@ -30,6 +31,18 @@ All GIFs contain 48 native frames at 800 × 450, approximately four seconds at
 synthetic in-between frames or geometry correction is applied. Houdini's
 OpenGL clip and Unreal's lit clip are deformation previews. They do not
 demonstrate the final HDRI skin material.
+
+### Native SSS comparison
+
+| SSS off | SSS on, weight 0.65 and scale 0.03 |
+| --- | --- |
+| ![Native Cycles hand without subsurface scattering](sss-off.png) | ![Native Cycles hand with subsurface scattering](sss-on.png) |
+
+Both native Cycles renders use frame 12, the same camera, HDRI, backlight,
+skin maps and 128 samples. Only the subsurface weight changes. This is an
+artistic comparison, not a measurement of real skin scattering coefficients.
+The [packed texture readback](blender-packed-readback.json) records the
+native reopened material's bound bytes, relative paths and SSS settings.
 
 ### Rigid metal chain
 
@@ -155,8 +168,8 @@ the Blender and Maya previews.
 | Mantra | Base Color | rest-space planar UVs ×3; Principled SSS weight 0.65; roughness scalar 0.55 |
 | Unreal | Base Color, Roughness | native planar UV projection; legacy Subsurface model, opacity 0.45 |
 
-The completed Cycles and Arnold clips use scatter scale `0.09`; the next
-scripted iteration uses `0.03`. These are artistic scene settings, not
+The completed Cycles clip uses scatter scale `0.03`; Arnold retains `0.09`.
+These are artistic scene settings, not
 measured skin coefficients. Cycles uses denoising and 64 animation samples;
 Arnold uses AA 3 and diffuse samples 2 with color-managed PNG output. The
 single Mantra preview uses 6 × 6 pixel samples. Its linear EXR is displayed
@@ -166,14 +179,16 @@ color transform. Unreal's HDRI/SSS capture exposure is still under review.
 ![Completed single-frame Mantra SSS first pass](houdini-mantra-first-pass.png)
 
 The Mantra image is a completed single frame. The interrupted animation is
-excluded. Packed relative native scene delivery, UV/tangent review, improved
-SSS quality and an identical-lighting SSS off/on pair remain acceptance tasks.
+excluded. Blender's relative packed textures have passed native scene reopen
+and byte readback. Public native scene delivery, UV/tangent review and the
+remaining renderer sequences still require acceptance.
 
 ## Reproduce and resume
 
 Follow the [DCC-MCP example guide](https://github.com/loonghao/py-dem-bones/tree/main/examples/showcase).
 Use a disposable scene/project, a wheel matching the host's Python ABI, and
 an exactly selected live DCC-MCP instance. Application UI uses the project
-DCC-CUA route. The last continuation was blocked by
-`interactive_desktop_unavailable` from DCC-CUA 1.9.1; restore the interactive
-desktop before resuming native rendering or UI capture.
+DCC-CUA route only when the official application API cannot express the
+operation. When an official API exists but DCC-MCP lacks a tool, implement
+and validate the typed adapter capability first. Maya and Houdini startup
+integration is currently being repaired before further native rendering.

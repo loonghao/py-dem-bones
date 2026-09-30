@@ -4,13 +4,18 @@
   "files": [
     {
       "path": "docs/showcase/arm-skin/blender-arm.gif",
-      "size_bytes": 4048619,
-      "sha256": "f254a30e5bfb693512980a5de83e0bce840084571e00a94a648f73db43c6e677"
+      "size_bytes": 4610326,
+      "sha256": "33f06b1afddd3ba64257eebd89392eea23471cb95e2d809533e8ee339ed90ae9"
     },
     {
       "path": "docs/showcase/arm-skin/blender-chain.gif",
       "size_bytes": 2826815,
       "sha256": "8529582e08f8da429df93f6e0cf946f2454a79cddee35bb92f815044a39e858a"
+    },
+    {
+      "path": "docs/showcase/arm-skin/blender-packed-readback.json",
+      "size_bytes": 795,
+      "sha256": "232285ae1033eb8081914c77977be6ff034e8fd5c1dcba344ba11625a7d0d3b5"
     },
     {
       "path": "docs/showcase/arm-skin/chain.png",
@@ -34,13 +39,23 @@
     },
     {
       "path": "docs/showcase/arm-skin/README.md",
-      "size_bytes": 9958,
-      "sha256": "0086836eb2993e4a9d0f4c3ec0f6fadf2fbfb60de2a65ce3c20a30bfd5aa1249"
+      "size_bytes": 10718,
+      "sha256": "592b4d76f134bad1c6581ecde640bd314ef5a576512284c3b49df8fb37e0fc92"
     },
     {
       "path": "docs/showcase/arm-skin/render.png",
-      "size_bytes": 376583,
-      "sha256": "a268640349d845aefcb6e0cd8edf2d27f042017969bfa50f2f5839321ac2a967"
+      "size_bytes": 372821,
+      "sha256": "e65aea253c685d0ae20d32548ec43fbb370778e3ac53af236b20bf9dd2e4573c"
+    },
+    {
+      "path": "docs/showcase/arm-skin/sss-off.png",
+      "size_bytes": 382630,
+      "sha256": "f4400f1307f0ca422ad8a65d36798b2f04d41557e826e373488672696ba50c89"
+    },
+    {
+      "path": "docs/showcase/arm-skin/sss-on.png",
+      "size_bytes": 389531,
+      "sha256": "3397f1e4a05214479caf1072cbf3bc28802782491fc177de0b826c52be89fdcf"
     },
     {
       "path": "docs/showcase/arm-skin/unreal-arm.gif",
@@ -49,8 +64,8 @@
     },
     {
       "path": "docs/showcase/arm-skin/validation.json",
-      "size_bytes": 30659,
-      "sha256": "8fdb55a437f3c0d7e546c77123f2e6398b24af2c0fcf931755e1a54387ed2042"
+      "size_bytes": 31569,
+      "sha256": "e1cd91ac3621bc05a3f3156fc1d4275780a5ca1d62b8871fb897d1fc9bdaf45f"
     },
     {
       "path": "examples/showcase/assets/arm.obj",
