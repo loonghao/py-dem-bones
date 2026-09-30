@@ -176,7 +176,55 @@ they do not change the rig, sampled poses, frame order or playback timing.
 One render subdivision level is presentation only. This is prescribed rigid
 articulation, not collision or dynamics simulation.
 
-### Houdini: native motion studies and EXR display copies
+### Houdini: licensed octopus and Designer surface study
+
+The [Kraken source](assets/octopus/SOURCE.json) is a static octopus sculpt by
+FIELDFLY3R (current display name: fld), licensed CC BY 4.0. The original GLB
+is unchanged. Native import selects its complete eight-arm animal and excludes
+the separate ray and four decorations. Its 29,542-point artist surface retains
+three UV sets; a separate 8,000-point proxy has fixed topology for numerical
+acceptance. Original asset units are not asserted to be metres.
+
+```python
+from pathlib import Path
+import houdini_octopus_case
+import houdini_octopus_render
+
+root = Path(houdini_octopus_case.__file__).parent
+case_dir = Path.home() / "dem-bones-octopus-articulation"
+stage_dir = Path.home() / "dem-bones-octopus-studio"
+report = houdini_octopus_case.run(root / "assets/octopus/kraken.glb", case_dir)
+houdini_octopus_case.inspect(case_dir)
+houdini_octopus_render.setup(
+    report["render_deform"], stage_dir,
+    root / "assets/lighting/studio_small_09_2k.hdr",
+    maps_dir=root / "materials/octopus/maps/mapped",
+)
+houdini_octopus_render.configure_render(stage_dir / "hero", shot="hero", samples=6)
+```
+
+This entry point is the **kinematic baseline**: eight geometry-guided surface
+paths, four controls per arm and one mantle control author a 48-frame curl/twist
+loop. It is not a softbody simulation. Dem Bones receives the sampled mesh poses
+and coarse one-hot weights; it must improve on that initialization. Native VEX
+reads the solved scalar weights and matrices, and native Point Deform transfers
+the solved proxy to the artist surface. All 48 numerical and render frames,
+topology, three UV sets and saved-HIP readback are verified separately.
+
+The [Designer material](materials/octopus/README.md) delivers editable SBS,
+compiled SBSAR and 18 actual 2K exports. The stage binds mapped BaseColor as
+sRGB, Roughness and OpenGL tangent Normal as linear data, and an eye-excluding
+SSS mask. One Loop subdivision level and freshly computed vertex normals are
+presentation only. Uniform scale is 0.035 metres per source unit. Camera framing
+must be checked against all accepted poses; `camera_distance` permits an
+explicit adjustment without changing the geometry or timing. Use `shot="detail"`
+for the eye-and-sucker surface study.
+
+Use the returned Mantra ROP with the typed background render job and require
+verified terminal output before publication. The gallery separates numerical
+acceptance, the rest-surface material study and completed motion renders.
+
+### Houdini: earlier procedural fixture and EXR display copies
 
 `houdini_premium.setup(cache_dir, fresh_output_dir, hdri_path)` rechecks an
 accepted tentacle cache, builds a native Python SOP LBS deformer, and measures

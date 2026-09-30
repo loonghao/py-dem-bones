@@ -1,0 +1,502 @@
+{
+  "schema": "dem-bones.substance-octopus.v1",
+  "route": "official Designer bundled cook/render CLI",
+  "graph_authoring": "editable SBS procedural nodes; optional original albedo input; no generated raster inputs",
+  "resolution": [
+    2048,
+    2048
+  ],
+  "seed": 73,
+  "normal_convention": "OpenGL (+Y)",
+  "normal_components": "RGB tangent normal; ignore exported Alpha (not opacity)",
+  "graphs": {
+    "body": {
+      "mantle_mottle": 810002,
+      "chromatophore_clusters": 810004,
+      "chromatophores": 810006,
+      "skin_microtexture": 810008,
+      "mottle_layers": 810010,
+      "copper_coral_complexion": 810012,
+      "freckle_threshold": 810020,
+      "irregular_freckle_clusters": 810022,
+      "freckle_pigment": 810024,
+      "base_color": 810026,
+      "wet_skin_roughness": 810028,
+      "pore_roughness": 810030,
+      "roughness": 810032,
+      "pores_height": 810034,
+      "soft_tissue_height": 810036,
+      "height": 810038,
+      "normal": 810040,
+      "nonmetal": 810042
+    },
+    "suckers": {
+      "mantle_mottle": 820002,
+      "chromatophore_clusters": 820004,
+      "chromatophores": 820006,
+      "skin_microtexture": 820008,
+      "mottle_layers": 820010,
+      "copper_coral_complexion": 820012,
+      "freckle_threshold": 820019,
+      "irregular_freckle_clusters": 820021,
+      "freckle_pigment": 820023,
+      "base_color": 820025,
+      "wet_skin_roughness": 820027,
+      "pore_roughness": 820029,
+      "roughness": 820031,
+      "pores_height": 820033,
+      "soft_tissue_height": 820035,
+      "height": 820037,
+      "normal": 820039,
+      "nonmetal": 820041
+    },
+    "mapped": {
+      "source_albedo": 830003,
+      "body": 830005,
+      "suckers": 830011,
+      "source_luminance": 830017,
+      "sucker_mask": 830019,
+      "eye_patch": 830021,
+      "eye_mask": 830023,
+      "sss_mask": 830025,
+      "mapped_skin": 830027,
+      "base_color": 830029,
+      "mapped_roughness": 830031,
+      "eye_roughness": 830033,
+      "roughness": 830035,
+      "mapped_height": 830037,
+      "eye_height": 830039,
+      "height": 830041,
+      "mapped_normal": 830043,
+      "eye_normal": 830045,
+      "normal": 830047
+    }
+  },
+  "source": {
+    "path": "octopus.sbs",
+    "sha256": "d4cb7d4a1b8f579d37ea2217253619d288abd458d81748d0cdc59ba8ef242ff4"
+  },
+  "archive": {
+    "path": "octopus.sbsar",
+    "sha256": "9817847d086bdf9d049329c8f1d747aec6927dfc9d610e7582d8996d292cc7a9"
+  },
+  "maps": {
+    "body/BaseColor.png": {
+      "sha256": "d41c845b40cb90b5f6dc47dae2c83a97ca6e6fd2d755ac4ae78022ffb8fdbcd5",
+      "bytes": 1242374,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 2,
+      "color_space": "sRGB",
+      "pixel_ranges": [
+        [
+          88,
+          228
+        ],
+        [
+          20,
+          137
+        ],
+        [
+          10,
+          85
+        ]
+      ]
+    },
+    "body/Roughness.png": {
+      "sha256": "e865f6078b8090098b8ef7d36bd5545ef35cc8301063ab3df35d97305e847aad",
+      "bytes": 2086991,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 0,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          71,
+          111
+        ]
+      ]
+    },
+    "body/Height.png": {
+      "sha256": "a8df75ff6951c54bcd60ab0bc55f039eb71bb8887b4a27b71a3aec5addbd7d03",
+      "bytes": 7420356,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 16,
+      "png_color_type": 0,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          25156,
+          40331
+        ]
+      ]
+    },
+    "body/Normal.png": {
+      "sha256": "69e29386d55275cab8df67393be8cd79cb6ea6ff54b13bbd5d76aaaeff36fc3f",
+      "bytes": 12506002,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 6,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          61,
+          197
+        ],
+        [
+          58,
+          195
+        ],
+        [
+          222,
+          255
+        ],
+        [
+          98,
+          157
+        ]
+      ]
+    },
+    "body/Metallic.png": {
+      "sha256": "48fd1fc5ce3b02dd39a94f49fca0cef2cc893e173aea53f9d8e45dbb9fdb279d",
+      "bytes": 5129,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 0,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    "suckers/BaseColor.png": {
+      "sha256": "dfe281c18e033bf5670b2a109d37fd4125e4cdf31fd197bb166935da5a033cf8",
+      "bytes": 1179529,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 2,
+      "color_space": "sRGB",
+      "pixel_ranges": [
+        [
+          166,
+          243
+        ],
+        [
+          95,
+          200
+        ],
+        [
+          66,
+          161
+        ]
+      ]
+    },
+    "suckers/Roughness.png": {
+      "sha256": "34f305bd1820afafec6c51e88e363b2e47870d7b2de671e9ac8eef7ce9a1939f",
+      "bytes": 2087177,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 0,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          84,
+          121
+        ]
+      ]
+    },
+    "suckers/Height.png": {
+      "sha256": "a8df75ff6951c54bcd60ab0bc55f039eb71bb8887b4a27b71a3aec5addbd7d03",
+      "bytes": 7420356,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 16,
+      "png_color_type": 0,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          25156,
+          40331
+        ]
+      ]
+    },
+    "suckers/Normal.png": {
+      "sha256": "7ab14c76283b0fe166e74e8df7d7b7c4d5d793e6a368d782b6e5dcad9c05cd74",
+      "bytes": 11404078,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 6,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          78,
+          178
+        ],
+        [
+          77,
+          177
+        ],
+        [
+          236,
+          255
+        ],
+        [
+          98,
+          157
+        ]
+      ]
+    },
+    "suckers/Metallic.png": {
+      "sha256": "48fd1fc5ce3b02dd39a94f49fca0cef2cc893e173aea53f9d8e45dbb9fdb279d",
+      "bytes": 5129,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 0,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    "mapped/BaseColor.png": {
+      "sha256": "8dffa89fb123fe36b555779209addb44c3aa4a9334783713e33e21d003cb7aee",
+      "bytes": 1825285,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 2,
+      "color_space": "sRGB",
+      "pixel_ranges": [
+        [
+          0,
+          242
+        ],
+        [
+          0,
+          196
+        ],
+        [
+          0,
+          157
+        ]
+      ]
+    },
+    "mapped/Roughness.png": {
+      "sha256": "7f9d4774a2b3fa637d371b8b7f523aadecb27cb47f5a809d5d17ebc05c2f9e08",
+      "bytes": 2071660,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 0,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          25,
+          115
+        ]
+      ]
+    },
+    "mapped/Height.png": {
+      "sha256": "a50a105bb1d07aa384e940996cc3e2309d61427443c6b3b3b2fe804c98ddce16",
+      "bytes": 7338670,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 16,
+      "png_color_type": 0,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          25156,
+          40331
+        ]
+      ]
+    },
+    "mapped/Normal.png": {
+      "sha256": "e2bb8221067f0b08ac40e05aa283f04c291e5df7cde1a4c7b5f392a2d0925bbd",
+      "bytes": 12373695,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 6,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          61,
+          197
+        ],
+        [
+          58,
+          195
+        ],
+        [
+          222,
+          255
+        ],
+        [
+          98,
+          255
+        ]
+      ]
+    },
+    "mapped/Metallic.png": {
+      "sha256": "48fd1fc5ce3b02dd39a94f49fca0cef2cc893e173aea53f9d8e45dbb9fdb279d",
+      "bytes": 5129,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 0,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    "mapped/SuckerMask.png": {
+      "sha256": "f70924179b41803fe854fcb816ac0f9d83de0745fa8b51330c7f53342a3e5c32",
+      "bytes": 221797,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 0,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          0,
+          255
+        ]
+      ]
+    },
+    "mapped/EyeMask.png": {
+      "sha256": "d433efc73fcbe404adc70f12bd41227fe2d6942298c7f0b1690c6827485a465b",
+      "bytes": 6553,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 0,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          0,
+          255
+        ]
+      ]
+    },
+    "mapped/SSSMask.png": {
+      "sha256": "65a0f84b558175ade08b03b8e4b088090110d5e44f17411890e695eaaca79e69",
+      "bytes": 9034,
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "png_color_type": 0,
+      "color_space": "Raw",
+      "pixel_ranges": [
+        [
+          0,
+          255
+        ]
+      ]
+    }
+  },
+  "archive_native_readback": [
+    "GRAPH-URL pkg://OctopusBody",
+    "  OUTPUT BaseColor baseColor",
+    "  OUTPUT Roughness roughness",
+    "  OUTPUT Height height",
+    "  OUTPUT Normal normal",
+    "  OUTPUT Metallic metallic",
+    "",
+    "GRAPH-URL pkg://OctopusSuckers",
+    "  OUTPUT BaseColor baseColor",
+    "  OUTPUT Roughness roughness",
+    "  OUTPUT Height height",
+    "  OUTPUT Normal normal",
+    "  OUTPUT Metallic metallic",
+    "",
+    "GRAPH-URL pkg://OctopusMapped",
+    "  INPUT source_albedo IMAGE",
+    "  OUTPUT BaseColor baseColor",
+    "  OUTPUT Roughness roughness",
+    "  OUTPUT Height height",
+    "  OUTPUT Normal normal",
+    "  OUTPUT Metallic metallic",
+    "  OUTPUT SuckerMask mask",
+    "  OUTPUT EyeMask mask",
+    "  OUTPUT SSSMask mask",
+    ""
+  ],
+  "native_compiled_rerender_exact": true,
+  "display_transform": "no postprocessing; BaseColor sRGB, data channels Raw",
+  "suggested_height_distance_metres": 0.0015,
+  "art_direction": "mottled copper/coral body, clustered chromatophore freckles, fine pores, ivory/pink suckers",
+  "limits": "procedural artistic material; no skin scan, biological validation or host shader/render acceptance",
+  "tools": {
+    "sbscooker.exe": {
+      "sha256": "867b61856368fd85ba80bdfe575e09bef051c7f4ec6dde7546ddc15ede39b495",
+      "version": "version 16.0.0 (build 10849 commit 0x6c35dc77)"
+    },
+    "sbsrender.exe": {
+      "sha256": "2ce15e22ad38e6988d549ba8678ae6101b6ef51df732c0836ae39e255ab7265c",
+      "version": "version 16.0.0 (build 10849 commit 0x6c35dc77)"
+    }
+  },
+  "source_albedo": {
+    "path": "source-albedo-original.png",
+    "sha256": "5eef412ec1aada5e559d9779d2f4272a8e42f240eb143aad284fe8272f4c2885",
+    "source": "original GLB material1 image1; TEXCOORD_0",
+    "author": "FIELDFLY3R (fld)",
+    "license": "CC BY 4.0"
+  },
+  "anatomy_masks": {
+    "suckers": "native source-albedo luminance thresholds0.40/0.65",
+    "eyes": "native disc/transform UV patch; original eye albedo preserved",
+    "eye_uv_bounds_image_origin_top_left": [
+      0.39,
+      0.885,
+      0.51,
+      1.0
+    ],
+    "sss": "native Levels inverse EyeMask; white skin, black eyes",
+    "eye_normal": [
+      0.5,
+      0.5,
+      1.0
+    ],
+    "eye_roughness": 0.1,
+    "limit": "art-directed masks; brightness also selects pale membrane regions"
+  },
+  "native_eye_mask_readback": {
+    "eye_center_pixel": [
+      922,
+      1946
+    ],
+    "eye_normal_rgb8": [
+      128,
+      128,
+      255
+    ],
+    "eye_roughness_readback": 0.09803921568627451,
+    "eye_sss_mask": 0,
+    "eye_mask_bounds_pixels": [
+      798,
+      1812,
+      1045,
+      2048
+    ],
+    "complement_max_error_rgb8": 0
+  }
+}

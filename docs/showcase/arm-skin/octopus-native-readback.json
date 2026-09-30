@@ -1,0 +1,315 @@
+{
+  "success": true,
+  "host": "Houdini",
+  "version": "22.0.368",
+  "source_sha256": "824a8fc33a192f8b3589bc413d808e537e77a486105ff7e7fe1481201de6e97c",
+  "buffer_hash_convention": "C-contiguous little-endian float32 positions/UVs and int32 triangle indices",
+  "source_vertices": 29542,
+  "source_faces": 58912,
+  "source_positions_sha256": "2f553885fafcc0965d40aa7635be4443681fafabcf05b49770ebd6ab53cf86e7",
+  "source_topology_sha256": "66481c18f6bb0716eff6ed3a3e912346b4379c487e330c2bfaa7fc840080d126",
+  "source_uv_sha256": {
+    "uv": "360ff9eac07185e40a483474aa9fc5de2e2fff5124ed2a69f2d3a644ca93d5a0",
+    "uv2": "360ff9eac07185e40a483474aa9fc5de2e2fff5124ed2a69f2d3a644ca93d5a0",
+    "uv3": "360ff9eac07185e40a483474aa9fc5de2e2fff5124ed2a69f2d3a644ca93d5a0"
+  },
+  "proxy_vertices": 8000,
+  "proxy_faces": 15936,
+  "proxy_positions_sha256": "7ad355ea112d872606002404b1c6eef9fa9516762480e58a11a2ac68557728e8",
+  "proxy_topology_sha256": "4b2178edf4bb99d44fcbb408109e77018df39764e2aeb0d4f7f5189a7fb7dc47",
+  "weights_sha256": "2d105d4b6836d23c529648d6482235e106f463e55d42a13561cb647e249d3730",
+  "maximum_weight_difference": 0.0,
+  "maximum_transform_storage_difference": 2.3442440078014215e-07,
+  "native_render_frame_readback": [
+    {
+      "frame": 1,
+      "points_sha256": "9b862174b24300e8f286c1d38fd16dd98ae4c81bea0b60f1849a36dff1fc04a3",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 2,
+      "points_sha256": "100f2305f6a43ce83f8234002e26e796516c15893540be8928d12a18717f6e95",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 3,
+      "points_sha256": "40f8d58d666cb6ab638b5afc7af7b6dfd57866ebe180911e9b68e68f7052a031",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 4,
+      "points_sha256": "7af1360ad714211ecc164c859cf4254f953049a8eee11b9fca581d52242d64f9",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 5,
+      "points_sha256": "8b3b6460e992059e7b86d1279d53d2ecb250610de057fb499d9191c4845ee6fb",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 6,
+      "points_sha256": "307b249da0e0278fc61c04282aa58b02f5b1bbb739b83f970740a1035cc764bd",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 7,
+      "points_sha256": "99e474111ec527fbafb2e079eb5666b403e04494cb787b43578789271f537f71",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 8,
+      "points_sha256": "e5e5647e60bcc1be45d454ea9f1eda21158ee30b18d5f059f2e2bb2e6b750429",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 9,
+      "points_sha256": "f5f23e1b2ec4c985957119627a58bc5bae1bf714c86839b8d83563a1a9b09fe7",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 10,
+      "points_sha256": "73746df8f5dd15a069c596c2c763592e964252977821cd2fa8a299c7a5d87856",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 11,
+      "points_sha256": "5ad782673c9f1247384e766e475686defb46eac67b333e75b2f9e5821ee7a091",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 12,
+      "points_sha256": "05f8fb72ba47101f5d2f8659e543775a8a5536bb5d98b0c4c3c422c094beffbd",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 13,
+      "points_sha256": "1d6766904150453f77484deee88b9478a3235525b2b738b9550281ae17a7baec",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 14,
+      "points_sha256": "c3836e8d39d36fcd0d177eeadfa65ffaa8638b8d1f3318f87da6a6d7ff252c8b",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 15,
+      "points_sha256": "8e734b57859b8b0c75dc4d9e98cd91e2049299142ed4e9aafb3f6b19bc6f294c",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 16,
+      "points_sha256": "6dfb3957b0ad6e844d7441253117d3084e2bc3d442905d0922ad857c93bb1e1f",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 17,
+      "points_sha256": "4db9b2b78eb1f88cda453b84440325f011c69bcb9777f00f328fa29f609c3b4d",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 18,
+      "points_sha256": "459e0c778724787893e36919ac7a094b557a1fd817807e7be1a08bd29e43f09a",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 19,
+      "points_sha256": "1f45bf96d444048d6407f7259dbac7251af8a0ba634b8c9603436c8cbe71b004",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 20,
+      "points_sha256": "2e783dcd2ab2c21a24e7aef5b6488846165c0758ca8b3462c4c657c0a3b69d59",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 21,
+      "points_sha256": "e3e5596f03f985c0f46636cf36c20f345e2b173ce5cce175d22d2a9b786eefa4",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 22,
+      "points_sha256": "eee9ae37fee7859d20bc182c342d11aa4d9934d3a5b5f386178afe352499fc5e",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 23,
+      "points_sha256": "0c16a84deb7dbe71d592b2ba50486a649304402e035a8690ceae6b6734ff79c5",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 24,
+      "points_sha256": "13186aca0c571d78d31651c1a3c53df1ceb12cd3b7b4401df4f23378b37a6208",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 25,
+      "points_sha256": "8f61a3a6dc32b7b789effd5717c1aeb4f24e986d4b2cb5dde35c5353de74b0b0",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 26,
+      "points_sha256": "e8ffd749ba7132ec6a3aaa0d4c9e72e8af162df09253810afd303f3d6fb65d9c",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 27,
+      "points_sha256": "59d666dac89242cb5820b3094e7da9ec61e04420504f0301b3bc768233bb4a26",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 28,
+      "points_sha256": "a25c8d113ccbaee371e2579846de6dbc3dfe02fbc5d83fdbd40aa1aac7e2f818",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 29,
+      "points_sha256": "c46899312b4880929cf64948b45af153a7a336a37a8c01f9df92aab8134b83fb",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 30,
+      "points_sha256": "7974fbd23d6bfb4aafe05bc8bcad9750250b5a06619409403087f614dbc130c7",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 31,
+      "points_sha256": "e24ff2c71afadd4a6c60c266465375d32dca5f71f1b54df4f4a22a02976e302a",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 32,
+      "points_sha256": "e79f18d5d2c57b069178bf1b330492b8932a55b381f0ce2038432d8f648ab3ee",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 33,
+      "points_sha256": "e77879129acecc55d3eee30f8b8091df81e1d80283160cf79bec6aa12410fe52",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 34,
+      "points_sha256": "c9bf0eb8c0ee450176f676be310128cc65c4b0f4af20ce027ef825aa6cab8fdd",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 35,
+      "points_sha256": "611c934353f7a24b1c92ab7ffdbcff6be17c8d4e1e195cb1536c9e94c3069330",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 36,
+      "points_sha256": "7f658d66d24b12f72380b3823d57ec6901d0ec1e8af1589a1981a5bccaad703d",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 37,
+      "points_sha256": "41a3f30928baef537d2a88dbbc8243184aa240aaad28defa6e882f5467dff49d",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 38,
+      "points_sha256": "6b03a6dbedaff00f38246a36e926bd5026db673c8bb4f357b852995b8ccf69a4",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 39,
+      "points_sha256": "a73be28c2f64f67413e74aba8ff133341f02acc0658c1fb14568041818a914d6",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 40,
+      "points_sha256": "e9f2e3f09378ece54a142885c6913cb36e6df842789c801c654ac28c38be05f0",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 41,
+      "points_sha256": "fb1e0d27f4e320ddf9b3b11c556df39eaa8f6a2beb5acefb459df7738973a343",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 42,
+      "points_sha256": "ac5b91b47ba727904899996d369b29c0e89e465a4429815b33f90a2d5778ccd9",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 43,
+      "points_sha256": "7e11461874484a6dc6571b0f7f7a78712280e3b93c564a83b845f13032fb4cda",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 44,
+      "points_sha256": "9e3cad36499223c1639f82bef6f64b6d6a980ef331d807255f551dad59fd8238",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 45,
+      "points_sha256": "3d873195d75ef14132e3ed6f3eb4904e8c57b29038e0400caa558fd3a66018d8",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 46,
+      "points_sha256": "b7d0111b74cb6c4e9314de07df6a7b82d09d87859e4f6d420dce49272bf75be4",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 47,
+      "points_sha256": "5a6b795a20974e25d548e79fabba5b72f940f869612919a8735f88b4d011e274",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    },
+    {
+      "frame": 48,
+      "points_sha256": "9b862174b24300e8f286c1d38fd16dd98ae4c81bea0b60f1849a36dff1fc04a3",
+      "topology_preserved": true,
+      "uv_sets_preserved": 3
+    }
+  ],
+  "render_transfer_excluded_from_numerical_metrics": true,
+  "ui_automation_used": false
+}

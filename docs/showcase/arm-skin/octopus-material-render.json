@@ -1,0 +1,269 @@
+{
+  "schema": "py-dem-bones.octopus-material-render.v1",
+  "verified_on": "2026-10-01",
+  "host": {
+    "application": "Houdini",
+    "version": "22.0.368",
+    "adapter": "0.43.1",
+    "core": "0.20.28",
+    "ui_automation_used": false
+  },
+  "renderer": "native Mantra physically based ray tracing",
+  "subject": "CC BY 4.0 FIELDFLY3R Kraken, original ARTIST_REST surface; independent material study",
+  "source_sha256": "824a8fc33a192f8b3589bc413d808e537e77a486105ff7e7fe1481201de6e97c",
+  "motion_and_numerical_acceptance_established_by_these_stills": false,
+  "source_artist_vertices": 29542,
+  "source_artist_triangles": 58912,
+  "render_vertices": 117994,
+  "render_triangles": 235648,
+  "presentation": {
+    "scale_metres_per_source_unit": 0.035,
+    "axis_change": "Y-up to Z-up by +90 degrees about X",
+    "subdivision": "one OpenSubdiv Loop level",
+    "normals": "recompute vertex normals after deformation/subdivision, cusp 180 degrees"
+  },
+  "camera": {
+    "size": [
+      1800,
+      1200
+    ],
+    "pixel_samples": [
+      6,
+      6
+    ],
+    "threads": 8,
+    "focal_mm": 85,
+    "depth_of_field": false,
+    "camera_world_transform": [
+      0.7540815958863057,
+      0.656780744804202,
+      -2.7755575615628914e-17,
+      0.0,
+      -0.25098423095627986,
+      0.2881670799868397,
+      0.9241031597300937,
+      0.0,
+      0.6069331615234475,
+      -0.6968491854528468,
+      0.38214310169994814,
+      0.0,
+      1.459939349368315,
+      -0.9839438929505384,
+      1.2684425840798759,
+      1.0
+    ],
+    "camera_aperture_mm": 41.4214,
+    "camera_target": [
+      0.0032997617120414033,
+      0.6884941521362942,
+      0.35129914
+    ],
+    "stationary_camera": true
+  },
+  "material": {
+    "maps": [
+      {
+        "channel": "BaseColor",
+        "file": "examples/showcase/materials/octopus/maps/mapped/BaseColor.png",
+        "color_space": "sRGB",
+        "sha256": "8dffa89fb123fe36b555779209addb44c3aa4a9334783713e33e21d003cb7aee"
+      },
+      {
+        "channel": "Roughness",
+        "file": "examples/showcase/materials/octopus/maps/mapped/Roughness.png",
+        "color_space": "linear data",
+        "sha256": "7f9d4774a2b3fa637d371b8b7f523aadecb27cb47f5a809d5d17ebc05c2f9e08"
+      },
+      {
+        "channel": "Normal",
+        "file": "examples/showcase/materials/octopus/maps/mapped/Normal.png",
+        "color_space": "linear data; OpenGL +Y",
+        "sha256": "e2bb8221067f0b08ac40e05aa283f04c291e5df7cde1a4c7b5f392a2d0925bbd"
+      },
+      {
+        "channel": "SSSMask",
+        "file": "examples/showcase/materials/octopus/maps/mapped/SSSMask.png",
+        "color_space": "linear data",
+        "sha256": "65a0f84b558175ade08b03b8e4b088090110d5e44f17411890e695eaaca79e69"
+      }
+    ],
+    "metallic": 0.0,
+    "roughness_texture_multiplier": 1.0,
+    "coat_weight": 0.06,
+    "coat_roughness": 0.26,
+    "sss_distance_metres": 0.003,
+    "sss_color": [
+      0.9,
+      0.38,
+      0.17
+    ],
+    "normal_scale": 0.5,
+    "normal_flip_y": false,
+    "normal_space": "uvtangent",
+    "eye_region": "original eye albedo retained; SD mask excludes SSS and supplies roughness/flat normal"
+  },
+  "lighting": {
+    "hdri": "Poly Haven Studio Small 09 CC0",
+    "hdri_sha256": "36724313c0fc66dab126ff90f081b85a0b1ef47be65eda1417bd20b033f0573f",
+    "environment_intensity": 0.35,
+    "key_intensity": 5.5,
+    "rim_intensity": 14,
+    "fill_intensity": 2.4,
+    "transmission_intensity": 2.5,
+    "floor_excludes_transmission_light": true
+  },
+  "controlled_comparison": {
+    "changed_material_parameters": [
+      "sss"
+    ],
+    "identical_camera": true,
+    "identical_light_parameters": true,
+    "identical_render_position_buffer": "a3be442c30d26712b6aac6d6f737b4f112ce67af2e026514e09bff0412acbd5f",
+    "fraction_all_display_pixels_with_max_channel_delta_above_0_01": 0.4330625,
+    "mean_absolute_display_channel_delta": 0.008192766279351246,
+    "interpretation": "controlled artistic SSS demonstration; no measured tissue coefficients or calibrated cross-renderer claim"
+  },
+  "renders": [
+    {
+      "file": "octopus-mantra-detail.png",
+      "size_bytes": 2871925,
+      "sha256": "61cab01590b35e873387c9093044e4d161b0437a49df80c02f585fa84a9ee2bf",
+      "sss_weight": 0.48,
+      "native_job": {
+        "job_id": "ef0b59d0449645969968cc645a3f23b6",
+        "state": "completed",
+        "frame_range": [
+          1,
+          1
+        ],
+        "elapsed_secs": 489.043,
+        "warning_count": 0,
+        "output_verification": {
+          "state": "verified",
+          "expected_output_count": 1,
+          "written_file_count": 1
+        }
+      },
+      "processing": {
+        "schema": "py-dem-bones.rgb-display.v1",
+        "display_transform": "Full-range linear RGB to approximate gamma 2.2; 8-bit RGB display PNG",
+        "ffmpeg_filter": "format=rgb48le,lutrgb=r='pow(val/maxval,1/2.2)*maxval':g='pow(val/maxval,1/2.2)*maxval':b='pow(val/maxval,1/2.2)*maxval',format=rgb24",
+        "hdr_values_above_one": "clipped before approximate display transfer",
+        "alpha": "RGB display copy; native EXR preserved",
+        "frame_count": 1,
+        "frame_range": [
+          1,
+          1
+        ],
+        "frames": [
+          {
+            "source": "frame_001.exr",
+            "native_exr_sha256": "14ed31e731975256e629d3f00d917e8a615355006e65d2130162680da5e30fde",
+            "display_png": "frame_001.png",
+            "display_png_sha256": "61cab01590b35e873387c9093044e4d161b0437a49df80c02f585fa84a9ee2bf",
+            "size": [
+              1800,
+              1200
+            ]
+          }
+        ],
+        "original_native_frames": [
+          {
+            "frame": 1,
+            "original_exr_sha256": "64807fd00db97ac8619493553641db8512c49e1d3a28765d4fc17f666184f30f",
+            "denoised_exr_sha256": "14ed31e731975256e629d3f00d917e8a615355006e65d2130162680da5e30fde",
+            "size": [
+              1800,
+              1200
+            ],
+            "finite_rgb": true,
+            "minimum_linear": 0.00024414435029029846,
+            "maximum_linear": 1.0,
+            "standard_deviation_linear": 0.16717293858528137
+          }
+        ],
+        "denoiser": {
+          "application": "SideFX idenoise",
+          "host_version": "22.0.368",
+          "engine": "OIDN CPU",
+          "inputs": "color only; no albedo/normal guides",
+          "source_exrs_unchanged": true,
+          "temporal_consistency_independently_measured": false
+        }
+      }
+    },
+    {
+      "file": "octopus-mantra-sss-off.png",
+      "size_bytes": 2658442,
+      "sha256": "7dfe4efa585b8d884ec1df269abe1a7aa1554eed8cb02659b6ae22af13b43c8c",
+      "sss_weight": 0.0,
+      "native_job": {
+        "job_id": "8fe4e87b7482485bb7ba241da84935e9",
+        "state": "completed",
+        "frame_range": [
+          1,
+          1
+        ],
+        "elapsed_secs": 408.109,
+        "warning_count": 0,
+        "output_verification": {
+          "state": "verified",
+          "expected_output_count": 1,
+          "written_file_count": 1
+        }
+      },
+      "processing": {
+        "schema": "py-dem-bones.rgb-display.v1",
+        "display_transform": "Full-range linear RGB to approximate gamma 2.2; 8-bit RGB display PNG",
+        "ffmpeg_filter": "format=rgb48le,lutrgb=r='pow(val/maxval,1/2.2)*maxval':g='pow(val/maxval,1/2.2)*maxval':b='pow(val/maxval,1/2.2)*maxval',format=rgb24",
+        "hdr_values_above_one": "clipped before approximate display transfer",
+        "alpha": "RGB display copy; native EXR preserved",
+        "frame_count": 1,
+        "frame_range": [
+          1,
+          1
+        ],
+        "frames": [
+          {
+            "source": "frame_001.exr",
+            "native_exr_sha256": "440260e81cda55d41e5ee8105b85428a5eced911b80c104f9bc1c4cf0e697ea7",
+            "display_png": "frame_001.png",
+            "display_png_sha256": "7dfe4efa585b8d884ec1df269abe1a7aa1554eed8cb02659b6ae22af13b43c8c",
+            "size": [
+              1800,
+              1200
+            ]
+          }
+        ],
+        "original_native_frames": [
+          {
+            "frame": 1,
+            "original_exr_sha256": "c2910557fe1d7050a16fc401ea1d886291f4a4828440479dd58760625febe7ac",
+            "denoised_exr_sha256": "440260e81cda55d41e5ee8105b85428a5eced911b80c104f9bc1c4cf0e697ea7",
+            "size": [
+              1800,
+              1200
+            ],
+            "finite_rgb": true,
+            "minimum_linear": 0.00024414435029029846,
+            "maximum_linear": 1.0,
+            "standard_deviation_linear": 0.16516749560832977
+          }
+        ],
+        "denoiser": {
+          "application": "SideFX idenoise",
+          "host_version": "22.0.368",
+          "engine": "OIDN CPU",
+          "inputs": "color only; no albedo/normal guides",
+          "source_exrs_unchanged": true,
+          "temporal_consistency_independently_measured": false
+        }
+      }
+    }
+  ],
+  "reproduction_helpers_sha256": {
+    "houdini_octopus_render.py": "a67bd7e3ad2b0e79e05b07fae7a16dc6f00362e962ed300cf0fcfdc426756ca3",
+    "designer_octopus.py": "65762876cf308ba87a9a57fe636a24e2b1239047be8ffb838186693a3e49c7b8",
+    "convert_mantra_frames.py": "8fcbc055cff8098d039bbf174c54b79270462fc7c6b8618492108d9a33b03cbc"
+  }
+}
