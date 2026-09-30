@@ -1,0 +1,4 @@
+# Preserve the exact bytes recorded by the showcase provenance manifests.
+examples/showcase/assets/** -text
+examples/showcase/materials/** -text
+docs/showcase/arm-skin/** -text

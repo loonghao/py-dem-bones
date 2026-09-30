@@ -55,6 +55,7 @@ docs = [
     "sphinx-autobuild>=2021.3.14",
     "pybind11-stubgen>=0.16.0",
     "myst-parser>=2.0.0",
+    "sphinxcontrib-mermaid>=1.0.0",
     "sphinx-gallery>=0.13.0",
     "pillow>=9.0.0",
     "matplotlib>=3.5.0",

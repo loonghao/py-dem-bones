@@ -24,6 +24,7 @@ Features
    installation
    usage
    dcc_integration
+   showcase
    examples
    rbf_features
 

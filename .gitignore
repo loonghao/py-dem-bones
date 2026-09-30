@@ -23,6 +23,7 @@ target/*
 # C++ build artifacts
 *.o
 *.obj
+!examples/showcase/assets/arm.obj
 *.a
 *.lib
 *.dll
@@ -88,6 +89,10 @@ _cmake_build/
 /PRD.md
 /wheelhouse/
 /docs/auto_examples/
+
+# Native render caches and backup scenes are not showcase source assets.
+/examples/showcase/**/*.tx
+/examples/showcase/**/*.blend1
 
 # Local development files (not for CI)
 /setup.py

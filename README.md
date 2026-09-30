@@ -33,6 +33,18 @@ The portable API has no host SDK dependency. Packaged adapters under `py_dem_bon
 
 The [architecture decision](docs/adr/0002-host-adapters-and-native-kernel.md) describes the shared adapter lifecycle, solver ownership, and host writeback contracts.
 
+## Native DCC showcase
+
+![Native Cycles source arm and Dem Bones reconstruction](docs/showcase/arm-skin/blender-arm.gif)
+
+Our own skin weights on a free CC0 arm with nine bones, 48 native poses and
+approximately **0.067% normalized RMSE** in Maya, Blender, Houdini and UE5.8.
+Designer-authored skin maps and a real Poly Haven HDRI drive the first Cycles
+and Arnold SSS previews. [Gallery, rigid chain and exact acceptance status](docs/showcase/arm-skin/README.md)
+includes native GIFs from all four hosts. Final SSS look development remains
+in progress; Houdini and Unreal clips show their completed deformation previews.
+[Reproduce through DCC-MCP](examples/showcase/README.md).
+
 ## Develop and release
 
 ```bash

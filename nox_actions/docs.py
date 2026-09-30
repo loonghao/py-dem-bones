@@ -101,6 +101,7 @@ def install_doc_dependencies(session):
         "sphinx",
         "furo",  #
         "myst-parser",
+        "sphinxcontrib-mermaid",
         "sphinx-autodoc-typehints",
         "sphinxcontrib-googleanalytics",
         "sphinx-copybutton",  #
