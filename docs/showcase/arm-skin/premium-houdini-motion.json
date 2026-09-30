@@ -1,0 +1,51 @@
+{
+  "schema": "py-dem-bones.premium-houdini.v1",
+  "host": "22.0.368",
+  "case": "tentacle",
+  "accepted_cache_sha256": "26163215a8b4d1ecd9e2042d3f642d9fb5a4ffe1b2aa90f03af2ec6ba15cd421",
+  "native_rebuilt_lbs_max_difference": 0.0,
+  "shared_solve_copies": 3,
+  "presentation_subdivision": 2,
+  "render_geometry_excluded_from_numerical_acceptance": true,
+  "materials": "procedural copper and cyan emissive inlay; artistic fixture",
+  "camera": {
+    "projection": "perspective",
+    "focal_mm": 55,
+    "size": [
+      1600,
+      900
+    ]
+  },
+  "pixel_samples": [
+    12,
+    12
+  ],
+  "renderer": "/out/DemBonesPremiumRender",
+  "camera_tracking": {
+    "mode": "native keyed camera follows all three copies' actual pose bounds",
+    "frames": 48,
+    "maximum_projected_fraction_of_half_frame": 0.8200000000000002,
+    "native_camera_key_max_difference": 0.0
+  },
+  "native_scene_sha256": "f92336157e86af105ed452f3487648de6b4e7efb9d419064a0b7530e29b47846",
+  "public_hero": "premium-houdini-motion.png",
+  "public_hero_sha256": "5bf592a17f7f5d216e08e7bad9193bdd6ce0ca95080fcc3e313ffad4c47aa547",
+  "native_exr_sha256": "2a0a183e70e5e89dbbe77f53ade2a40abacb9e97c83e7a6bd81fe4541e9e78c7",
+  "denoised_exr_sha256": "15da8daaee93ab73f230cf49ba4e8a74df767f2d5bc2ca281bd1e284a9aa5798",
+  "postprocess": "SideFX Houdini 22.0.368 idenoise --oidn-cpu; color-only, no albedo/normal guide",
+  "display_transform": "Full-range linear RGB to approximate gamma 2.2; HDR above one clipped before 8-bit RGB transfer",
+  "native_source_preserved": true,
+  "render_job": {
+    "state": "completed",
+    "expected_frames": 1,
+    "verified_frames": 1,
+    "frame": 14,
+    "elapsed_secs": 39.106,
+    "warning_count": 0
+  },
+  "limitations": [
+    "Three rotated presentation copies share one accepted solve",
+    "Prescribed procedural motion; no collision/dynamics simulation",
+    "Per-image OIDN filtering; temporal consistency is not independently measured"
+  ]
+}

@@ -35,16 +35,22 @@ The [architecture decision](docs/adr/0002-host-adapters-and-native-kernel.md) de
 
 ## Native DCC showcase
 
-![Native Cycles source arm and Dem Bones reconstruction](docs/showcase/arm-skin/blender-arm.gif)
+![Native Cycles skin detail with HDRI and subsurface scattering](docs/showcase/arm-skin/premium-blender-skin.png)
 
 Our own skin weights on a free CC0 arm with nine bones, 48 native poses and
 approximately **0.067% normalized RMSE** in Maya, Blender, Houdini and UE5.8.
-Designer-authored skin maps and a real Poly Haven HDRI drive the Cycles
-SSS sequence, Arnold first pass, Mantra SSS sequence and Unreal Subsurface preview. Native SSS
-off/on renders are included.
-[Gallery, rigid chain and exact acceptance status](docs/showcase/arm-skin/README.md)
-includes native GIFs from all four hosts. Final SSS look development remains
-in progress for Maya's updated palette; Houdini includes a complete Mantra sequence.
+Designer skin maps, shader-authored pores, real HDRI lighting and native SSS
+drive the closeup. The gallery includes matched SSS off/on renders, steel
+reflections, Unreal hand detail, and native animation from all four hosts.
+
+![Native Cycles steel reflection and rigid articulation study](docs/showcase/arm-skin/premium-blender-chain.gif)
+
+![Measured source, reconstruction, weight colors and vertex residual](docs/showcase/arm-skin/premium-solver-evidence.png)
+
+[Gallery, videos and exact acceptance status](docs/showcase/arm-skin/README.md)
+separates native beauty renders from numerical visualization. Presentation
+smoothing is excluded from solver metrics. Updated Maya look development
+still awaits native acceptance.
 [Reproduce through DCC-MCP](examples/showcase/README.md).
 
 ## Develop and release

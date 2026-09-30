@@ -1,0 +1,394 @@
+{
+  "host": "Unreal Engine",
+  "version": "5.8.0-55116800+++UE5+Release-5.8",
+  "case_name": "arm",
+  "cache_sha256": "f1af01c625ab3106516f802fb2d81ec203a368f25eac807600bce2898929da29",
+  "numerical_vertices": 2087,
+  "numerical_frames": 48,
+  "fresh_native_weight_readback": true,
+  "maximum_weight_difference": 0.0,
+  "maximum_cache_position_difference": 0.0,
+  "render_proxy": "Two native GeometryScript Loop subdivision levels after SDK LBS; excluded from solver metrics",
+  "width": 1280,
+  "height": 720,
+  "hdri_intensity": 0.35,
+  "camera": "fixed oblique perspective; full sequence bounds",
+  "native_material": "/Game/DemBonesShowcase/Premium/AnatomicalSkin9.AnatomicalSkin9",
+  "material": "Designer BaseColor/Roughness/Normal; native legacy Subsurface",
+  "skin_opacity": 0.85,
+  "skin_native_base_color_multiplier": [
+    0.62,
+    0.92,
+    1.35
+  ],
+  "capture_exposure_bias": 0.0,
+  "display_transform": "Unreal SceneCapture final LDR tone mapping",
+  "exporter": "native ImageWriteBlueprintLibrary",
+  "frames": [
+    {
+      "frame": 1,
+      "sha256": "7378fb29b749d7f67530e2c77068841533ddc2ee00490a1a840ba64b0c508e22",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 2,
+      "sha256": "f5b95836a52282e7dba09be44f97edfa8470e50f0dfc472582f30a2adf85eca1",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 3,
+      "sha256": "7ec7d744bc4894e8b60517a153874ea548e2f000a4e3c752af940a399fd17872",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 4,
+      "sha256": "d840f72dff70fd8394f73c001c57b48a1c096c818da301c1263e2097b572506d",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 5,
+      "sha256": "a93b3026b39acc0e0d519a16589fe2611aab336812896effe538677c838ebfab",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 6,
+      "sha256": "7c8a0939372b2d12274f3fca174ebdd380f3f7290722134e8273c12fb24cce86",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 7,
+      "sha256": "7685bc30bc0aa5341129631d2c95e6052daba496c53cc93b4fcc544ef9f953d7",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 8,
+      "sha256": "73a3dec69b0e73b3817f5f7b85d28788b5ae3717f41a0032631a0ca553dea591",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 9,
+      "sha256": "cfaebb501ba9f8f4fd00248826500bff59f1838fc39fc829c5da46ab794dedec",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 10,
+      "sha256": "a7ae1367e8ace4fd0dc1868d9c0586e21a534c6156c282824108679f2c6123e1",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 11,
+      "sha256": "3a1ac53940cf1e0068798df889ac42d63fdacf44e27098d2c2405a700a05a751",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 12,
+      "sha256": "a34d034c81eedff883cce821c03a0199cfb0e0123ef6017f65a02a19bd4b0c72",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 13,
+      "sha256": "7465abe12086766a72e7223136e867115e69d986f4770858e3a99bc53115bff5",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 14,
+      "sha256": "774c249fc5b916bef744b0cf3c03185da686bbebbb9de0432d113cc4840d9c71",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 15,
+      "sha256": "24e9dc087954adc3a3e63b1e37804c764a8a581f6a3340b99bb17f8996c84de6",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 16,
+      "sha256": "491dcec10b9d470a4b7f2708716fa9a156653cea76d9a8d454075278fe094b14",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 17,
+      "sha256": "99f33c7be49e2823f705b02de515581a78580ccc52d42ae0fe608983ddd7de3e",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 18,
+      "sha256": "9f6b3d9c90a273919c6696565879686744a8b5c19d23f867f6a5f613bc2b29bb",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 19,
+      "sha256": "8e0ae5f5435e1ea4ea14ad83e4abb4de586e5f52b9eff2bf34dd27285b3a1025",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 20,
+      "sha256": "5d98a9530bb1c2e220b2bfa7cb7947b96c41a0742dcfd9894ee934a527ddb21b",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 21,
+      "sha256": "d2fb4a1304e684b3b926c5522915d6a15722f040fc3eafb93d8e2cb00d54cbc8",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 22,
+      "sha256": "a33610ecf3eea7b4ad741cbd1599384cce3ee909fc426b422429c39ec75cc512",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 23,
+      "sha256": "40f0f1884783700da6d3ac06a9928b9fe9c0b6c00c470d4ac29aec38b84ed406",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 24,
+      "sha256": "79663b9ce51197387fba5be842d1fad2c14cd7bf325d473cc55956666f4daff9",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 25,
+      "sha256": "08da0f003842e142ed25a5d590274f71b2c4e18bddaf1d0e6a9e55e021b53491",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 26,
+      "sha256": "76273bcc033fc071abbf0a72bea23bddaad618b76c346f63ae8fa08b404548bc",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 27,
+      "sha256": "b96a282d64fe4f75c88a16779ddfd20ae4904c2ca3faab52a173d6d11a5a907e",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 28,
+      "sha256": "e99cecc60f226306732a779c5ee133d2f7a5b5c247dac1d5759032af42157794",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 29,
+      "sha256": "165f441d90222d0649cdb4c17e7d8261ae226f4c0ce57c8a4c3b0fddf3b35925",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 30,
+      "sha256": "165902d681b007dfc53df1d33e9bb5379053c99d059e6ae7366be3d4e81158ff",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 31,
+      "sha256": "f120f365554dcbff1d442caf1bd2f1c5c9b7a344f4cf66f0cd8c00732e3c6c25",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 32,
+      "sha256": "8562dce33c38a107f75fc7f4df79083fc1dc14d0e866b55d4c28d2c5882a11cb",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 33,
+      "sha256": "8ebae6b717e871d0761ac427b875d216afe285a1a1e5b6121151391a37cc551c",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 34,
+      "sha256": "a78634085442c06cb322e7bd70303f610b8a7ad3a08376f09fcc315ba3f06ce4",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 35,
+      "sha256": "b407efdf746876e11bd46b55f3364a3a97d26ab0f1cdc864b9262b8e27810a43",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 36,
+      "sha256": "4a964bd5565f8b145f9af4008e1195f8129e2760f91f7fa5c3e793f6a2c53210",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 37,
+      "sha256": "933a1460d011fcdd4ccad80dabb3c8ee41375d486df6c3f35d35a50bc1899c3b",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 38,
+      "sha256": "c24fa18ba9aaf2ac57605e676b33309beb0d5d52e8740e71755fa75b652c5446",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 39,
+      "sha256": "2738ab5aee43e10ac1c36fd5fa5d2a8b7ca1067a2939fde039378c50f274fe9e",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 40,
+      "sha256": "4e0dd4e8d98a3f48eb72b1b8628a8aae57b58f545ec0b95ddb78cb6d4bcfd6ee",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 41,
+      "sha256": "ae3ce606f09846c7624882d0191dbff607cb207fc6fd18efc01c74f97fbd5fdb",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 42,
+      "sha256": "5f1b7c2d7f9bdcbc831368626ca0fbba4b005989e87e371abc2faae69a042f1a",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 43,
+      "sha256": "f5ccf0a67a8dd02a9b6191ea03bfb3cb9a013527dfca492390e0728c646a1494",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 44,
+      "sha256": "dacc2d94f60caaad31badb6e4b2d0cde0bdf43730c9764e12b783199c0a36c7e",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 45,
+      "sha256": "11a54e8b03f57327bcdf82571161dd8ecf0a94b4d8285d0296e0ee11e27d7e91",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 46,
+      "sha256": "30b8fced0d9779426d5a75e1ea72eea248c8f9e10d7eed1394329a342eacfd29",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 47,
+      "sha256": "17b632b8b4a2a27339e8a6bea314eec2b7d4d211d326e2b5f804c6c03d5ad40f",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    },
+    {
+      "frame": 48,
+      "sha256": "5fed5b23805a75d1fc12a59dee0d1357be3217fe7d583468da85099bb07420a8",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    }
+  ],
+  "saved_native_map": "/Game/DemBonesShowcase/Premium/PremiumArm2",
+  "native_frame_count": 48,
+  "distinct_native_frame_hashes": 48,
+  "png_container_verification": {
+    "valid_chunk_crcs": true,
+    "trailing_bytes_after_iend": 0
+  },
+  "public_files": [
+    {
+      "file": "premium-unreal-arm.gif",
+      "bytes": 8493767,
+      "sha256": "bfb198a98cfbd3b2d9fab7e7c181cb99cd4ae72048ea0127d10b69e6d7e9083f"
+    },
+    {
+      "file": "premium-unreal-arm.mp4",
+      "bytes": 585364,
+      "sha256": "6aa49d9d8bba6fa30df33808e54e860a5984dc916a4ed07a61b3f415d2eb707a"
+    }
+  ],
+  "gif_preview": {
+    "width": 800,
+    "height": 450,
+    "display_transform": "Lanczos downsample and 128-color palette encoding; native sources unchanged"
+  },
+  "render_proxy_excluded_from_numerical_acceptance": true,
+  "limitations": [
+    "Case-owned SDK LBS preview, not skeletal asset export",
+    "Native real-time renderer, not path tracing"
+  ]
+}

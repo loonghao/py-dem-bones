@@ -1,0 +1,44 @@
+{
+  "host": "Unreal Engine",
+  "version": "5.8.0-55116800+++UE5+Release-5.8",
+  "case_name": "arm",
+  "cache_sha256": "f1af01c625ab3106516f802fb2d81ec203a368f25eac807600bce2898929da29",
+  "numerical_vertices": 2087,
+  "numerical_frames": 48,
+  "fresh_native_weight_readback": true,
+  "maximum_weight_difference": 0.0,
+  "maximum_cache_position_difference": 0.0,
+  "render_proxy": "Two native GeometryScript Loop subdivision levels after SDK LBS; excluded from solver metrics",
+  "width": 1600,
+  "height": 900,
+  "hdri_intensity": 0.35,
+  "camera": "oblique perspective; frame 12 hand/wrist detail, shoulder cap outside view",
+  "native_material": "/Game/DemBonesShowcase/Premium/AnatomicalSkin8.AnatomicalSkin8",
+  "material": "Designer BaseColor/Roughness/Normal; native legacy Subsurface",
+  "skin_opacity": 0.85,
+  "skin_native_base_color_multiplier": [
+    0.62,
+    0.92,
+    1.35
+  ],
+  "capture_exposure_bias": 0.0,
+  "display_transform": "Unreal SceneCapture final LDR tone mapping",
+  "exporter": "native ImageWriteBlueprintLibrary",
+  "frames": [
+    {
+      "frame": 12,
+      "sha256": "a89fc0a7b8b172251197caa1fec510a21f144e457cb0908e0f80f1f7df15112f",
+      "native_mesh_vertices": 2087,
+      "render_proxy_vertices": 33362,
+      "render_proxy_triangles": 66720
+    }
+  ],
+  "saved_native_map": "/Game/DemBonesShowcase/Premium/PremiumArm1",
+  "public_hero": "premium-unreal-arm-hero.png",
+  "public_hero_sha256": "a89fc0a7b8b172251197caa1fec510a21f144e457cb0908e0f80f1f7df15112f",
+  "render_proxy_excluded_from_numerical_acceptance": true,
+  "limitations": [
+    "Case-owned SDK LBS preview, not skeletal asset export",
+    "Native real-time Subsurface, not path-traced skin"
+  ]
+}
