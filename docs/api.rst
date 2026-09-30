@@ -4,7 +4,7 @@ API Reference
 This page provides an overview of the py-dem-bones API. For detailed Python API documentation, see the :doc:`Python API Reference <python_api>` page.
 
 Python API Overview
-------------------
+-------------------
 
 Core Classes
 ~~~~~~~~~~~~
@@ -64,7 +64,7 @@ The C++ API is the foundation of py-dem-bones and includes the following main co
 For more details on the C++ implementation, please refer to the `Dem Bones repository <https://github.com/electronicarts/dem-bones>`_.
 
 Usage Examples
-------------
+--------------
 
 Basic Usage
 ~~~~~~~~~~~

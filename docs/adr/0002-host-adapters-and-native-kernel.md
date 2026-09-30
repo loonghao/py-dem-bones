@@ -51,23 +51,6 @@ Unreal uses an explicit sampler/writer bridge until a concrete SDK integration
 can prove vertex mapping and writeback. Mock SDK tests establish contracts;
 only execution in a real host establishes host acceptance.
 
-## Alternatives and future Rust work
-
-| Option | Trade-off |
-| --- | --- |
-| Python SDK adapters and C++ kernel | Preserves the upstream algorithm and current numerical baseline; still requires host-specific Python wheels. |
-| Rust/PyO3 wrapper around C++ | Adds another toolchain and FFI boundary; does not remove host SDK work or isolate a native crash in the same process. |
-| Rust rewrite of SSDR | Requires numerical parity for clustering, SVD, sparse weights, smoothing and parallel execution; no measured benefit currently justifies that scope. |
-| Separate solver process, potentially Rust | Can isolate crashes and centralize cancellation, scheduling and deployment; adds IPC, data transfer and process lifecycle costs. |
-
-Revisit Rust when a measured bottleneck can be moved, or when at least two
-hosts need process isolation or shared job management. Benchmark sampling,
-conversion, solving and writing separately. A prototype must preserve mesh
-and output contracts, reconstruction error and supported host versions.
-PyO3's `abi3` can reduce Python wheel variants, but OS/architecture and limited
-API compatibility still require validation; it is not universal DCC support.
-
 ## References
 
 - [Dem Bones upstream architecture](https://github.com/electronicarts/dem-bones#contents)
-- [PyO3 building and distribution](https://pyo3.rs/main/building-and-distribution)
