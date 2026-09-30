@@ -16,7 +16,9 @@ For a DCC integration, sample ``rest``, ``poses`` and ``faces`` through the host
 then apply the returned arrays through its skinning API. See
 :doc:`dcc_integration` for the required layout and coordinate conversion.
 
-The repository also contains older host-specific scripts under
+The repository also contains short host-specific scripts under
 `examples/ <https://github.com/loonghao/py-dem-bones/tree/main/examples>`_.
-These integrations are incomplete: native matrix layouts and some SDK calls
-still need migration. They are not runnable adapters for the portable API.
+They import the packaged ``py_dem_bones.adapters`` modules and use the same
+validated solver boundary. Consult :doc:`dcc_integration` for the required
+SDK capabilities and the distinction between weight writing and animation
+baking. The Unreal example requires an explicit sampler/writer bridge.

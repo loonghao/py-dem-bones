@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-RBF Drivers for Blender using py-dem-bones
+Standalone SciPy RBF driver example for Blender.
 
-This example demonstrates how to implement RBF drivers in Blender using
-py-dem-bones and SciPy's RBF interpolation, similar to James Snowden's RBF Drivers.
+This example interpolates Blender properties with SciPy. It does not perform
+Dem Bones skinning decomposition or call a DCC adapter. For skinning, use the
+packaged py_dem_bones.adapters.blender.BlenderDCCInterface and its separate
+from_dcc_data(), compute(), to_dcc_data() lifecycle.
 
 Features:
 - Multiple inputs and outputs in a single RBF driver
@@ -13,20 +15,14 @@ Features:
 - Drive bone transforms, shape keys, and custom properties
 
 Requirements:
-    pip install py-dem-bones numpy scipy
+    pip install numpy scipy
 
 Usage:
     Run this script from within Blender
 """
 
 import numpy as np
-from typing import Dict, List, Tuple, Optional, Any, Union
-
-import py_dem_bones as pdb
 from scipy.interpolate import RBFInterpolator
-
-# Import the BlenderDCCInterface from blender_example.py
-from blender_example import BlenderDCCInterface
 
 
 class BlenderRBFDriver:
@@ -104,7 +100,7 @@ class BlenderRBFDriver:
             Tuple of (input_values, output_values)
         """
         try:
-            import bpy
+            import bpy  # noqa: F401 - Require the Blender runtime before sampling.
             
             # Capture input values
             input_values = []
@@ -195,7 +191,7 @@ class BlenderRBFDriver:
             True if update was successful, False otherwise
         """
         try:
-            import bpy
+            import bpy  # noqa: F401 - Require the Blender runtime before writing.
             
             # Initialize if not already initialized
             if not self.is_initialized:
@@ -270,7 +266,7 @@ class BlenderRBFDriver:
         # Handle custom properties and other properties using eval
         try:
             return eval(f"obj.{property_path}")
-        except:
+        except Exception:
             print(f"Error: Could not get property {property_path} from {obj.name}")
             return 0.0
     
@@ -308,7 +304,7 @@ class BlenderRBFDriver:
             # Handle custom properties and other properties using exec
             try:
                 exec(f"obj.{property_path} = {value}")
-            except:
+            except Exception:
                 print(f"Error: Could not set property {property_path} on {obj.name}")
 
 
@@ -422,9 +418,8 @@ def create_rbf_driver_example():
 def main():
     # This script should be run from within Blender
     try:
-        import bpy
         print("Creating RBF Driver example in Blender...")
-        rbf_driver = create_rbf_driver_example()
+        create_rbf_driver_example()
         print("Done!")
     except ImportError:
         print("This script must be run from within Blender.")

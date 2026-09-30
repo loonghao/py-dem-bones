@@ -31,7 +31,7 @@ def _mesh_data(mesh, cmds, om, np):
     return points, faces
 
 
-def _solve_case(bone_count, cmds, om, np, solve_skinning, tolerance):
+def _solve_case(bone_count, cmds, om, np, solve_skinning, tolerance, adapter_class=None):
     if bone_count == 1:
         mesh = cmds.polyCube(name="demBonesSmokeRigid", constructionHistory=False)[0]
     else:
@@ -43,6 +43,7 @@ def _solve_case(bone_count, cmds, om, np, solve_skinning, tolerance):
 
     rest, faces = _mesh_data(mesh, cmds, om, np)
     poses = [rest]
+    pose_meshes = [cmds.duplicate(mesh, name=mesh + "Pose0")[0]] if adapter_class else []
     for step in (1, 2, 3):
         for index, point in enumerate(rest):
             displacement = [0, 0, step * 0.25]
@@ -53,9 +54,44 @@ def _solve_case(bone_count, cmds, om, np, solve_skinning, tolerance):
         if pose_faces != faces:
             raise RuntimeError("Maya mesh topology changed while sampling poses")
         poses.append(pose)
+        if adapter_class:
+            pose_meshes.append(cmds.duplicate(mesh, name=mesh + "Pose" + str(step))[0])
     poses = np.stack(poses)
 
-    result = solve_skinning(rest, poses, bone_count=bone_count, faces=faces)
+    if adapter_class:
+        # Restore the bind mesh before testing the actual adapter write path.
+        for index, point in enumerate(rest):
+            cmds.xform(f"{mesh}.vtx[{index}]", worldSpace=True, translation=point.tolist())
+        joints = []
+        for index in range(bone_count):
+            cmds.select(clear=True)
+            joints.append(cmds.joint(name=mesh + "Joint" + str(index), position=(index * 2, 0, 0)))
+        adapter = adapter_class()
+        if not adapter.from_dcc_data(mesh, joints, pose_meshes):
+            raise RuntimeError(adapter.last_error)
+        adapter.compute()
+        exported = adapter.to_dcc_data(apply_weights=True)
+        if not exported["success"]:
+            raise RuntimeError(exported["error"])
+
+        import maya.api.OpenMayaAnim as oma
+
+        from py_dem_bones import SkinningResult
+
+        skin_selection = om.MSelectionList()
+        skin_selection.add(exported["skin_cluster"])
+        skin = oma.MFnSkinCluster(skin_selection.getDependNode(0))
+        selection = om.MSelectionList()
+        selection.add(cmds.listRelatives(mesh, shapes=True, noIntermediate=True, fullPath=True)[0])
+        component_fn = om.MFnSingleIndexedComponent()
+        component = component_fn.create(om.MFn.kMeshVertComponent)
+        component_fn.addElements(range(len(rest)))
+        written, influence_count = skin.getWeights(selection.getDagPath(0), component)
+        written = np.asarray(written).reshape(len(rest), influence_count).T
+        np.testing.assert_allclose(written, exported["weights"], rtol=1e-7, atol=1e-9)
+        result = SkinningResult(written, exported["transformations"].swapaxes(-1, -2))
+    else:
+        result = solve_skinning(rest, poses, bone_count=bone_count, faces=faces)
     if result.weights.shape != (bone_count, len(rest)):
         raise RuntimeError(f"Unexpected weight shape: {result.weights.shape}")
     if result.transforms.shape != (len(poses), bone_count, 4, 4):
@@ -71,7 +107,10 @@ def _solve_case(bone_count, cmds, om, np, solve_skinning, tolerance):
     rmse = float(np.sqrt(np.mean((reconstructed - poses) ** 2)))
     if not np.isfinite(rmse) or rmse > tolerance:
         raise RuntimeError(f"{bone_count}-bone reconstruction RMSE {rmse} exceeds {tolerance}")
-    return {"bones": bone_count, "vertices": len(rest), "faces": len(faces), "frames": len(poses), "rmse": rmse}
+    return {
+        "bones": bone_count, "vertices": len(rest), "faces": len(faces), "frames": len(poses),
+        "rmse": rmse, "adapter_writeback": adapter_class is not None,
+    }
 
 
 def main(argv=None):
@@ -81,6 +120,7 @@ def main(argv=None):
     parser.add_argument(
         "--two-bones", action="store_true", help="Also solve two disconnected, independently moving cubes"
     )
+    parser.add_argument("--adapter", action="store_true", help="Test packaged Maya sampling and skin-weight writeback")
     parser.add_argument("--tolerance", type=float, default=1e-6, help="Maximum reconstruction RMSE in Maya world units")
     args = parser.parse_args(argv)
     if not 0 < args.tolerance < float("inf"):
@@ -112,8 +152,15 @@ def main(argv=None):
         report["plugin_loaded"] = all(cmds.pluginInfo(plugin, query=True, loaded=True) for plugin in loaded_plugins)
         if not report["plugin_loaded"]:
             raise RuntimeError("DCC-MCP Maya plugin did not load")
+        adapter_class = None
+        if args.adapter:
+            from py_dem_bones.adapters.maya import MayaDCCInterface
+
+            adapter_class = MayaDCCInterface
         for bone_count in ([1, 2] if args.two_bones else [1]):
-            report["cases"].append(_solve_case(bone_count, cmds, om, np, py_dem_bones.solve_skinning, args.tolerance))
+            report["cases"].append(
+                _solve_case(bone_count, cmds, om, np, py_dem_bones.solve_skinning, args.tolerance, adapter_class)
+            )
         report["success"] = True
     except Exception as exc:
         report["error"] = f"{type(exc).__name__}: {exc}"

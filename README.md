@@ -29,7 +29,9 @@ The input contract is `rest=(vertices, 3)` and `poses=(frames, vertices, 3)`, wi
 
 ## DCC support
 
-The portable API has no Maya, Blender, Houdini, 3ds Max, or Unreal runtime dependency. Hosts provide ordered positions and mesh topology, then consume the solved weights and transforms. A reusable [Maya standalone smoke test](tests/integration/maya_skinning_smoke.py) verifies this boundary with Maya mesh data. The older `*_example.py` host integrations under [`examples/`](examples/) remain incomplete: their native layouts and SDK calls have not been migrated to this contract. Use the portable example when implementing an adapter. Host UI automation is outside this package's API.
+The portable API has no host SDK dependency. Packaged adapters under `py_dem_bones.adapters` provide Maya and Blender mesh sampling/weight writing, Houdini weight attributes, a 3ds Max Skin integration, and an explicit Unreal sampler/writer bridge. SDK imports are lazy. See the [DCC integration guide](docs/dcc_integration.rst) for each adapter's requirements and limits, and [`examples/`](examples/) for usage. The [Maya standalone smoke test](tests/integration/maya_skinning_smoke.py) provides repeatable host acceptance. Writing weights does not bake the solved bone animation; bind poses and hierarchy need explicit host handling.
+
+The solver remains the upstream C++ implementation. The [architecture decision](docs/adr/0002-host-adapters-and-native-kernel.md) explains why host adapter migration currently takes priority over a Rust rewrite.
 
 ## Develop and release
 
