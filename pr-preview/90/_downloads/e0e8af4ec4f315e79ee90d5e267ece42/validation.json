@@ -1,6 +1,6 @@
 {
   "schema": "py-dem-bones.showcase.v1",
-  "verified_on": "2026-09-30",
+  "verified_on": "2026-10-01",
   "control": "DCC-MCP native host tools",
   "cases": [
     {
@@ -1044,7 +1044,35 @@
       "reopen_receipt": "premium-houdini-reopen.json",
       "native_beauty_outputs": true,
       "render_geometry_excluded_from_metrics": true,
-      "sequence_receipt": "premium-houdini-motion-sequence.json"
+      "sequence_receipt": "premium-houdini-motion-sequence.json",
+      "historical": true,
+      "superseded_by": "octopus"
     }
+  },
+  "octopus": {
+    "source_file": "examples/showcase/assets/octopus/SOURCE.json",
+    "material_file": "examples/showcase/materials/octopus/evidence.json",
+    "kinematic_baseline": {
+      "softbody_simulation": false,
+      "frames": 48,
+      "bones": 33,
+      "proxy_vertices": 8000,
+      "artist_vertices": 29542,
+      "normalized_rmse": 0.00018131319822419647,
+      "native_report": "octopus-native-report.json",
+      "native_readback": "octopus-native-readback.json",
+      "reopen_readback": "octopus-native-reopen.json"
+    },
+    "material_study": {
+      "native_render_accepted": true,
+      "receipt_file": "octopus-material-render.json",
+      "subject": "artist rest surface; independent of numerical motion acceptance",
+      "size": [
+        1800,
+        1200
+      ],
+      "controlled_sss_pair": true
+    },
+    "softbody_motion_accepted": false
   }
 }

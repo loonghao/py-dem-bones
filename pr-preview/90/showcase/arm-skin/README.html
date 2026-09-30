@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../../_static/logo-dark.png" as="image">
 
     <link rel="shortcut icon" href="../../_static/logo-dark.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Native skinning and render studies - py-dem-bones 0.12.4 documentation</title>
+        <title>Native deformation and render studies - py-dem-bones 0.12.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8e0739bd" />
@@ -244,7 +244,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dcc_integration.html">DCC integration contract</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../../showcase.html">Native render studies</a><input aria-label="Toggle navigation of Native render studies" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Native skinning and render studies</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Native deformation and render studies</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
@@ -301,13 +301,55 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="native-skinning-and-render-studies">
-<h1>Native skinning and render studies<a class="headerlink" href="#native-skinning-and-render-studies" title="Link to this heading">¶</a></h1>
+          <section id="native-deformation-and-render-studies">
+<h1>Native deformation and render studies<a class="headerlink" href="#native-deformation-and-render-studies" title="Link to this heading">¶</a></h1>
 <p><img alt="Native Cycles skin macro with HDRI and SSS" src="../../_images/premium-blender-skin.png" /></p>
 <p>Our own nine-influence skinning on a free CC0 arm, reconstructed from 48 mesh
 poses and checked in Maya, Blender, Houdini and Unreal Engine 5.8. The arm’s
 normalized RMSE is approximately <strong>0.067%</strong>. Render studies add material and
 lighting detail while retaining the accepted solver weights and poses.</p>
+<section id="octopus-designer-surface-and-subsurface-scattering">
+<h2>Octopus Designer surface and subsurface scattering<a class="headerlink" href="#octopus-designer-surface-and-subsurface-scattering" title="Link to this heading">¶</a></h2>
+<p><img alt="Native Mantra octopus eye, skin pores and double-row suckers" src="../../_images/octopus-mantra-detail.png" /></p>
+<p>This 1800 × 1200 native Mantra detail frames the eye and modeled cup-shaped
+suckers of <strong>Kraken</strong>, a static artist sculpt by
+<a class="reference external" href="https://sketchfab.com/FIELDFLY3R">FIELDFLY3R (current display name: fld)</a>,
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+<a class="reference download internal" download="" href="../../_downloads/510b8662415e696264dc0c7e4d294992/SOURCE.json"><span class="xref download myst">Source and modifications</span></a>
+identify the original bytes, the complete octopus mesh and excluded decorations.
+This rest-surface material study is separate from motion and solver acceptance.</p>
+<p>The <span class="xref myst">new Designer material</span>
+contains editable SBS, compiled SBSAR and 18 native 2K maps. Copper/coral mottles,
+irregular freckles and fine pores cover the body; modeled suckers receive a
+paler skin. The original eye texture and all three UV sets are retained. An
+OpenGL tangent normal adds surface detail; the eye mask excludes SSS and supplies
+the flatter, smoother eye response. Native cook and repeated render hashes match.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Identical surface, camera and lighting: SSS off</p></th>
+<th class="head"><p>SSS on: weight 0.48, distance 3 mm</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="Native Mantra octopus without SSS" src="../../_images/octopus-mantra-sss-off.png" /></p></td>
+<td><p><img alt="Native Mantra octopus with SSS" src="../../_images/octopus-mantra-detail.png" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Both stills use an 85 mm lens, 6 × 6 pixel samples, one Loop presentation
+subdivision level, freshly computed vertex normals, a real CC0 Poly Haven HDRI
+and four softboxes. Only SSS weight changes; the surface position buffer and all
+light parameters match. Approximately <strong>43.3%</strong> of displayed pixels change by
+more than 0.01 in at least one RGB channel. These are artistic shader settings,
+not measured tissue coefficients. No depth-of-field blur is added.</p>
+<p><a class="reference download internal" download="" href="../../_downloads/ccd144ff8957c52e79f49d591304ca35/octopus-material-render.json"><span class="xref download myst">Native material, render and processing evidence</span></a>
+records original float EXR hashes, SideFX color-only OIDN copies and the disclosed
+RGB gamma 2.2 display transfer. Original EXRs remain unchanged; HDR values above
+one are clipped only in the display copy. This is not ACES or calibrated color
+matching between renderers.</p>
+</section>
 <section id="skin-detail-and-subsurface-scattering">
 <h2>Skin detail and subsurface scattering<a class="headerlink" href="#skin-detail-and-subsurface-scattering" title="Link to this heading">¶</a></h2>
 <p>The 1920 × 1080 Cycles closeup uses an 85 mm perspective camera, unchanged
@@ -397,28 +439,6 @@ and native scene reflections. Its 2,560-vertex numerical mesh is checked
 before the independent 40,960-vertex Loop render proxy is built. The original
 eight rigid links and all 48 accepted poses remain unchanged.</p>
 </section>
-</section>
-<section id="houdini-procedural-motion-study">
-<h2>Houdini procedural motion study<a class="headerlink" href="#houdini-procedural-motion-study" title="Link to this heading">¶</a></h2>
-<p><img alt="Native Mantra procedural copper and cyan inlay sculpture" src="../../_images/premium-houdini-motion.png" /></p>
-<p>Three rotated display copies share the accepted eight-bone tentacle solve.
-Case-owned Python SOP LBS matches all 48 accepted poses exactly before two
-presentation subdivision levels. Procedural copper/teal colors, cyan emissive
-inlays and area lights create the sculpture. Camera keys follow the actual
-pose bounds and pass native readback. This is an artistic fixture using
-prescribed motion. <a class="reference download internal" download="" href="../../_downloads/cedfa15a3a16f3eb3eb3bfd54327e84d/premium-houdini-motion.json"><span class="xref download myst">Native still receipt</span></a>
-records the completed frame-14 Mantra render, official OIDN filtering, display
-transfer and unchanged original EXR hash.
-The saved animation scene was reopened through the official API; all scalar
-weights and 48 original SOP poses matched its accepted cache exactly.
-<a class="reference download internal" download="" href="../../_downloads/a4f6b0dc57d90d0e176f181362c94282/premium-houdini-reopen.json"><span class="xref download myst">Reopen evidence</span></a> excludes presentation subdivision.</p>
-<p><img alt="Native Mantra procedural motion, 48 frames" src="../../_images/premium-houdini-motion.gif" /></p>
-<p><a class="reference download internal" download="" href="../../_downloads/43609944a45de8dfc4a36975efe06e8d/premium-houdini-motion.mp4"><span class="xref download myst">960 × 540 MP4</span></a> ·
-<a class="reference download internal" download="" href="../../_downloads/e79244da31318ee8895ab1e0d2a74af3/premium-houdini-motion-sequence.json"><span class="xref download myst">48-frame receipt</span></a></p>
-<p>The complete 48-frame sequence uses 8 × 8 pixel samples, official color-only
-OIDN and the disclosed RGB display transfer. The interrupted six-frame
-attempt is excluded. Camera keys track pose bounds without changing the rig.
-Per-image denoising does not independently prove temporal consistency.</p>
 </section>
 <section id="four-host-deformation-gallery">
 <h2>Four-host deformation gallery<a class="headerlink" href="#four-host-deformation-gallery" title="Link to this heading">¶</a></h2>
@@ -737,7 +757,8 @@ matches the accepted geometry cache exactly. The updated native scene is saved.<
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Native skinning and render studies</a><ul>
+<li><a class="reference internal" href="#">Native deformation and render studies</a><ul>
+<li><a class="reference internal" href="#octopus-designer-surface-and-subsurface-scattering">Octopus Designer surface and subsurface scattering</a></li>
 <li><a class="reference internal" href="#skin-detail-and-subsurface-scattering">Skin detail and subsurface scattering</a></li>
 <li><a class="reference internal" href="#steel-reflections-and-rigid-articulation">Steel reflections and rigid articulation</a></li>
 <li><a class="reference internal" href="#show-what-the-solver-preserves">Show what the solver preserves</a></li>
@@ -745,7 +766,6 @@ matches the accepted geometry cache exactly. The updated native scene is saved.<
 <li><a class="reference internal" href="#native-steel-chain">Native steel chain</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#houdini-procedural-motion-study">Houdini procedural motion study</a></li>
 <li><a class="reference internal" href="#four-host-deformation-gallery">Four-host deformation gallery</a></li>
 <li><a class="reference internal" href="#source-mesh-and-our-own-skin-weights">Source mesh and our own skin weights</a></li>
 <li><a class="reference internal" href="#numerical-validation">Numerical validation</a></li>

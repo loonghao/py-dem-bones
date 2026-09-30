@@ -1,4 +1,4 @@
-# Native skinning and render studies
+# Native deformation and render studies
 
 ![Native Cycles skin macro with HDRI and SSS](premium-blender-skin.png)
 
@@ -6,6 +6,42 @@ Our own nine-influence skinning on a free CC0 arm, reconstructed from 48 mesh
 poses and checked in Maya, Blender, Houdini and Unreal Engine 5.8. The arm's
 normalized RMSE is approximately **0.067%**. Render studies add material and
 lighting detail while retaining the accepted solver weights and poses.
+
+## Octopus Designer surface and subsurface scattering
+
+![Native Mantra octopus eye, skin pores and double-row suckers](octopus-mantra-detail.png)
+
+This 1800 × 1200 native Mantra detail frames the eye and modeled cup-shaped
+suckers of **Kraken**, a static artist sculpt by
+[FIELDFLY3R (current display name: fld)](https://sketchfab.com/FIELDFLY3R),
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+[Source and modifications](../../../examples/showcase/assets/octopus/SOURCE.json)
+identify the original bytes, the complete octopus mesh and excluded decorations.
+This rest-surface material study is separate from motion and solver acceptance.
+
+The [new Designer material](../../../examples/showcase/materials/octopus/README.md)
+contains editable SBS, compiled SBSAR and 18 native 2K maps. Copper/coral mottles,
+irregular freckles and fine pores cover the body; modeled suckers receive a
+paler skin. The original eye texture and all three UV sets are retained. An
+OpenGL tangent normal adds surface detail; the eye mask excludes SSS and supplies
+the flatter, smoother eye response. Native cook and repeated render hashes match.
+
+| Identical surface, camera and lighting: SSS off | SSS on: weight 0.48, distance 3 mm |
+| --- | --- |
+| ![Native Mantra octopus without SSS](octopus-mantra-sss-off.png) | ![Native Mantra octopus with SSS](octopus-mantra-detail.png) |
+
+Both stills use an 85 mm lens, 6 × 6 pixel samples, one Loop presentation
+subdivision level, freshly computed vertex normals, a real CC0 Poly Haven HDRI
+and four softboxes. Only SSS weight changes; the surface position buffer and all
+light parameters match. Approximately **43.3%** of displayed pixels change by
+more than 0.01 in at least one RGB channel. These are artistic shader settings,
+not measured tissue coefficients. No depth-of-field blur is added.
+
+[Native material, render and processing evidence](octopus-material-render.json)
+records original float EXR hashes, SideFX color-only OIDN copies and the disclosed
+RGB gamma 2.2 display transfer. Original EXRs remain unchanged; HDR values above
+one are clipped only in the display copy. This is not ACES or calibrated color
+matching between renderers.
 
 ## Skin detail and subsurface scattering
 
@@ -98,32 +134,6 @@ Metallic steel at roughness `0.28` uses the specified HDRI reflection capture
 and native scene reflections. Its 2,560-vertex numerical mesh is checked
 before the independent 40,960-vertex Loop render proxy is built. The original
 eight rigid links and all 48 accepted poses remain unchanged.
-
-## Houdini procedural motion study
-
-![Native Mantra procedural copper and cyan inlay sculpture](premium-houdini-motion.png)
-
-Three rotated display copies share the accepted eight-bone tentacle solve.
-Case-owned Python SOP LBS matches all 48 accepted poses exactly before two
-presentation subdivision levels. Procedural copper/teal colors, cyan emissive
-inlays and area lights create the sculpture. Camera keys follow the actual
-pose bounds and pass native readback. This is an artistic fixture using
-prescribed motion. [Native still receipt](premium-houdini-motion.json)
-records the completed frame-14 Mantra render, official OIDN filtering, display
-transfer and unchanged original EXR hash.
-The saved animation scene was reopened through the official API; all scalar
-weights and 48 original SOP poses matched its accepted cache exactly.
-[Reopen evidence](premium-houdini-reopen.json) excludes presentation subdivision.
-
-![Native Mantra procedural motion, 48 frames](premium-houdini-motion.gif)
-
-[960 × 540 MP4](premium-houdini-motion.mp4) ·
-[48-frame receipt](premium-houdini-motion-sequence.json)
-
-The complete 48-frame sequence uses 8 × 8 pixel samples, official color-only
-OIDN and the disclosed RGB display transfer. The interrupted six-frame
-attempt is excluded. Camera keys track pose bounds without changing the rig.
-Per-image denoising does not independently prove temporal consistency.
 
 ## Four-host deformation gallery
 

@@ -63,6 +63,41 @@
       "sha256": "94ec39ad44dc9c3c1e23ecccdfaedd18c3d1a4ad87b2a2a273f623491b4767f5"
     },
     {
+      "path": "docs/showcase/arm-skin/octopus-mantra-detail.png",
+      "size_bytes": 2871925,
+      "sha256": "61cab01590b35e873387c9093044e4d161b0437a49df80c02f585fa84a9ee2bf"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-mantra-sss-off.png",
+      "size_bytes": 2658442,
+      "sha256": "7dfe4efa585b8d884ec1df269abe1a7aa1554eed8cb02659b6ae22af13b43c8c"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-material-render.json",
+      "size_bytes": 9526,
+      "sha256": "e285cb290750469dc4ba4bc7f8ec1681288d0767a5e41a65f80c890b9569be5e"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-native-import.json",
+      "size_bytes": 1125,
+      "sha256": "8c5fc5748b0ca663b726ca2121915e8994e54e36e19507435c87a0a3e48e090d"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-native-readback.json",
+      "size_bytes": 10565,
+      "sha256": "1eb9c26409f6fe9cba3e6356642c814d89cec40c9ab42431082e769490c5710d"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-native-reopen.json",
+      "size_bytes": 15832,
+      "sha256": "85595adbc0a023a7adcc4676ad619f30665ad57942fd4e5ae8ad8397db351400"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-native-report.json",
+      "size_bytes": 14655,
+      "sha256": "ada110b54f717a551ac8ad013b3bf00b00c38aa01b8639fbd740883ce5154808"
+    },
+    {
       "path": "docs/showcase/arm-skin/premium-blender-chain.gif",
       "size_bytes": 2399216,
       "sha256": "83225c60588464ff030b87b51e7d94967e0decdf6fcf02f7b405590ebf626ba9"
@@ -199,8 +234,8 @@
     },
     {
       "path": "docs/showcase/arm-skin/README.md",
-      "size_bytes": 16800,
-      "sha256": "596e4da91ee62a3da4431372e186211d44a15d697bc4abfa1d0dc351b416edc5"
+      "size_bytes": 17598,
+      "sha256": "a10924c929972ac65d5d77206892aaf0aceea78608b1bb71588fd756dfa2f652"
     },
     {
       "path": "docs/showcase/arm-skin/render.png",
@@ -234,8 +269,8 @@
     },
     {
       "path": "docs/showcase/arm-skin/validation.json",
-      "size_bytes": 53108,
-      "sha256": "f3db5c1bb1eec8ddd8f5fee06183fd4f3b678962dcca3e3086c2918ef359c666"
+      "size_bytes": 54073,
+      "sha256": "f57350dcdf31e798f47a0167c6cf50cf94e14260b426d163caf6d2bf5c740bfb"
     },
     {
       "path": "examples/showcase/assets/arm.obj",
@@ -263,9 +298,139 @@
       "sha256": "36724313c0fc66dab126ff90f081b85a0b1ef47be65eda1417bd20b033f0573f"
     },
     {
+      "path": "examples/showcase/assets/octopus/kraken-basecolor-original.png",
+      "size_bytes": 1674432,
+      "sha256": "5eef412ec1aada5e559d9779d2f4272a8e42f240eb143aad284fe8272f4c2885"
+    },
+    {
+      "path": "examples/showcase/assets/octopus/kraken.glb",
+      "size_bytes": 10498180,
+      "sha256": "824a8fc33a192f8b3589bc413d808e537e77a486105ff7e7fe1481201de6e97c"
+    },
+    {
+      "path": "examples/showcase/assets/octopus/SOURCE.json",
+      "size_bytes": 4964,
+      "sha256": "bd1f0f4752695718ceefbf120338835e579a258864d54275595c161608dc6964"
+    },
+    {
       "path": "examples/showcase/assets/SOURCE.json",
       "size_bytes": 720,
       "sha256": "f34281ab3bf8c74ba5a7faf9185f3fabf828ea166f26225b20d2001864eb96ef"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/evidence.json",
+      "size_bytes": 12559,
+      "sha256": "cf083267d29a72f2749401419e7f5a345b1d4deb4d68f18454e477d743674919"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/body/BaseColor.png",
+      "size_bytes": 1242374,
+      "sha256": "d41c845b40cb90b5f6dc47dae2c83a97ca6e6fd2d755ac4ae78022ffb8fdbcd5"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/body/Height.png",
+      "size_bytes": 7420356,
+      "sha256": "a8df75ff6951c54bcd60ab0bc55f039eb71bb8887b4a27b71a3aec5addbd7d03"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/body/Metallic.png",
+      "size_bytes": 5129,
+      "sha256": "48fd1fc5ce3b02dd39a94f49fca0cef2cc893e173aea53f9d8e45dbb9fdb279d"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/body/Normal.png",
+      "size_bytes": 12506002,
+      "sha256": "69e29386d55275cab8df67393be8cd79cb6ea6ff54b13bbd5d76aaaeff36fc3f"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/body/Roughness.png",
+      "size_bytes": 2086991,
+      "sha256": "e865f6078b8090098b8ef7d36bd5545ef35cc8301063ab3df35d97305e847aad"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/mapped/BaseColor.png",
+      "size_bytes": 1825285,
+      "sha256": "8dffa89fb123fe36b555779209addb44c3aa4a9334783713e33e21d003cb7aee"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/mapped/EyeMask.png",
+      "size_bytes": 6553,
+      "sha256": "d433efc73fcbe404adc70f12bd41227fe2d6942298c7f0b1690c6827485a465b"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/mapped/Height.png",
+      "size_bytes": 7338670,
+      "sha256": "a50a105bb1d07aa384e940996cc3e2309d61427443c6b3b3b2fe804c98ddce16"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/mapped/Metallic.png",
+      "size_bytes": 5129,
+      "sha256": "48fd1fc5ce3b02dd39a94f49fca0cef2cc893e173aea53f9d8e45dbb9fdb279d"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/mapped/Normal.png",
+      "size_bytes": 12373695,
+      "sha256": "e2bb8221067f0b08ac40e05aa283f04c291e5df7cde1a4c7b5f392a2d0925bbd"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/mapped/Roughness.png",
+      "size_bytes": 2071660,
+      "sha256": "7f9d4774a2b3fa637d371b8b7f523aadecb27cb47f5a809d5d17ebc05c2f9e08"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/mapped/SSSMask.png",
+      "size_bytes": 9034,
+      "sha256": "65a0f84b558175ade08b03b8e4b088090110d5e44f17411890e695eaaca79e69"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/mapped/SuckerMask.png",
+      "size_bytes": 221797,
+      "sha256": "f70924179b41803fe854fcb816ac0f9d83de0745fa8b51330c7f53342a3e5c32"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/suckers/BaseColor.png",
+      "size_bytes": 1179529,
+      "sha256": "dfe281c18e033bf5670b2a109d37fd4125e4cdf31fd197bb166935da5a033cf8"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/suckers/Height.png",
+      "size_bytes": 7420356,
+      "sha256": "a8df75ff6951c54bcd60ab0bc55f039eb71bb8887b4a27b71a3aec5addbd7d03"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/suckers/Metallic.png",
+      "size_bytes": 5129,
+      "sha256": "48fd1fc5ce3b02dd39a94f49fca0cef2cc893e173aea53f9d8e45dbb9fdb279d"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/suckers/Normal.png",
+      "size_bytes": 11404078,
+      "sha256": "7ab14c76283b0fe166e74e8df7d7b7c4d5d793e6a368d782b6e5dcad9c05cd74"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/maps/suckers/Roughness.png",
+      "size_bytes": 2087177,
+      "sha256": "34f305bd1820afafec6c51e88e363b2e47870d7b2de671e9ac8eef7ce9a1939f"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/octopus.sbs",
+      "size_bytes": 104040,
+      "sha256": "d4cb7d4a1b8f579d37ea2217253619d288abd458d81748d0cdc59ba8ef242ff4"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/octopus.sbsar",
+      "size_bytes": 4452,
+      "sha256": "9817847d086bdf9d049329c8f1d747aec6927dfc9d610e7582d8996d292cc7a9"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/README.md",
+      "size_bytes": 4623,
+      "sha256": "2e90283da8678396daa64c7e8e63050b77e96121b702e7ee1f146374317c4c3d"
+    },
+    {
+      "path": "examples/showcase/materials/octopus/source-albedo-original.png",
+      "size_bytes": 1674432,
+      "sha256": "5eef412ec1aada5e559d9779d2f4272a8e42f240eb143aad284fe8272f4c2885"
     },
     {
       "path": "examples/showcase/materials/skin/BaseColor.png",
