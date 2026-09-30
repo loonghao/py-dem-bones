@@ -177,9 +177,11 @@
               1200
             ],
             "finite_rgb": true,
-            "minimum_linear": 0.00024414435029029846,
-            "maximum_linear": 1.0,
-            "standard_deviation_linear": 0.16717293858528137
+            "minimum_linear": 0.00027871131896972656,
+            "maximum_linear": 4.52734375,
+            "standard_deviation_linear": 0.17296705986634703,
+            "decoded_native_pixel_format": "gbrapf16le",
+            "native_hdr_checked_without_pixel_format_conversion": true
           }
         ],
         "denoiser": {
@@ -245,9 +247,11 @@
               1200
             ],
             "finite_rgb": true,
-            "minimum_linear": 0.00024414435029029846,
-            "maximum_linear": 1.0,
-            "standard_deviation_linear": 0.16516749560832977
+            "minimum_linear": 0.00027871131896972656,
+            "maximum_linear": 4.41796875,
+            "standard_deviation_linear": 0.17139212501785558,
+            "decoded_native_pixel_format": "gbrapf16le",
+            "native_hdr_checked_without_pixel_format_conversion": true
           }
         ],
         "denoiser": {
@@ -262,8 +266,10 @@
     }
   ],
   "reproduction_helpers_sha256": {
-    "houdini_octopus_render.py": "a67bd7e3ad2b0e79e05b07fae7a16dc6f00362e962ed300cf0fcfdc426756ca3",
+    "houdini_octopus_render.py": "86dc0d8f46ed45db2a015fadf27f6e276ad783eed0e8ec45582be1894663f12b",
     "designer_octopus.py": "65762876cf308ba87a9a57fe636a24e2b1239047be8ffb838186693a3e49c7b8",
-    "convert_mantra_frames.py": "8fcbc055cff8098d039bbf174c54b79270462fc7c6b8618492108d9a33b03cbc"
-  }
+    "convert_mantra_frames.py": "6a00e935d98fc9eb4da360422d952b759938d26007b0868ff8f2b0b3b7920110"
+  },
+  "native_hdr_statistics_validation": "Native planar float decoder format retained; no half-to-float format conversion that clips HDR",
+  "reproduction_source_hash_convention": "Canonical Git LF source bytes; helpers include validation improvements after the recorded renders"
 }

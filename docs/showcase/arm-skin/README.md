@@ -1,11 +1,67 @@
 # Native deformation and render studies
 
-![Native Cycles skin macro with HDRI and SSS](premium-blender-skin.png)
+![Native Mantra reconstruction of the licensed octopus](octopus-mantra-hero.png)
 
-Our own nine-influence skinning on a free CC0 arm, reconstructed from 48 mesh
-poses and checked in Maya, Blender, Houdini and Unreal Engine 5.8. The arm's
-normalized RMSE is approximately **0.067%**. Render studies add material and
-lighting detail while retaining the accepted solver weights and poses.
+Native Houdini Vellum arm response, fitted by Dem Bones and rendered with our
+Designer material, a real HDRI and subsurface scattering. This stylized
+**Kraken** sculpt has eight arms, modeled suckers, eyes and a mantle.
+
+## Native softbody motion and Dem Bones reconstruction
+
+![48 native Mantra frames of the reconstructed octopus](octopus-mantra-motion.gif)
+
+[MP4 animation](octopus-mantra-motion.mp4) ·
+[Native render and frame evidence](octopus-native-animation.json) ·
+[Hero render evidence](octopus-native-hero.json)
+
+The source is actual Vellum stretch, bend and internal struts, with 96 compliant
+tip targets, inertia, self collision and ground contact. After warmup, 48
+samples cover four seconds at 12 fps. All eight tips move approximately
+27–39 cm peak to peak and lag their drivers by 83–167 ms. The 8,000-point
+proxy has 60 boundary edges; this is not a closed pressure or volume benchmark.
+The original first and last samples are retained, without forcing a seamless loop.
+
+Dem Bones fits **81 rigid transforms and sparse weights**, with no more than
+six influences per proxy vertex. Normalized RMSE is **0.04102%** of the rest
+bounding-box diagonal. Tip excursions retain **96.46–100.22%** of source
+motion; the largest tip reconstruction error is **17.42 mm**. Maximum proxy
+ground penetration is **0.945 mm**. These residuals describe the numerical
+proxy, separately from presentation smoothing and shader detail.
+
+Native Point Deform transfers the reconstruction to the original **29,542
+vertices / 58,912 triangles**, preserving all three UV sets. A fixed local
+capture radius of 0.8% of the proxy diagonal and four to eight neighbors avoids
+extrapolation between adjacent curls. All 48 artist surfaces pass the unchanged
+2 mm contact limit; their maximum penetration is **0.259 mm**. The simulation
+floor, fitted weights and transforms are preserved. A separate process reopens
+the saved HIP and reproduces all source, proxy and artist buffers exactly.
+
+[Physical source](octopus-softbody-native-source.json) ·
+[Fit and acceptance](octopus-softbody-native-report.json) ·
+[All-frame native readback](octopus-softbody-native-readback.json) ·
+[Independent scene reopen](octopus-softbody-native-reopen.json)
+
+![Source poses, native reconstruction, vertex residuals and eight tip trajectories](octopus-scientific-evidence.png)
+
+The [scientific plate](octopus-scientific-evidence.json) uses the accepted
+numerical cache, one camera and one linear residual range across all 48 frames.
+Solid tip paths are source samples; dashed paths are native fitted evaluations.
+No motion or residual is amplified. This Matplotlib visualization is separate
+from the native Mantra beauty renders and high-resolution artist contact checks.
+
+The 1800 × 1200 hero uses 6 × 6 pixel samples and a composition for frame 12.
+The complete 960 × 640 animation uses 4 × 4 samples and a separate fixed camera
+containing all 48 artist poses. Both use one Loop presentation subdivision level,
+recomputed vertex normals and the unchanged Designer maps. The floor matches
+the physical simulation. Native float EXRs are retained; official SideFX OIDN
+creates color-only display copies, with its filtering and frame hashes recorded.
+Display transfer approximates RGB gamma 2.2 and clips HDR values above one;
+it is not ACES or a measurement of biological tissue. Per-image filtering does
+not establish temporal consistency.
+
+The earlier [33-control baseline](octopus-native-report.json) uses authored
+curl and twist, with normalized RMSE 0.01813%. It is an easier kinematic
+comparison, separate from the Vellum source and its contact acceptance.
 
 ## Octopus Designer surface and subsurface scattering
 
@@ -19,7 +75,7 @@ suckers of **Kraken**, a static artist sculpt by
 identify the original bytes, the complete octopus mesh and excluded decorations.
 This rest-surface material study is separate from motion and solver acceptance.
 
-The [new Designer material](../../../examples/showcase/materials/octopus/README.md)
+The [new Designer material](https://github.com/loonghao/py-dem-bones/blob/8a7664d1c6e7dbe0f70a58258486274e15bda96b/examples/showcase/materials/octopus/README.md)
 contains editable SBS, compiled SBSAR and 18 native 2K maps. Copper/coral mottles,
 irregular freckles and fine pores cover the body; modeled suckers receive a
 paler skin. The original eye texture and all three UV sets are retained. An
@@ -44,6 +100,13 @@ one are clipped only in the display copy. This is not ACES or calibrated color
 matching between renderers.
 
 ## Skin detail and subsurface scattering
+
+![Native Cycles skin macro with HDRI and SSS](premium-blender-skin.png)
+
+Our own nine-influence skinning on a free CC0 arm is reconstructed from 48 mesh
+poses and checked in Maya, Blender, Houdini and Unreal Engine 5.8. Its normalized
+RMSE is approximately **0.067%**. Material and lighting studies retain those
+accepted solver weights and poses.
 
 The 1920 × 1080 Cycles closeup uses an 85 mm perspective camera, unchanged
 Designer texture exports, a real Poly Haven HDRI and rectangular softboxes.

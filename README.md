@@ -35,6 +35,48 @@ The [architecture decision](docs/adr/0002-host-adapters-and-native-kernel.md) de
 
 ## Native DCC showcase
 
+### Octopus: softbody motion to skinning
+
+![Houdini Mantra eight-arm octopus with Designer materials and SSS](docs/showcase/arm-skin/octopus-mantra-hero.png)
+
+Native Houdini Vellum creates compliant arm motion with inertia and ground
+contact. Dem Bones fits **81 rigid bones** to 48 source poses on a fixed
+8,000-point proxy, with **0.04102% normalized RMSE**. Native Point Deform
+transfers the result to the 29,542-point artist body while preserving topology
+and three UV sets. All 48 frames pass native readback and fresh scene reopening.
+Source arm-tip excursions are 27–39 cm; reconstruction retains 96.46–100.22% of their
+tip excursions. [Exact native evidence](docs/showcase/arm-skin/octopus-softbody-native-report.json).
+
+![48 native Mantra frames of the reconstructed softbody motion](docs/showcase/arm-skin/octopus-mantra-motion.gif)
+
+[Four-second MP4](docs/showcase/arm-skin/octopus-mantra-motion.mp4) ·
+[Native animation receipt](docs/showcase/arm-skin/octopus-native-animation.json)
+
+![Native Vellum source, Dem Bones reconstruction, residuals and eight arm tracks](docs/showcase/arm-skin/octopus-scientific-evidence.png)
+
+The scientific comparison uses the accepted proxy buffers, a fixed error scale
+and unmodified source samples. Presentation subdivision is excluded from solver
+metrics. The physical source uses stretch/bend and internal struts; it is an
+open-surface softbody study.
+
+### Octopus materials
+
+![Houdini Mantra octopus eye and sucker detail](docs/showcase/arm-skin/octopus-mantra-detail.png)
+
+[Editable Substance Designer graphs and SBSAR](examples/showcase/materials/octopus/)
+produce 18 native 2K maps across body, sucker and mapped-material studies.
+The stylized eight-arm [Kraken sculpt](examples/showcase/assets/octopus/SOURCE.json)
+by FIELDFLY3R (fld) is licensed under **CC BY 4.0**. The original rest-pose
+closeup combines native Mantra SSS with HDRI lighting; its
+[matched SSS off/on study](docs/showcase/arm-skin/README.md) uses identical
+geometry, camera and lights. Original asset and texture bytes are preserved.
+
+A separate [authored motion baseline](docs/showcase/arm-skin/octopus-native-report.json)
+uses 33 controls and 48 prescribed poses, with **0.01813% normalized RMSE**.
+This kinematic baseline has its own native readback and scene-reopening records.
+
+### Skin and steel
+
 ![Native Cycles skin detail with HDRI and subsurface scattering](docs/showcase/arm-skin/premium-blender-skin.png)
 
 Our own skin weights on a free CC0 arm with nine bones, 48 native poses and

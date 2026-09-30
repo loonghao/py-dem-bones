@@ -859,6 +859,71 @@
         "ca58a07a3c595f82c083dc98a42d60d8dea7c6a14bed7b8ecafea6b12f0aadf2"
       ],
       "render_geometry_excluded_from_numerical_acceptance": true
+    },
+    {
+      "file": "octopus-mantra-motion.gif",
+      "host": "houdini",
+      "case": "octopus",
+      "native_frames": 48,
+      "gif_frames": 48,
+      "size": [
+        960,
+        640
+      ],
+      "duration_ms": 4000,
+      "fps": 12,
+      "evidence_file": "octopus-native-animation.json",
+      "native_frame_sha256": [
+        "07dbc049f6d2408b280f5a0f32247385a60cd43d3594b399e231e8cf7e4f8100",
+        "624ead002cd0d12c85121b0223dcbbfa85151fb1270cd2aa6be7205af01b3d9d",
+        "e55120d6b80eb9e15928b13981bf09165c6e259a908fc227d87ba542fdd9ef96",
+        "c75e8f72578f70fb7ef83f7334129c3e1f26b82b4c11266663eabf6c0f0d0b11",
+        "32042a6a5fb6df25997f5f5aa379cd49a39746d940a41419913366fd7f973011",
+        "0edebb5547376d985016662246474dab408fc9dcb9be19d6cc593d569e4ed489",
+        "2748259ad1c3460154d2d3c5e989fded28ed14dd3d6a6a8102136d029525c525",
+        "beaa8d3c5862cde4a7451ff7209d9954f72d492065e2210a97b12744e4aafe0a",
+        "45a6e43c265aabf7f5f2dbcb757c2b4d724d665bbb00782afd705ba49107bc3c",
+        "bf099decafe22599cd90184c9cde3280aeaf108cd915b1be95f136c70edc8841",
+        "c0b56326aacf6e3c30df828f7bf446b1748a5b8a387e99281f127a10a2b584a4",
+        "e51e25a4fc3d424d09a83e653aa96599e3cd6ab31b0545d5c9fc90e767cbc3d3",
+        "647cb22eba126ad9aabfd8b1f5a9913a09ed2640170bae4851a11ad78e52e77e",
+        "539bf8d21f73340cd9d40b02a5b326264973b3f4ccdff7f038dd24bdbaa546c9",
+        "df854ea24325124b2185d5bb54054f124c7e279ec0c726e01793ded13d6ed3f0",
+        "c7d5dba6e7e53c168ef96d278a08af4cefaeb72032baeb2f1c80b1ef6c431111",
+        "1a022366db8444746a17f40579fb25ab8c21baa02440ce0a438de7f7c0707fa7",
+        "8b45e8e1c99376867993bb3cf8ee246052067089ef751a91032611bbcd66fa61",
+        "80f7323a533b23d5be3f3e50592fc7266f51ac8ce029f7fe33e4c1c3f79798e7",
+        "f5623f7a230cff1dd691684107d64af33a46cc0beea5b4b183fd5402453dc944",
+        "932e163fdc87c7232f2b532eb2e1da657da0edcdcf8e046f151cbafaac728c45",
+        "859aec76cbea3dee5b3d81491d301aba92fec2a21b514e6045338a977784862c",
+        "3537a3b8885bbffc2e8cfc63a9a5c8f7973a44a8fcf814a9c9888696bbe2171b",
+        "985411e487a4b7ff025acb6d373b30f0a7f9d63e946b65a8f3db4334b215ec88",
+        "1f1bae6e9b26b328dfd6b80742d6dfee7f7d03d0abb46d034d6a65f85ac73477",
+        "68bf09634ff61d4b1fa71655fc11ceba5e3e0ea4392e8e4dcbce67852667d9d6",
+        "404f32c98201aee838a12bcc40c88a8ee04e5c62b3eb2f82fec96a4a57b186ec",
+        "34ce086197e063b7834073bf2b46d2afc2c2ddc9cf7124274704c62917417909",
+        "7a28fdc01ccd35e8f435a91325aba29902669084ea37ca194bb3c01f4befba9b",
+        "fa6225df1fcf0a742719d8cf066225e31b42142f1652ee99980a4aab9ae0e03e",
+        "ed58feeafd44729ab5c9c82c2b0e518975f8e6c0740ba52b5bee8c4e354e0636",
+        "e2262ec40c83f67d8149ec1305ea0a685054467263ebd7dfc95e065662c5d4d0",
+        "ea626c27f029c6e6157300f178b5c33ff6482275eb649df4840181d61e29469a",
+        "0f11b24309b0a743a15736d68d20fcf353b2a4d43fdda88413f8b1f0e0aff389",
+        "6b23d0e6ca133a757f28baea62c1fb0e0c10d316ad6a9f0b0599662d39eeca42",
+        "d104d1e97e5ea19e95262c58b08451a6ce4abf94c1f77b327aabe20d4ad0fd00",
+        "36d3948134af510c5fadd6e818a24d8658359a27c203150611849acf2bcb63bf",
+        "c0007e303c383e76de4fc06a9fde7c7a09516dc082d7e7ac7e3b378985f928f1",
+        "4f176a364c0db66809d1ae32ddc40225dc689d2ab988c7667533a010ee25819b",
+        "62a6baa3db38c56bc776d648c02e654cda2182d0a71fa500e0f0655a73ce4bcd",
+        "f7c2de658ee9ad5a477b62bef87e4be4971a8705695573717fea39b80f1eb873",
+        "6cc3ea772460d24a68e6d83b4a303981f61b360a791394475caf550ecb3b4e43",
+        "05bb216f139d0494647370681ccf01f35e2e30a940651d25ae804bc1f220c80e",
+        "d6658b3d006e081c7134147175edc03c6ee8c4e7c6af9d8976e8df3bab44a706",
+        "b540f6560db134c1f47c09c631a6b1603dd7c95419ffbbcd74b7a44575a2e68e",
+        "336bb77510de6a2d230ef508d935e4f287591e9cc0a0ce62128a397d276ff84c",
+        "d62bce532ee13c866dcab550e9fc42af502c3e0ab46b083171dbade463b387c5",
+        "07a68d007159f43a9284e436c53cdb3245b26564afc53ce9ab0fb45682380046"
+      ],
+      "render_geometry_excluded_from_numerical_acceptance": true
     }
   ],
   "material": {
@@ -1047,6 +1112,13 @@
       "sequence_receipt": "premium-houdini-motion-sequence.json",
       "historical": true,
       "superseded_by": "octopus"
+    },
+    "octopus_motion": {
+      "hero_receipt": "octopus-native-hero.json",
+      "sequence_receipt": "octopus-native-animation.json",
+      "reopen_receipt": "octopus-softbody-native-reopen.json",
+      "native_beauty_outputs": true,
+      "render_geometry_excluded_from_metrics": true
     }
   },
   "octopus": {
@@ -1073,6 +1145,138 @@
       ],
       "controlled_sss_pair": true
     },
-    "softbody_motion_accepted": false
+    "softbody_motion_accepted": true,
+    "softbody_reconstruction": {
+      "accepted": true,
+      "source_kind": "native_vellum_softbody",
+      "source_is_authored_lbs": false,
+      "source_report": "octopus-softbody-native-source.json",
+      "fit_report": "octopus-softbody-native-report.json",
+      "native_readback": "octopus-softbody-native-readback.json",
+      "independent_reopen": "octopus-softbody-native-reopen.json",
+      "receipt_sha256": {
+        "octopus-softbody-native-source.json": "8808c8bc83a9488cc648e4a78149901cb65f59e062a366be656fb3210b0b6222",
+        "octopus-softbody-native-report.json": "b5da49f4b168aa5b4ea10b1d2a44eaa8478586fd2a2a048a099d4626056fc014",
+        "octopus-softbody-native-readback.json": "b6b9f4afe5e2e068557c013f6ce4c64b175cdb539193f51aa0b167664a308d52",
+        "octopus-softbody-native-reopen.json": "8fb71c8c962e3e6d061a77346bcf96ec30e22a57d3c8b918920d125c61985822"
+      },
+      "metrics": {
+        "vertices": 8000,
+        "faces": 15936,
+        "bones": 81,
+        "frames": 48,
+        "normalized_rmse": 0.00041020642796483825,
+        "max_vertex_error": 0.49766061614031576,
+        "host_lbs_max_difference": 1.099611532314606e-05
+      },
+      "source_method": "native dynamic Vellum cloth stretch+bend, internal struts, compliant sparse targets, contact",
+      "constraint_types": {
+        "distance": 34706,
+        "bend": 23874,
+        "pin": 96
+      },
+      "internal_strut_count": 10772,
+      "warmup_cycles": 2,
+      "native_steps": 289,
+      "source_fps": 24,
+      "sample_fps": 12,
+      "boundary_edges": 60,
+      "closed_volume_conservation_claimed": false,
+      "maximum_source_motion_metres": 0.43740081586975404,
+      "arm_tip_source_peak_to_peak_metres": [
+        0.3918283173755355,
+        0.3862745308033864,
+        0.34916698404697116,
+        0.3471301978662677,
+        0.2693529522038079,
+        0.2872107373373918,
+        0.38858116495816475,
+        0.3859389702918829
+      ],
+      "arm_tip_motion_retention_ratio": [
+        0.9646181259977876,
+        0.9987473388408618,
+        1.000474364930693,
+        0.9717161350434285,
+        1.0004239444457161,
+        1.0013436694863032,
+        1.0021919061939564,
+        0.9854939830580587
+      ],
+      "maximum_tip_error_metres": 0.017418121564911064,
+      "maximum_proxy_ground_penetration_metres": 0.0009448623657227206,
+      "maximum_artist_ground_penetration_metres": 0.00025853157043459474,
+      "native_weight_difference": 0.0,
+      "native_source_cache_difference": 0.0,
+      "native_numerical_cache_difference": 0.0,
+      "independent_reopen_artist_difference": 0.0,
+      "artist_topology_and_three_uv_sets_preserved_all_48": true,
+      "render_capture": {
+        "radius_proxy_diagonal_ratio": 0.008,
+        "radius_source_units": 0.5255107918536794,
+        "minimum_points": 4,
+        "maximum_points": 8,
+        "fixed_across_all_frames": true,
+        "post_deformation_contact_clamp": false
+      },
+      "source_simulation_rerun_on_reopen": false,
+      "saved_scene": {
+        "file": "octopus-softbody-fit.hip",
+        "bytes": 190834962,
+        "sha256": "b2757ba632f08acc069058c9a974a2c826d711baa349e00b9f43b9b9d73d0e47",
+        "distributed_in_git": false
+      },
+      "first_and_last_samples_forced_equal": false,
+      "seamless_loop_claimed": false
+    },
+    "scientific_comparison": {
+      "receipt_file": "octopus-scientific-evidence.json",
+      "figure": "octopus-scientific-evidence.png",
+      "native_beauty_render": false,
+      "subject": "accepted 8000-point numerical proxy: source, native reconstruction, fixed residual scale, eight tip tracks",
+      "all_48_sample_metrics": true,
+      "displacement_amplification": false
+    },
+    "native_hero": {
+      "accepted": true,
+      "receipt_file": "octopus-native-hero.json",
+      "file": "octopus-mantra-hero.png",
+      "frame": 12,
+      "size": [
+        1800,
+        1200
+      ],
+      "pixel_samples": [
+        6,
+        6
+      ],
+      "raw_hdr_pixels_verified_before_display_transfer": true,
+      "independent_reopen_passed": true,
+      "render_geometry_excluded_from_numerical_acceptance": true
+    },
+    "native_animation": {
+      "accepted": true,
+      "receipt_file": "octopus-native-animation.json",
+      "receipt_sha256": "a0d5929a79337e1c55a4ae6489225b2095e270c5686cc607daa8ff90a4f77301",
+      "frames": 48,
+      "fps": 12,
+      "duration_seconds": 4,
+      "size": [
+        960,
+        640
+      ],
+      "pixel_samples": [
+        4,
+        4
+      ],
+      "original_native_frames_unchanged": true,
+      "raw_hdr_pixels_verified_before_display_transfer": true,
+      "independent_reopen_passed": true,
+      "fixed_camera_for_all_48": true,
+      "interpolated_frames": 0,
+      "source_endpoints_forced_equal": false,
+      "temporal_consistency_independently_measured": false,
+      "render_geometry_excluded_from_numerical_acceptance": true
+    }
   }
 }

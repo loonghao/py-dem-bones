@@ -224,6 +224,59 @@ Use the returned Mantra ROP with the typed background render job and require
 verified terminal output before publication. The gallery separates numerical
 acceptance, the rest-surface material study and completed motion renders.
 
+### Houdini: native Vellum source and Dem Bones reconstruction
+
+The softbody example starts with the licensed octopus baseline's fixed proxy
+and original artist mesh. Its source is native Vellum stretch, bend and internal
+strut constraints, driven by 96 compliant tip targets with self and ground
+collision. It does not use the baseline's authored LBS poses as its source.
+The proxy has 60 boundary edges; this is not a closed pressure or volume test.
+
+```python
+import houdini_octopus_softbody
+
+softbody_dir = Path.home() / "dem-bones-octopus-softbody"
+houdini_octopus_softbody.prepare(case_dir, softbody_dir)
+houdini_octopus_softbody.probe(softbody_dir)
+source = houdini_octopus_softbody.simulate(softbody_dir, warmup_cycles=2)
+assert source["success"]
+fit = houdini_octopus_softbody.fit(softbody_dir, controls_per_arm=10, iterations=160)
+assert fit["success"]
+readback = houdini_octopus_softbody.inspect(softbody_dir)
+assert readback["success"]
+```
+
+The helper keeps all 48 sampled physical poses and fits sparse weights with
+rigid transforms. Acceptance checks normalized residuals, improvement over
+coarse rigid regions, all eight tip excursions, tip errors and ground contact.
+Native Point Deform transfers the solved proxy to the artist surface. All 48
+artist evaluations retain the original topology and three UV sets, and have
+their own ground-clearance check. Numerical residuals refer to the proxy.
+The last sample is not replaced by the first to force a loop.
+
+Reopen `octopus-softbody-fit.hip` in a separate empty headless Houdini process
+with `houdini_octopus_softbody.verify_reopened(softbody_dir)`. This verifies
+saved source caches, weights, transforms and all artist evaluations; it does
+not rerun the simulation. The scene contains simulation data and stays outside
+Git; the public receipts record its bytes and SHA-256.
+
+Create the render stage in a fresh scene namespace, using `fit["render_deform"]`
+as the source SOP and `floor_surface_z=-0.025`. That presentation floor matches
+the simulation's `Y=-0.285` metres after the documented axis change and 0.26 m
+translation. Choose one fixed camera containing all 48 artist poses before
+rendering; `camera_target` and `camera_distance` are explicit framing inputs.
+Lighting, subdivision and shading remain outside the numerical fit.
+
+After independent reopen acceptance, seal the local `result.npz` and
+`report.json` SHA-256 values. Supply those verified hashes to
+`render_octopus_evidence.py` with `--cache`, `--report`,
+`--expected-cache-sha256`, `--expected-report-sha256` and a fresh
+`--output-dir`. The helper checks every sample and native reconstruction
+before drawing the source, fitted proxy, fixed-scale residual and eight arm
+landmark tracks. It preserves motion magnitude and uses one camera and error
+range for all 48 samples. These are numerical proxy visualizations, separate
+from the native artist-surface beauty renders.
+
 ### Houdini: earlier procedural fixture and EXR display copies
 
 `houdini_premium.setup(cache_dir, fresh_output_dir, hdri_path)` rechecks an
@@ -251,6 +304,10 @@ color matching. When official `idenoise` is used, retain the unfiltered EXRs,
 record engine/options and denoised-file hashes, and decode the results before
 publication. Discover adapter support first; an open capability PR does not
 mean the tool is installed. Per-image filtering does not prove temporal consistency.
+Validate the original floating-point EXR planes before filtering or display
+conversion. `native_rgb_statistics` retains FFmpeg's native floating-point
+pixel format, so its finite-value and HDR-range checks do not inspect a
+clipped integer or converted RGB buffer.
 
 ### Unreal: an independent native render proxy
 
@@ -304,7 +361,7 @@ ffmpeg -framerate 12 -start_number 1 -i frames/frame_%03d.png -filter_complex "[
 
 The committed [validation](../../docs/showcase/arm-skin/validation.json)
 records native PNG digests, GIF frame counts, measured errors and pending
-acceptance. Assets carry their own CC0 provenance. This example is a
+acceptance. Assets carry their own CC0 or CC BY 4.0 provenance. This example is a
 demonstration inspired by SSDR, not the paper's original benchmark suite.
 
 ### Designer compiled package acceptance
