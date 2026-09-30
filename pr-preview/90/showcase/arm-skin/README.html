@@ -312,9 +312,10 @@ reconstructed animation in Maya, Blender, Houdini and Unreal Engine 5.8.</p>
 <p><strong>Look development is in progress.</strong> Blender’s complete sequence uses the
 lighter Designer palette and SSS scale <code class="docutils literal notranslate"><span class="pre">0.03</span></code>. Its packed scene was reopened
 through DCC-MCP; the bound textures and HDRI match the published asset hashes.
-Maya retains the first palette and scale <code class="docutils literal notranslate"><span class="pre">0.09</span></code>. The updated Maya material,
-complete Houdini Mantra arm sequence and Unreal SSS sequence await native
-acceptance. See <a class="reference download internal" download="" href="../../_downloads/e0e8af4ec4f315e79ee90d5e267ece42/validation.json"><span class="xref download myst">validation</span></a> and
+Unreal’s complete sequence binds the current Designer palette, native HDRI
+and legacy Subsurface material. Maya retains the first palette and scale
+<code class="docutils literal notranslate"><span class="pre">0.09</span></code>. Houdini has completed its 48-frame Mantra HDRI/SSS sequence and
+12 × 12 sample still. The updated Maya material awaits native acceptance. See <a class="reference download internal" download="" href="../../_downloads/e0e8af4ec4f315e79ee90d5e267ece42/validation.json"><span class="xref download myst">validation</span></a> and
 <a class="reference download internal" download="" href="../../_downloads/d5a9f6b1add76ec8475968abd84dd8b9/manifest.json"><span class="xref download myst">file hashes</span></a> for the exact completed evidence.</p>
 <section id="native-animation-gallery">
 <h2>Native animation gallery<a class="headerlink" href="#native-animation-gallery" title="Link to this heading">¶</a></h2>
@@ -335,22 +336,22 @@ acceptance. See <a class="reference download internal" download="" href="../../_
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head"><p>Houdini 22.0 — OpenGL tentacle preview</p></th>
-<th class="head"><p>Unreal 5.8 — lit DynamicMesh arm preview</p></th>
+<tr class="row-odd"><th class="head"><p>Houdini 22.0 — Mantra, HDRI + SSS</p></th>
+<th class="head"><p>Unreal 5.8 — HDRI + Subsurface DynamicMesh preview</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><img alt="Native tentacle SOP evaluation" src="../../_images/houdini-tentacle.gif" /></p></td>
-<td><p><img alt="Native lit DynamicMesh deformation" src="../../_images/unreal-arm.gif" /></p></td>
+<tr class="row-even"><td><p><img alt="Native Mantra reconstructed arm" src="../../_images/houdini-arm.gif" /></p></td>
+<td><p><img alt="Native HDRI Subsurface DynamicMesh deformation" src="../../_images/unreal-arm.gif" /></p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <p>All GIFs contain 48 native frames at 800 × 450, approximately four seconds at
 12 fps. Encoding uses a 128-color palette; no generated imagery, retiming,
-synthetic in-between frames or geometry correction is applied. Houdini’s
-OpenGL clip and Unreal’s lit clip are deformation previews. They do not
-demonstrate the final HDRI skin material.</p>
+synthetic in-between frames or geometry correction is applied. The separate
+<a class="reference download internal" download="" href="../../_downloads/7bf481eb187bc4fcdc4481a6b3005faf/houdini-tentacle.gif"><span class="xref download myst">Houdini OpenGL tentacle clip</span></a> is a deformation preview. Unreal uses its native legacy Subsurface
+model; this is a DynamicMesh preview, not a SkeletalMesh animation export.</p>
 <section id="native-sss-comparison">
 <h3>Native SSS comparison<a class="headerlink" href="#native-sss-comparison" title="Link to this heading">¶</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -379,8 +380,10 @@ native reopened material’s bound bytes, relative paths and SSS settings.</p>
 <p>Eight alternating links contain 2,560 vertices and 2,560 polygons. Each source
 link has one rigid influence. The solved Blender animation has maximum
 relative edge stretch <code class="docutils literal notranslate"><span class="pre">0.002655%</span></code>, below the <code class="docutils literal notranslate"><span class="pre">0.1%</span></code> acceptance limit. The native
-Maya and Houdini caches also pass this limit. Unreal chain acceptance remains
-pending. This is prescribed rigid motion, not a collision or dynamics test.</p>
+Maya, Houdini and Unreal also pass this limit. Unreal’s 48-pose native SDK
+evaluation has maximum relative edge stretch below <code class="docutils literal notranslate"><span class="pre">1e-12</span></code>.
+This is prescribed rigid motion, not a collision or dynamics test.</p>
+<p><img alt="Native Unreal rigid chain preview" src="../../_images/unreal-chain-preview.png" /></p>
 <p>The chain and tentacle illustrate rigid and smoothly blended motion inspired
 by <a class="reference external" href="https://binh.graphics/papers/2012sa-ssdr/">SSDR</a>. They are our procedural
 fixtures; these results are not measurements on the paper’s original datasets.</p>
@@ -462,8 +465,12 @@ metric remains independent of a uniform preview scale.</p>
 and Gaussian Spots 1 for pores. RGBA gradient keys establish the skin palette
 and roughness; pores feed Height and an OpenGL normal filter at intensity
 <code class="docutils literal notranslate"><span class="pre">0.025</span></code>. Metallic is zero. The native DCC-MCP export job completed and the
-SBSAR archive passes its container integrity check. Reopening and recomputing
-the saved packages still needs verification.</p>
+SBSAR archive passes its container integrity check. The saved SBS was closed,
+reopened and recomputed through the official SDK at explicit 1024² resolution.
+All five source exports match the published bytes;
+<a class="reference download internal" download="" href="../../_downloads/45d80823d419271ac136ef150bf7363b/designer-native-readback.json"><span class="xref download myst">native readback</span></a> records the evidence.
+The SBSAR was also loaded and instantiated in a fresh native graph. All five
+connected outputs have matching byte hashes and verified PNG dimensions/depth.</p>
 <pre  class="mermaid">
         flowchart LR
     Perlin[Perlin Noise] --&gt; Color[RGBA skin gradient]
@@ -499,7 +506,7 @@ Adobe standard library using <code class="docutils literal notranslate"><span cl
 </tr>
 <tr class="row-even"><td><p><a class="reference download internal" download="" href="../../_downloads/33224a13d2c6c836efc86944ddda37cc/Metallic.png"><span class="xref download myst">Metallic</span></a></p></td>
 <td><p>1024²</p></td>
-<td><p>RGBA16</p></td>
+<td><p>RGB8</p></td>
 <td><p>linear data</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference download internal" download="" href="../../_downloads/6b1b9938d21d1cc76129f75321cb64c7/Height.png"><span class="xref download myst">Height</span></a></p></td>
@@ -528,7 +535,7 @@ needs a consistent tangent basis before tangent normals can be claimed.</p>
 are included. Blender uses an Environment Texture, Maya an Arnold sky dome
 with a Raw file texture, Houdini an environment light, and Unreal a native
 TextureCube on a SkyLight. Host-specific area/directional lights supplement
-the Blender and Maya previews.</p>
+the Blender, Maya and Unreal previews.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -561,14 +568,20 @@ the Blender and Maya previews.</p>
 These are artistic scene settings, not
 measured skin coefficients. Cycles uses denoising and 64 animation samples;
 Arnold uses AA 3 and diffuse samples 2 with color-managed PNG output. The
-single Mantra preview uses 6 × 6 pixel samples. Its linear EXR is displayed
+Mantra animation uses 6 × 6 pixel samples; its frame-12 still uses 12 × 12.
+Its linear EXR is displayed
 with an approximate gamma 2.2 conversion, not an identical cross-renderer
-color transform. Unreal’s HDRI/SSS capture exposure is still under review.</p>
-<p><img alt="Completed single-frame Mantra SSS first pass" src="../../_images/houdini-mantra-first-pass.png" /></p>
-<p>The Mantra image is a completed single frame. The interrupted animation is
-excluded. Blender’s relative packed textures have passed native scene reopen
+color transform. Unreal uses HDRI intensity <code class="docutils literal notranslate"><span class="pre">0.5</span></code>, half the example’s
+directional light intensities and manual exposure bias <code class="docutils literal notranslate"><span class="pre">1.0</span></code>. Its native
+<code class="docutils literal notranslate"><span class="pre">ImageWriteBlueprintLibrary</span></code> exports all 48 PNGs synchronously, with valid
+chunk CRCs and no trailing bytes; source images are preserved unchanged.</p>
+<p><img alt="Native Unreal HDRI and Subsurface arm" src="../../_images/unreal-hdri-sss.png" /></p>
+<p><img alt="Native Mantra HDRI and SSS arm, 12 × 12 pixel samples" src="../../_images/houdini-hdri-sss.png" /></p>
+<p>The background Mantra job verified all 48 new EXR files with zero warnings.
+The earlier interrupted sequence is excluded. Blender’s relative packed
+textures have passed native scene reopen
 and byte readback. Public native scene delivery, UV/tangent review and the
-remaining renderer sequences still require acceptance.</p>
+updated Maya sequence still require acceptance.</p>
 </section>
 <section id="reproduce-and-resume">
 <h2>Reproduce and resume<a class="headerlink" href="#reproduce-and-resume" title="Link to this heading">¶</a></h2>
@@ -578,7 +591,9 @@ an exactly selected live DCC-MCP instance. Application UI uses the project
 DCC-CUA route only when the official application API cannot express the
 operation. When an official API exists but DCC-MCP lacks a tool, implement
 and validate the typed adapter capability first. Maya and Houdini startup
-integration is currently being repaired before further native rendering.</p>
+integration repairs are tracked in the owning adapters. Official Hython
+headless rendering is available; its <a class="reference download internal" download="" href="../../_downloads/b634037386a5f03958448586ac3e89c2/houdini-native-readback.json"><span class="xref download myst">48-pose SOP readback</span></a>
+matches the accepted geometry cache exactly. The updated native scene is saved.</p>
 </section>
 </section>
 

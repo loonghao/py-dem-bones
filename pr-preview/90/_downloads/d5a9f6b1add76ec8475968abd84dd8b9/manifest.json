@@ -23,9 +23,29 @@
       "sha256": "a47ca685264df9c2a3b6a8044ba9e344d322ce5202f5d3880039e1c7dc5b3622"
     },
     {
+      "path": "docs/showcase/arm-skin/designer-native-readback.json",
+      "size_bytes": 4360,
+      "sha256": "37fcedcb2717b74468dcc25a18cdeddd3f7e16a54d7b9c7065e9fee511b8dbf3"
+    },
+    {
+      "path": "docs/showcase/arm-skin/houdini-arm.gif",
+      "size_bytes": 7847757,
+      "sha256": "6ec3fd96bac7f99640d3b105f73d435a74fe54f2e1573f1b2a6d064b392ad82f"
+    },
+    {
+      "path": "docs/showcase/arm-skin/houdini-hdri-sss.png",
+      "size_bytes": 311195,
+      "sha256": "70307d50af8210b7479f8501a3f3056891bac23b274f1f109fde20e315ea3268"
+    },
+    {
       "path": "docs/showcase/arm-skin/houdini-mantra-first-pass.png",
       "size_bytes": 361199,
       "sha256": "cd3a86003239e2bc446a40b03ba1f1f48f23b83f24cd6794ed76bc3abda18e63"
+    },
+    {
+      "path": "docs/showcase/arm-skin/houdini-native-readback.json",
+      "size_bytes": 275,
+      "sha256": "465927d8cef241757384d2aa9f4a1774b333bdc3fd89f40941592f8cf461c12d"
     },
     {
       "path": "docs/showcase/arm-skin/houdini-tentacle.gif",
@@ -39,8 +59,8 @@
     },
     {
       "path": "docs/showcase/arm-skin/README.md",
-      "size_bytes": 10718,
-      "sha256": "592b4d76f134bad1c6581ecde640bd314ef5a576512284c3b49df8fb37e0fc92"
+      "size_bytes": 12098,
+      "sha256": "4d048aec6f748fe985361ec6babc2124ca5ff4247680abfaaa6d2b0988b91333"
     },
     {
       "path": "docs/showcase/arm-skin/render.png",
@@ -59,13 +79,23 @@
     },
     {
       "path": "docs/showcase/arm-skin/unreal-arm.gif",
-      "size_bytes": 1631905,
-      "sha256": "517f9622173b18da6f324b4071be78f89a0f2812a0bca1603df04ee25cdb6f7a"
+      "size_bytes": 1452432,
+      "sha256": "98421a0043961dc21f292ecad174c09a08a5e8cdbf2efca2782ab494bcd6d1bd"
+    },
+    {
+      "path": "docs/showcase/arm-skin/unreal-chain-preview.png",
+      "size_bytes": 347948,
+      "sha256": "25b54f8896bccfe24abbb481ea2ed24316c9997f54a7f7e2aa06e5fc27607112"
+    },
+    {
+      "path": "docs/showcase/arm-skin/unreal-hdri-sss.png",
+      "size_bytes": 335612,
+      "sha256": "14114747435640be97fe67dc37cc440318ceee67e6be696a739b40e7c66442ae"
     },
     {
       "path": "docs/showcase/arm-skin/validation.json",
-      "size_bytes": 31569,
-      "sha256": "e1cd91ac3621bc05a3f3156fc1d4275780a5ca1d62b8871fb897d1fc9bdaf45f"
+      "size_bytes": 42309,
+      "sha256": "923379ec38a62c007064e9328b143aa8f6d60a73e888c5de479c1075edd185fd"
     },
     {
       "path": "examples/showcase/assets/arm.obj",
@@ -110,7 +140,7 @@
     {
       "path": "examples/showcase/materials/skin/material.sbs",
       "size_bytes": 9378,
-      "sha256": "2c2190429fca8bc9e059dfd9446dcf5026a8a0256739ee7dc346262e964e8d51"
+      "sha256": "7afc1e2d68a820fefc33458a7ae7afc1cc9f24bec78c7ed9484fb93bffe7b951"
     },
     {
       "path": "examples/showcase/materials/skin/material.sbsar",
