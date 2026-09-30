@@ -237,6 +237,7 @@ def _setup_capture():
     )
     camera.set_editor_property("texture_target", target)
     camera.set_editor_property("primitive_render_mode", unreal.SceneCapturePrimitiveRenderMode.PRM_USE_SHOW_ONLY_LIST)
+    camera.clear_show_only_components()
     camera.show_only_actor_components(_state["actor"])
     path = "/Game/DemBonesShowcase/UnlitSurface"
     material = unreal.EditorAssetLibrary.load_asset(path)
@@ -337,7 +338,7 @@ def render_frame(frame):
         settings.set_editor_property("override_auto_exposure_method", True)
         settings.set_editor_property("auto_exposure_method", unreal.AutoExposureMethod.AEM_MANUAL)
         settings.set_editor_property("override_auto_exposure_bias", True)
-        settings.set_editor_property("auto_exposure_bias", 3.0)
+        settings.set_editor_property("auto_exposure_bias", _state.get("capture_exposure_bias", 3.0))
         settings.set_editor_property("override_auto_exposure_apply_physical_camera_exposure", True)
         settings.set_editor_property("auto_exposure_apply_physical_camera_exposure", False)
         _state["camera"].set_editor_property("post_process_settings", settings)
@@ -346,5 +347,11 @@ def render_frame(frame):
     frames = _state["output_dir"] / "frames"
     frames.mkdir(parents=True, exist_ok=True)
     filename = "frame_%03d.png" % frame
-    unreal.RenderingLibrary.export_render_target(_state["capture"], _state["render_target"], str(frames), filename)
-    return {"frame": frame, "path": str(frames / filename)}
+    path = frames / filename
+    if path.exists():
+        raise FileExistsError("Use a fresh output directory for native captures")
+    options = unreal.ImageWriteOptions(format=unreal.DesiredImageFormat.PNG, overwrite_file=False, async_=False)
+    unreal.ImageWriteBlueprintLibrary.export_to_disk(_state["render_target"], str(path), options)
+    if not path.is_file() or path.stat().st_size <= 1024:
+        raise RuntimeError("Unreal did not complete the native PNG export")
+    return {"frame": frame, "path": str(path), "exporter": "ImageWriteBlueprintLibrary"}

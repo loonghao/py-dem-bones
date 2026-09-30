@@ -19,6 +19,7 @@ def run_showcase(output_dir, case_name="tentacle"):
         # Import third-party modules
         import unreal_skin
 
+        importlib.reload(unreal_skin)
         root = Path(unreal_skin.__file__).parent
         report["skin_preview"] = unreal_skin.setup(
             root / "materials" / "skin", root / "assets" / "lighting" / "studio_small_09_2k.hdr"

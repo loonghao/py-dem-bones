@@ -5,7 +5,7 @@ license: MIT
 metadata:
   dcc-mcp:
     dcc: unreal
-    version: "0.1.0"
+    version: "0.1.1"
     layer: domain
     tools: tools.yaml
 ---

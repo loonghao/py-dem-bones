@@ -39,9 +39,9 @@ print(result.transforms.shape)  # (2, 实际骨骼数, 4, 4)
 
 在免费 CC0 手臂上使用九根骨骼、自己生成蒙皮，采样 48 帧，在 Maya、Blender、
 Houdini 和 UE5.8 中验证；归一化 RMSE 约 **0.067%**。Designer 制作皮肤贴图，
-真实 Poly Haven HDRI 用于 Cycles 的 SSS 动画和 Arnold 首版渲染，包含原生 SSS 开关对照。
+真实 Poly Haven HDRI 用于 Cycles 和 Mantra 的 SSS 动画、Arnold 首版渲染及 Unreal Subsurface 预览，包含原生 SSS 开关对照。
 [案例、铁链和验收记录](docs/showcase/arm-skin/README.md)包含四个宿主的原生 GIF。
-最终 SSS 展示仍在完善；Houdini／Unreal 当前展示已完成的变形预览。
+Maya 更新材质仍待验收；Houdini 已完成 48 帧 Mantra SSS 动画和高采样展示图。
 复现步骤见 [DCC-MCP 示例](examples/showcase/README.md)。
 
 ## 开发与发布
