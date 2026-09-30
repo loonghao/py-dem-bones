@@ -29,7 +29,8 @@ def setup(output_dir, texture_dir):
 
     def image(name, raw=False):
         node = nodes.new("ShaderNodeTexImage")
-        node.image = bpy.data.images.load(str(texture_dir / (name + ".png")), check_existing=True)
+        # Existing packed images can retain bytes from an earlier material export.
+        node.image = bpy.data.images.load(str(texture_dir / (name + ".png")), check_existing=False)
         node.image.colorspace_settings.name = "Non-Color" if raw else "sRGB"
         node.projection, node.projection_blend = "BOX", 0.3
         links.new(scale.outputs["Vector"], node.inputs["Vector"])

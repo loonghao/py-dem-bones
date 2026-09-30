@@ -39,8 +39,9 @@ The [architecture decision](docs/adr/0002-host-adapters-and-native-kernel.md) de
 
 Our own skin weights on a free CC0 arm with nine bones, 48 native poses and
 approximately **0.067% normalized RMSE** in Maya, Blender, Houdini and UE5.8.
-Designer-authored skin maps and a real Poly Haven HDRI drive the first Cycles
-and Arnold SSS previews. [Gallery, rigid chain and exact acceptance status](docs/showcase/arm-skin/README.md)
+Designer-authored skin maps and a real Poly Haven HDRI drive the Cycles
+SSS sequence and Arnold first pass. Native SSS off/on renders are included.
+[Gallery, rigid chain and exact acceptance status](docs/showcase/arm-skin/README.md)
 includes native GIFs from all four hosts. Final SSS look development remains
 in progress; Houdini and Unreal clips show their completed deformation previews.
 [Reproduce through DCC-MCP](examples/showcase/README.md).
