@@ -20,6 +20,37 @@ RGB_DISPLAY_FILTER = (
 )
 
 
+def native_rgb_statistics(source, ffmpeg=None):
+    """Check native float planes without a conversion that can clip HDR RGB."""
+    import numpy as np
+
+    ffmpeg, ffprobe = ffmpeg or shutil.which("ffmpeg"), shutil.which("ffprobe")
+    if ffmpeg is None or ffprobe is None:
+        raise RuntimeError("FFmpeg and FFprobe are required for native EXR validation")
+    info = json.loads(subprocess.check_output(
+        [ffprobe, "-v", "error", "-select_streams", "v:0", "-show_entries",
+         "stream=width,height,pix_fmt", "-of", "json", str(source)]
+    ))["streams"][0]
+    formats = {"gbrapf16le": ("<f2", 4), "gbrpf16le": ("<f2", 3),
+               "gbrapf32le": ("<f4", 4), "gbrpf32le": ("<f4", 3)}
+    pixel_format = info["pix_fmt"]
+    if pixel_format not in formats:
+        raise ValueError("Native EXR validation requires planar floating-point decoder output")
+    dtype, channels = formats[pixel_format]
+    raw = subprocess.check_output(
+        [ffmpeg, "-hide_banner", "-loglevel", "error", "-i", str(source),
+         "-frames:v", "1", "-f", "rawvideo", "-pix_fmt", pixel_format, "pipe:1"]
+    )
+    pixels = np.frombuffer(raw, dtype=dtype).reshape(channels, info["height"], info["width"])[:3].astype(float)
+    if not np.isfinite(pixels).all() or pixels.std() <= 0.01 or pixels.max() <= 0.1:
+        raise ValueError("Native EXR contains non-finite or effectively black RGB")
+    return {"size": [info["width"], info["height"]], "finite_rgb": True,
+            "decoded_native_pixel_format": pixel_format,
+            "native_hdr_checked_without_pixel_format_conversion": True,
+            "minimum_linear": float(pixels.min()), "maximum_linear": float(pixels.max()),
+            "standard_deviation_linear": float(pixels.std())}
+
+
 def convert(source_dir, output_dir, expected_count, *, start_frame=1):
     """Keep native sources intact and write to a fresh output directory."""
     source_dir, output_dir = Path(source_dir).resolve(), Path(output_dir).resolve()
@@ -41,6 +72,7 @@ def convert(source_dir, output_dir, expected_count, *, start_frame=1):
     frames = []
     for source in sources:
         digest = hashlib.sha256(source.read_bytes()).hexdigest()
+        native_statistics = native_rgb_statistics(source, ffmpeg)
         target = output_dir / (source.stem + ".png")
         subprocess.run(
             [ffmpeg, "-hide_banner", "-loglevel", "error", "-n", "-i", str(source),
@@ -58,6 +90,7 @@ def convert(source_dir, output_dir, expected_count, *, start_frame=1):
             "display_png": target.name,
             "display_png_sha256": hashlib.sha256(target.read_bytes()).hexdigest(),
             "size": size,
+            "native_rgb_statistics": native_statistics,
         })
     receipt = {
         "schema": "py-dem-bones.rgb-display.v1",

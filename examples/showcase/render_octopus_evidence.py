@@ -33,6 +33,7 @@ from PIL import Image  # noqa: E402
 ARRAY_NAMES = ("rest", "poses", "evaluated", "weights", "transforms", "faces")
 BACKGROUND, PANEL, TEXT, MUTED = "#0b121c", "#122030", "#edf3fa", "#a3b3c5"
 ARM_COLORS = ("#63d9cd", "#73a9ff", "#bd94ef", "#f08fbb", "#f2a676", "#ebd378", "#acd58c", "#c4e9e7")
+ERROR_COLOR_MAP = "viridis"
 
 
 def _sha256(data):
@@ -235,7 +236,7 @@ def _plate(arrays, triangles, metrics, error, metadata, frame, camera, error_max
         _text(fig, x, 0.788, value, 17, fontweight="bold")
     titles = ("Native source poses", "Native fitted evaluation", "Per-vertex residual", "Eight arm trajectories")
     source, native = arrays["poses"][frame], arrays["evaluated"][frame]
-    cmap, norm = plt.get_cmap("magma"), Normalize(vmin=0, vmax=error_max_percent)
+    cmap, norm = plt.get_cmap(ERROR_COLOR_MAP), Normalize(vmin=0, vmax=error_max_percent)
     for index, (x, title) in enumerate(zip(columns, titles)):
         _text(fig, x, 0.723, title, 12, fontweight="bold")
         ax = fig.add_axes((x, 0.335, width, 0.365), facecolor=PANEL)
@@ -337,6 +338,7 @@ def render(cache_path, report_path, output_dir, *, expected_cache_sha256, expect
             "formula": "norm(native_evaluated[f,v] - source_poses[f,v]) / norm(ptp(rest, axis=0))",
             "rest_aabb_diagonal_case_units": diagonal,
             "color_range_percent": [0, error_max_percent], "observed_maximum_percent": observed_max,
+            "color_map": ERROR_COLOR_MAP,
             "normalization": "Linear, fixed across all frames; no percentile clipping or displacement scaling",
             "surface_color": "Per-vertex residual with Gouraud interpolation over depth-sorted original triangles",
             "per_frame_rmse_normalized": np.sqrt(np.mean(error**2, axis=1)).tolist(),

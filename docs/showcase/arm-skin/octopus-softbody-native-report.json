@@ -1,0 +1,1258 @@
+{
+  "success": true,
+  "host": "Houdini",
+  "version": "22.0.368",
+  "source_kind": "native_vellum_softbody",
+  "source_is_authored_lbs": false,
+  "source_sha256": "824a8fc33a192f8b3589bc413d808e537e77a486105ff7e7fe1481201de6e97c",
+  "geometry": "/obj/DemBonesOctopusSoftbody",
+  "anatomy": {
+    "center": [
+      -1.4001474380493164,
+      -5.931901359558106,
+      -18.3467218875885
+    ],
+    "root_point": 5923,
+    "tip_indices": [
+      6639,
+      5084,
+      7434,
+      5889,
+      900,
+      4277,
+      1720,
+      3530
+    ],
+    "paths": [
+      [
+        [
+          -5.873990863008912,
+          -4.3169281954981304,
+          -18.25440539294342
+        ],
+        [
+          -13.851448394669083,
+          -3.9114641886282437,
+          -23.43733833811271
+        ],
+        [
+          -19.36359144266381,
+          -2.3566899257378613,
+          -20.08996335618378
+        ],
+        [
+          -18.10036115621116,
+          2.6629828605040884,
+          -22.05266170692478
+        ],
+        [
+          -22.978412628173828,
+          9.358810424804688,
+          -18.524118423461914
+        ]
+      ],
+      [
+        [
+          -4.485441494899471,
+          -5.126612323765816,
+          -21.3398933354401
+        ],
+        [
+          -10.337164109704123,
+          -3.7266324887896776,
+          -29.81047206672041
+        ],
+        [
+          -19.362491146171706,
+          -0.9251789806324746,
+          -31.775323725357598
+        ],
+        [
+          -16.06003735315935,
+          8.163224546296355,
+          -31.441190697507697
+        ],
+        [
+          -19.098735809326172,
+          6.709810733795166,
+          -31.081539154052734
+        ]
+      ],
+      [
+        [
+          -1.8529462868843134,
+          -4.538161199731191,
+          -22.44394047998702
+        ],
+        [
+          -4.512854015899133,
+          -4.186237791177982,
+          -31.37452333875676
+        ],
+        [
+          -10.342962280650124,
+          -0.44140327249731615,
+          -37.7035247014648
+        ],
+        [
+          -11.39379227779804,
+          7.4314761056060155,
+          -37.6790559848904
+        ],
+        [
+          -12.318382263183594,
+          6.693661212921143,
+          -37.164005279541016
+        ]
+      ],
+      [
+        [
+          3.668395181620607,
+          -4.250322271260534,
+          -19.872560971492934
+        ],
+        [
+          11.500684075938088,
+          -3.8956095199649106,
+          -22.745348683600884
+        ],
+        [
+          11.323408430254732,
+          2.92773106329653,
+          -23.152464286017132
+        ],
+        [
+          11.287311345227353,
+          9.311555574751683,
+          -24.831651208024194
+        ],
+        [
+          13.440336227416992,
+          6.800816059112549,
+          -25.706707000732422
+        ]
+      ],
+      [
+        [
+          2.8145753854928945,
+          -5.020511285908168,
+          -17.018580374996045
+        ],
+        [
+          10.074263087686006,
+          -6.676310544547846,
+          -17.04305208955983
+        ],
+        [
+          16.936070237422705,
+          -6.136379414950117,
+          -14.468803444973428
+        ],
+        [
+          15.699584355600203,
+          -5.966946256237316,
+          -10.406658663431328
+        ],
+        [
+          15.888172149658203,
+          -4.381046772003174,
+          -12.791443824768066
+        ]
+      ],
+      [
+        [
+          0.7769355548500821,
+          -4.551605802109277,
+          -15.089057178811457
+        ],
+        [
+          1.6161904126167226,
+          -4.72328084192237,
+          -6.451376051312151
+        ],
+        [
+          4.179573609189121,
+          -5.244242433018009,
+          1.614688597897294
+        ],
+        [
+          10.856829191258234,
+          -3.692337461168593,
+          0.40527219753743793
+        ],
+        [
+          10.943782806396484,
+          -2.3848631381988525,
+          -2.480443000793457
+        ]
+      ],
+      [
+        [
+          -3.790544978265313,
+          -4.223396222943172,
+          -14.458787265149542
+        ],
+        [
+          -9.200103303173039,
+          -4.431925024537465,
+          -6.777375722402807
+        ],
+        [
+          -7.250286858581277,
+          -3.6502988870772004,
+          -0.16899471332843866
+        ],
+        [
+          -6.155842530089852,
+          0.7719847787974725,
+          -4.140929526705919
+        ],
+        [
+          -10.461899757385254,
+          0.09258580207824707,
+          -3.171503782272339
+        ]
+      ],
+      [
+        [
+          -5.1452048626581774,
+          -4.89433715794246,
+          -16.749897357555227
+        ],
+        [
+          -12.702123374446062,
+          -4.560353595805191,
+          -12.657588362404578
+        ],
+        [
+          -13.223077434853215,
+          1.8619522506228103,
+          -11.307600232036675
+        ],
+        [
+          -13.628885473178164,
+          -1.9233133010657657,
+          -13.436342943640994
+        ],
+        [
+          -14.359617233276367,
+          -0.4309912919998169,
+          -13.108830451965332
+        ]
+      ]
+    ],
+    "surface_path_point_ids": [
+      [
+        5923,
+        144,
+        180,
+        178,
+        174,
+        170,
+        156,
+        146,
+        7658,
+        6045,
+        6381,
+        6055,
+        6056,
+        6408,
+        6409,
+        6413,
+        5986,
+        5988,
+        5989,
+        6130,
+        5993,
+        5992,
+        6138,
+        6143,
+        6149,
+        6147,
+        6151,
+        5935,
+        5932,
+        5934,
+        6349,
+        6350,
+        6362,
+        6363,
+        6532,
+        6534,
+        5930,
+        6541,
+        6543,
+        6553,
+        6550,
+        6556,
+        6560,
+        6559,
+        6565,
+        6018,
+        6609,
+        6615,
+        6029,
+        6028,
+        6036,
+        6037,
+        6043,
+        6626,
+        6631,
+        6632,
+        6635,
+        6638,
+        6639
+      ],
+      [
+        5923,
+        144,
+        5117,
+        5113,
+        5112,
+        5111,
+        5109,
+        5108,
+        5107,
+        5105,
+        5103,
+        4835,
+        4812,
+        4825,
+        4829,
+        4356,
+        4357,
+        4373,
+        4847,
+        4376,
+        4379,
+        4381,
+        4382,
+        4898,
+        4908,
+        4916,
+        4924,
+        4927,
+        4384,
+        4385,
+        4386,
+        4980,
+        4992,
+        4990,
+        5002,
+        5003,
+        5010,
+        5009,
+        5017,
+        5016,
+        4950,
+        5027,
+        5034,
+        5033,
+        5056,
+        5061,
+        5067,
+        4440,
+        4441,
+        4442,
+        5068,
+        5076,
+        5077,
+        5083,
+        5084
+      ],
+      [
+        5923,
+        5926,
+        7635,
+        7469,
+        7468,
+        7467,
+        7465,
+        7464,
+        7560,
+        7554,
+        7551,
+        7950,
+        7940,
+        7942,
+        7931,
+        7933,
+        7219,
+        7229,
+        7239,
+        7245,
+        7258,
+        7270,
+        7279,
+        7288,
+        7298,
+        7314,
+        7323,
+        7393,
+        7397,
+        7399,
+        7401,
+        7403,
+        6766,
+        6777,
+        6778,
+        6788,
+        6789,
+        6793,
+        6796,
+        7419,
+        7424,
+        7428,
+        7429,
+        7433,
+        7434
+      ],
+      [
+        5923,
+        5924,
+        5906,
+        5904,
+        7651,
+        7644,
+        7643,
+        7974,
+        7886,
+        7884,
+        7883,
+        7871,
+        7873,
+        5664,
+        5681,
+        5690,
+        5693,
+        5702,
+        5710,
+        5718,
+        5726,
+        5733,
+        5749,
+        5760,
+        5758,
+        5122,
+        5118,
+        5793,
+        5792,
+        5805,
+        5801,
+        5803,
+        5808,
+        5809,
+        5815,
+        5816,
+        5822,
+        5821,
+        5828,
+        5833,
+        5834,
+        5868,
+        5869,
+        5870,
+        5876,
+        5259,
+        5884,
+        5885,
+        5889
+      ],
+      [
+        5923,
+        5924,
+        5925,
+        7656,
+        933,
+        931,
+        928,
+        927,
+        925,
+        922,
+        920,
+        918,
+        698,
+        679,
+        677,
+        691,
+        695,
+        256,
+        271,
+        273,
+        712,
+        713,
+        277,
+        279,
+        280,
+        282,
+        425,
+        285,
+        284,
+        437,
+        444,
+        442,
+        447,
+        221,
+        222,
+        651,
+        662,
+        665,
+        807,
+        808,
+        216,
+        813,
+        816,
+        823,
+        831,
+        832,
+        837,
+        839,
+        844,
+        845,
+        851,
+        881,
+        879,
+        335,
+        880,
+        341,
+        894,
+        896,
+        897,
+        898,
+        900
+      ],
+      [
+        5923,
+        5924,
+        5925,
+        7656,
+        938,
+        935,
+        937,
+        936,
+        4309,
+        4307,
+        4305,
+        4303,
+        4300,
+        4298,
+        4296,
+        4056,
+        4038,
+        4039,
+        4049,
+        7789,
+        7791,
+        4074,
+        7813,
+        4102,
+        4107,
+        4113,
+        4120,
+        4121,
+        4126,
+        4127,
+        4138,
+        4151,
+        4160,
+        4231,
+        4233,
+        3634,
+        4237,
+        4239,
+        3644,
+        3645,
+        3657,
+        4249,
+        4252,
+        3667,
+        3673,
+        3676,
+        4259,
+        4260,
+        4267,
+        4268,
+        4273,
+        4276,
+        4277
+      ],
+      [
+        5923,
+        144,
+        1738,
+        1736,
+        1734,
+        1731,
+        1730,
+        1728,
+        1727,
+        1421,
+        7729,
+        7717,
+        7716,
+        7719,
+        7720,
+        7727,
+        7738,
+        7742,
+        1487,
+        1012,
+        1504,
+        1514,
+        1520,
+        1527,
+        1537,
+        1544,
+        1014,
+        1016,
+        1655,
+        1657,
+        1018,
+        1089,
+        1027,
+        1036,
+        1037,
+        1626,
+        1635,
+        1641,
+        1060,
+        1061,
+        1688,
+        1696,
+        1066,
+        1702,
+        1703,
+        1073,
+        1074,
+        1707,
+        1712,
+        1713,
+        1717,
+        1720
+      ],
+      [
+        5923,
+        144,
+        213,
+        210,
+        206,
+        197,
+        193,
+        187,
+        186,
+        7677,
+        7678,
+        7755,
+        7757,
+        7759,
+        2162,
+        3208,
+        3216,
+        3224,
+        3236,
+        3243,
+        3252,
+        3259,
+        3267,
+        3273,
+        3281,
+        3290,
+        3299,
+        3315,
+        3418,
+        3492,
+        3500,
+        3502,
+        3504,
+        3506,
+        2215,
+        2214,
+        2229,
+        2230,
+        3515,
+        2239,
+        2244,
+        2245,
+        3518,
+        3522,
+        3526,
+        3529,
+        7995,
+        3530
+      ]
+    ],
+    "geodesic_tip_distances": [
+      44.99047798388002,
+      48.427560039258545,
+      43.706951678480436,
+      40.54267045261655,
+      35.06595469744857,
+      40.81127150929089,
+      43.48045470102775,
+      40.15046496135545
+    ],
+    "connected_proxy_points": 7888
+  },
+  "metrics": {
+    "vertices": 8000,
+    "faces": 15936,
+    "bones": 81,
+    "frames": 48,
+    "normalized_rmse": 0.00041020642796483825,
+    "max_vertex_error": 0.49766061614031576,
+    "host_lbs_max_difference": 1.099611532314606e-05
+  },
+  "initial_normalized_rmse": 0.005968110964501141,
+  "initial_fit_method": "per-region rigid Procrustes fitted to actual native Vellum samples",
+  "source_metrics": {
+    "maximum_source_motion_metres": 0.43740081586975404,
+    "arm_tip_peak_to_peak_metres": [
+      0.3918283173755355,
+      0.3862745308033864,
+      0.34916698404697116,
+      0.3471301978662677,
+      0.2693529522038079,
+      0.2872107373373918,
+      0.38858116495816475,
+      0.3859389702918829
+    ],
+    "arm_tip_driver_phase_lag_samples": [
+      1,
+      1,
+      2,
+      1,
+      2,
+      1,
+      2,
+      1
+    ],
+    "lag_method": "cyclic lateral displacement cross-correlation; positive samples indicate lag; 12 samples/s",
+    "arm_tip_target_difference_rms_metres": [
+      0.03675936752258979,
+      0.03673300826651509,
+      0.04259576437120877,
+      0.03334471220388428,
+      0.030282889754361584,
+      0.03137743134968038,
+      0.039310042028997426,
+      0.03939504809928939
+    ],
+    "edge_length_relative_change_p95": 0.037891029807017064,
+    "maximum_edge_length_relative_change": 0.5089856430703958,
+    "open_surface_signed_volume_diagnostic_metres3": [
+      -0.08464035579206058,
+      -0.08464346947345454,
+      -0.08464833061508599,
+      -0.08465501524658499,
+      -0.08466325925129152,
+      -0.08465800435658648,
+      -0.084666918938708,
+      -0.0846796048657839,
+      -0.08469082910985376,
+      -0.08470103648293541,
+      -0.08470811006186689,
+      -0.08470976353089506,
+      -0.08471746577776178,
+      -0.08472770315871109,
+      -0.08474052848815063,
+      -0.08475577258900417,
+      -0.08476745037803575,
+      -0.08477320825319105,
+      -0.0847760024629684,
+      -0.08477764952930622,
+      -0.08477709417110342,
+      -0.08477146435835074,
+      -0.08475778598400348,
+      -0.08474066188841856,
+      -0.08472511664319617,
+      -0.0847098504147158,
+      -0.08468904976943231,
+      -0.08466759322691358,
+      -0.08464911565150819,
+      -0.08463686613976391,
+      -0.08462946652298388,
+      -0.08462247042982496,
+      -0.0846135440003839,
+      -0.0846014080880116,
+      -0.08458808794255289,
+      -0.08458119342194444,
+      -0.08457383498846179,
+      -0.08457292128973067,
+      -0.08457016088399456,
+      -0.08457569084647028,
+      -0.0845840028592263,
+      -0.08459249863805414,
+      -0.08460125968460354,
+      -0.08461120585641124,
+      -0.08462041312262954,
+      -0.08461916179466915,
+      -0.08462256837164785,
+      -0.08463077705939463
+    ],
+    "rest_open_surface_signed_volume_metres3": -0.08465548079279928,
+    "open_surface_volume_change_relative_p95": 0.0014121199906671265,
+    "closed_volume_conservation_claimed": false,
+    "minimum_y_metres": -0.28200000524520874,
+    "maximum_ground_penetration_metres": 0.0,
+    "contact_vertex_count_by_sample": [
+      41,
+      38,
+      38,
+      41,
+      40,
+      45,
+      64,
+      69,
+      70,
+      72,
+      77,
+      83,
+      89,
+      93,
+      92,
+      91,
+      88,
+      88,
+      88,
+      90,
+      86,
+      83,
+      85,
+      86,
+      87,
+      91,
+      92,
+      90,
+      91,
+      88,
+      82,
+      75,
+      77,
+      71,
+      61,
+      52,
+      49,
+      51,
+      52,
+      47,
+      47,
+      44,
+      43,
+      43,
+      39,
+      40,
+      40,
+      40
+    ],
+    "seam_last_to_first_rms_metres": 0.012312915147461237,
+    "seam_last_to_first_max_metres": 0.06055117393794829,
+    "typical_adjacent_sample_rms_metres": 0.010516141920190207,
+    "period_position_drift_rms_metres": 0.006129150215068681,
+    "period_velocity_drift_rms_metres_per_second": 0.04885105984613878,
+    "first_and_last_samples_forced_equal": false
+  },
+  "reconstruction_motion": {
+    "maximum_reconstruction_motion_metres": 0.4377014108418505,
+    "arm_tip_peak_to_peak_metres": [
+      0.3779646784508677,
+      0.3857906671198236,
+      0.3493326244004466,
+      0.3373120331810412,
+      0.2694671056586121,
+      0.2875966532210565,
+      0.3894328958884123,
+      0.38034052393776313
+    ],
+    "arm_tip_motion_retention_ratio": [
+      0.9646181259977876,
+      0.9987473388408618,
+      1.000474364930693,
+      0.9717161350434285,
+      1.0004239444457161,
+      1.0013436694863032,
+      1.0021919061939564,
+      0.9854939830580587
+    ],
+    "maximum_tip_reconstruction_error_metres": [
+      0.011339400098592965,
+      0.003874420757938641,
+      0.003432211144764269,
+      0.015888462235550894,
+      0.004738262816768415,
+      0.0037754315070712766,
+      0.0074709968118942495,
+      0.017418121564911064
+    ],
+    "maximum_ground_penetration_metres": 0.0009448623657227206
+  },
+  "reconstruction_acceptance": {
+    "fit_normalized_rmse": true,
+    "improves_coarse_rigid_regions": true,
+    "all_eight_arm_motion_retained": true,
+    "tip_fidelity": true,
+    "reconstructed_contact": true,
+    "sparse_weights": true,
+    "artist_reconstructed_contact": true
+  },
+  "weight_readback": true,
+  "native_evaluation": "Houdini VEX LBS with fitted scalar weights; all 48 native Vellum source samples",
+  "native_source_cache_roundtrip_max_difference": 1.9073486328125e-06,
+  "fitting_iterations": 160,
+  "fitting_seconds": 524.3824024000205,
+  "controls_per_arm": 10,
+  "floor_source_y": -8.14285714285714,
+  "source_units_to_metres": 0.035,
+  "numerical_deform": "/obj/DemBonesOctopusSoftbody/FIT_81_NUMERICAL_RECONSTRUCTION",
+  "solved_weights": "/obj/DemBonesOctopusSoftbody/FIT_81_SOLVED_WEIGHTS",
+  "render_transfer_excluded_from_numerical_metrics": true,
+  "ui_automation_used": false,
+  "render_deform": "/obj/DemBonesOctopusSoftbody/RENDER_DEFORM",
+  "render_readback": [
+    {
+      "frame": 1,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 2,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 3,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 4,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 5,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 6,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 7,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 8,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 9,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 10,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 11,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 12,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 13,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 14,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 15,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 16,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 17,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 18,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 19,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 20,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 21,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 22,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 23,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 24,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 25,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 26,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 27,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 28,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 29,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 30,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 31,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 32,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 33,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 34,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 35,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 36,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 37,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 38,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.00011473655700688923
+    },
+    {
+      "frame": 39,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.00025853157043459474
+    },
+    {
+      "frame": 40,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0002358341217041371
+    },
+    {
+      "frame": 41,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 5.483627320002071e-07
+    },
+    {
+      "frame": 42,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 43,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 44,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 45,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 46,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 47,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    },
+    {
+      "frame": 48,
+      "artist_vertices": 29542,
+      "artist_faces": 58912,
+      "uv_sets_preserved": 3,
+      "artist_ground_penetration_metres": 0.0
+    }
+  ],
+  "render_transfer": "native Point Deform to original artist mesh; original topology and UVs preserved",
+  "render_capture": {
+    "radius_proxy_diagonal_ratio": 0.008,
+    "radius_source_units": 0.5255107918536794,
+    "minimum_points": 4,
+    "maximum_points": 8,
+    "fixed_across_all_frames": true,
+    "post_deformation_contact_clamp": false
+  },
+  "maximum_artist_ground_penetration_metres": 0.00025853157043459474
+}

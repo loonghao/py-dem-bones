@@ -50,11 +50,13 @@ def bind_maps(material, maps_dir):
              "sha256": hashlib.sha256(path.read_bytes()).hexdigest()} for name, path in files.items()]
 
 
-def setup(source_sop, output_dir, hdri_path, *, maps_dir=None):
+def setup(source_sop, output_dir, hdri_path, *, maps_dir=None, floor_surface_z=-0.020):
     """Create one octopus stage in a fresh namespace, with no shared copies."""
     import hou
 
     source = hou.node(source_sop)
+    if not np.isfinite(floor_surface_z):
+        raise ValueError("Floor height must be finite in presentation metres")
     output_dir = Path(output_dir)
     hdri_path = Path(hdri_path).resolve(strict=True)
     if source is None or hou.node("/obj/DemBonesOctopusStudio") is not None or output_dir.exists():
@@ -114,7 +116,7 @@ def setup(source_sop, output_dir, hdri_path, *, maps_dir=None):
     floor = hou.node("/obj").createNode("geo", "DemBonesOctopusFloor", run_init_scripts=False)
     slab = floor.createNode("box")
     slab.parmTuple("size").set((200, 200, 0.01))
-    slab.parm("tz").set(-0.025)
+    slab.parm("tz").set(float(floor_surface_z) - 0.005)
     floor.parm("shop_materialpath").set(floor_material.path())
     floor.addSpareParmTuple(hou.properties.parmTemplate("mantra", "lightmask"))
     floor.parm("lightmask").set(
@@ -163,6 +165,7 @@ def setup(source_sop, output_dir, hdri_path, *, maps_dir=None):
         "render_geometry_excluded_from_numerical_acceptance": True,
         "camera": {"focal_mm": 70, "size": [1800, 1200], "target": center.tolist()},
         "floor_light_mask": floor.parm("lightmask").eval(),
+        "floor_surface_z_metres": float(floor_surface_z),
         "material": {"metallic": 0, "sss_weight": 0.48, "sss_distance_metres": 0.003,
                      "coat": 0.06, "coat_roughness": 0.26},
         "textures": texture_receipt, "hdri_sha256": hashlib.sha256(hdri_path.read_bytes()).hexdigest(),
@@ -174,7 +177,8 @@ def setup(source_sop, output_dir, hdri_path, *, maps_dir=None):
 
 
 def configure_render(
-    output_dir, *, shot="hero", frame=12, width=1800, height=1200, samples=6, threads=24, camera_distance=None
+    output_dir, *, shot="hero", frame=12, width=1800, height=1200, samples=6, threads=24,
+    camera_distance=None, camera_target=None
 ):
     """Configure a fresh output for this case's hero or eye-and-sucker detail."""
     import hou
@@ -188,6 +192,10 @@ def configure_render(
         raise ValueError("Resolution, samples and threads must be positive")
     if camera_distance is not None and (not np.isfinite(camera_distance) or camera_distance <= 0):
         raise ValueError("Camera distance must be finite and positive")
+    if camera_target is not None:
+        camera_target = np.asarray(camera_target, dtype=float)
+        if camera_target.shape != (3,) or not np.isfinite(camera_target).all():
+            raise ValueError("Camera target must contain three finite presentation coordinates")
     output_dir = Path(output_dir)
     if output_dir.exists():
         raise ValueError("Render outputs must use a fresh directory")
@@ -198,7 +206,8 @@ def configure_render(
     output_dir.mkdir(parents=True)
     # Fixed presentation target from the imported artist rest bounds. Keeping it
     # independent of the current frame makes the hero sequence camera stationary.
-    center = np.array((-0.04948595, 0.6425195, 0.33129914))
+    center = (np.array((-0.04948595, 0.6425195, 0.33129914))
+              if camera_target is None else camera_target.copy())
     direction = np.array((1.35, -1.55, 0.85))
     direction /= np.linalg.norm(direction)
     target = center.copy()

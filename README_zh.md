@@ -35,6 +35,45 @@ print(result.transforms.shape)  # (2, 实际骨骼数, 4, 4)
 
 ## 原生 DCC 展示
 
+### 章鱼：柔体动画到骨骼蒙皮
+
+![Houdini Mantra 八臂章鱼、Designer 材质与 SSS](docs/showcase/arm-skin/octopus-mantra-hero.png)
+
+Houdini 原生 Vellum 模拟柔软触腕的惯性与地面接触。Dem Bones 在固定
+8,000 点代理上，将 48 个源姿态拟合为 **81 根刚性骨骼**，归一化 RMSE 为
+**0.04102%**。原生 Point Deform 将结果传递到 29,542 点原作主体，保留拓扑
+与三套 UV；全部 48 帧通过原生数据读回和重新打开场景的验证。源动画的腕尖
+轨迹最大跨度为 27–39 cm，重建保留其 96.46–100.22%。
+见[原生数值记录](docs/showcase/arm-skin/octopus-softbody-native-report.json)。
+
+![48 帧 Mantra 原生渲染的柔体动画重建](docs/showcase/arm-skin/octopus-mantra-motion.gif)
+
+[四秒 MP4](docs/showcase/arm-skin/octopus-mantra-motion.mp4) ·
+[原生动画记录](docs/showcase/arm-skin/octopus-native-animation.json)
+
+![Vellum 源动画、Dem Bones 重建、残差与八条腕尖轨迹](docs/showcase/arm-skin/octopus-scientific-evidence.png)
+
+数值对照使用通过验收的代理数据、固定误差色标与未经改动的源采样。
+展示细分不参与求解误差计算；柔体源使用拉伸、弯曲和内部支撑约束，属于开放
+表面软体案例。
+
+### 章鱼材质
+
+![Houdini Mantra 章鱼眼部与吸盘细节](docs/showcase/arm-skin/octopus-mantra-detail.png)
+
+[可编辑 Substance Designer 图与 SBSAR](examples/showcase/materials/octopus/)
+为身体、吸盘和映射材质输出共 18 张原生 2K 贴图。完整八臂
+[Kraken 风格化雕塑](examples/showcase/assets/octopus/SOURCE.json)由 FIELDFLY3R（fld）
+创作，采用 **CC BY 4.0** 许可证。原始静止姿态近景使用 Mantra 原生 SSS 与 HDRI 灯光，
+[SSS 开关对照](docs/showcase/arm-skin/README.md)保持几何、相机与灯光一致。
+原资产与原贴图字节保留。
+
+独立的[手工驱动动画基线](docs/showcase/arm-skin/octopus-native-report.json)
+使用 33 个控制与 48 个指定姿态，归一化 RMSE 为 **0.01813%**。
+这一运动学基线单独保留原生数据读回和重新打开场景的验证记录。
+
+### 皮肤与钢链
+
 ![Cycles 原生皮肤近景、HDRI 灯光与次表面散射](docs/showcase/arm-skin/premium-blender-skin.png)
 
 在免费 CC0 手臂上使用九根骨骼、自己生成蒙皮，采样 48 帧，在 Maya、Blender、

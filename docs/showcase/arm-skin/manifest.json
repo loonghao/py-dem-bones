@@ -68,14 +68,39 @@
       "sha256": "61cab01590b35e873387c9093044e4d161b0437a49df80c02f585fa84a9ee2bf"
     },
     {
+      "path": "docs/showcase/arm-skin/octopus-mantra-hero.png",
+      "size_bytes": 2058274,
+      "sha256": "064f2488fb1b839d866542e40d3539c9e0a6987a2d7932f58913f182c5b5544c"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-mantra-motion.gif",
+      "size_bytes": 13841378,
+      "sha256": "1b1db52ae5ee0b3eaad850bda96fd1577ecb130706a44c73e191bdd7bac6115b"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-mantra-motion.mp4",
+      "size_bytes": 597863,
+      "sha256": "fc1f2fda628fb6c785e865ba5e57de6cee6a7fba3b83d5449150ab5f10c96e03"
+    },
+    {
       "path": "docs/showcase/arm-skin/octopus-mantra-sss-off.png",
       "size_bytes": 2658442,
       "sha256": "7dfe4efa585b8d884ec1df269abe1a7aa1554eed8cb02659b6ae22af13b43c8c"
     },
     {
       "path": "docs/showcase/arm-skin/octopus-material-render.json",
-      "size_bytes": 9526,
-      "sha256": "e285cb290750469dc4ba4bc7f8ec1681288d0767a5e41a65f80c890b9569be5e"
+      "size_bytes": 10082,
+      "sha256": "319127343dd644063290c2af94a16a95cb2bd1c6c75ff99ecc75b3804d772168"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-native-animation.json",
+      "size_bytes": 109395,
+      "sha256": "a0d5929a79337e1c55a4ae6489225b2095e270c5686cc607daa8ff90a4f77301"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-native-hero.json",
+      "size_bytes": 8173,
+      "sha256": "441b3f088c3bc60d1629e810f238036c1a172dc76cfcbe2919d5590e7bb3aac3"
     },
     {
       "path": "docs/showcase/arm-skin/octopus-native-import.json",
@@ -96,6 +121,36 @@
       "path": "docs/showcase/arm-skin/octopus-native-report.json",
       "size_bytes": 14655,
       "sha256": "ada110b54f717a551ac8ad013b3bf00b00c38aa01b8639fbd740883ce5154808"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-scientific-evidence.json",
+      "size_bytes": 94111,
+      "sha256": "6af4deb94d81a0bdb7c4be32cc8d3317f68363563d96ad35c0f12ed4bb989233"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-scientific-evidence.png",
+      "size_bytes": 422235,
+      "sha256": "c57c38688cb4b133e2ae9a0682381bdb44beeff5e93956bbbb4e87b2d384c426"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-softbody-native-readback.json",
+      "size_bytes": 26641,
+      "sha256": "b6b9f4afe5e2e068557c013f6ce4c64b175cdb539193f51aa0b167664a308d52"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-softbody-native-reopen.json",
+      "size_bytes": 27260,
+      "sha256": "8fb71c8c962e3e6d061a77346bcf96ec30e22a57d3c8b918920d125c61985822"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-softbody-native-report.json",
+      "size_bytes": 27121,
+      "sha256": "b5da49f4b168aa5b4ea10b1d2a44eaa8478586fd2a2a048a099d4626056fc014"
+    },
+    {
+      "path": "docs/showcase/arm-skin/octopus-softbody-native-source.json",
+      "size_bytes": 27503,
+      "sha256": "8808c8bc83a9488cc648e4a78149901cb65f59e062a366be656fb3210b0b6222"
     },
     {
       "path": "docs/showcase/arm-skin/premium-blender-chain.gif",
@@ -234,8 +289,8 @@
     },
     {
       "path": "docs/showcase/arm-skin/README.md",
-      "size_bytes": 17598,
-      "sha256": "a10924c929972ac65d5d77206892aaf0aceea78608b1bb71588fd756dfa2f652"
+      "size_bytes": 21436,
+      "sha256": "ca63b878c3cce560623087f832caa548e6a0f50f00210d19fa80d464baa57ebd"
     },
     {
       "path": "docs/showcase/arm-skin/render.png",
@@ -269,8 +324,8 @@
     },
     {
       "path": "docs/showcase/arm-skin/validation.json",
-      "size_bytes": 54073,
-      "sha256": "f57350dcdf31e798f47a0167c6cf50cf94e14260b426d163caf6d2bf5c740bfb"
+      "size_bytes": 63550,
+      "sha256": "e0d84c1fa920e4ffd95bc7f19da46753855e3b753d5ac78b8d440a813721f555"
     },
     {
       "path": "examples/showcase/assets/arm.obj",
@@ -309,8 +364,8 @@
     },
     {
       "path": "examples/showcase/assets/octopus/SOURCE.json",
-      "size_bytes": 4964,
-      "sha256": "bd1f0f4752695718ceefbf120338835e579a258864d54275595c161608dc6964"
+      "size_bytes": 6196,
+      "sha256": "56aa1665897c13e8d58e71d938ddd5abd4deb982b6c9366fbd31b6f4085a874d"
     },
     {
       "path": "examples/showcase/assets/SOURCE.json",
