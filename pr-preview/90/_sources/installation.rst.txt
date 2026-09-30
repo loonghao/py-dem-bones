@@ -2,14 +2,14 @@ Installation
 ============
 
 Requirements
------------
+------------
 
 - Python 3.8 or newer (including 3.9, 3.10, 3.11, 3.12, and 3.13)
 - NumPy 1.20.0 or newer
 - A C++ compiler supporting C++14 or newer
 
 Installing from PyPI
--------------------
+--------------------
 
 The easiest way to install py-dem-bones is via pip:
 
@@ -24,7 +24,7 @@ This will download and install the pre-built wheel for your platform if availabl
 - Eigen 3.3 or newer
 
 Installing from Source
----------------------
+----------------------
 
 We provide a unified installation script for all platforms (Windows, macOS, and Linux):
 
@@ -39,7 +39,7 @@ We provide a unified installation script for all platforms (Windows, macOS, and 
 Or you can choose a platform-specific installation method:
 
 Platform-Specific Installation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Linux/macOS
 ^^^^^^^^^^^
@@ -80,7 +80,7 @@ Or install manually after setting up the Visual Studio environment:
     pip install -e .
 
 Development Installation
------------------------
+------------------------
 
 For development, you may want to install additional dependencies:
 
@@ -91,7 +91,7 @@ For development, you may want to install additional dependencies:
 This will install development dependencies like pytest, black, ruff, and documentation tools.
 
 Managing Dependencies
--------------------
+---------------------
 
 This project uses Git submodules to manage C++ dependencies:
 
@@ -107,7 +107,7 @@ When cloning the repository, make sure to initialize the submodules:
     git submodule update --init --recursive
 
 Platform-Specific Dependencies
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Windows
 ^^^^^^^
@@ -143,7 +143,7 @@ On Fedora/RHEL/CentOS, you can install Eigen using dnf/yum:
     sudo dnf install eigen3-devel
 
 Verifying Installation
----------------------
+----------------------
 
 You can verify that py-dem-bones is installed correctly by importing it in Python:
 

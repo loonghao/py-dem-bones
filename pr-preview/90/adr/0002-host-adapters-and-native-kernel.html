@@ -255,7 +255,9 @@
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">py-dem-bones Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ci_cd.html">CI/CD and releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cibuildwheel.html">使用cibuildwheel进行本地构建</a></li>
 <li class="toctree-l1"><a class="reference internal" href="0001-validated-skinning-boundary.html">One validated boundary for mesh skinning</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Keep the native kernel and migrate host adapters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
@@ -341,43 +343,10 @@ Unreal uses an explicit sampler/writer bridge until a concrete SDK integration
 can prove vertex mapping and writeback. Mock SDK tests establish contracts;
 only execution in a real host establishes host acceptance.</p>
 </section>
-<section id="alternatives-and-future-rust-work">
-<h2>Alternatives and future Rust work<a class="headerlink" href="#alternatives-and-future-rust-work" title="Link to this heading">¶</a></h2>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Option</p></th>
-<th class="head"><p>Trade-off</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Python SDK adapters and C++ kernel</p></td>
-<td><p>Preserves the upstream algorithm and current numerical baseline; still requires host-specific Python wheels.</p></td>
-</tr>
-<tr class="row-odd"><td><p>Rust/PyO3 wrapper around C++</p></td>
-<td><p>Adds another toolchain and FFI boundary; does not remove host SDK work or isolate a native crash in the same process.</p></td>
-</tr>
-<tr class="row-even"><td><p>Rust rewrite of SSDR</p></td>
-<td><p>Requires numerical parity for clustering, SVD, sparse weights, smoothing and parallel execution; no measured benefit currently justifies that scope.</p></td>
-</tr>
-<tr class="row-odd"><td><p>Separate solver process, potentially Rust</p></td>
-<td><p>Can isolate crashes and centralize cancellation, scheduling and deployment; adds IPC, data transfer and process lifecycle costs.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>Revisit Rust when a measured bottleneck can be moved, or when at least two
-hosts need process isolation or shared job management. Benchmark sampling,
-conversion, solving and writing separately. A prototype must preserve mesh
-and output contracts, reconstruction error and supported host versions.
-PyO3’s <code class="docutils literal notranslate"><span class="pre">abi3</span></code> can reduce Python wheel variants, but OS/architecture and limited
-API compatibility still require validation; it is not universal DCC support.</p>
-</section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/electronicarts/dem-bones#contents">Dem Bones upstream architecture</a></p></li>
-<li><p><a class="reference external" href="https://pyo3.rs/main/building-and-distribution">PyO3 building and distribution</a></p></li>
 </ul>
 </section>
 </section>
@@ -447,7 +416,6 @@ API compatibility still require validation; it is not universal DCC support.</p>
 <li><a class="reference internal" href="#">Keep the native kernel and migrate host adapters</a><ul>
 <li><a class="reference internal" href="#context">Context</a></li>
 <li><a class="reference internal" href="#decision">Decision</a></li>
-<li><a class="reference internal" href="#alternatives-and-future-rust-work">Alternatives and future Rust work</a></li>
 <li><a class="reference internal" href="#references">References</a></li>
 </ul>
 </li>

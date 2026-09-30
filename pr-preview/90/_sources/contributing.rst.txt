@@ -4,7 +4,7 @@ Contributing
 Contributions to py-dem-bones are welcome! Here's how you can contribute:
 
 Setting Up Development Environment
----------------------------------
+----------------------------------
 
 1. Clone the repository:
 
@@ -28,7 +28,7 @@ Setting Up Development Environment
        pre-commit install
 
 Development Workflow
-------------------
+--------------------
 
 1. Create a new branch for your feature or bugfix:
 
@@ -61,7 +61,7 @@ Development Workflow
 6. Create a pull request on GitHub.
 
 Code Style
----------
+----------
 
 This project follows the Google Python Style Guide. We use ``ruff`` for linting and formatting.
 
@@ -78,7 +78,7 @@ To automatically fix style issues:
     ruff format .
 
 Building the Documentation
-------------------------
+--------------------------
 
 The documentation is built using Sphinx. To build it locally:
 
@@ -90,7 +90,7 @@ The documentation is built using Sphinx. To build it locally:
 The built documentation will be in ``docs/_build/html``.
 
 Running Tests
------------
+-------------
 
 We use pytest for testing. To run the tests:
 
@@ -105,7 +105,7 @@ To run tests with coverage:
     pytest --cov=py_dem_bones
 
 Releasing
---------
+---------
 
 Use Conventional Commits for changes merged to ``main``. release-please
 creates a release pull request that updates the version and changelog. Review

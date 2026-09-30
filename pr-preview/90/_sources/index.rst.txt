@@ -40,7 +40,9 @@ Features
    :caption: Development
 
    contributing
+   README
    ci_cd
+   cibuildwheel
    adr/0001-validated-skinning-boundary
    adr/0002-host-adapters-and-native-kernel
    changelog

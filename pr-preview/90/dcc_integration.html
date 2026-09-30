@@ -255,7 +255,9 @@
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html">py-dem-bones Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ci_cd.html">CI/CD and releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cibuildwheel.html">使用cibuildwheel进行本地构建</a></li>
 <li class="toctree-l1"><a class="reference internal" href="adr/0001-validated-skinning-boundary.html">One validated boundary for mesh skinning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="adr/0002-host-adapters-and-native-kernel.html">Keep the native kernel and migrate host adapters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -457,6 +459,49 @@ packaged Maya adapter and reads them back from Maya for verification.
 A plugin-load pass establishes host compatibility; gateway
 catalog readiness and UI control require their own acceptance tests.</p>
 </section>
+<section id="dcc-mcp-deformation-cases">
+<h2>DCC-MCP deformation cases<a class="headerlink" href="#dcc-mcp-deformation-cases" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">tests/integration/maya_deformation_cases.py</span></code> runs inside an initialized,
+interactive Maya with the DCC-MCP plugin loaded. Use a wheel matching Maya’s
+Python interpreter. Discover the exact instance with <code class="docutils literal notranslate"><span class="pre">dcc-mcp-cli</span> <span class="pre">list</span></code>;
+search and describe the scripting tool before calling it. These bulk numerical
+cases need the scripting escape hatch because no typed solver tool is provided.
+If a sidecar exposes dispatch only, use the plugin’s advertised embedded MCP
+endpoint for skill discovery and loading.</p>
+<p>After loading <code class="docutils literal notranslate"><span class="pre">maya-scripting</span></code>, create a UTF-8 JSON argument file containing
+<code class="docutils literal notranslate"><span class="pre">code</span></code> and <code class="docutils literal notranslate"><span class="pre">result_type</span></code>. The code adds the repository’s
+<code class="docutils literal notranslate"><span class="pre">tests/integration</span></code> directory to <code class="docutils literal notranslate"><span class="pre">sys.path</span></code>, imports the case module and
+calls it with a new output directory and namespace:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"/absolute/path/to/repository/tests/integration"</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">maya_deformation_cases</span>
+<span class="n">maya_deformation_cases</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"/absolute/path/to/new/output"</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="s2">"demBonesRun01"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Set <code class="docutils literal notranslate"><span class="pre">result_type</span></code> to <code class="docutils literal notranslate"><span class="pre">JSON</span></code> and invoke the discovered backend action:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">dcc-mcp-cli call maya_scripting__execute_python --dcc-type maya --instance-id &lt;exact-instance&gt; --json-file case-call.json --transport mcp --timeout-secs 240</span>
+</pre></div>
+</div>
+<p>The runner creates three procedural tube cases with 300 vertices, 290 polygons,
+three bones and 24 frames each: articulated bending/twisting, a translated and
+rotated rig with uniform scale, and a small non-rigid breathing bulge.
+It samples an actual Maya skin, solves through the packaged adapter, reads back
+written weights, explicitly keys independent output joints with identity bind
+matrices, and compares Maya’s evaluated mesh against both the input poses and
+the NumPy LBS reconstruction. This case-specific baking is not an adapter API.</p>
+<p>Acceptance requires normalized vertex RMSE below 2.5% of the world-space rest
+bounding-box diagonal and Maya/NumPy maximum deviation below 0.001% of that
+diagonal. Weights must be finite, nonnegative, normalized and match readback.
+The exported <code class="docutils literal notranslate"><span class="pre">deformation_cases.ma</span></code>, per-case <code class="docutils literal notranslate"><span class="pre">.npz</span></code> arrays and <code class="docutils literal notranslate"><span class="pre">report.json</span></code>
+retain the evidence. Existing namespaces and report paths are rejected;
+selection, time, current namespace and scene filename are restored. Created
+nodes remain in the new namespace, including after a failed run for diagnosis.</p>
+<p>On 2026-09-30, Maya 2026 passed all three cases through DCC-MCP. Normalized
+RMSE was 0.545%, 0.496% and 0.549%, respectively; the largest Maya/NumPy
+vertex deviation was <code class="docutils literal notranslate"><span class="pre">3.68e-6</span></code> world units. These are training-frame metrics
+on synthetic assets, not production-asset or unseen-animation acceptance.
+Other DCC versions require separate host runs.</p>
+</section>
 <section id="failure-contract">
 <h2>Failure contract<a class="headerlink" href="#failure-contract" title="Link to this heading">¶</a></h2>
 <p>Invalid shapes, non-finite values, fewer than three vertices, zero spatial
@@ -536,6 +581,7 @@ responsibility; avoid swallowing them and reporting partial success.</p>
 <li><a class="reference internal" href="#topology-and-initialization">Topology and initialization</a></li>
 <li><a class="reference internal" href="#packaged-host-adapters">Packaged host adapters</a></li>
 <li><a class="reference internal" href="#reproducible-maya-acceptance">Reproducible Maya acceptance</a></li>
+<li><a class="reference internal" href="#dcc-mcp-deformation-cases">DCC-MCP deformation cases</a></li>
 <li><a class="reference internal" href="#failure-contract">Failure contract</a></li>
 </ul>
 </li>
