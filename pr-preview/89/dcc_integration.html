@@ -256,6 +256,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ci_cd.html">CI/CD and releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adr/0001-validated-skinning-boundary.html">One validated boundary for mesh skinning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 
@@ -303,11 +304,13 @@ it does not reimplement the optimization described in <a class="reference extern
 <h2>Host adapter responsibilities<a class="headerlink" href="#host-adapter-responsibilities" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
 <li><p>Sample the rest mesh and each animated frame in one coordinate space.</p></li>
-<li><p>Preserve vertex identity and order across frames. Reject topology changes.</p></li>
+<li><p>Preserve vertex identity and order across frames. Reject topology changes.
+Supply polygon vertex indices for multi-bone initialization.</p></li>
 <li><p>Convert points to the solver coordinate system if the host uses different
 axes or units.</p></li>
 <li><p>Call <a class="reference internal" href="python_api.html#py_dem_bones.solve_skinning" title="py_dem_bones.solve_skinning"><code class="xref py py-func docutils literal notranslate"><span class="pre">py_dem_bones.solve_skinning()</span></code></a> with <code class="docutils literal notranslate"><span class="pre">(V,</span> <span class="pre">3)</span></code> rest positions
-and <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">V,</span> <span class="pre">3)</span></code> animated positions.</p></li>
+and <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">V,</span> <span class="pre">3)</span></code> animated positions, plus <code class="docutils literal notranslate"><span class="pre">faces</span></code> when requesting more
+than one bone. At least three vertices are required.</p></li>
 <li><p>Write weights <code class="docutils literal notranslate"><span class="pre">(B,</span> <span class="pre">V)</span></code> and transforms <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">B,</span> <span class="pre">4,</span> <span class="pre">4)</span></code> through the
 host’s own skinning API. Use the <strong>returned</strong> bone count, which may be less
 than the requested count.</p></li>
@@ -336,18 +339,50 @@ Z-up positions can map <code class="docutils literal notranslate"><span class="p
 <span class="n">coordinates</span> <span class="o">=</span> <span class="n">CoordinateSystem</span><span class="p">(</span><span class="n">host_to_solver</span><span class="p">)</span>
 <span class="n">rest_solver</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">points_to_solver</span><span class="p">(</span><span class="n">rest_host</span><span class="p">)</span>  <span class="c1"># (V, 3)</span>
 <span class="n">poses_solver</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">points_to_solver</span><span class="p">(</span><span class="n">poses_host</span><span class="p">)</span>  <span class="c1"># (F, V, 3)</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">solve_skinning</span><span class="p">(</span><span class="n">rest_solver</span><span class="p">,</span> <span class="n">poses_solver</span><span class="p">,</span> <span class="n">bone_count</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">solve_skinning</span><span class="p">(</span><span class="n">rest_solver</span><span class="p">,</span> <span class="n">poses_solver</span><span class="p">,</span> <span class="n">bone_count</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">faces</span><span class="o">=</span><span class="n">faces_host</span><span class="p">)</span>
 <span class="n">transforms_host</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">transforms_to_host</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">transforms</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">rest_host</span></code> and <code class="docutils literal notranslate"><span class="pre">poses_host</span></code> are arrays sampled by the host adapter.
+<p><code class="docutils literal notranslate"><span class="pre">rest_host</span></code>, <code class="docutils literal notranslate"><span class="pre">poses_host</span></code> and <code class="docutils literal notranslate"><span class="pre">faces_host</span></code> are sampled by the host adapter.
 Keep units consistent and check the host’s row/column matrix convention before
-writing <code class="docutils literal notranslate"><span class="pre">transforms_host</span></code>. Weights need no axis conversion.</p>
+writing <code class="docutils literal notranslate"><span class="pre">transforms_host</span></code>. Weights need no axis conversion.
+<code class="docutils literal notranslate"><span class="pre">points_to_host</span></code> and <code class="docutils literal notranslate"><span class="pre">transforms_to_solver</span></code> provide the reverse conversions.</p>
+</section>
+<section id="topology-and-initialization">
+<h2>Topology and initialization<a class="headerlink" href="#topology-and-initialization" title="Link to this heading">¶</a></h2>
+<p>The native solver initializes bone regions using mesh adjacency. Positions
+alone do not provide that adjacency: without faces, a multi-bone request can
+collapse to a single rigid bone. The Python boundary therefore requires faces
+for multi-bone solves and validates indices before entering C++. Triangles,
+quads and other polygons are accepted; all faces refer to the shared vertex
+order. The native optimizer can still prune regions with too few vertices.</p>
+<p>The portable API and <code class="docutils literal notranslate"><span class="pre">BaseDCCInterface</span></code> use one shared input/output boundary.
+Legacy DCC callers import a sequence, call <code class="docutils literal notranslate"><span class="pre">dem_bones.compute()</span></code>, then export
+all transforms with <code class="docutils literal notranslate"><span class="pre">to_dcc_data()</span></code>. Export before a successful compute fails.
+Set the coordinate system before importing. Changing it invalidates the import,
+and requires resampling or reimporting the host arrays before another export.
+Existing host-specific example classes have not yet been migrated and are
+incomplete; their presence does not establish host support.</p>
+</section>
+<section id="reproducible-maya-acceptance">
+<h2>Reproducible Maya acceptance<a class="headerlink" href="#reproducible-maya-acceptance" title="Link to this heading">¶</a></h2>
+<p>Install a wheel matching Maya’s embedded Python version, then use <code class="docutils literal notranslate"><span class="pre">mayapy</span></code>
+to run the opt-in acceptance script. Supply a plugin name on Maya’s plugin
+path, or the path to the installed DCC-MCP Maya plugin:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">mayapy tests/integration/maya_skinning_smoke.py --plugin dcc_mcp_maya_plugin.py --two-bones</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--site-packages</span></code> can point at an isolated installation of py-dem-bones.
+The script creates and samples Maya mesh data, checks numerical reconstruction,
+and prints JSON. A plugin-load pass establishes host compatibility; gateway
+catalog readiness and UI control require their own acceptance tests.</p>
 </section>
 <section id="failure-contract">
 <h2>Failure contract<a class="headerlink" href="#failure-contract" title="Link to this heading">¶</a></h2>
-<p>Invalid shapes, non-finite values, empty sequences, or an impossible bone
-count raise <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> before entering C++. A malformed native result
+<p>Invalid shapes, non-finite values, fewer than three vertices, zero spatial
+extent, missing or invalid
+multi-bone topology, empty sequences, or an impossible bone count raise
+<code class="docutils literal notranslate"><span class="pre">ValueError</span></code> before entering C++. A malformed native result
 raises <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code>. Host integration errors remain the host adapter’s
 responsibility; avoid swallowing them and reporting partial success.</p>
 </section>
@@ -418,6 +453,8 @@ responsibility; avoid swallowing them and reporting partial success.</p>
 <li><a class="reference internal" href="#">DCC integration contract</a><ul>
 <li><a class="reference internal" href="#host-adapter-responsibilities">Host adapter responsibilities</a></li>
 <li><a class="reference internal" href="#coordinate-conversion">Coordinate conversion</a></li>
+<li><a class="reference internal" href="#topology-and-initialization">Topology and initialization</a></li>
+<li><a class="reference internal" href="#reproducible-maya-acceptance">Reproducible Maya acceptance</a></li>
 <li><a class="reference internal" href="#failure-contract">Failure contract</a></li>
 </ul>
 </li>

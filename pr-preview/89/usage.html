@@ -256,6 +256,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ci_cd.html">CI/CD and releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adr/0001-validated-skinning-boundary.html">One validated boundary for mesh skinning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 
@@ -303,7 +304,7 @@ transform in one array.</p>
 
 <span class="n">rest</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
 <span class="n">poses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">rest</span><span class="p">,</span> <span class="n">rest</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">solve_skinning</span><span class="p">(</span><span class="n">rest</span><span class="p">,</span> <span class="n">poses</span><span class="p">,</span> <span class="n">bone_count</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">solve_skinning</span><span class="p">(</span><span class="n">rest</span><span class="p">,</span> <span class="n">poses</span><span class="p">,</span> <span class="n">bone_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>     <span class="c1"># (actual_bones, 4)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># (2, actual_bones, 4, 4)</span>
@@ -312,9 +313,12 @@ transform in one array.</p>
 <section id="input-and-output-contract">
 <h2>Input and output contract<a class="headerlink" href="#input-and-output-contract" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">rest_vertices</span></code>: finite float positions, shape <code class="docutils literal notranslate"><span class="pre">(V,</span> <span class="pre">3)</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rest_vertices</span></code>: finite float positions, shape <code class="docutils literal notranslate"><span class="pre">(V,</span> <span class="pre">3)</span></code>, with <code class="docutils literal notranslate"><span class="pre">V</span> <span class="pre">&gt;=</span> <span class="pre">3</span></code>
+and nonzero spatial extent.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">poses</span></code>: finite float positions, shape <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">V,</span> <span class="pre">3)</span></code>; <code class="docutils literal notranslate"><span class="pre">F</span></code> and <code class="docutils literal notranslate"><span class="pre">V</span></code>
-must be positive.</p></li>
+must be positive, and the vertex count must match the rest mesh.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">faces</span></code>: polygons of at least three distinct, in-range integer vertex
+indices. Required when <code class="docutils literal notranslate"><span class="pre">bone_count</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>; optional for a single rigid bone.</p></li>
 <li><p>All frames share vertex count, vertex order, units, and coordinate space.
 The array contract cannot detect a host changing vertex order.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">bone_count</span></code> is a positive request no greater than <code class="docutils literal notranslate"><span class="pre">V</span></code>. The native
@@ -327,6 +331,10 @@ in the last column.</p></li>
 <code class="docutils literal notranslate"><span class="pre">fStart=[0,</span> <span class="pre">F]</span></code>, and <code class="docutils literal notranslate"><span class="pre">m=(4*F,</span> <span class="pre">4*B)</span></code>. The portable function owns these
 conversions. Direct users of <code class="docutils literal notranslate"><span class="pre">DemBones</span></code> must follow the upstream layout.</p>
 <p>See <a class="reference internal" href="dcc_integration.html"><span class="doc">DCC integration contract</span></a> for coordinate conversion and host adapter guidance.</p>
+<p>Supplying an existing native <code class="docutils literal notranslate"><span class="pre">solver</span></code> preserves its scalar algorithm options.
+Each call clears previous mesh data, weights, transforms, locks and cached
+topology before loading the new sequence. This is a fresh solve, so provide
+<code class="docutils literal notranslate"><span class="pre">faces</span></code> again for each multi-bone solve.</p>
 </section>
 </section>
 

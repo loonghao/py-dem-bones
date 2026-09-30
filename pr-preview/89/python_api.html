@@ -256,6 +256,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ci_cd.html">CI/CD and releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adr/0001-validated-skinning-boundary.html">One validated boundary for mesh skinning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 
@@ -302,12 +303,14 @@
 <h3>Portable DCC API<a class="headerlink" href="#portable-dcc-api" title="Link to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="py_dem_bones.solve_skinning">
-<span class="sig-prename descclassname"><span class="pre">py_dem_bones.</span></span><span class="sig-name descname"><span class="pre">solve_skinning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rest_vertices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poses</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bone_count</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_influences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.solve_skinning" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">py_dem_bones.</span></span><span class="sig-name descname"><span class="pre">solve_skinning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rest_vertices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poses</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bone_count</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">faces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_influences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.solve_skinning" title="Link to this definition">¶</a></dt>
 <dd><p>Decompose one mesh sequence with the Dem Bones SSDR solver.</p>
 <p><code class="docutils literal notranslate"><span class="pre">rest_vertices</span></code> is <code class="docutils literal notranslate"><span class="pre">(V,</span> <span class="pre">3)</span></code> and <code class="docutils literal notranslate"><span class="pre">poses</span></code> is <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">V,</span> <span class="pre">3)</span></code>.
-Both must use the same vertex order and coordinate space. The solver may
-produce fewer than <code class="docutils literal notranslate"><span class="pre">bone_count</span></code> bones during its initialization.
-<code class="docutils literal notranslate"><span class="pre">solver</span></code> allows an existing native DemBones instance to be supplied.</p>
+Both must use the same vertex order and coordinate space, with at least
+three vertices. <code class="docutils literal notranslate"><span class="pre">faces</span></code> contains polygons of zero-based vertex indices;
+it is required for multi-bone initialization. The solver may produce fewer
+than <code class="docutils literal notranslate"><span class="pre">bone_count</span></code> bones. A supplied native <code class="docutils literal notranslate"><span class="pre">solver</span></code> retains scalar
+algorithm options, but its mesh, solution, locks and caches are cleared.</p>
 </dd></dl>
 
 <dl class="py class">
@@ -351,9 +354,21 @@ converting them; this class cannot repair changed vertex topology or order.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="py_dem_bones.CoordinateSystem.points_to_host">
+<span class="sig-name descname"><span class="pre">points_to_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.CoordinateSystem.points_to_host" title="Link to this definition">¶</a></dt>
+<dd><p>Convert solver positions back to the host’s axes and units.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="py_dem_bones.CoordinateSystem.transforms_to_host">
 <span class="sig-name descname"><span class="pre">transforms_to_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transforms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.CoordinateSystem.transforms_to_host" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py_dem_bones.CoordinateSystem.transforms_to_solver">
+<span class="sig-name descname"><span class="pre">transforms_to_solver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transforms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.CoordinateSystem.transforms_to_solver" title="Link to this definition">¶</a></dt>
+<dd><p>Convert host column-vector transforms into solver coordinates.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -1036,6 +1051,22 @@ adding support for named bones, error handling, and convenience methods.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="py_dem_bones.DemBonesWrapper.set_mesh_sequence">
+<span class="sig-name descname"><span class="pre">set_mesh_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rest_vertices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poses</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">bone_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bone_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">faces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DemBonesWrapper.set_mesh_sequence" title="Link to this definition">¶</a></dt>
+<dd><p>Replace solver input with one mesh <code class="docutils literal notranslate"><span class="pre">(V,</span> <span class="pre">3)</span></code> and frames <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">V,</span> <span class="pre">3)</span></code>.</p>
+<p>Inputs use the same vertex order and coordinate space. Multi-bone solves
+require polygon <code class="docutils literal notranslate"><span class="pre">faces</span></code>. Algorithm options are retained; cached solutions,
+bind matrices and hierarchy are invalidated. Call <a class="reference internal" href="#py_dem_bones.DemBonesWrapper.compute" title="py_dem_bones.DemBonesWrapper.compute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">compute()</span></code></a> before
+<a class="reference internal" href="#py_dem_bones.DemBonesWrapper.get_skinning_result" title="py_dem_bones.DemBonesWrapper.get_skinning_result"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_skinning_result()</span></code></a>. Invalid inputs raise <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py_dem_bones.DemBonesWrapper.get_skinning_result">
+<span class="sig-name descname"><span class="pre">get_skinning_result</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DemBonesWrapper.get_skinning_result" title="Link to this definition">¶</a></dt>
+<dd><p>Return computed weights <code class="docutils literal notranslate"><span class="pre">(B,</span> <span class="pre">V)</span></code> and every transform <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">B,</span> <span class="pre">4,</span> <span class="pre">4)</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="py_dem_bones.DemBonesWrapper.get_bind_matrix">
 <span class="sig-name descname"><span class="pre">get_bind_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bone</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DemBonesWrapper.get_bind_matrix" title="Link to this definition">¶</a></dt>
 <dd><p>Get the bind matrix for a bone.</p>
@@ -1304,6 +1335,12 @@ skeleton support.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="py_dem_bones.DemBonesExtWrapper.get_skinning_result">
+<span class="sig-name descname"><span class="pre">get_skinning_result</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DemBonesExtWrapper.get_skinning_result" title="Link to this definition">¶</a></dt>
+<dd><p>Return computed weights <code class="docutils literal notranslate"><span class="pre">(B,</span> <span class="pre">V)</span></code> and every transform <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">B,</span> <span class="pre">4,</span> <span class="pre">4)</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="py_dem_bones.DemBonesExtWrapper.get_target_index">
 <span class="sig-name descname"><span class="pre">get_target_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DemBonesExtWrapper.get_target_index" title="Link to this definition">¶</a></dt>
 <dd><p>Get the index for a target name.</p>
@@ -1464,6 +1501,16 @@ skeleton support.</p>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py_dem_bones.DemBonesExtWrapper.set_mesh_sequence">
+<span class="sig-name descname"><span class="pre">set_mesh_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rest_vertices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poses</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">bone_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bone_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">faces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DemBonesExtWrapper.set_mesh_sequence" title="Link to this definition">¶</a></dt>
+<dd><p>Replace solver input with one mesh <code class="docutils literal notranslate"><span class="pre">(V,</span> <span class="pre">3)</span></code> and frames <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">V,</span> <span class="pre">3)</span></code>.</p>
+<p>Inputs use the same vertex order and coordinate space. Multi-bone solves
+require polygon <code class="docutils literal notranslate"><span class="pre">faces</span></code>. Algorithm options are retained; cached solutions,
+bind matrices and hierarchy are invalidated. Call <a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.compute" title="py_dem_bones.DemBonesExtWrapper.compute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">compute()</span></code></a> before
+<a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.get_skinning_result" title="py_dem_bones.DemBonesExtWrapper.get_skinning_result"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_skinning_result()</span></code></a>. Invalid inputs raise <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2043,10 +2090,10 @@ required by the DCC software.</p>
 <dd class="field-odd"><p><strong>**kwargs</strong> – DCC-specific parameters</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if export was successful</p>
+<dd class="field-even"><p>Exported data, including a success flag</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2211,7 +2258,9 @@ otherwise transform from DemBones to DCC coordinate system</p></li>
 <li><a class="reference internal" href="#py_dem_bones.CoordinateSystem"><code class="docutils literal notranslate"><span class="pre">CoordinateSystem</span></code></a><ul>
 <li><a class="reference internal" href="#py_dem_bones.CoordinateSystem.__init__"><code class="docutils literal notranslate"><span class="pre">CoordinateSystem.__init__()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.CoordinateSystem.points_to_solver"><code class="docutils literal notranslate"><span class="pre">CoordinateSystem.points_to_solver()</span></code></a></li>
+<li><a class="reference internal" href="#py_dem_bones.CoordinateSystem.points_to_host"><code class="docutils literal notranslate"><span class="pre">CoordinateSystem.points_to_host()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.CoordinateSystem.transforms_to_host"><code class="docutils literal notranslate"><span class="pre">CoordinateSystem.transforms_to_host()</span></code></a></li>
+<li><a class="reference internal" href="#py_dem_bones.CoordinateSystem.transforms_to_solver"><code class="docutils literal notranslate"><span class="pre">CoordinateSystem.transforms_to_solver()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -2339,6 +2388,8 @@ otherwise transform from DemBones to DCC coordinate system</p></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesWrapper.get_target_names"><code class="docutils literal notranslate"><span class="pre">DemBonesWrapper.get_target_names()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesWrapper.get_target_index"><code class="docutils literal notranslate"><span class="pre">DemBonesWrapper.get_target_index()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesWrapper.set_target_name"><code class="docutils literal notranslate"><span class="pre">DemBonesWrapper.set_target_name()</span></code></a></li>
+<li><a class="reference internal" href="#py_dem_bones.DemBonesWrapper.set_mesh_sequence"><code class="docutils literal notranslate"><span class="pre">DemBonesWrapper.set_mesh_sequence()</span></code></a></li>
+<li><a class="reference internal" href="#py_dem_bones.DemBonesWrapper.get_skinning_result"><code class="docutils literal notranslate"><span class="pre">DemBonesWrapper.get_skinning_result()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesWrapper.get_bind_matrix"><code class="docutils literal notranslate"><span class="pre">DemBonesWrapper.get_bind_matrix()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesWrapper.set_bind_matrix"><code class="docutils literal notranslate"><span class="pre">DemBonesWrapper.set_bind_matrix()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesWrapper.get_weights"><code class="docutils literal notranslate"><span class="pre">DemBonesWrapper.get_weights()</span></code></a></li>
@@ -2362,6 +2413,7 @@ otherwise transform from DemBones to DCC coordinate system</p></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.get_bind_matrix"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.get_bind_matrix()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.get_bone_index"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.get_bone_index()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.get_bone_names"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.get_bone_names()</span></code></a></li>
+<li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.get_skinning_result"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.get_skinning_result()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.get_target_index"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.get_target_index()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.get_target_names"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.get_target_names()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.get_transformations"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.get_transformations()</span></code></a></li>
@@ -2376,6 +2428,7 @@ otherwise transform from DemBones to DCC coordinate system</p></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.set_bind_matrix"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.set_bind_matrix()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.set_bone_name"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.set_bone_name()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.set_bone_names"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.set_bone_names()</span></code></a></li>
+<li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.set_mesh_sequence"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.set_mesh_sequence()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.set_rest_pose"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.set_rest_pose()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.set_target_name"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.set_target_name()</span></code></a></li>
 <li><a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.set_target_vertices"><code class="docutils literal notranslate"><span class="pre">DemBonesExtWrapper.set_target_vertices()</span></code></a></li>
