@@ -303,24 +303,25 @@
         <article role="main" id="furo-main-content">
           <section id="arm-skinning-designer-materials-and-native-dcc-previews">
 <h1>Arm skinning: Designer materials and native DCC previews<a class="headerlink" href="#arm-skinning-designer-materials-and-native-dcc-previews" title="Link to this heading">¶</a></h1>
-<p><img alt="Cycles source and reconstructed arm, first material iteration" src="../../_images/render.png" /></p>
+<p><img alt="Cycles source and reconstructed arm, lighter Designer skin" src="../../_images/render.png" /></p>
 <p>The left arm uses our authored weights; the right arm uses Dem Bones weights
 and solved joint animation. This is a native Blender Cycles render. The free
 <a class="reference download internal" download="" href="../../_downloads/96fb0cf86502ba42409f05f5e8a8a529/arm.obj"><span class="xref download myst">MakeHuman arm</span></a> has 2,087 vertices
 and 2,068 polygons. We author nine influences and 48 poses, then validate the
 reconstructed animation in Maya, Blender, Houdini and Unreal Engine 5.8.</p>
-<p><strong>Look development is in progress.</strong> Blender and Maya sequences below use the
-first Designer color palette and SSS scale <code class="docutils literal notranslate"><span class="pre">0.09</span></code>. The saved material has a
-lighter palette; the next render uses scale <code class="docutils literal notranslate"><span class="pre">0.03</span></code>. That iteration, the SSS
-on/off comparison, the complete Houdini Mantra arm sequence and the Unreal
-SSS sequence await native acceptance. See <a class="reference download internal" download="" href="../../_downloads/e0e8af4ec4f315e79ee90d5e267ece42/validation.json"><span class="xref download myst">validation</span></a> and
+<p><strong>Look development is in progress.</strong> Blender’s complete sequence uses the
+lighter Designer palette and SSS scale <code class="docutils literal notranslate"><span class="pre">0.03</span></code>. Its packed scene was reopened
+through DCC-MCP; the bound textures and HDRI match the published asset hashes.
+Maya retains the first palette and scale <code class="docutils literal notranslate"><span class="pre">0.09</span></code>. The updated Maya material,
+complete Houdini Mantra arm sequence and Unreal SSS sequence await native
+acceptance. See <a class="reference download internal" download="" href="../../_downloads/e0e8af4ec4f315e79ee90d5e267ece42/validation.json"><span class="xref download myst">validation</span></a> and
 <a class="reference download internal" download="" href="../../_downloads/d5a9f6b1add76ec8475968abd84dd8b9/manifest.json"><span class="xref download myst">file hashes</span></a> for the exact completed evidence.</p>
 <section id="native-animation-gallery">
 <h2>Native animation gallery<a class="headerlink" href="#native-animation-gallery" title="Link to this heading">¶</a></h2>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head"><p>Blender 5.2 — Cycles, HDRI + SSS first pass</p></th>
+<tr class="row-odd"><th class="head"><p>Blender 5.2 — Cycles, HDRI + SSS</p></th>
 <th class="head"><p>Maya 2026 — Arnold, HDRI + SSS first pass</p></th>
 </tr>
 </thead>
@@ -350,6 +351,28 @@ SSS sequence await native acceptance. See <a class="reference download internal"
 synthetic in-between frames or geometry correction is applied. Houdini’s
 OpenGL clip and Unreal’s lit clip are deformation previews. They do not
 demonstrate the final HDRI skin material.</p>
+<section id="native-sss-comparison">
+<h3>Native SSS comparison<a class="headerlink" href="#native-sss-comparison" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>SSS off</p></th>
+<th class="head"><p>SSS on, weight 0.65 and scale 0.03</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="Native Cycles hand without subsurface scattering" src="../../_images/sss-off.png" /></p></td>
+<td><p><img alt="Native Cycles hand with subsurface scattering" src="../../_images/sss-on.png" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Both native Cycles renders use frame 12, the same camera, HDRI, backlight,
+skin maps and 128 samples. Only the subsurface weight changes. This is an
+artistic comparison, not a measurement of real skin scattering coefficients.
+The <a class="reference download internal" download="" href="../../_downloads/9427979b26675927895180cf2b23983e/blender-packed-readback.json"><span class="xref download myst">packed texture readback</span></a> records the
+native reopened material’s bound bytes, relative paths and SSS settings.</p>
+</section>
 <section id="rigid-metal-chain">
 <h3>Rigid metal chain<a class="headerlink" href="#rigid-metal-chain" title="Link to this heading">¶</a></h3>
 <p><img alt="Eight reconstructed metal chain links in Cycles" src="../../_images/blender-chain.gif" /></p>
@@ -534,8 +557,8 @@ the Blender and Maya previews.</p>
 </tbody>
 </table>
 </div>
-<p>The completed Cycles and Arnold clips use scatter scale <code class="docutils literal notranslate"><span class="pre">0.09</span></code>; the next
-scripted iteration uses <code class="docutils literal notranslate"><span class="pre">0.03</span></code>. These are artistic scene settings, not
+<p>The completed Cycles clip uses scatter scale <code class="docutils literal notranslate"><span class="pre">0.03</span></code>; Arnold retains <code class="docutils literal notranslate"><span class="pre">0.09</span></code>.
+These are artistic scene settings, not
 measured skin coefficients. Cycles uses denoising and 64 animation samples;
 Arnold uses AA 3 and diffuse samples 2 with color-managed PNG output. The
 single Mantra preview uses 6 × 6 pixel samples. Its linear EXR is displayed
@@ -543,17 +566,19 @@ with an approximate gamma 2.2 conversion, not an identical cross-renderer
 color transform. Unreal’s HDRI/SSS capture exposure is still under review.</p>
 <p><img alt="Completed single-frame Mantra SSS first pass" src="../../_images/houdini-mantra-first-pass.png" /></p>
 <p>The Mantra image is a completed single frame. The interrupted animation is
-excluded. Packed relative native scene delivery, UV/tangent review, improved
-SSS quality and an identical-lighting SSS off/on pair remain acceptance tasks.</p>
+excluded. Blender’s relative packed textures have passed native scene reopen
+and byte readback. Public native scene delivery, UV/tangent review and the
+remaining renderer sequences still require acceptance.</p>
 </section>
 <section id="reproduce-and-resume">
 <h2>Reproduce and resume<a class="headerlink" href="#reproduce-and-resume" title="Link to this heading">¶</a></h2>
 <p>Follow the <a class="reference external" href="https://github.com/loonghao/py-dem-bones/tree/main/examples/showcase">DCC-MCP example guide</a>.
 Use a disposable scene/project, a wheel matching the host’s Python ABI, and
 an exactly selected live DCC-MCP instance. Application UI uses the project
-DCC-CUA route. The last continuation was blocked by
-<code class="docutils literal notranslate"><span class="pre">interactive_desktop_unavailable</span></code> from DCC-CUA 1.9.1; restore the interactive
-desktop before resuming native rendering or UI capture.</p>
+DCC-CUA route only when the official application API cannot express the
+operation. When an official API exists but DCC-MCP lacks a tool, implement
+and validate the typed adapter capability first. Maya and Houdini startup
+integration is currently being repaired before further native rendering.</p>
 </section>
 </section>
 
@@ -621,6 +646,7 @@ desktop before resuming native rendering or UI capture.</p>
             <ul>
 <li><a class="reference internal" href="#">Arm skinning: Designer materials and native DCC previews</a><ul>
 <li><a class="reference internal" href="#native-animation-gallery">Native animation gallery</a><ul>
+<li><a class="reference internal" href="#native-sss-comparison">Native SSS comparison</a></li>
 <li><a class="reference internal" href="#rigid-metal-chain">Rigid metal chain</a></li>
 </ul>
 </li>
