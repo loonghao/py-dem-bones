@@ -20,16 +20,16 @@ from py_dem_bones import solve_skinning
 
 rest = np.array([[0., 0., 0.], [1., 0., 0.], [0., 1., 0.], [0., 0., 1.]])
 poses = np.stack([rest, rest + np.array([0., 0., 0.2])])
-result = solve_skinning(rest, poses, bone_count=2)
+result = solve_skinning(rest, poses, bone_count=1)
 print(result.weights.shape)     # (actual_bones, 4)
 print(result.transforms.shape)  # (2, actual_bones, 4, 4)
 ```
 
-The input contract is `rest=(vertices, 3)` and `poses=(frames, vertices, 3)`. Every frame must have the same vertex count, vertex order, units, and coordinate space. The solver can produce fewer than the requested bones. Results contain weights `(bones, vertices)` and **all** transforms `(frames, bones, 4, 4)`. A DCC adapter samples its mesh into these arrays and writes the result back using its own API. [DCC integration guide](docs/dcc_integration.rst) explains axis conversion and the native matrix layout.
+The input contract is `rest=(vertices, 3)` and `poses=(frames, vertices, 3)`, with at least three vertices. Every frame must have the same vertex count, vertex order, units, and coordinate space. Multi-bone solves require `faces`, a sequence of polygons containing zero-based vertex indices, so the native solver can initialize connected bone regions. See the [two-bone example](examples/portable_example.py). The solver can produce fewer than the requested bones. Results contain weights `(bones, vertices)` and **all** transforms `(frames, bones, 4, 4)`. [DCC integration guide](docs/dcc_integration.rst) explains axis conversion and the native matrix layout.
 
 ## DCC support
 
-The portable API has no Maya, Blender, Houdini, 3ds Max, or Unreal runtime dependency. Any host that can provide ordered mesh positions and consume skinning weights and 4×4 transforms can use it. The repository includes host-specific examples under [`examples/`](examples/), but these are reference integrations and must run inside their corresponding DCC. Host UI automation is outside this package's API.
+The portable API has no Maya, Blender, Houdini, 3ds Max, or Unreal runtime dependency. Hosts provide ordered positions and mesh topology, then consume the solved weights and transforms. A reusable [Maya standalone smoke test](tests/integration/maya_skinning_smoke.py) verifies this boundary with Maya mesh data. The older `*_example.py` host integrations under [`examples/`](examples/) remain incomplete: their native layouts and SDK calls have not been migrated to this contract. Use the portable example when implementing an adapter. Host UI automation is outside this package's API.
 
 ## Develop and release
 

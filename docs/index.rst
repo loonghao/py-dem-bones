@@ -1,7 +1,7 @@
 .. py-dem-bones documentation master file
 
 Welcome to py-dem-bones's documentation!
-=======================================
+==========================================
 
 **py-dem-bones** binds the Dem Bones native solver and provides a host-independent NumPy contract for turning ordered mesh poses into linear blend skinning weights and bone transformations.
 
@@ -41,6 +41,7 @@ Features
 
    contributing
    ci_cd
+   adr/0001-validated-skinning-boundary
    changelog
 
 Quick Start
@@ -54,7 +55,7 @@ Installation
    pip install py-dem-bones
 
 Basic Usage
-^^^^^^^^^^
+^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -63,7 +64,7 @@ Basic Usage
 
    rest = np.array([[0., 0., 0.], [1., 0., 0.], [0., 1., 0.], [0., 0., 1.]])
    poses = np.stack([rest, rest + [0., 0., 0.2]])
-   result = pdb.solve_skinning(rest, poses, bone_count=2)
+   result = pdb.solve_skinning(rest, poses, bone_count=1)
    print(result.weights.shape, result.transforms.shape)
 
 Indices and tables

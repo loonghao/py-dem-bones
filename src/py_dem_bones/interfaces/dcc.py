@@ -9,13 +9,14 @@ software such as Maya, Blender, or custom 3D applications.
 # Import standard library modules
 # Import built-in modules
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 # Import third-party modules
 import numpy as np
 
 # Import local modules
 from py_dem_bones.base import DemBonesExtWrapper, DemBonesWrapper
+from py_dem_bones.portable import CoordinateSystem
 
 
 class DCCInterface(ABC):
@@ -75,7 +76,7 @@ class DCCInterface(ABC):
         """
 
     @abstractmethod
-    def to_dcc_data(self, **kwargs) -> bool:
+    def to_dcc_data(self, **kwargs) -> Dict[str, Any]:
         """
         Export DemBones data to DCC software.
 
@@ -86,7 +87,7 @@ class DCCInterface(ABC):
             **kwargs: DCC-specific parameters
 
         Returns:
-            bool: True if export was successful
+            dict: Exported data, including a success flag
         """
 
     @abstractmethod
@@ -184,6 +185,8 @@ class BaseDCCInterface(DCCInterface):
         # Default coordinate system transformation matrix
         # Identity matrix (no transformation)
         self._coord_transform = np.eye(4)
+        self._coordinates = CoordinateSystem(self._coord_transform)
+        self._import_succeeded = False
 
     def get_dcc_info(self) -> Dict[str, Any]:
         """
@@ -203,6 +206,9 @@ class BaseDCCInterface(DCCInterface):
         rest_pose: np.ndarray,
         target_poses: List[np.ndarray],
         bone_names: Optional[List[str]] = None,
+        *,
+        faces: Optional[Sequence[Sequence[int]]] = None,
+        bone_count: Optional[int] = None,
         **kwargs,
     ) -> bool:
         """
@@ -212,33 +218,29 @@ class BaseDCCInterface(DCCInterface):
             rest_pose (numpy.ndarray): Rest pose vertices with shape [num_vertices, 3]
             target_poses (list): List of target pose vertices, each with shape [num_vertices, 3]
             bone_names (list, optional): List of bone names
+            faces (sequence, optional): Polygon vertex indices; required for multiple bones.
+            bone_count (int, optional): Requested bones. Defaults to the names count or
+                the existing wrapper's bone count.
             **kwargs: Additional parameters
 
         Returns:
             bool: True if import was successful
         """
+        self._import_succeeded = False
         if self._dem_bones is None:
             return False
 
         try:
-            # Convert coordinate system if needed
             rest_pose = self.apply_coordinate_system_transform(rest_pose, from_dcc=True)
-            target_poses = [
-                self.apply_coordinate_system_transform(pose, from_dcc=True)
-                for pose in target_poses
-            ]
-
-            # Set bone names if provided
-            if bone_names:
-                self._dem_bones.set_bone_names(*bone_names)
-
-            # Set rest pose (transpose to match DemBones format [3, num_vertices])
-            self._dem_bones.set_rest_pose(rest_pose.T)
-
-            # Set target poses
-            for i, pose in enumerate(target_poses):
-                self._dem_bones.set_target_vertices(i, pose.T)
-
+            target_poses = self.apply_coordinate_system_transform(np.asarray(target_poses), from_dcc=True)
+            self._dem_bones.set_mesh_sequence(
+                rest_pose,
+                target_poses,
+                bone_count=bone_count,
+                bone_names=bone_names,
+                faces=faces,
+            )
+            self._import_succeeded = True
             return True
         except Exception as e:
             print(f"Error importing DCC data: {str(e)}")
@@ -258,16 +260,14 @@ class BaseDCCInterface(DCCInterface):
             return {}
 
         try:
-            # Get weights and transformations
-            weights = self._dem_bones.get_weights()
-            transforms = self._dem_bones.get_transformations()
-
-            # Convert transformations to DCC format
-            transforms = self.convert_matrices(transforms, from_dcc=False)
+            if not self._import_succeeded:
+                raise RuntimeError("Import a mesh sequence using the current coordinate system before exporting")
+            result = self._dem_bones.get_skinning_result()
+            transforms = self.convert_matrices(result.transforms, from_dcc=False)
 
             # Return the data
             return {
-                "weights": weights,
+                "weights": result.weights,
                 "transformations": transforms,
                 "bone_names": self._dem_bones.bone_names,
                 "success": True,
@@ -290,52 +290,24 @@ class BaseDCCInterface(DCCInterface):
         Returns:
             numpy.ndarray: The converted matrices
         """
-        # Apply coordinate system transformation
         if from_dcc:
-            # DCC to DemBones
-            if len(matrices.shape) == 2 and matrices.shape == (4, 4):
-                # Single matrix
-                return (
-                    self._coord_transform
-                    @ matrices
-                    @ np.linalg.inv(self._coord_transform)
-                )
-            elif len(matrices.shape) == 3 and matrices.shape[1:] == (4, 4):
-                # Array of matrices
-                result = np.zeros_like(matrices)
-                for i in range(matrices.shape[0]):
-                    result[i] = (
-                        self._coord_transform
-                        @ matrices[i]
-                        @ np.linalg.inv(self._coord_transform)
-                    )
-                return result
-        else:
-            # DemBones to DCC
-            if len(matrices.shape) == 2 and matrices.shape == (4, 4):
-                # Single matrix
-                return (
-                    np.linalg.inv(self._coord_transform)
-                    @ matrices
-                    @ self._coord_transform
-                )
-            elif len(matrices.shape) == 3 and matrices.shape[1:] == (4, 4):
-                # Array of matrices
-                result = np.zeros_like(matrices)
-                for i in range(matrices.shape[0]):
-                    result[i] = (
-                        np.linalg.inv(self._coord_transform)
-                        @ matrices[i]
-                        @ self._coord_transform
-                    )
-                return result
+            return self._coordinates.transforms_to_solver(matrices)
+        return self._coordinates.transforms_to_host(matrices)
 
-        # If we get here, the input format wasn't recognized
-        return matrices
+    def apply_coordinate_system_transform(
+        self, data: np.ndarray, from_dcc: bool = True
+    ) -> np.ndarray:
+        """Convert points ``(V, 3)`` or a complete sequence ``(F, V, 3)``."""
+        if from_dcc:
+            return self._coordinates.points_to_solver(data)
+        return self._coordinates.points_to_host(data)
 
     def set_coordinate_system(self, transform_matrix: np.ndarray):
         """
         Set the coordinate system transformation matrix.
+
+        Changing the basis invalidates the import; reimport the mesh sequence
+        and compute again before exporting.
 
         Args:
             transform_matrix (numpy.ndarray): 4x4 transformation matrix
@@ -346,4 +318,8 @@ class BaseDCCInterface(DCCInterface):
         ):
             raise ValueError("Transform matrix must be a 4x4 numpy array")
 
+        coordinates = CoordinateSystem(transform_matrix)
+        if not np.array_equal(self._coord_transform, transform_matrix):
+            self._import_succeeded = False
         self._coord_transform = transform_matrix.copy()
+        self._coordinates = coordinates

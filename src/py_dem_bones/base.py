@@ -7,7 +7,7 @@ and convenience methods.
 """
 
 # Import standard library modules
-from typing import Callable, Optional, Union
+from typing import Callable, Optional, Sequence, Union
 
 # Import third-party modules
 import numpy as np
@@ -15,6 +15,7 @@ import numpy as np
 # Import local modules
 from py_dem_bones._py_dem_bones import DemBones as _DemBones, DemBonesExt as _DemBonesExt
 from py_dem_bones.exceptions import ComputationError, IndexError, NameError, ParameterError
+from py_dem_bones.portable import SkinningResult, _prepare_solver, _read_skinning_result
 
 
 class DemBonesWrapper:
@@ -253,6 +254,63 @@ class DemBonesWrapper:
         return index
 
     # Matrix operations
+
+    def set_mesh_sequence(
+        self,
+        rest_vertices: np.ndarray,
+        poses: np.ndarray,
+        *,
+        bone_count: Optional[int] = None,
+        bone_names: Optional[Sequence[str]] = None,
+        faces: Optional[Sequence[Sequence[int]]] = None,
+    ) -> None:
+        """Replace solver input with one mesh ``(V, 3)`` and frames ``(F, V, 3)``.
+
+        Inputs use the same vertex order and coordinate space. Multi-bone solves
+        require polygon ``faces``. Algorithm options are retained; cached solutions,
+        bind matrices and hierarchy are invalidated. Call :meth:`compute` before
+        :meth:`get_skinning_result`. Invalid inputs raise ``ValueError``.
+        """
+        self._weights_computed = False
+        if hasattr(self, "_cached_weights"):
+            delattr(self, "_cached_weights")
+        if bone_count is None:
+            bone_count = len(bone_names) if bone_names is not None else self.num_bones
+        if bone_names is not None:
+            if len(bone_names) != bone_count:
+                raise ValueError("bone_names must contain one name per requested bone")
+            if any(not isinstance(name, str) or not name for name in bone_names):
+                raise ValueError("bone_names must contain nonempty strings")
+            if len(set(bone_names)) != len(bone_names):
+                raise ValueError("bone_names must be unique")
+
+        max_influences = self.max_influences
+        _prepare_solver(
+            rest_vertices,
+            poses,
+            bone_count,
+            faces=faces,
+            max_influences=max_influences,
+            iterations=self.num_iterations,
+            solver=self._dem_bones,
+        )
+        # The native solver caps nnz to the solved bone count during computation.
+        self.max_influences = max_influences
+        if hasattr(self, "_bind_matrices"):
+            delattr(self, "_bind_matrices")
+        self._targets = {}
+        if hasattr(self, "_parent_map"):
+            self._parent_map = {}
+        if bone_names is not None:
+            self._bones = {name: index for index, name in enumerate(bone_names)}
+        else:
+            self._bones = {name: index for name, index in self._bones.items() if 0 <= index < bone_count}
+
+    def get_skinning_result(self) -> SkinningResult:
+        """Return computed weights ``(B, V)`` and every transform ``(F, B, 4, 4)``."""
+        if not self._weights_computed:
+            raise RuntimeError("Compute the imported mesh sequence before exporting skinning data")
+        return _read_skinning_result(self._dem_bones)
 
     def get_bind_matrix(self, bone):
         """
@@ -590,6 +648,7 @@ class DemBonesWrapper:
         Raises:
             ComputationError: If the computation fails
         """
+        self._weights_computed = False
         try:
             # Validate input data before computing
             try:
@@ -617,7 +676,8 @@ class DemBonesWrapper:
                 # No callback, just compute
                 result = self._dem_bones.compute()
 
-            if not result:
+            # The native C++ method returns void, exposed as None by pybind11.
+            if result is False:
                 raise ComputationError("DemBones.compute() returned failure")
 
             # Clear any cached weights since we've computed new ones
@@ -627,7 +687,7 @@ class DemBonesWrapper:
             # Set flag indicating weights have been computed
             self._weights_computed = True
 
-            return result
+            return True
         except ComputationError:
             # Re-raise ComputationError as is
             raise

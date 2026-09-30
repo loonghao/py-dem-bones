@@ -20,16 +20,16 @@ from py_dem_bones import solve_skinning
 
 rest = np.array([[0., 0., 0.], [1., 0., 0.], [0., 1., 0.], [0., 0., 1.]])
 poses = np.stack([rest, rest + np.array([0., 0., 0.2])])
-result = solve_skinning(rest, poses, bone_count=2)
+result = solve_skinning(rest, poses, bone_count=1)
 print(result.weights.shape)     # (实际骨骼数, 4)
 print(result.transforms.shape)  # (2, 实际骨骼数, 4, 4)
 ```
 
-输入格式为 `rest=(顶点数, 3)`、`poses=(帧数, 顶点数, 3)`。每帧的顶点数量、顺序、单位和坐标空间必须一致。求解器可能生成少于请求数量的骨骼。输出权重为 `(骨骼数, 顶点数)`，变换为完整的 `(帧数, 骨骼数, 4, 4)`。
+输入格式为 `rest=(顶点数, 3)`、`poses=(帧数, 顶点数, 3)`，至少包含三个顶点。每帧的顶点数量、顺序、单位和坐标空间必须一致。多骨骼求解必须传入 `faces`：由从零开始的顶点索引组成的多边形列表，用于原生求解器初始化连通的骨骼区域。见[双骨骼示例](examples/portable_example.py)。求解器可能生成少于请求数量的骨骼。输出权重为 `(骨骼数, 顶点数)`，变换为完整的 `(帧数, 骨骼数, 4, 4)`。
 
 ## 多 DCC 集成
 
-通用接口不依赖 Maya、Blender、Houdini、3ds Max 或 Unreal 运行时。宿主适配器负责采集按相同顺序排列的顶点，并通过自身 API 写入权重和骨骼变换。坐标系转换、矩阵约定和错误处理见 [DCC 集成指南](docs/dcc_integration.rst)。[`examples/`](examples/) 中的宿主脚本仅作参考，需在相应 DCC 环境执行。
+通用接口不依赖 Maya、Blender、Houdini、3ds Max 或 Unreal 运行时。宿主适配器负责采集顶点和面索引，并通过自身 API 写入权重和骨骼变换。提供可复用的 [Maya standalone 验收脚本](tests/integration/maya_skinning_smoke.py)。坐标系转换、矩阵约定和错误处理见 [DCC 集成指南](docs/dcc_integration.rst)。[`examples/`](examples/) 中旧的各宿主 `*_example.py` 集成尚未完成：原生矩阵布局与部分 SDK 调用还未迁移到新契约。开发适配器请从通用示例开始。
 
 ## 开发与发布
 

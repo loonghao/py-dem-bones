@@ -11,7 +11,7 @@ import abc
 from abc import ABC
 from abc import abstractmethod
 import typing
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 
@@ -172,6 +172,9 @@ class BaseDCCInterface(DCCInterface):
         rest_pose: np.ndarray,
         target_poses: List[np.ndarray],
         bone_names: Optional[List[str]] = None,
+        *,
+        faces: Optional[Sequence[Sequence[int]]] = None,
+        bone_count: Optional[int] = None,
         **kwargs,
     ) -> bool:
         """
@@ -181,6 +184,8 @@ class BaseDCCInterface(DCCInterface):
             rest_pose (numpy.ndarray): Rest pose vertices with shape [num_vertices, 3]
             target_poses (list): List of target pose vertices, each with shape [num_vertices, 3]
             bone_names (list, optional): List of bone names
+            faces (sequence, optional): Polygon vertex indices; required for multiple bones.
+            bone_count (int, optional): Requested bones, defaulting to names or the wrapper count.
             **kwargs: Additional parameters
 
         Returns:
@@ -214,6 +219,12 @@ class BaseDCCInterface(DCCInterface):
         """
         Set the coordinate system transformation matrix.
 
+        Changing the basis requires reimporting and recomputing before export.
+
         Args:
             transform_matrix (numpy.ndarray): 4x4 transformation matrix
         """
+    def apply_coordinate_system_transform(
+        self, data: np.ndarray, from_dcc: bool = True
+    ) -> np.ndarray:
+        """Convert points (V, 3) or a complete sequence (F, V, 3)."""
