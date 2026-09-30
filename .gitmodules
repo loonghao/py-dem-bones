@@ -4,4 +4,4 @@
 	branch = master
 [submodule "extern/eigen"]
 	path = extern/eigen
-	url = https://gitlab.com/libeigen/eigen.git
+	url = https://github.com/eigen-mirror/eigen.git

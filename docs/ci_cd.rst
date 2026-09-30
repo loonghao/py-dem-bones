@@ -7,6 +7,11 @@ consistency workflows. The source of truth for the released version is
 ``src/py_dem_bones/__version__.py``, documentation and citation metadata in
 the release pull request. CI checks that these surfaces agree.
 
+CI fetches Eigen from the maintainers' `official GitHub mirror
+<https://github.com/eigen-mirror/eigen>`_. The immutable submodule gitlink
+selects the exact upstream commit and source tree independently of the
+download URL.
+
 Release sequence
 ----------------
 
