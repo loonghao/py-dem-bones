@@ -1,8 +1,8 @@
 RBF Features
-===========
+============
 
 Introduction to RBF in py-dem-bones
----------------------------------
+-----------------------------------
 
 py-dem-bones integrates SciPy's Radial Basis Function (RBF) capabilities with Dem-Bones skeletal weight calculations to support advanced animation workflows. This integration enables:
 
@@ -11,7 +11,7 @@ py-dem-bones integrates SciPy's Radial Basis Function (RBF) capabilities with De
 3. Implementing functionality similar to Chad Vernon RBF nodes, but using standard Python scientific computing libraries
 
 Key Advantages
--------------
+--------------
 
 * Uses production-grade SciPy implementation instead of custom RBF code
 * Supports multiple RBF kernel function options (thin plate spline, multiquadric, gaussian, etc.)
@@ -19,7 +19,7 @@ Key Advantages
 * Maintained and updated by the scientific computing community
 
 RBF Kernel Functions
-------------------
+--------------------
 
 The following kernel functions are available through SciPy's RBFInterpolator:
 
@@ -34,7 +34,7 @@ The following kernel functions are available through SciPy's RBFInterpolator:
 Where r is the distance between points and ε is a shape parameter that controls the influence radius.
 
 Example Usage
-------------
+-------------
 
 Here's a basic example of using RBF interpolation with py-dem-bones:
 
@@ -44,7 +44,7 @@ Here's a basic example of using RBF interpolation with py-dem-bones:
    :caption: RBF Interpolation Example
 
 Maya Integration
---------------
+----------------
 
 To use the RBF functionality in Maya:
 
@@ -93,7 +93,7 @@ invoke the skinning adapter.
        return rbf
 
 Jupyter Notebook Integration
--------------------------
+----------------------------
 
 A Jupyter Notebook version of the RBF demo is available for interactive exploration. The notebook includes:
 
@@ -103,7 +103,7 @@ A Jupyter Notebook version of the RBF demo is available for interactive explorat
 * Installation instructions for dependencies
 
 Compatibility
------------
+-------------
 
 The RBF functionality requires:
 
@@ -117,6 +117,6 @@ For Maya integration, compatibility has been tested with:
 * Python 3.8+ (as provided by Maya)
 
 API Reference
------------
+-------------
 
 For detailed API documentation, see the :doc:`Python API <python_api>` section.
