@@ -13,12 +13,10 @@ environment-pass = [
     "CCACHE_COMPILERCHECK",
     "CCACHE_NOHASHDIR",
     "CCACHE_BASEDIR",
-    # Pass through version control variables
-    "SETUPTOOLS_SCM_PRETEND_VERSION"
 ]
 
 # Common environment variables for all platforms
-# Version handling is managed by the workflow or determined dynamically by setuptools_scm
+# The package version is stored in pyproject.toml and updated by release-please.
 environment = {}
 
 # Windows-specific configuration
@@ -54,7 +52,7 @@ before-all = [
 ]
 # Avoid updating pip itself, which can cause errors
 before-build = [
-    "pip install setuptools wheel numpy pybind11 scikit-build-core setuptools_scm cmake",
+    "pip install setuptools wheel numpy pybind11 scikit-build-core cmake",
     "ccache -s"   # Print ccache statistics before build
 ]
 after-build = [
@@ -69,7 +67,6 @@ environment = {
     LANG = "C.UTF-8",
     LC_ALL = "C.UTF-8",
     PYTHONIOENCODING = "UTF-8",
-    # Version handling is managed by the workflow or determined dynamically by setuptools_scm
     # Enable ccache with optimized settings
     CCACHE_MAXSIZE = "5G",
     CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime,file_stat_matches",
@@ -87,7 +84,7 @@ before-all = [
     "ccache -z || echo 'ccache zero failed'"      # Zero statistics
 ]
 before-build = [
-    "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core setuptools_scm cmake",
+    "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core cmake",
     "ccache -s || echo 'ccache stats failed'"     # Print ccache statistics before build
 ]
 after-build = [
@@ -116,7 +113,7 @@ before-all = [
     "ccache -z"   # Zero statistics
 ]
 before-build = [
-    "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core setuptools_scm cmake",
+    "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core cmake",
     "ccache -s"   # Print ccache statistics before build
 ]
 after-build = [

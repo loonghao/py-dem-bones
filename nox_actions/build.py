@@ -3,7 +3,6 @@
 import os
 import platform
 import shutil
-import subprocess
 import time
 
 # Import third-party modules
@@ -104,7 +103,6 @@ def build_wheels(session: nox.Session) -> None:
         "cibuildwheel",
         "wheel",
         "setuptools>=42.0.0",
-        "setuptools_scm>=8.0.0",
         "scikit-build-core>=0.5.0",
         "pybind11>=2.10.0",
         "numpy>=1.20.0",
@@ -126,17 +124,6 @@ def build_wheels(session: nox.Session) -> None:
     env = os.environ.copy()
     env["CIBW_BUILD_VERBOSITY"] = "3"
     env["SKBUILD_BUILD_VERBOSE"] = "1"
-
-    # Get version from commitizen if available
-    try:
-        version = subprocess.check_output(["cz", "version", "--project"], text=True).strip()
-        env["SETUPTOOLS_SCM_PRETEND_VERSION"] = version
-        session.log(f"Using version from commitizen: {version}")
-    except Exception as e:
-        session.log(f"Failed to get version from commitizen: {e}")
-        # Fallback to a default version
-        env["SETUPTOOLS_SCM_PRETEND_VERSION"] = "0.12.3"
-        session.log(f"Using fallback version: {env['SETUPTOOLS_SCM_PRETEND_VERSION']}")
 
     # Detect current platform
     current_platform = platform.system().lower()
@@ -229,7 +216,6 @@ def build_wheels(session: nox.Session) -> None:
             session.log("Trying with additional debug information...")
 
             # Try again with more debug information
-            env["SETUPTOOLS_SCM_DEBUG"] = "1"
             env["SETUPTOOLS_LOGGING_LEVEL"] = "DEBUG"
             env["SCIKIT_BUILD_CORE_LOGGING_LEVEL"] = "DEBUG"
 

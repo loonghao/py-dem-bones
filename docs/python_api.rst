@@ -1,10 +1,24 @@
 Python API Reference
-===================
+====================
 
 This page provides detailed documentation for the Python API of the py-dem-bones package. For a high-level overview of the API, see the :doc:`API Reference <api>` page.
 
 Core Classes
 -------------
+
+Portable DCC API
+^^^^^^^^^^^^^^^^
+
+.. autofunction:: py_dem_bones.solve_skinning
+
+.. autoclass:: py_dem_bones.SkinningResult
+   :members:
+
+.. autoclass:: py_dem_bones.CoordinateSystem
+   :members:
+
+Native Bindings
+^^^^^^^^^^^^^^^
 
 .. autoclass:: py_dem_bones.DemBones
    :members:

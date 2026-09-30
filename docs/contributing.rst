@@ -107,24 +107,9 @@ To run tests with coverage:
 Releasing
 --------
 
-1. Update the version number in ``pyproject.toml`` and ``src/py_dem_bones/__init__.py``.
-2. Update the changelog.
-3. Commit the changes:
-
-   .. code-block:: bash
-
-       git commit -m "Bump version to x.y.z"
-
-4. Tag the release:
-
-   .. code-block:: bash
-
-       git tag -a vx.y.z -m "Version x.y.z"
-
-5. Push the changes and tag:
-
-   .. code-block:: bash
-
-       git push origin main --tags
-
-The GitHub Actions workflow will automatically build and publish the release to PyPI.
+Use Conventional Commits for changes merged to ``main``. release-please
+creates a release pull request that updates the version and changelog. Review
+that pull request and its CI checks, then merge it. release-please creates the
+tag and GitHub Release; the tag triggers package builds and PyPI publication.
+See :doc:`ci_cd` for the exact release contract. Do not edit version files or
+create tags manually for a normal release.

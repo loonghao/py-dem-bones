@@ -20,6 +20,7 @@ from py_dem_bones.exceptions import (
     ParameterError,
 )
 from py_dem_bones.interfaces.dcc import DCCInterface
+from py_dem_bones.portable import CoordinateSystem, SkinningResult, solve_skinning
 from py_dem_bones.utils import eigen_to_numpy, numpy_to_eigen
 
 # Expose the raw C++ classes directly for testing and advanced usage
@@ -50,4 +51,7 @@ __all__ = [
     "IOError",
     # Interfaces
     "DCCInterface",
+    "CoordinateSystem",
+    "SkinningResult",
+    "solve_skinning",
 ]

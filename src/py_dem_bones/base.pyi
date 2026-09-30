@@ -8,6 +8,7 @@ and convenience methods.
 """
 
 from __future__ import annotations
+from typing import Optional, Sequence
 import numpy as np
 from py_dem_bones._py_dem_bones import DemBones as _DemBones
 from py_dem_bones._py_dem_bones import DemBonesExt as _DemBonesExt
@@ -15,6 +16,7 @@ from py_dem_bones.exceptions import ComputationError
 from py_dem_bones.exceptions import IndexError
 from py_dem_bones.exceptions import NameError
 from py_dem_bones.exceptions import ParameterError
+from py_dem_bones.portable import SkinningResult
 
 __all__ = [
     "ComputationError",
@@ -65,6 +67,18 @@ class DemBonesWrapper:
         """
         Initialize a new DemBonesWrapper instance.
         """
+    def set_mesh_sequence(
+        self,
+        rest_vertices: np.ndarray,
+        poses: np.ndarray,
+        *,
+        bone_count: Optional[int] = None,
+        bone_names: Optional[Sequence[str]] = None,
+        faces: Optional[Sequence[Sequence[int]]] = None,
+    ) -> None:
+        """Set a validated mesh sequence and invalidate the previous solution."""
+    def get_skinning_result(self) -> SkinningResult:
+        """Return computed weights (B, V) and every transform (F, B, 4, 4)."""
     def clear(self):
         """
         Clear all data and reset the computation.

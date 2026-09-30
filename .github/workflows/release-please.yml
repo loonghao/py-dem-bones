@@ -85,7 +85,8 @@ jobs:
               re.MULTILINE,
           )
 
-          TAG_PATTERN = "v*"
+          # Older releases used bare numeric tags; new releases use v-prefixed tags.
+          TAG_PATTERNS = ("v[0-9]*", "[0-9]*")
 
 
           def git(*args):
@@ -104,8 +105,11 @@ jobs:
 
 
           def last_release_tag():
-              """Return the most recent ``v*`` tag reachable from HEAD, or None."""
-              code, out = git("describe", "--tags", "--match", TAG_PATTERN, "--abbrev=0")
+              """Return the nearest release tag reachable from HEAD, or None."""
+              code, out = git(
+                  "describe", "--tags", "--abbrev=0",
+                  *(arg for pattern in TAG_PATTERNS for arg in ("--match", pattern)),
+              )
               if code != 0:
                   return None
               return out.strip() or None
@@ -120,7 +124,7 @@ jobs:
 
 
           def resolve_range():
-              """Return a git range covering everything since the last ``v*`` tag."""
+              """Return a git range covering everything since the last release tag."""
               tag = last_release_tag()
               return f"{tag}..HEAD" if tag else "HEAD"
 
@@ -129,7 +133,7 @@ jobs:
               """Return True when the window should be released.
 
               With no explicit range the window is everything since the last ``v*`` tag,
-              or the whole history when the repo has no such tag yet.
+              or the whole history when the repo has no release tag yet.
               """
               return is_releasable(commit_window(range_spec or resolve_range()))
 

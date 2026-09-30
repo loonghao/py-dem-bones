@@ -100,7 +100,7 @@ def build_wheel():
             "install": [
                 sys.executable, "-m", "pip", "install",
                 "cibuildwheel", "wheel", "setuptools>=42.0.0",
-                "setuptools_scm>=8.0.0", "scikit-build-core>=0.5.0",
+                "scikit-build-core>=0.5.0",
                 "pybind11>=2.10.0", "numpy>=1.20.0", "cmake>=3.15.0", "ninja"
             ],
             "build": [

@@ -93,7 +93,7 @@ def cibuildwheel_local(session: nox.Session) -> None:
     """
     # Install cibuildwheel and dependencies
     session.install(
-        "cibuildwheel", "wheel", "setuptools>=42.0.0", "setuptools_scm>=8.0.0"
+        "cibuildwheel", "wheel", "setuptools>=42.0.0"
     )
 
     # Clean previous build files
@@ -240,7 +240,6 @@ def cibuildwheel_local(session: nox.Session) -> None:
 
             # Try again with more debug information
             env["CIBW_BUILD_VERBOSITY"] = "3"
-            env["SETUPTOOLS_SCM_DEBUG"] = "1"
             env["SETUPTOOLS_LOGGING_LEVEL"] = "DEBUG"
             env["SCIKIT_BUILD_CORE_LOGGING_LEVEL"] = "DEBUG"
 
