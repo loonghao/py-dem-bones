@@ -33,6 +33,17 @@ print(result.transforms.shape)  # (2, 实际骨骼数, 4, 4)
 
 共享适配器生命周期、求解器所有权和宿主写回契约见[架构决策](docs/adr/0002-host-adapters-and-native-kernel.md)。
 
+## 原生 DCC 展示
+
+![Cycles 左侧为自制源蒙皮，右侧为 Dem Bones 重建](docs/showcase/arm-skin/blender-arm.gif)
+
+在免费 CC0 手臂上使用九根骨骼、自己生成蒙皮，采样 48 帧，在 Maya、Blender、
+Houdini 和 UE5.8 中验证；归一化 RMSE 约 **0.067%**。Designer 制作皮肤贴图，
+真实 Poly Haven HDRI 用于 Cycles／Arnold 的 SSS 首版渲染。
+[案例、铁链和验收记录](docs/showcase/arm-skin/README.md)包含四个宿主的原生 GIF。
+最终 SSS 展示仍在完善；Houdini／Unreal 当前展示已完成的变形预览。
+复现步骤见 [DCC-MCP 示例](examples/showcase/README.md)。
+
 ## 开发与发布
 
 ```bash

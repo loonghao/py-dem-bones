@@ -68,8 +68,12 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
     "myst_parser",
+    "sphinxcontrib.mermaid",
     "py_dem_bones_sphinxext",  # Add our custom extension
 ]
+
+# Render the same Mermaid fences in GitHub Markdown and the HTML documentation.
+myst_fence_as_directive = ["mermaid"]
 
 # If Google Analytics ID is set, add Google Analytics extension
 google_analytics_id = os.environ.get("GOOGLE_ANALYTICS_ID")

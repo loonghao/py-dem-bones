@@ -1,0 +1,70 @@
+tools:
+  - name: apply_skin
+    description: Apply Designer skin maps and a native HDRI to the validated arm preview.
+    source_file: scripts/apply_skin.py
+    execution: sync
+    affinity: main
+    enforce_thread_affinity: true
+    read_only: false
+    destructive: false
+    input_schema:
+      type: object
+      required: [texture_dir, hdri_path]
+      additionalProperties: false
+      properties:
+        texture_dir: {type: string, minLength: 1}
+        hdri_path: {type: string, minLength: 1}
+    output_schema: {type: object}
+  - name: inspect_runtime
+    description: Inspect the fixed set of UE Geometry Script APIs needed by the showcase.
+    source_file: scripts/inspect_runtime.py
+    execution: sync
+    affinity: main
+    enforce_thread_affinity: true
+    read_only: true
+    input_schema:
+      type: object
+      properties: {}
+      additionalProperties: false
+    output_schema:
+      type: object
+  - name: run_showcase
+    description: Build and validate one case-owned arm or procedural deformation in a disposable UE project.
+    source_file: scripts/run_showcase.py
+    execution: sync
+    affinity: main
+    enforce_thread_affinity: true
+    timeout_hint_secs: 600
+    read_only: false
+    destructive: false
+    input_schema:
+      type: object
+      required: [output_dir]
+      properties:
+        output_dir:
+          type: string
+          minLength: 1
+        case_name:
+          type: string
+          enum: [tentacle, chain, arm]
+          default: tentacle
+    output_schema:
+      type: object
+  - name: render_frame
+    description: Capture one already validated showcase frame using native SceneCapture2D.
+    source_file: scripts/render_frame.py
+    execution: sync
+    affinity: main
+    enforce_thread_affinity: true
+    read_only: false
+    destructive: false
+    input_schema:
+      type: object
+      required: [frame]
+      properties:
+        frame:
+          type: integer
+          minimum: 1
+          maximum: 48
+    output_schema:
+      type: object

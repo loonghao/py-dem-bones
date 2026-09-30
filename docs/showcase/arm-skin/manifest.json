@@ -1,0 +1,126 @@
+{
+  "schema": "py-dem-bones.showcase.files.v1",
+  "algorithm": "SHA-256",
+  "files": [
+    {
+      "path": "docs/showcase/arm-skin/blender-arm.gif",
+      "size_bytes": 4048619,
+      "sha256": "f254a30e5bfb693512980a5de83e0bce840084571e00a94a648f73db43c6e677"
+    },
+    {
+      "path": "docs/showcase/arm-skin/blender-chain.gif",
+      "size_bytes": 2826815,
+      "sha256": "8529582e08f8da429df93f6e0cf946f2454a79cddee35bb92f815044a39e858a"
+    },
+    {
+      "path": "docs/showcase/arm-skin/chain.png",
+      "size_bytes": 370243,
+      "sha256": "a47ca685264df9c2a3b6a8044ba9e344d322ce5202f5d3880039e1c7dc5b3622"
+    },
+    {
+      "path": "docs/showcase/arm-skin/houdini-mantra-first-pass.png",
+      "size_bytes": 361199,
+      "sha256": "cd3a86003239e2bc446a40b03ba1f1f48f23b83f24cd6794ed76bc3abda18e63"
+    },
+    {
+      "path": "docs/showcase/arm-skin/houdini-tentacle.gif",
+      "size_bytes": 641027,
+      "sha256": "447ad853247cd8d67c68f51d1305948c631facd8fff2de287976df9a45bf3acb"
+    },
+    {
+      "path": "docs/showcase/arm-skin/maya-arm.gif",
+      "size_bytes": 5697843,
+      "sha256": "94ec39ad44dc9c3c1e23ecccdfaedd18c3d1a4ad87b2a2a273f623491b4767f5"
+    },
+    {
+      "path": "docs/showcase/arm-skin/README.md",
+      "size_bytes": 9958,
+      "sha256": "0086836eb2993e4a9d0f4c3ec0f6fadf2fbfb60de2a65ce3c20a30bfd5aa1249"
+    },
+    {
+      "path": "docs/showcase/arm-skin/render.png",
+      "size_bytes": 376583,
+      "sha256": "a268640349d845aefcb6e0cd8edf2d27f042017969bfa50f2f5839321ac2a967"
+    },
+    {
+      "path": "docs/showcase/arm-skin/unreal-arm.gif",
+      "size_bytes": 1631905,
+      "sha256": "517f9622173b18da6f324b4071be78f89a0f2812a0bca1603df04ee25cdb6f7a"
+    },
+    {
+      "path": "docs/showcase/arm-skin/validation.json",
+      "size_bytes": 30659,
+      "sha256": "8fdb55a437f3c0d7e546c77123f2e6398b24af2c0fcf931755e1a54387ed2042"
+    },
+    {
+      "path": "examples/showcase/assets/arm.obj",
+      "size_bytes": 93118,
+      "sha256": "f9ebab4881cde14651a694be51e7020a58f58311e681ce951d3bf4594ad1270b"
+    },
+    {
+      "path": "examples/showcase/assets/arm_joints.json",
+      "size_bytes": 2182,
+      "sha256": "247ac5d3dc23d1890241022156578803a5fbf56038337ab5779aca08b47d2792"
+    },
+    {
+      "path": "examples/showcase/assets/LICENSE.CC0.md",
+      "size_bytes": 6962,
+      "sha256": "f6089cba01cb570a24712b41ab8a586ccd3cc5ef53dc266ca50b95c288956d2c"
+    },
+    {
+      "path": "examples/showcase/assets/lighting/SOURCE.json",
+      "size_bytes": 544,
+      "sha256": "90714f6cc2b49ac468a59824390ac0a48d4b5117a65fd212d705ec4415027118"
+    },
+    {
+      "path": "examples/showcase/assets/lighting/studio_small_09_2k.hdr",
+      "size_bytes": 6312947,
+      "sha256": "36724313c0fc66dab126ff90f081b85a0b1ef47be65eda1417bd20b033f0573f"
+    },
+    {
+      "path": "examples/showcase/assets/SOURCE.json",
+      "size_bytes": 720,
+      "sha256": "f34281ab3bf8c74ba5a7faf9185f3fabf828ea166f26225b20d2001864eb96ef"
+    },
+    {
+      "path": "examples/showcase/materials/skin/BaseColor.png",
+      "size_bytes": 1765971,
+      "sha256": "5f12ab9dd39d06d00bd2a319861af71d4fa15008cb3ffaff9a100f2c8005d42d"
+    },
+    {
+      "path": "examples/showcase/materials/skin/Height.png",
+      "size_bytes": 1978539,
+      "sha256": "a66300095b1eca2bd83c6be72e2c0a990a9e3bacaaa63d60daae94ad24240c00"
+    },
+    {
+      "path": "examples/showcase/materials/skin/material.sbs",
+      "size_bytes": 9378,
+      "sha256": "2c2190429fca8bc9e059dfd9446dcf5026a8a0256739ee7dc346262e964e8d51"
+    },
+    {
+      "path": "examples/showcase/materials/skin/material.sbsar",
+      "size_bytes": 1857,
+      "sha256": "729df3a08f12fd93e1bf7d5b8bdaeeed807c949f066b57a409b0b3fe933ca76c"
+    },
+    {
+      "path": "examples/showcase/materials/skin/Metallic.png",
+      "size_bytes": 14798,
+      "sha256": "df6704f51dd27ff6061ed65b4cda8d16ed20e834fb69621cbb3914bf6acf3a7c"
+    },
+    {
+      "path": "examples/showcase/materials/skin/Normal.png",
+      "size_bytes": 7581618,
+      "sha256": "d34c820954a22caa504e0e59d9f6c3669ce928f8b46046e598d0c10be2c63de2"
+    },
+    {
+      "path": "examples/showcase/materials/skin/preview-v1/BaseColor.png",
+      "size_bytes": 1599527,
+      "sha256": "220431389278567ec9551ebf298996fe7448a7587ef47a15188f063601a926f7"
+    },
+    {
+      "path": "examples/showcase/materials/skin/Roughness.png",
+      "size_bytes": 3723829,
+      "sha256": "b5f317a77acaab954621cd946352d1972ded6b78b03384cad885d0941c7d3b9a"
+    }
+  ]
+}
