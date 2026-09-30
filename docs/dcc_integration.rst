@@ -162,6 +162,57 @@ packaged Maya adapter and reads them back from Maya for verification.
 A plugin-load pass establishes host compatibility; gateway
 catalog readiness and UI control require their own acceptance tests.
 
+DCC-MCP deformation cases
+-------------------------
+
+``tests/integration/maya_deformation_cases.py`` runs inside an initialized,
+interactive Maya with the DCC-MCP plugin loaded. Use a wheel matching Maya's
+Python interpreter. Discover the exact instance with ``dcc-mcp-cli list``;
+search and describe the scripting tool before calling it. These bulk numerical
+cases need the scripting escape hatch because no typed solver tool is provided.
+If a sidecar exposes dispatch only, use the plugin's advertised embedded MCP
+endpoint for skill discovery and loading.
+
+After loading ``maya-scripting``, create a UTF-8 JSON argument file containing
+``code`` and ``result_type``. The code adds the repository's
+``tests/integration`` directory to ``sys.path``, imports the case module and
+calls it with a new output directory and namespace:
+
+.. code-block:: python
+
+   import sys
+   sys.path.insert(0, "/absolute/path/to/repository/tests/integration")
+   import maya_deformation_cases
+   maya_deformation_cases.run("/absolute/path/to/new/output", namespace="demBonesRun01")
+
+Set ``result_type`` to ``JSON`` and invoke the discovered backend action:
+
+.. code-block:: console
+
+   dcc-mcp-cli call maya_scripting__execute_python --dcc-type maya --instance-id <exact-instance> --json-file case-call.json --transport mcp --timeout-secs 240
+
+The runner creates three procedural tube cases with 300 vertices, 290 polygons,
+three bones and 24 frames each: articulated bending/twisting, a translated and
+rotated rig with uniform scale, and a small non-rigid breathing bulge.
+It samples an actual Maya skin, solves through the packaged adapter, reads back
+written weights, explicitly keys independent output joints with identity bind
+matrices, and compares Maya's evaluated mesh against both the input poses and
+the NumPy LBS reconstruction. This case-specific baking is not an adapter API.
+
+Acceptance requires normalized vertex RMSE below 2.5% of the world-space rest
+bounding-box diagonal and Maya/NumPy maximum deviation below 0.001% of that
+diagonal. Weights must be finite, nonnegative, normalized and match readback.
+The exported ``deformation_cases.ma``, per-case ``.npz`` arrays and ``report.json``
+retain the evidence. Existing namespaces and report paths are rejected;
+selection, time, current namespace and scene filename are restored. Created
+nodes remain in the new namespace, including after a failed run for diagnosis.
+
+On 2026-09-30, Maya 2026 passed all three cases through DCC-MCP. Normalized
+RMSE was 0.545%, 0.496% and 0.549%, respectively; the largest Maya/NumPy
+vertex deviation was ``3.68e-6`` world units. These are training-frame metrics
+on synthetic assets, not production-asset or unseen-animation acceptance.
+Other DCC versions require separate host runs.
+
 Failure contract
 ----------------
 

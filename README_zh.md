@@ -29,9 +29,9 @@ print(result.transforms.shape)  # (2, 实际骨骼数, 4, 4)
 
 ## 多 DCC 集成
 
-通用接口不依赖宿主 SDK。`py_dem_bones.adapters` 提供 Maya、Blender 网格采样与权重写回，Houdini 权重属性，3ds Max Skin 集成，以及显式的 Unreal 采样／写回桥接接口；宿主模块均按需导入。各适配器的前置条件和能力边界见 [DCC 集成指南](docs/dcc_integration.rst)，用法见 [`examples/`](examples/)。提供可复用的 [Maya standalone 验收脚本](tests/integration/maya_skinning_smoke.py)。写入权重不等于烘焙骨骼动画，绑定姿态、层级和关键帧需要宿主侧显式处理。
+通用接口不依赖宿主 SDK。`py_dem_bones.adapters` 提供 Maya、Blender 网格采样与权重写回，Houdini 权重属性，3ds Max Skin 集成，以及显式的 Unreal 采样／写回桥接接口；宿主模块均按需导入。各适配器的前置条件和能力边界见 [DCC 集成指南](docs/dcc_integration.rst)，用法见 [`examples/`](examples/)。提供可复用的 [Maya standalone 验收脚本](tests/integration/maya_skinning_smoke.py) 和 [DCC-MCP 变形案例](tests/integration/maya_deformation_cases.py)，在 Maya 中验证多关节动画、整体变换和非刚性残差。写入权重不等于烘焙骨骼动画，绑定姿态、层级和关键帧需要宿主侧显式处理。
 
-求解内核继续使用上游 C++ 实现，优先完成宿主适配器迁移。是否引入 Rust 的取舍与判据见[架构决策](docs/adr/0002-host-adapters-and-native-kernel.md)。
+共享适配器生命周期、求解器所有权和宿主写回契约见[架构决策](docs/adr/0002-host-adapters-and-native-kernel.md)。
 
 ## 开发与发布
 

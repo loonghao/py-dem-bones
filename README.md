@@ -29,9 +29,9 @@ The input contract is `rest=(vertices, 3)` and `poses=(frames, vertices, 3)`, wi
 
 ## DCC support
 
-The portable API has no host SDK dependency. Packaged adapters under `py_dem_bones.adapters` provide Maya and Blender mesh sampling/weight writing, Houdini weight attributes, a 3ds Max Skin integration, and an explicit Unreal sampler/writer bridge. SDK imports are lazy. See the [DCC integration guide](docs/dcc_integration.rst) for each adapter's requirements and limits, and [`examples/`](examples/) for usage. The [Maya standalone smoke test](tests/integration/maya_skinning_smoke.py) provides repeatable host acceptance. Writing weights does not bake the solved bone animation; bind poses and hierarchy need explicit host handling.
+The portable API has no host SDK dependency. Packaged adapters under `py_dem_bones.adapters` provide Maya and Blender mesh sampling/weight writing, Houdini weight attributes, a 3ds Max Skin integration, and an explicit Unreal sampler/writer bridge. SDK imports are lazy. See the [DCC integration guide](docs/dcc_integration.rst) for each adapter's requirements and limits, and [`examples/`](examples/) for usage. The [Maya standalone smoke test](tests/integration/maya_skinning_smoke.py) provides repeatable host acceptance; [DCC-MCP deformation cases](tests/integration/maya_deformation_cases.py) verify multi-joint animation, transformed rigs, and non-rigid residuals inside Maya. Writing weights does not bake the solved bone animation; bind poses and hierarchy need explicit host handling.
 
-The solver remains the upstream C++ implementation. The [architecture decision](docs/adr/0002-host-adapters-and-native-kernel.md) explains why host adapter migration currently takes priority over a Rust rewrite.
+The [architecture decision](docs/adr/0002-host-adapters-and-native-kernel.md) describes the shared adapter lifecycle, solver ownership, and host writeback contracts.
 
 ## Develop and release
 
