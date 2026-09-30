@@ -58,6 +58,19 @@ def test_published_media_and_provenance_hashes(sequence):
     assert verifier.verify_files() >= 20
 
 
+def test_mantra_conversion_rejects_missing_frame_with_matching_file_count(sequence, tmp_path):
+    converter = importlib.import_module("convert_mantra_frames")
+    source = tmp_path / "native"
+    source.mkdir()
+    for frame in list(range(1, 48)) + [999]:
+        (source / ("frame_%03d.exr" % frame)).write_bytes(b"untouched source")
+    destination = tmp_path / "display"
+    with pytest.raises(ValueError, match="contiguous range"):
+        converter.convert(source, destination, 48)
+    assert not destination.exists()
+    assert all(path.read_bytes() == b"untouched source" for path in source.iterdir())
+
+
 def test_our_arm_weights_and_closed_shoulder(sequence):
     case = sequence.build_case(case_name="arm")
     assert case["bone_count"] == 9

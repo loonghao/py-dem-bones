@@ -1,66 +1,149 @@
-# Arm skinning: Designer materials and native DCC previews
+# Native skinning and render studies
 
-![Cycles source and reconstructed arm, lighter Designer skin](render.png)
+![Native Cycles skin macro with HDRI and SSS](premium-blender-skin.png)
 
-The left arm uses our authored weights; the right arm uses Dem Bones weights
-and solved joint animation. This is a native Blender Cycles render. The free
-[MakeHuman arm](../../../examples/showcase/assets/arm.obj) has 2,087 vertices
-and 2,068 polygons. We author nine influences and 48 poses, then validate the
-reconstructed animation in Maya, Blender, Houdini and Unreal Engine 5.8.
+Our own nine-influence skinning on a free CC0 arm, reconstructed from 48 mesh
+poses and checked in Maya, Blender, Houdini and Unreal Engine 5.8. The arm's
+normalized RMSE is approximately **0.067%**. Render studies add material and
+lighting detail while retaining the accepted solver weights and poses.
 
-**Look development is in progress.** Blender's complete sequence uses the
-lighter Designer palette and SSS scale `0.03`. Its packed scene was reopened
-through DCC-MCP; the bound textures and HDRI match the published asset hashes.
-Unreal's complete sequence binds the current Designer palette, native HDRI
-and legacy Subsurface material. Maya retains the first palette and scale
-`0.09`. Houdini has completed its 48-frame Mantra HDRI/SSS sequence and
-12 × 12 sample still. The updated Maya material awaits native acceptance. See [validation](validation.json) and
-[file hashes](manifest.json) for the exact completed evidence.
+## Skin detail and subsurface scattering
 
-## Native animation gallery
+The 1920 × 1080 Cycles closeup uses an 85 mm perspective camera, unchanged
+Designer texture exports, a real Poly Haven HDRI and rectangular softboxes.
+Rest-space shader detail adds complexion variation, fine pores, roughness and
+knuckle creases. These details are artist-authored; the free mesh is not a
+scan of biological tissue. Two presentation subdivision levels are excluded
+from numerical acceptance.
 
-| Blender 5.2 — Cycles, HDRI + SSS | Maya 2026 — Arnold, HDRI + SSS first pass |
+| Identical backlight: SSS off | SSS on, weight 0.25 and scale 2 mm |
+| --- | --- |
+| ![Native Cycles skin without SSS](premium-blender-sss-off.png) | ![Native Cycles skin with SSS](premium-blender-sss-on.png) |
+
+Both native 1600 × 900 renders use frame 12, the same camera, maps, lighting
+and 256 samples. Only SSS weight changes. Approximately 42.5% of visible
+pixels change by more than 0.01 in the displayed RGB channels. This is a
+controlled artistic demonstration, not measured skin scattering coefficients.
+The presentation uses 0.1 metres per fixture unit. Saved Blender scenes were
+reopened; all 48 rig poses and packed texture/HDRI byte hashes matched.
+[Native material, render and reopen evidence](premium-blender-evidence.json)
+records the settings and unmodified output hashes.
+
+## Steel reflections and rigid articulation
+
+![Native Cycles steel strip-light reflections](premium-blender-chain.png)
+
+![Native Cycles rigid steel chain animation](premium-blender-chain.gif)
+
+[1280 × 720 MP4, 48 native frames](premium-blender-chain.mp4) retains more
+material detail than the GIF. Metallic steel, varied roughness, small surface
+scuffs and long softbox reflections make the link curvature visible. An 85 mm
+camera and softboxes track actual pose bounds; the rig, frame order and
+12 fps timing are unchanged. One render subdivision level is presentation only.
+
+Eight alternating links contain 2,560 numerical vertices and polygons. Each
+source link has one rigid influence. Maximum relative Blender edge stretch is
+`0.002655%`, below the `0.1%` contract limit. The other three hosts also pass.
+This is prescribed articulation, not a collision or dynamics simulation.
+
+## Show what the solver preserves
+
+![Source motion, native reconstruction, solved weights and vertex errors](premium-solver-evidence.png)
+
+[Watch the 48-frame evidence video](premium-solver-evidence.mp4) ·
+[Metrics, fixed scales and provenance](premium-solver-evidence.json)
+
+The four views show authored source motion, the accepted Blender native
+reconstruction, blended colors for nine solver weight slots, and actual
+Euclidean vertex residuals. A single orthographic view and fixed error range
+`0–0.485221%` of the rest bounding-box diagonal cover every frame. Geometry is
+not displaced to amplify errors. This Matplotlib visualization uses original
+vertex indices and cached native coordinates; it is separate from beauty
+renders and fresh host acceptance.
+
+The chain and tentacle are procedural fixtures inspired by
+[SSDR](https://binh.graphics/papers/2012sa-ssdr/). They do not reproduce
+measurements on the paper's original datasets.
+
+## Unreal hand detail
+
+![Native Unreal HDRI and Subsurface hand study](premium-unreal-arm-hero.png)
+
+![Native Unreal 48-frame arm deformation](premium-unreal-arm.gif)
+
+[1280 × 720 MP4](premium-unreal-arm.mp4) ·
+[Hero receipt](premium-unreal-arm-hero.json) ·
+[48-frame native capture receipt](premium-unreal-arm-sequence.json)
+
+Native HDRI, area lights, a lit graphite stage and Designer BaseColor,
+Roughness and Normal exports drive the real-time legacy Subsurface material.
+An independent GeometryScript Loop render proxy has 33,362 vertices; the
+numerical mesh remains 2,087 vertices. Native weight and all-pose readback
+match the accepted cache exactly before smoothing. The closeup frames the
+hand and wrist. This is a case-owned DynamicMesh SDK preview, not a
+SkeletalMesh/animation exporter or path-traced skin.
+The saved arm and chain maps were reopened through the official editor API;
+render-proxy geometry counts and native material references passed
+[native readback](premium-unreal-reopen.json).
+
+### Native steel chain
+
+![Unreal steel chain with specified HDRI reflection capture](premium-unreal-chain-hero.png)
+
+[48-frame GIF](premium-unreal-chain.gif) ·
+[1280 × 720 MP4](premium-unreal-chain.mp4) ·
+[Native capture receipt](premium-unreal-chain-sequence.json)
+
+Metallic steel at roughness `0.28` uses the specified HDRI reflection capture
+and native scene reflections. Its 2,560-vertex numerical mesh is checked
+before the independent 40,960-vertex Loop render proxy is built. The original
+eight rigid links and all 48 accepted poses remain unchanged.
+
+## Houdini procedural motion study
+
+![Native Mantra procedural copper and cyan inlay sculpture](premium-houdini-motion.png)
+
+Three rotated display copies share the accepted eight-bone tentacle solve.
+Case-owned Python SOP LBS matches all 48 accepted poses exactly before two
+presentation subdivision levels. Procedural copper/teal colors, cyan emissive
+inlays and area lights create the sculpture. Camera keys follow the actual
+pose bounds and pass native readback. This is an artistic fixture using
+prescribed motion. [Native still receipt](premium-houdini-motion.json)
+records the completed frame-14 Mantra render, official OIDN filtering, display
+transfer and unchanged original EXR hash.
+The saved animation scene was reopened through the official API; all scalar
+weights and 48 original SOP poses matched its accepted cache exactly.
+[Reopen evidence](premium-houdini-reopen.json) excludes presentation subdivision.
+
+The new motion sequence remains pending; the interrupted six-frame attempt is
+excluded from public animation. The completed arm sequence below is separate.
+
+## Four-host deformation gallery
+
+| Blender 5.2 — Cycles source / reconstructed | Maya 2026 — Arnold first pass |
 | --- | --- |
 | ![Source left, reconstructed right](blender-arm.gif) | ![Reconstructed arm in Arnold](maya-arm.gif) |
 
-| Houdini 22.0 — Mantra, HDRI + SSS | Unreal 5.8 — HDRI + Subsurface DynamicMesh preview |
+| Houdini 22.0 — Mantra HDRI + SSS | Unreal 5.8 — first HDRI/Subsurface preview |
 | --- | --- |
-| ![Native Mantra reconstructed arm](houdini-arm.gif) | ![Native HDRI Subsurface DynamicMesh deformation](unreal-arm.gif) |
+| ![Native Mantra arm, official denoise and RGB display copy](houdini-arm.gif) | ![Native Unreal arm](unreal-arm.gif) |
 
-All GIFs contain 48 native frames at 800 × 450, approximately four seconds at
-12 fps. Encoding uses a 128-color palette; no generated imagery, retiming,
-synthetic in-between frames or geometry correction is applied. The separate
-[Houdini OpenGL tentacle clip](houdini-tentacle.gif) is a deformation preview. Unreal uses its native legacy Subsurface
-model; this is a DynamicMesh preview, not a SkeletalMesh animation export.
+These complete GIFs contain 48 native frames at 800 × 450 and approximately
+four seconds at 12 fps. The Houdini display copy uses SideFX's official
+color-only OIDN denoiser followed by an approximate gamma 2.2 transfer in
+full-range RGB; original linear EXRs remain intact. Other native pixels are
+encoded into GIF/MP4 display copies. No generated imagery, interpolated
+poses or geometry correction is used. Renderer transforms and preview scales
+differ; this is not a calibrated cross-renderer skin comparison.
 
-### Native SSS comparison
+[Houdini OpenGL tentacle deformation](houdini-tentacle.gif) ·
+[Original Cycles SSS pair](sss-on.png) ·
+[Original packed material readback](blender-packed-readback.json)
 
-| SSS off | SSS on, weight 0.65 and scale 0.03 |
-| --- | --- |
-| ![Native Cycles hand without subsurface scattering](sss-off.png) | ![Native Cycles hand with subsurface scattering](sss-on.png) |
-
-Both native Cycles renders use frame 12, the same camera, HDRI, backlight,
-skin maps and 128 samples. Only the subsurface weight changes. This is an
-artistic comparison, not a measurement of real skin scattering coefficients.
-The [packed texture readback](blender-packed-readback.json) records the
-native reopened material's bound bytes, relative paths and SSS settings.
-
-### Rigid metal chain
-
-![Eight reconstructed metal chain links in Cycles](blender-chain.gif)
-
-Eight alternating links contain 2,560 vertices and 2,560 polygons. Each source
-link has one rigid influence. The solved Blender animation has maximum
-relative edge stretch `0.002655%`, below the `0.1%` acceptance limit. The native
-Maya, Houdini and Unreal also pass this limit. Unreal's 48-pose native SDK
-evaluation has maximum relative edge stretch below `1e-12`.
-This is prescribed rigid motion, not a collision or dynamics test.
-
-![Native Unreal rigid chain preview](unreal-chain-preview.png)
-
-The chain and tentacle illustrate rigid and smoothly blended motion inspired
-by [SSDR](https://binh.graphics/papers/2012sa-ssdr/). They are our procedural
-fixtures; these results are not measurements on the paper's original datasets.
+Maya retains its first Designer palette and SSS scale `0.09`; its updated
+look development has not passed native acceptance. Public native scene
+delivery and full Designer graph capture remain separate pending items.
+See [validation](validation.json) and [published file hashes](manifest.json).
 
 ## Source mesh and our own skin weights
 
@@ -102,7 +185,7 @@ live-host run. The UE difference includes native bone-weight quantization.
 Houdini uses the package's scalar weight attributes plus an explicit example
 deformer, not a production boneCapture rig. Unreal uses a version-owned
 DynamicMesh bridge, not a SkeletalMesh or animation asset exporter.
-Render-only smoothing in Maya and Blender is excluded from numerical checks.
+Render-only smoothing in all new studies is excluded from numerical checks.
 
 MakeHuman uses [decimeters internally](https://static.makehumancommunity.org/makehuman/docs/exports_and_file_formats.html).
 Maya, Blender and Houdini retain the asset's numeric coordinates in this case.
@@ -155,8 +238,8 @@ Adobe standard library using `sbs://`; library source files are not included.
 | [Normal](../../../examples/showcase/materials/skin/Normal.png) | 1024² | RGBA16 | linear data, OpenGL +Y |
 
 Check [validation.json](validation.json) for native header values. The Normal
-map is provided but is not bound in these arm previews: box/projected mapping
-needs a consistent tangent basis before tangent normals can be claimed.
+map is bound in the new Unreal study after native tangent/UV setup. The
+original previews do not bind it; Cycles instead uses rest-space micro-bump.
 
 ## HDRI, SSS and renderer differences
 
@@ -182,8 +265,10 @@ measured skin coefficients. Cycles uses denoising and 64 animation samples;
 Arnold uses AA 3 and diffuse samples 2 with color-managed PNG output. The
 Mantra animation uses 6 × 6 pixel samples; its frame-12 still uses 12 × 12.
 Its linear EXR is displayed
-with an approximate gamma 2.2 conversion, not an identical cross-renderer
-color transform. Unreal uses HDRI intensity `0.5`, half the example's
+with official color-only OIDN denoising and a full-range RGB gamma 2.2
+transfer. Black is preserved. HDR values above one are clipped before the
+8-bit display transfer; native EXRs remain intact. This is not ACES or an
+identical cross-renderer color transform. Unreal uses HDRI intensity `0.5`, half the example's
 directional light intensities and manual exposure bias `1.0`. Its native
 `ImageWriteBlueprintLibrary` exports all 48 PNGs synchronously, with valid
 chunk CRCs and no trailing bytes; source images are preserved unchanged.

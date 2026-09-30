@@ -1,4 +1,26 @@
 tools:
+  - name: premium_preview
+    description: Build or render a bounded native premium arm or chain studio from a successful SDK acceptance cache.
+    source_file: scripts/premium_preview.py
+    execution: sync
+    affinity: main
+    enforce_thread_affinity: true
+    timeout_hint_secs: 180
+    read_only: false
+    destructive: false
+    input_schema:
+      type: object
+      required: [operation]
+      additionalProperties: false
+      properties:
+        operation: {type: string, enum: [inspect, setup, render]}
+        cache_dir: {type: [string, "null"], minLength: 1}
+        output_dir: {type: [string, "null"], minLength: 1}
+        case_name: {type: string, enum: [arm, chain], default: arm}
+        width: {type: integer, enum: [1280, 1600], default: 1600}
+        height: {type: integer, enum: [720, 900], default: 900}
+        frame: {type: [integer, "null"], minimum: 1, maximum: 48}
+    output_schema: {type: object}
   - name: apply_skin
     description: Apply Designer skin maps and a native HDRI to the validated arm preview.
     source_file: scripts/apply_skin.py

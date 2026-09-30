@@ -35,13 +35,19 @@ print(result.transforms.shape)  # (2, 实际骨骼数, 4, 4)
 
 ## 原生 DCC 展示
 
-![Cycles 左侧为自制源蒙皮，右侧为 Dem Bones 重建](docs/showcase/arm-skin/blender-arm.gif)
+![Cycles 原生皮肤近景、HDRI 灯光与次表面散射](docs/showcase/arm-skin/premium-blender-skin.png)
 
 在免费 CC0 手臂上使用九根骨骼、自己生成蒙皮，采样 48 帧，在 Maya、Blender、
 Houdini 和 UE5.8 中验证；归一化 RMSE 约 **0.067%**。Designer 制作皮肤贴图，
-真实 Poly Haven HDRI 用于 Cycles 和 Mantra 的 SSS 动画、Arnold 首版渲染及 Unreal Subsurface 预览，包含原生 SSS 开关对照。
-[案例、铁链和验收记录](docs/showcase/arm-skin/README.md)包含四个宿主的原生 GIF。
-Maya 更新材质仍待验收；Houdini 已完成 48 帧 Mantra SSS 动画和高采样展示图。
+真实 HDRI 与程序化毛孔、细纹用于原生皮肤近景，包含同灯光／相机下的 SSS 开关对照、
+钢材反射、Unreal 手部细节和四个宿主的原生动画。
+
+![Cycles 钢链反射与刚性关节动画](docs/showcase/arm-skin/premium-blender-chain.gif)
+
+![源动画、重建动画、求解权重与顶点误差](docs/showcase/arm-skin/premium-solver-evidence.png)
+
+[完整案例、视频和验收记录](docs/showcase/arm-skin/README.md)分别记录原生渲染与数值可视化。
+展示细分不参与求解误差计算；Maya 更新材质仍待原生验收。
 复现步骤见 [DCC-MCP 示例](examples/showcase/README.md)。
 
 ## 开发与发布

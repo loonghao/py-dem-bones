@@ -1,0 +1,14 @@
+{
+  "official_api": true,
+  "ui_automation_used": false,
+  "native_scene_reopened": true,
+  "native_frames": 48,
+  "numerical_vertices": 1944,
+  "maximum_weight_difference": 0.0,
+  "maximum_cache_position_difference": 0.0,
+  "native_scene_sha256": "176a1f81cec9ef972f12ce14e22845ab1452575a37fc0fe431740f6d394f2a11",
+  "render_proxy_excluded_from_metrics": true,
+  "host": "Houdini",
+  "version": "22.0.368",
+  "scope": "Saved animation scene; original numerical SOP weights and all 48 positions before subdivision"
+}

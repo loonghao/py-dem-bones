@@ -29,13 +29,18 @@
     },
     {
       "path": "docs/showcase/arm-skin/houdini-arm.gif",
-      "size_bytes": 7847757,
-      "sha256": "6ec3fd96bac7f99640d3b105f73d435a74fe54f2e1573f1b2a6d064b392ad82f"
+      "size_bytes": 12448861,
+      "sha256": "c9d21911fdf0bcdef10f5499df1372f05cf01ea4e6572b4b41196fca2668d57b"
+    },
+    {
+      "path": "docs/showcase/arm-skin/houdini-display-readback.json",
+      "size_bytes": 18736,
+      "sha256": "57473999ac904182ca6cc71437988fb6088d0122c6102cd772a0a14f07ab7293"
     },
     {
       "path": "docs/showcase/arm-skin/houdini-hdri-sss.png",
-      "size_bytes": 311195,
-      "sha256": "70307d50af8210b7479f8501a3f3056891bac23b274f1f109fde20e315ea3268"
+      "size_bytes": 279894,
+      "sha256": "6c98950f57c9e2e54135c01fe5430dc26382d7bb1f26d769dd808238e218b6dc"
     },
     {
       "path": "docs/showcase/arm-skin/houdini-mantra-first-pass.png",
@@ -58,9 +63,129 @@
       "sha256": "94ec39ad44dc9c3c1e23ecccdfaedd18c3d1a4ad87b2a2a273f623491b4767f5"
     },
     {
+      "path": "docs/showcase/arm-skin/premium-blender-chain.gif",
+      "size_bytes": 2399216,
+      "sha256": "83225c60588464ff030b87b51e7d94967e0decdf6fcf02f7b405590ebf626ba9"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-blender-chain.mp4",
+      "size_bytes": 884398,
+      "sha256": "9cfadb4656f94af0e6735edf1a3d9945bbdbcb3ac8c38e16cb900ab82fc8718f"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-blender-chain.png",
+      "size_bytes": 1179473,
+      "sha256": "b795643241c14235f9071503843da96d93c4c72c4f82500c949a999c9188ca9a"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-blender-evidence.json",
+      "size_bytes": 32375,
+      "sha256": "a7b18327c1d2610e20f76cc998e520b80181093ec1551b55065c3a9cbed99a5b"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-blender-skin.png",
+      "size_bytes": 3157154,
+      "sha256": "cf0bec5eab6f89cfdee1a6c6b74bc8a52976223234e50110902db8699b167910"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-blender-sss-off.png",
+      "size_bytes": 2147120,
+      "sha256": "b0aef6041e468d565c0b1501d2b39bf493c0f1bd582fec8999a240bc1af0c970"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-blender-sss-on.png",
+      "size_bytes": 2308114,
+      "sha256": "5753160e230d7114eb6fc2730581c740a0ae2657d120047eb217bb5a79daca75"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-houdini-motion.json",
+      "size_bytes": 2007,
+      "sha256": "3f1e97163726d3476d1240aec00559425d15b0089c5240b2f20b9f4f74b7de27"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-houdini-motion.png",
+      "size_bytes": 174886,
+      "sha256": "5bf592a17f7f5d216e08e7bad9193bdd6ce0ca95080fcc3e313ffad4c47aa547"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-houdini-reopen.json",
+      "size_bytes": 531,
+      "sha256": "041c67ed051dc4c47c0e28fde70a265ee81bf86e3913fb38d3264365db9d761f"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-solver-evidence.json",
+      "size_bytes": 18728,
+      "sha256": "0b69e404bd2531ce7051eca66bbcc98dd2eae0f5a5f2ae77f9a8b0434c45f3f0"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-solver-evidence.mp4",
+      "size_bytes": 345960,
+      "sha256": "781384bd90bd7106fd8dfe8f5ac5056bfc1af0d232d5e3db5a408d9c5886cb06"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-solver-evidence.png",
+      "size_bytes": 260799,
+      "sha256": "d18a6ac34d693fb86eca9097569e5b21afb37949756dc3bf94b22b9a5d32fae3"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-unreal-arm-hero.json",
+      "size_bytes": 1743,
+      "sha256": "6d92329c91e40d6b8e785fda43d32c69df6c9ad1f7885914c0a6d690a3eac9eb"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-unreal-arm-hero.png",
+      "size_bytes": 1479295,
+      "sha256": "a89fc0a7b8b172251197caa1fec510a21f144e457cb0908e0f80f1f7df15112f"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-unreal-arm-sequence.json",
+      "size_bytes": 13304,
+      "sha256": "67ca53740aa67fa7261d089d2877a993218e1dcb2de95176b76fae8fe6347be6"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-unreal-arm.gif",
+      "size_bytes": 8493767,
+      "sha256": "bfb198a98cfbd3b2d9fab7e7c181cb99cd4ae72048ea0127d10b69e6d7e9083f"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-unreal-arm.mp4",
+      "size_bytes": 585364,
+      "sha256": "6aa49d9d8bba6fa30df33808e54e860a5984dc916a4ed07a61b3f415d2eb707a"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-unreal-chain-hero.json",
+      "size_bytes": 1695,
+      "sha256": "4ae01b4b38c1c06e0fbc6b018fba3692cf8e6a8fe58565497d662c70d73864b3"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-unreal-chain-hero.png",
+      "size_bytes": 1454945,
+      "sha256": "debd471cb2cb3136d603d83af0d24a8bc2913e9188160241307e59d9bdf33825"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-unreal-chain-sequence.json",
+      "size_bytes": 13349,
+      "sha256": "3afad8a106590b8e598dde646b093d315633716fcf6416ac8f53636dfa282917"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-unreal-chain.gif",
+      "size_bytes": 8800265,
+      "sha256": "baf3a84df6810659a0947a07779226129c11c65bb5d9638fe0e55f19196c14bb"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-unreal-chain.mp4",
+      "size_bytes": 708745,
+      "sha256": "6ae2654a80df9428a208ec2d5108428d2c44654c1999081b35546eb922a8b5fa"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-unreal-reopen.json",
+      "size_bytes": 3530,
+      "sha256": "be21a87dd36d6e9dfc3ebca1b5bb9b0bcdea7618b0711d2e564dc29048bdf9ed"
+    },
+    {
       "path": "docs/showcase/arm-skin/README.md",
-      "size_bytes": 12098,
-      "sha256": "4d048aec6f748fe985361ec6babc2124ca5ff4247680abfaaa6d2b0988b91333"
+      "size_bytes": 16471,
+      "sha256": "7ddd704e3f2f629ed9ac19a446cc589e664eccdad7dac7b3d3a6cda16921b8e3"
     },
     {
       "path": "docs/showcase/arm-skin/render.png",
@@ -94,8 +219,8 @@
     },
     {
       "path": "docs/showcase/arm-skin/validation.json",
-      "size_bytes": 42309,
-      "sha256": "923379ec38a62c007064e9328b143aa8f6d60a73e888c5de479c1075edd185fd"
+      "size_bytes": 48953,
+      "sha256": "74a954c592fd7b5d4fb97149fdfb171929e5dc819e5f8ed9659e59f096f2e76f"
     },
     {
       "path": "examples/showcase/assets/arm.obj",

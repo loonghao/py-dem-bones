@@ -1,0 +1,115 @@
+{
+  "host": "Unreal Engine",
+  "version": "5.8.0-55116800+++UE5+Release-5.8",
+  "official_api": true,
+  "ui_automation_used": false,
+  "cases": [
+    {
+      "case_name": "arm",
+      "saved_map_reopened": true,
+      "world": "/Game/DemBonesShowcase/Premium/PremiumArm2.PremiumArm2",
+      "subject": {
+        "label": "DemBonesPremium_arm",
+        "class": "DynamicMeshComponent",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "visible": true,
+        "hidden_in_game": false,
+        "actor_hidden": false,
+        "material": "/Game/DemBonesShowcase/Premium/AnatomicalSkin9.AnatomicalSkin9",
+        "vertices": 33362,
+        "triangles": 66720
+      },
+      "stage": {
+        "label": "DemBonesPremiumGraphiteStage",
+        "class": "DynamicMeshComponent",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "visible": true,
+        "hidden_in_game": false,
+        "actor_hidden": false,
+        "material": "/Game/DemBonesShowcase/Premium/GraphiteStage9.GraphiteStage9",
+        "vertices": 4,
+        "triangles": 2
+      },
+      "scope": "Saved render-proxy geometry and native material references; the numerical solver cache is separate",
+      "original_numerical_metrics": {
+        "vertices": 2087,
+        "faces": 2068,
+        "bones": 9,
+        "frames": 48,
+        "normalized_rmse": 0.0006701331764758894,
+        "max_vertex_error": 3.0597811325370614,
+        "host_lbs_max_difference": 4.012479592932273e-05
+      },
+      "native_mp4": {
+        "width": 1280,
+        "height": 720,
+        "r_frame_rate": "12/1",
+        "nb_read_frames": "48",
+        "duration_seconds": 4.0,
+        "file": "premium-unreal-arm.mp4"
+      }
+    },
+    {
+      "case_name": "chain",
+      "saved_map_reopened": true,
+      "world": "/Game/DemBonesShowcase/Premium/PremiumChain2.PremiumChain2",
+      "subject": {
+        "label": "DemBonesPremium_chain",
+        "class": "DynamicMeshComponent",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "visible": true,
+        "hidden_in_game": false,
+        "actor_hidden": false,
+        "material": "/Game/DemBonesShowcase/Premium/BrushedSteel2.BrushedSteel2",
+        "vertices": 40960,
+        "triangles": 81920
+      },
+      "stage": {
+        "label": "DemBonesPremiumGraphiteStage",
+        "class": "DynamicMeshComponent",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "visible": true,
+        "hidden_in_game": false,
+        "actor_hidden": false,
+        "material": "/Game/DemBonesShowcase/Premium/GraphiteStage12.GraphiteStage12",
+        "vertices": 4,
+        "triangles": 2
+      },
+      "scope": "Saved render-proxy geometry and native material references; the numerical solver cache is separate",
+      "original_numerical_metrics": {
+        "vertices": 2560,
+        "faces": 2560,
+        "bones": 8,
+        "frames": 48,
+        "normalized_rmse": 3.93015048254673e-08,
+        "max_vertex_error": 0.0007621919067452877,
+        "host_lbs_max_difference": 0.0007621919052891771,
+        "max_relative_edge_stretch": 7.138734048339757e-14
+      },
+      "native_mp4": {
+        "width": 1280,
+        "height": 720,
+        "r_frame_rate": "12/1",
+        "nb_read_frames": "48",
+        "duration_seconds": 4.0,
+        "file": "premium-unreal-chain.mp4"
+      }
+    }
+  ]
+}

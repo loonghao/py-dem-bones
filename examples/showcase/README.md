@@ -7,6 +7,18 @@ host-independent case builder and acceptance checks in `sequence.py`; each
 host module writes weights, evaluates all poses through the native SDK and
 saves a report plus numeric cache. Rendering is a separate step.
 
+Keep three kinds of evidence distinct:
+
+| Output | Production path | What it verifies |
+| --- | --- | --- |
+| Native numerical report/cache | Original indexed mesh, written weights and native SDK evaluation of all 48 poses | Deformation and weight contracts |
+| Native beauty image/sequence | Cycles, Arnold, Mantra or Unreal SceneCapture | Camera, materials, lighting and renderer output; presentation smoothing is excluded from solver metrics |
+| Solver evidence plate/video | Matplotlib Agg drawing the accepted Blender cache | Source/reconstruction, solved weight colors and a fixed-scale vertex-error visualization; these are scientific plots |
+
+The [gallery](../../docs/showcase/arm-skin/README.md) publishes receipts for the
+completed outputs. Updated Maya look development has not passed native acceptance;
+the Arnold media remains the first material iteration.
+
 ## Prerequisites
 
 Use Maya 2026, Blender 5.2, Houdini 22.0 or Unreal 5.8 for the recorded cases.
@@ -44,10 +56,10 @@ Do not erase a pre-existing scene or output directory to retry. These scripts
 own only their case namespace/collection/container; use a fresh disposable
 scene when a prior case name exists.
 
-## Skin and lighting configuration
+## Baseline skin and lighting configuration
 
-The following setup uses the newly exported lighter material palette and
-SSS scale `0.03`. Blender's complete native sequence and identical-lighting
+The earlier setup uses the lighter material palette and SSS scale `0.03`.
+Blender's complete native sequence and identical-lighting
 SSS off/on comparison have passed acceptance, including a packed scene reopen
 and bound texture byte readback. Maya retains the earlier `0.09` iteration
 with its Base Color map; its updated material acceptance is pending.
@@ -92,7 +104,7 @@ the transport timeout.
 Enable Python, Editor Scripting, Geometry Scripting and Skeletal Mesh Modeling
 in a disposable UE5.8 project. Load the example Skill under `skills/` using
 the adapter's `extra_skill_paths`, then discover and activate
-`dem-bones-showcase`. The Skill exports four typed operations:
+`dem-bones-showcase`. The Skill exports five typed operations:
 
 | Operation | Inputs | Result / limit |
 | --- | --- | --- |
@@ -100,6 +112,7 @@ the adapter's `extra_skill_paths`, then discover and activate
 | `run_showcase` | `output_dir`, `case_name` | native DynamicMesh sampling, profile readback and 48 evaluated poses |
 | `apply_skin` | `texture_dir`, `hdri_path` | isolated material and HDRI configuration in the test project |
 | `render_frame` | `frame` from 1 to 48 | synchronous native ImageWrite PNG; refuses existing output files |
+| `premium_preview` | `operation` (`inspect`, `setup`, `render`) and operation-specific inputs | bounded native studio presentation from an accepted arm or chain cache |
 
 Copy the actual advertised slugs and schemas from `search`/`describe`.
 `run_showcase` automatically configures skin for the arm. The example keeps
@@ -109,11 +122,133 @@ GIF contains 48 native HDRI/legacy Subsurface captures; PNG chunk CRCs and
 complete containers were verified. Native rigid-chain weight readback and
 48-pose evaluation also pass. Camera show-only lists reset between cases.
 
+## Native look development
+
+Presentation helpers reuse accepted caches and preserve original rig timing.
+Use fresh disposable scenes/projects and output directories. Invoke host-bound
+Python examples through the discovered DCC-MCP scripting tool; use typed tools
+where available. When an official API exists but its MCP capability is missing,
+submit a fix in the owning adapter before using UI automation.
+
+### Blender: skin closeup, SSS pair and steel chain
+
+`blender_premium.py` opens the accepted native scene and checks all 48 original
+mesh evaluations before adding render subdivision. It places the presentation
+at `0.1` metres per fixture unit. The skin study combines unchanged Designer
+BaseColor/Roughness/Height maps with shader-authored complexion variation,
+rest-space pores and landmark-based crease masks. These details are procedural,
+not scanned anatomy or changes to the solver mesh.
+
+```python
+from pathlib import Path
+import blender_premium
+
+case_dir = Path.home() / "dem-bones-blender-arm"
+study_dir = Path.home() / "dem-bones-blender-skin-study"
+blender_premium.setup(case_dir, study_dir, case_name="arm", frame=12)
+blender_premium.render_still("hero", samples=256, width=1920, height=1080)
+blender_premium.sss_comparison(samples=256)
+blender_premium.save_presentation()
+blender_premium.restore(study_dir, case_dir)
+```
+
+The published closeup uses an 85 mm perspective camera, a real HDRI plus
+rectangular softboxes, native Cycles denoising, and AgX Medium High Contrast.
+Two render subdivision levels are excluded from numerical acceptance. The SSS
+pair keeps camera and lighting identical and changes only weight `0`/`0.25`
+at a `0.002` metre scattering scale. Packed texture/HDRI hashes and original
+rig coordinates are checked again after the saved presentation is reopened.
+
+For the chain, start from `blender_case.run(..., case_name="chain")`, then:
+
+```python
+chain_case = Path.home() / "dem-bones-blender-chain"
+chain_study = Path.home() / "dem-bones-blender-chain-study"
+blender_premium.setup(chain_case, chain_study, case_name="chain", frame=18)
+blender_premium.render_still("hero", samples=256, width=1920, height=1080)
+blender_premium.configure_tracking_camera(chain_case, lens_mm=85)
+blender_premium.render_sequence(samples=192, width=1280, height=720)
+```
+
+Steel uses metallic `1`, roughness variation `0.14`–`0.30`, micro-bump and
+strip-light reflections. The camera and softboxes follow actual pose bounds;
+they do not change the rig, sampled poses, frame order or playback timing.
+One render subdivision level is presentation only. This is prescribed rigid
+articulation, not collision or dynamics simulation.
+
+### Houdini: native motion studies and EXR display copies
+
+`houdini_premium.setup(cache_dir, fresh_output_dir, hdri_path)` rechecks an
+accepted tentacle cache, builds a native Python SOP LBS deformer, and measures
+it against all 48 cached poses before two presentation subdivision levels.
+Three rotated display copies share one solve. Copper/cyan materials and
+emissive inlays are artistic presentation; the native keyed camera follows
+the copies' pose bounds without changing their motion.
+
+Use the returned ROP path with `houdini_render__render_rop` and a fresh EXR
+pattern, then require terminal completion and verified output counts from
+`get_render_job`. This recipe does not establish completion of a new render;
+the gallery ledger records which studies have actually finished.
+
+`convert_mantra_frames.py` writes a fresh RGB display sequence while retaining
+and hashing the original EXRs:
+
+```bash
+python examples/showcase/convert_mantra_frames.py native-exrs display-pngs --expected-count 48
+```
+
+The full-range RGB transfer approximates gamma `2.2`, clips HDR values above
+one, and discards alpha only in the display copy. It is not ACES or cross-host
+color matching. When official `idenoise` is used, retain the unfiltered EXRs,
+record engine/options and denoised-file hashes, and decode the results before
+publication. Discover adapter support first; an open capability PR does not
+mean the tool is installed. Per-image filtering does not prove temporal consistency.
+
+### Unreal: an independent native render proxy
+
+Use `dem_bones_showcase__premium_preview` as advertised by the loaded Skill:
+`operation="inspect"` checks a fixed SDK allowlist; `operation="setup"` takes
+the accepted `cache_dir`, a fresh `output_dir`, `case_name="arm"` or `"chain"`,
+and `width`/`height`; `operation="render"` takes one integer `frame` from 1 to 48.
+Use `1600` × `900` for the study setup or `1280` × `720` for the complete sequence.
+Rendered PNGs are immutable; retries need a fresh output directory.
+
+The original numerical DynamicMesh and native weight profile are read back
+before an independent two-level Loop render proxy is built. The arm's numerical
+mesh remains 2,087 vertices; the smoothed proxy has 33,362 vertices. The hand
+closeup binds unchanged Designer BaseColor/Roughness/Normal exports with
+host-material color/roughness adjustments and native tangent normals. The
+sequence uses one fixed perspective camera containing all pose bounds.
+ImageWrite exports actual SceneCapture pixels. This remains a case-owned SDK
+LBS preview with legacy real-time Subsurface, not path-traced skin or a
+SkeletalMesh/animation asset export. Physical scale and shader parameters
+are renderer-specific; do not compare scattering values across hosts directly.
+
+## Reproduce the solver evidence plate
+
+This offline helper requires an accepted Blender arm report/cache and the
+matching published cache hash. It verifies rest vertex order, all source poses
+and the recorded metrics before drawing:
+
+```bash
+python examples/showcase/render_solver_evidence.py --cache accepted-arm/result.npz --report accepted-arm/report.json --output-dir solver-study --frame 12 --video --frames-dir solver-study-frames
+```
+
+Matplotlib Agg displays authored motion, native reconstruction, weighted solver
+slot colors and per-vertex Euclidean residual divided by the rest bounding-box
+diagonal. One camera and one linear error range cover all 48 frames. There is
+no displacement amplification, added subdivision or interpolated motion.
+The receipt records cache/source hashes, metrics, visualization versions and
+encoding details. These PNG/MP4 files visualize native numerical evidence;
+they are not native beauty renders or new DCC acceptance runs.
+
 ## Encoding and acceptance
 
-Encode only a complete 48-frame native PNG sequence. Keep the original
-geometry checks separate from smoothing, shader setup and rendering. Reject
-black frames, missing frames and truncated files before publication.
+Native beauty animations require a complete 48-frame native sequence. Keep
+original geometry checks, render-only smoothing, shader setup, display transfer
+and scientific visualization separate. Reject black frames, missing frames and
+truncated files before publication. Prefer MP4 for material detail; GIFs are
+quantized display copies, with the original frames retained and hashed.
 
 ```bash
 ffmpeg -framerate 12 -start_number 1 -i frames/frame_%03d.png -filter_complex "[0:v]split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=3" -loop 0 showcase.gif

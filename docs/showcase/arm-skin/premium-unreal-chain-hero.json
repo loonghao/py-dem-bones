@@ -1,0 +1,40 @@
+{
+  "host": "Unreal Engine",
+  "version": "5.8.0-55116800+++UE5+Release-5.8",
+  "case_name": "chain",
+  "cache_sha256": "75b85facf98c6ea4836f069dc99f48e522786048f398e9b07f2abad1bb4e49f9",
+  "numerical_vertices": 2560,
+  "numerical_frames": 48,
+  "fresh_native_weight_readback": true,
+  "maximum_weight_difference": 0.0,
+  "maximum_cache_position_difference": 0.0,
+  "render_proxy": "Two native GeometryScript Loop subdivision levels after SDK LBS; excluded from solver metrics",
+  "width": 1600,
+  "height": 900,
+  "hdri_intensity": 0.35,
+  "camera": "oblique perspective; frame 12 hero bounds",
+  "native_material": "/Game/DemBonesShowcase/Premium/BrushedSteel1.BrushedSteel1",
+  "material": "native steel: metallic=1, roughness=0.28; specified HDRI reflection capture",
+  "skin_opacity": null,
+  "skin_native_base_color_multiplier": null,
+  "capture_exposure_bias": 0.0,
+  "display_transform": "Unreal SceneCapture final LDR tone mapping",
+  "exporter": "native ImageWriteBlueprintLibrary",
+  "frames": [
+    {
+      "frame": 12,
+      "sha256": "debd471cb2cb3136d603d83af0d24a8bc2913e9188160241307e59d9bdf33825",
+      "native_mesh_vertices": 2560,
+      "render_proxy_vertices": 40960,
+      "render_proxy_triangles": 81920
+    }
+  ],
+  "saved_native_map": "/Game/DemBonesShowcase/Premium/PremiumChain1",
+  "public_hero": "premium-unreal-chain-hero.png",
+  "public_hero_sha256": "debd471cb2cb3136d603d83af0d24a8bc2913e9188160241307e59d9bdf33825",
+  "render_proxy_excluded_from_numerical_acceptance": true,
+  "limitations": [
+    "Articulated procedural links; no dynamics simulation",
+    "Case-owned SDK LBS preview, not skeletal asset export"
+  ]
+}
