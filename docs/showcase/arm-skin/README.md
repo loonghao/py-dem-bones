@@ -115,8 +115,15 @@ The saved animation scene was reopened through the official API; all scalar
 weights and 48 original SOP poses matched its accepted cache exactly.
 [Reopen evidence](premium-houdini-reopen.json) excludes presentation subdivision.
 
-The new motion sequence remains pending; the interrupted six-frame attempt is
-excluded from public animation. The completed arm sequence below is separate.
+![Native Mantra procedural motion, 48 frames](premium-houdini-motion.gif)
+
+[960 × 540 MP4](premium-houdini-motion.mp4) ·
+[48-frame receipt](premium-houdini-motion-sequence.json)
+
+The complete 48-frame sequence uses 8 × 8 pixel samples, official color-only
+OIDN and the disclosed RGB display transfer. The interrupted six-frame
+attempt is excluded. Camera keys track pose bounds without changing the rig.
+Per-image denoising does not independently prove temporal consistency.
 
 ## Four-host deformation gallery
 
