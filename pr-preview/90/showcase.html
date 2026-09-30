@@ -217,7 +217,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
       </label>
     </div>
@@ -296,15 +296,80 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
           </label>
         </div>
         <article role="main" id="furo-main-content">
           <section id="native-render-studies">
 <h1>Native render studies<a class="headerlink" href="#native-render-studies" title="Link to this heading">¶</a></h1>
-<p>The arm, tentacle and rigid-chain cases exercise the shared skinning contracts
-through DCC-MCP in Maya, Blender, Houdini and Unreal Engine 5.8.</p>
+<p>The octopus study uses Houdini. The arm and rigid-chain cases exercise the shared
+skinning contracts through DCC-MCP in Maya, Blender, Houdini and Unreal Engine 5.8.</p>
+<section id="octopus-vellum-motion-to-skinning">
+<h2>Octopus: Vellum motion to skinning<a class="headerlink" href="#octopus-vellum-motion-to-skinning" title="Link to this heading">¶</a></h2>
+<img alt="Native Mantra render of the reconstructed eight-arm octopus with Designer materials and SSS" src="_images/octopus-mantra-hero.png" />
+<p>Houdini 22.0.368 Vellum supplies the dynamic source: stretch/bend constraints,
+internal struts, 96 compliant arm-tip targets, and native self/ground collision.
+The study samples 48 poses at 12 fps after warmup. The eight source arm tips
+have peak-to-peak excursions of 27–39 cm and lag their drivers by 83–167 ms.</p>
+<p>Dem Bones fits <strong>81 rigid bones</strong> on a fixed 8,000-point, 15,936-triangle proxy,
+with <strong>0.04102% normalized RMSE</strong> across all 48 frames. The fitted tip excursions
+retain 96.46–100.22% of the source range; maximum tip reconstruction error is
+17.42 mm. RMSE is the root mean square Euclidean vertex distance, normalized
+by the rest-pose AABB diagonal. These measurements apply to the numerical proxy.</p>
+<p>Native Houdini Point Deform transfers the result to the 29,542-point,
+58,912-triangle artist body. All 48 frames retain the original topology and
+three UV sets. Maximum ground penetration is 0.945 mm for the fitted proxy and
+0.259 mm for the artist transfer. A separate saved-scene reopening verifies all
+48 source, numerical and artist buffers, with zero differences from accepted
+readback. The <a class="reference download internal" download="" href="_downloads/0c1ef3a77130228b99ce1255c6ceae35/octopus-softbody-native-source.json"><code class="xref download docutils literal notranslate"><span class="pre">source</span> <span class="pre">report</span></code></a>,
+<a class="reference download internal" download="" href="_downloads/1efbf7d0500b43a55bb9e7cbf7c62bba/octopus-softbody-native-report.json"><code class="xref download docutils literal notranslate"><span class="pre">fit</span> <span class="pre">report</span></code></a>,
+<a class="reference download internal" download="" href="_downloads/ab65dc16f5547c7a181cb15b9c98243a/octopus-softbody-native-readback.json"><code class="xref download docutils literal notranslate"><span class="pre">native</span> <span class="pre">readback</span></code></a>
+and <a class="reference download internal" download="" href="_downloads/96cbf64deb417c068ba2d964bf5591cf/octopus-softbody-native-reopen.json"><code class="xref download docutils literal notranslate"><span class="pre">fresh</span> <span class="pre">reopen</span></code></a>
+record separate acceptance checks.</p>
+<img alt="48 native Mantra frames of the Dem Bones octopus reconstruction" src="_images/octopus-mantra-motion.gif" />
+<p>The <a class="reference download internal" download="" href="_downloads/8557823f8c6544f08fabde2fe993f4e5/octopus-mantra-motion.mp4"><code class="xref download docutils literal notranslate"><span class="pre">four-second</span> <span class="pre">animation</span></code></a>
+contains all 48 native Mantra frames. Source endpoints remain unchanged;
+neither motion amplification nor endpoint matching is applied. This is an
+open-surface softbody study: the proxy has 60 boundary edges, so closed pressure
+and volume conservation are outside its acceptance contract.</p>
+<p>The <a class="reference download internal" download="" href="_downloads/9cc1c6d7a0f711da57cee75202ae418c/octopus-native-hero.json"><code class="xref download docutils literal notranslate"><span class="pre">native</span> <span class="pre">hero</span> <span class="pre">receipt</span></code></a>
+and <a class="reference download internal" download="" href="_downloads/af409b1b63f6ebc1aa931de07332127d/octopus-native-animation.json"><code class="xref download docutils literal notranslate"><span class="pre">native</span> <span class="pre">animation</span> <span class="pre">receipt</span></code></a>
+record each render’s verification and output hashes.</p>
+<img alt="Native Vellum source, fitted evaluation, fixed-scale residual and eight arm trajectories" src="_images/octopus-scientific-evidence.png" />
+<p>The scientific plate uses accepted cached source and native evaluation buffers.
+It displays a fixed full-sequence camera, linear residual range and original
+arm landmark trajectories. Its <a class="reference download internal" download="" href="_downloads/3cea2af1ad4723cde97a132542b10d5a/octopus-scientific-evidence.json"><code class="xref download docutils literal notranslate"><span class="pre">scientific</span> <span class="pre">receipt</span></code></a>
+records accepted input hashes and recomputed metrics. Matplotlib rendering is
+separate from native beauty renders. Presentation subdivision and coordinate
+transforms are excluded from numerical acceptance.</p>
+</section>
+<section id="octopus-materials">
+<h2>Octopus materials<a class="headerlink" href="#octopus-materials" title="Link to this heading">¶</a></h2>
+<img alt="Houdini Mantra octopus eye and modeled sucker detail" src="_images/octopus-mantra-detail.png" />
+<p>The <a class="reference external" href="https://sketchfab.com/3d-models/kraken-ca7e400c9cb34e02a6dfd74aecf26eff">Kraken sculpt by FIELDFLY3R (fld)</a>
+is licensed under <a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+The source is a static sculpt. The native Mantra material closeup uses real
+HDRI lighting and subsurface scattering. A matched SSS off/on pair preserves
+geometry, camera and lights; it measures a material change, separately from
+motion reconstruction. The <a class="reference download internal" download="" href="_downloads/ccd144ff8957c52e79f49d591304ca35/octopus-material-render.json"><code class="xref download docutils literal notranslate"><span class="pre">material</span> <span class="pre">render</span> <span class="pre">receipt</span></code></a>
+records native job verification and the pixel comparison.</p>
+<p>The <a class="reference external" href="https://github.com/loonghao/py-dem-bones/tree/8a7664d1c6e7dbe0f70a58258486274e15bda96b/examples/showcase/materials/octopus">Substance Designer source and compiled SBSAR</a>
+deliver 18 native 2K maps across body, sucker and mapped-material studies.
+The distributed original GLB and extracted BaseColor remain byte-for-byte
+unchanged. The showcase selects the complete octopus body and excludes the
+separate ray and four decorations; <a class="reference download internal" download="" href="_downloads/510b8662415e696264dc0c7e4d294992/SOURCE.json"><code class="xref download docutils literal notranslate"><span class="pre">asset</span> <span class="pre">provenance</span></code></a>
+records the license, byte hashes and source mesh selection. Render subdivision
+and presentation transforms are excluded from numerical acceptance.</p>
+<p>The separate authored-motion baseline generates 48 poses from eight arm paths
+and 33 controls. Dem Bones fits a fixed 8,000-point numerical proxy with
+<strong>0.01813% normalized RMSE</strong>. Native Houdini Point Deform transfers the solved
+motion to the 29,542-point artist body, retaining all 58,912 triangles and three
+UV sets. Fresh native scene reopening verifies all 48 frames. This baseline is
+kinematic; it does not assert softbody simulation.</p>
+</section>
+<section id="skin-and-steel">
+<h2>Skin and steel<a class="headerlink" href="#skin-and-steel" title="Link to this heading">¶</a></h2>
 <img alt="Native Cycles hand closeup with HDRI, procedural skin detail and subsurface scattering" src="_images/premium-blender-skin.png" />
 <p>The 1920 × 1080 Cycles closeup combines unchanged Designer texture exports
 with shader-authored complexion, pores and crease detail, a real CC0 HDRI,
@@ -332,9 +397,10 @@ first material iteration.</p>
 <p>See the <a class="reference internal" href="showcase/arm-skin/README.html"><span class="doc">rendered gallery and validation ledger</span></a>
 for exact host results and remaining work, and the <a class="reference external" href="https://github.com/loonghao/py-dem-bones/tree/main/examples/showcase">DCC-MCP example guide</a>
 for native entry points. The gallery distinguishes native rig evaluation
-from the explicit Houdini Python SOP and Unreal DynamicMesh example bridges.</p>
+from the explicit Houdini deformers and Unreal DynamicMesh example bridges.</p>
 <div class="toctree-wrapper compound">
 </div>
+</section>
 </section>
 
         </article>
@@ -387,8 +453,29 @@ from the explicit Houdini Python SOP and Unreal DynamicMesh example bridges.</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Native render studies</a><ul>
+<li><a class="reference internal" href="#octopus-vellum-motion-to-skinning">Octopus: Vellum motion to skinning</a></li>
+<li><a class="reference internal" href="#octopus-materials">Octopus materials</a></li>
+<li><a class="reference internal" href="#skin-and-steel">Skin and steel</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

@@ -101,15 +101,36 @@
       "triangles": 15936
     },
     "motion": {
-      "status": "kinematic baseline accepted; softbody source, fitting and motion render acceptance recorded separately",
-      "method": "Eight geometry-guided arm paths plus a mantle control define our authored procedural poses. Dem Bones fits the fixed numerical proxy; native Point Deform transfers solved motion to the original body. The sculpt does not contain an original animated rig or clip."
+      "status": "native Vellum source, 81-bone Dem Bones reconstruction, independent reopen and complete 48-frame Mantra animation accepted",
+      "method": "Houdini Vellum stretch and bend constraints, internal struts, compliant sparse arm-tip targets and contact generate 48 physical samples. Dem Bones fits an 8000-point fixed proxy with sparse weights and rigid transforms; native Point Deform transfers the fit to the original artist mesh. The sculpt contains no original animated rig or clip.",
+      "source_is_authored_lbs": false,
+      "frames": 48,
+      "bones": 81,
+      "source_receipt": "docs/showcase/arm-skin/octopus-softbody-native-source.json",
+      "fit_receipt": "docs/showcase/arm-skin/octopus-softbody-native-report.json",
+      "native_readback": "docs/showcase/arm-skin/octopus-softbody-native-readback.json",
+      "independent_reopen": "docs/showcase/arm-skin/octopus-softbody-native-reopen.json",
+      "earlier_kinematic_baseline": {
+        "frames": 48,
+        "bones": 33,
+        "softbody_simulation": false,
+        "receipt": "docs/showcase/arm-skin/octopus-native-report.json"
+      },
+      "boundary_edges": 60,
+      "closed_volume_conservation_claimed": false,
+      "first_and_last_samples_forced_equal": false,
+      "seamless_loop_claimed": false,
+      "native_animation_receipt": "docs/showcase/arm-skin/octopus-native-animation.json"
     },
     "render_only_geometry": {
-      "status": "native rest-surface material study accepted; motion hero acceptance recorded separately",
+      "status": "native posed hero, complete 48-frame animation and rest-surface controlled SSS study accepted",
       "subdivision_levels": 1,
       "scale": "Uniform presentation scale to metres; source units are not asserted to be metres.",
       "axis_conversion": "Convert source Y-up to the Z-up render study as an explicit presentation transform. Preserve numerical rest geometry, source poses and solver output.",
-      "metres_per_source_unit": 0.035
+      "metres_per_source_unit": 0.035,
+      "native_hero_evidence": "docs/showcase/arm-skin/octopus-native-hero.json",
+      "numerical_mesh_changed_for_render": false,
+      "native_animation_evidence": "docs/showcase/arm-skin/octopus-native-animation.json"
     },
     "materials": {
       "status": "official Designer 16 cook/render accepted: editable SBS, SBSAR and 18 native 2K maps; repeated render byte hashes match",
