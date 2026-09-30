@@ -1,0 +1,47 @@
+{
+  "success": true,
+  "host": "Houdini",
+  "version": "22.0.368",
+  "source_sha256": "824a8fc33a192f8b3589bc413d808e537e77a486105ff7e7fe1481201de6e97c",
+  "source_role_filter": "glTF mesh 1 / node 7 Object_7; native primitive name Object_1",
+  "excluded_source_meshes": [
+    0,
+    2,
+    3,
+    4,
+    5
+  ],
+  "source_vertices": 29542,
+  "source_faces": 58912,
+  "source_point_attributes": [
+    "P"
+  ],
+  "source_vertex_attributes": [
+    "uv3",
+    "uv",
+    "N",
+    "uv2"
+  ],
+  "source_primitive_attributes": [
+    "name"
+  ],
+  "source_bounds": {
+    "minimum": [
+      -22.97215461730957,
+      -7.203646183013916,
+      -41.30540084838867
+    ],
+    "maximum": [
+      20.178117752075195,
+      11.290163040161133,
+      4.602167129516602
+    ]
+  },
+  "proxy_vertices": 8000,
+  "proxy_faces": 15936,
+  "proxy_method": "native PolyReduce 2.0, fixed rest topology before pose sampling",
+  "geometry": "/obj/DemBonesOctopus",
+  "render_rest": "/obj/DemBonesOctopus/ARTIST_REST",
+  "numerical_rest": "/obj/DemBonesOctopus/NUMERICAL_REST",
+  "ui_automation_used": false
+}
