@@ -73,8 +73,76 @@ Legacy DCC callers import a sequence, call ``dem_bones.compute()``, then export
 all transforms with ``to_dcc_data()``. Export before a successful compute fails.
 Set the coordinate system before importing. Changing it invalidates the import,
 and requires resampling or reimporting the host arrays before another export.
-Existing host-specific example classes have not yet been migrated and are
-incomplete; their presence does not establish host support.
+
+Packaged host adapters
+----------------------
+
+Import each adapter from ``py_dem_bones.adapters.<host>``. Importing the package
+does not import any DCC SDK. The modules are ``maya``, ``blender``, ``houdini``,
+``max`` and ``unreal``. Their classes keep the names from the older examples:
+``MayaDCCInterface``, ``BlenderDCCInterface``, ``HoudiniDCCInterface``,
+``MaxDCCInterface`` and ``UnrealDCCInterface``.
+
+The adapter lifecycle is:
+
+.. code-block:: python
+
+   from py_dem_bones.adapters.maya import MayaDCCInterface
+
+   adapter = MayaDCCInterface()
+   if not adapter.from_dcc_data("restMesh", ["joint1"], ["poseMesh"]):
+       raise RuntimeError(adapter.last_error)
+   adapter.compute()
+   result = adapter.to_dcc_data(apply_weights=False)
+   if not result["success"]:
+       raise RuntimeError(result["error"])
+   print(result["weights"].shape, result["transformations"].shape)
+
+Native solvers and wrapper instances may be passed to the adapter constructor.
+Each native solver is exclusively borrowed by one live adapter; sharing it
+with another adapter is rejected. Do not mutate the borrowed solver outside
+the adapter lifecycle. Completed results are stored as independent snapshots.
+Call ``adapter.compute()`` so result state is tracked. A raw native
+``solver.compute()`` is not a substitute. Exports now return dictionaries:
+check ``result["success"]`` rather than the truth value of the dictionary.
+
+.. list-table:: Host boundaries
+   :header-rows: 1
+   :widths: 15 40 45
+
+   * - Host
+     - Integration
+     - Requirement or limit
+   * - Maya
+     - Mesh API sampling and skin weights
+     - Matrices use Maya's row-vector convention. Existing influences must match.
+   * - Blender
+     - Evaluated mesh sampling and vertex groups
+     - Evaluated topology must match the writable mesh; matrices use column vectors.
+   * - Houdini
+     - Geometry sampling and individual float weight attributes
+     - Writing needs mutable geometry. Attributes are not native ``boneCapture``.
+   * - 3ds Max
+     - Mesh sampling and Skin weights
+     - An appropriate Skin modifier and its required host context must exist.
+   * - Unreal
+     - Explicit sampler/writer bridge
+     - The caller supplies SDK access and stable vertex mapping; no default asset writer.
+
+Adapters default to consistent host coordinates. The solver does not require a
+particular up axis. The Maya adapter transposes matrices on the last two axes
+to expose Maya's row-vector convention. The other adapters return NumPy
+column-vector matrices; convert them before constructing native row-vector
+matrices in Houdini or 3ds Max.
+Use ``set_coordinate_system`` before import for an explicit basis or unit change.
+
+Named writes reject a changed topology, bone mapping, or reduced solved bone
+count. Solved bone slots are labels, not constraints on the original skeleton's
+bind pose. These adapters write weights and return the entire transform sequence;
+they do not bake animation, adjust bind poses, or resolve joint hierarchies.
+An SDK exception reports failure; it does not promise a transaction rollback.
+Mock SDK tests establish contract behavior, while real host acceptance must be
+recorded separately for each supported version.
 
 Reproducible Maya acceptance
 ------------------------------
@@ -85,11 +153,13 @@ path, or the path to the installed DCC-MCP Maya plugin:
 
 .. code-block:: console
 
-   mayapy tests/integration/maya_skinning_smoke.py --plugin dcc_mcp_maya_plugin.py --two-bones
+   mayapy tests/integration/maya_skinning_smoke.py --plugin dcc_mcp_maya_plugin.py --two-bones --adapter
 
 ``--site-packages`` can point at an isolated installation of py-dem-bones.
 The script creates and samples Maya mesh data, checks numerical reconstruction,
-and prints JSON. A plugin-load pass establishes host compatibility; gateway
+and prints JSON. With ``--adapter`` it also writes skin weights through the
+packaged Maya adapter and reads them back from Maya for verification.
+A plugin-load pass establishes host compatibility; gateway
 catalog readiness and UI control require their own acceptance tests.
 
 Failure contract

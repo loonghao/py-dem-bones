@@ -1,33 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Integration Demo of RBF with DemBones in Maya
+DemBones skinning and an offline RBF interpolation preview in Maya.
 
-This example demonstrates how to combine DemBones with SciPy's RBF functionality in Maya,
-implementing functionality similar to Chad Vernon's RBF nodes.
-We will use DemBones to calculate bone weights and transformations, then use RBF interpolators
-to drive auxiliary joints.
+This example uses the packaged Maya adapter to calculate skinning data from
+sampled mesh poses, then evaluates a SciPy RBF interpolator in Python. It does
+not install a live Maya RBF node or connect the interpolator to joint updates.
 
 To run this example, you need:
 1. Install the following dependencies in Maya's Python environment:
     pip install py-dem-bones numpy scipy
 
-2. Ensure that the maya_example.py file is in the same directory or in the Python path
+2. Provide animated mesh samples with the same vertex order and polygon topology
+   as a size-2 cube with two subdivisions on each axis, created by this demo.
 
 3. Copy this script to Maya's script editor to run, or execute via Maya's Python command line:
     import maya_rbf_demo
-    maya_rbf_demo.main()
+    maya_rbf_demo.main(anim_mesh_names=["cubePose1", "cubePose2"])
 """
 
 import numpy as np
 from scipy.interpolate import RBFInterpolator
 import maya.cmds as cmds
-import maya.OpenMaya as om
-import py_dem_bones as pdb
-from py_dem_bones.interfaces import DCCInterface
-
-# Import MayaDCCInterface class
-from maya_example import MayaDCCInterface
+from py_dem_bones.adapters.maya import MayaDCCInterface
 
 
 def create_cube_mesh(name="demBonesCube", size=2.0):
@@ -87,7 +82,7 @@ def create_rbf_joints(name_prefix="rbfJoint", positions=None):
         cmds.select(clear=True)
         joint = cmds.joint(name=f"{name_prefix}_{i+1}", position=pos)
         # Add controller
-        ctrl = create_control(f"{name_prefix}Ctrl_{i+1}", joint)
+        create_control(f"{name_prefix}Ctrl_{i+1}", joint)
         joints.append(joint)
     
     return joints
@@ -126,7 +121,7 @@ def create_rbf_interpolator(key_poses, key_values, rbf_function='thin_plate_spli
             - 'quintic': Quintic function
     """
     return RBFInterpolator(
-        key_poses, 
+        key_poses,
         key_values,
         kernel=rbf_function,
         smoothing=0.0  # No smoothing, exact interpolation
@@ -134,33 +129,18 @@ def create_rbf_interpolator(key_poses, key_values, rbf_function='thin_plate_spli
 
 
 def setup_rbf_driven_keys(source_ctrl, target_joint, rbf):
-    """
-    Set up RBF-driven keyframe animation
-    """
-    # Create node to store RBF weights
-    weight_node = cmds.createNode('multiplyDivide', name=f"{target_joint}_rbfWeight")
-    
-    # Connect controller attributes to weight node
-    cmds.connectAttr(f"{source_ctrl}.translateX", f"{weight_node}.input1X")
-    cmds.connectAttr(f"{source_ctrl}.translateY", f"{weight_node}.input1Y")
-    
-    # Set driven keyframes
-    cmds.setDrivenKeyframe(
-        f"{target_joint}.translateX",
-        currentDriver=f"{weight_node}.outputX",
-        driverValue=0.0,
-        value=0.0
-    )
-    cmds.setDrivenKeyframe(
-        f"{target_joint}.translateY",
-        currentDriver=f"{weight_node}.outputY",
-        driverValue=0.0,
-        value=0.0
+    """Reserved for a Maya node or callback that evaluates the interpolator."""
+    raise NotImplementedError(
+        "Live RBF-driven joints require a Maya evaluation node or callback; "
+        "this example only evaluates the interpolator in Python."
     )
 
 
-def main():
-    """Main function for RBF demo in Maya"""
+def main(anim_mesh_names=None):
+    """Solve sampled cube poses and preview RBF outputs, without a live RBF rig."""
+    if not anim_mesh_names:
+        print("Provide anim_mesh_names with sampled cube poses; a static mesh and joint positions are insufficient.")
+        return False
     try:
         # Clean up existing objects
         for obj in ['demBonesCube', 'demBonesRoot_1', 'rbfJoint_1', 'rbfJointCtrl_1']:
@@ -174,43 +154,40 @@ def main():
         # Create joint chain
         joints = create_joints()
         # Create RBF auxiliary joints and controllers
-        rbf_joints = create_rbf_joints()
+        create_rbf_joints()
         
         # 2. Set up DemBones and Maya interface
         print("\n2. Setting up DemBones...")
-        dem_bones = pdb.DemBones()
-        
-        # Create MayaDCCInterface instance
-        try:
-            maya_interface = MayaDCCInterface(dem_bones)
-        except NameError:
-            print("Error: Cannot find MayaDCCInterface class. Please ensure maya_example.py file is in the same directory or in the Python path.")
-            return
+        maya_interface = MayaDCCInterface()
         
         # 3. Import data from Maya
         print("\n3. Importing data from Maya...")
         success = maya_interface.from_dcc_data(
             mesh_name=cube,
             joint_names=joints,
+            anim_mesh_names=anim_mesh_names,
             use_world_space=True,
             max_influences=4
         )
         
         if not success:
-            print("Failed to import data from Maya!")
-            return
+            print(f"Failed to import data from Maya: {maya_interface.last_error}")
+            return False
         
         # 4. Calculate skinning weights
         print("\n4. Calculating skinning weights...")
-        dem_bones.compute()
+        maya_interface.compute()
         
         # 5. Export weights to Maya
         print("\n5. Exporting weights to Maya...")
-        maya_interface.to_dcc_data(
+        export_result = maya_interface.to_dcc_data(
             apply_weights=True,
             create_skin_cluster=True,
             skin_cluster_name='demBonesSkinCluster'
         )
+        if not export_result.get("success", False):
+            print(f"Failed to export skinning data to Maya: {export_result.get('error', 'unknown error')}")
+            return False
         
         # 6. Set up RBF interpolation
         print("\n6. Setting up RBF interpolation...")
@@ -240,22 +217,18 @@ def main():
             )
         except Exception as e:
             print(f"Failed to create RBF interpolator: {e}")
-            return
+            return False
         
-        # 7. Set up Maya driven keyframes
-        print("\n7. Setting up driven keyframes...")
-        for i, joint in enumerate(rbf_joints):
-            ctrl_name = f"rbfJointCtrl_{i+1}"
-            setup_rbf_driven_keys(ctrl_name, joint, rbf)
-        
-        print("\nDemo setup complete!")
-        print("1. Select rbfJointCtrl_1 to control auxiliary joints")
-        print("2. Move the controller to see the effect")
-        print("3. Try different extreme positions to test RBF interpolation effect")
+        print("\n7. Previewing RBF interpolation at controller input [0.5, 0.5]...")
+        print(rbf(np.array([[0.5, 0.5]])).reshape(-1, 3))
+        print("Skinning export and Python RBF preview complete.")
+        print("Live RBF-driven joints are not implemented; moving the controllers does not evaluate this interpolator.")
+        return True
     except Exception as e:
         print(f"Error: {e}")
         import traceback
         traceback.print_exc()
+        return False
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ and convenience methods.
 """
 
 from __future__ import annotations
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Union
 import numpy as np
 from py_dem_bones._py_dem_bones import DemBones as _DemBones
 from py_dem_bones._py_dem_bones import DemBonesExt as _DemBonesExt
@@ -38,7 +38,7 @@ class DemBonesExtWrapper(DemBonesWrapper):
 
     """
 
-    def __init__(self):
+    def __init__(self, solver: Optional[_DemBonesExt] = None):
         """
         Initialize a new DemBonesExtWrapper instance.
         """
@@ -63,10 +63,12 @@ class DemBonesWrapper:
 
     """
 
-    def __init__(self):
+    def __init__(self, solver: Optional[Union[_DemBones, _DemBonesExt]] = None):
         """
         Initialize a new DemBonesWrapper instance.
         """
+    @property
+    def native_solver(self) -> Union[_DemBones, _DemBonesExt]: ...
     def set_mesh_sequence(
         self,
         rest_vertices: np.ndarray,

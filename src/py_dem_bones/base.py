@@ -26,14 +26,25 @@ class DemBonesWrapper:
     adding support for named bones, error handling, and convenience methods.
     """
 
-    def __init__(self):
-        """Initialize a new DemBonesWrapper instance."""
-        self._dem_bones = _DemBones()
+    def __init__(self, solver=None):
+        """Wrap a native solver, or create one when omitted."""
+        if solver is not None and not isinstance(solver, (_DemBones, _DemBonesExt)):
+            raise TypeError("solver must be a native DemBones or DemBonesExt instance")
+        self._dem_bones = _DemBones() if solver is None else solver
         self._bones = {}  # Mapping of bone names to indices
         self._targets = {}  # Mapping of target names to indices
         self._weights_computed = False  # Flag to track if weights have been computed
 
     # Basic properties (delegated to C++ object)
+
+    @property
+    def native_solver(self):
+        """Return the native solver for advanced integrations.
+
+        A host adapter exclusively borrows this object during its lifetime.
+        Do not mutate it externally while the adapter is using it.
+        """
+        return self._dem_bones
 
     @property
     def num_bones(self):
@@ -840,11 +851,11 @@ class DemBonesExtWrapper(DemBonesWrapper):
     skeleton support.
     """
 
-    def __init__(self):
-        """Initialize a new DemBonesExtWrapper instance."""
-        super().__init__()
-        # Replace the base C++ object with the extended version
-        self._dem_bones = _DemBonesExt()
+    def __init__(self, solver=None):
+        """Wrap a native extended solver, or create one when omitted."""
+        if solver is not None and not isinstance(solver, _DemBonesExt):
+            raise TypeError("solver must be a native DemBonesExt instance")
+        super().__init__(_DemBonesExt() if solver is None else solver)
         # Initialize parent-child relationships
         self._parent_map = {}  # Maps bone index to parent bone index
 
