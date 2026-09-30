@@ -48,26 +48,23 @@ Maya Integration
 
 To use the RBF functionality in Maya:
 
-1. Implement the MayaDCCInterface to handle Maya-specific data structures
+1. Use ``py_dem_bones.adapters.maya.MayaDCCInterface`` for mesh decomposition
 2. Replace matplotlib visualizations with Maya nodes/views
 3. Consider Maya's Python environment compatibility
+
+The Maya RBF demo requires explicit sampled pose meshes and provides offline
+interpolation previews. It does not install a live Maya dependency-graph RBF
+driver; ``setup_rbf_driven_keys`` reports that operation as unsupported.
+The Blender RBF example is an independent SciPy demonstration and does not
+invoke the skinning adapter.
 
 .. code-block:: python
    :caption: Maya RBF Integration Example (Simplified)
 
    import maya.cmds as cmds
-   from py_dem_bones.interfaces.dcc import DCCInterface
+   from py_dem_bones.adapters.maya import MayaDCCInterface
    from scipy.interpolate import RBFInterpolator
    import numpy as np
-
-   class MayaDCCInterface(DCCInterface):
-       def from_dcc_data(self, **kwargs):
-           # Implementation for Maya data extraction
-           pass
-
-       def to_dcc_data(self, **kwargs):
-           # Implementation for Maya data application
-           pass
 
    # Create RBF setup between two poses
    def create_rbf_setup(source_joint, target_joint, poses):

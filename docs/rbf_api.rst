@@ -150,8 +150,12 @@ Integration with DCC Software
 
 To use this functionality in Digital Content Creation (DCC) software like Maya, Blender, or Houdini, you'll need to:
 
-1. Implement the appropriate DCCInterface for your software
+1. Use a packaged adapter for mesh decomposition, or implement a host integration
 2. Convert between the DCC's data structures and NumPy arrays
 3. Apply the interpolated values to the appropriate controls or joints
 
-For specific examples, see the :doc:`Maya RBF Example <../examples/maya_rbf_demo.py>` and :doc:`Blender RBF Example <../examples/blender_rbf_example.py>`.
+See the `Maya RBF example <https://github.com/loonghao/py-dem-bones/blob/main/examples/maya_rbf_demo.py>`_
+for sampled-mesh decomposition and offline interpolation previews, and the
+`Blender RBF example <https://github.com/loonghao/py-dem-bones/blob/main/examples/blender_rbf_example.py>`_
+for standalone SciPy interpolation. These examples do not provide automatic
+binding or a live dependency-graph RBF driver.
