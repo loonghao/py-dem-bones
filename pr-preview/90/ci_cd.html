@@ -308,6 +308,9 @@ consistency workflows. The source of truth for the released version is
 <code class="docutils literal notranslate"><span class="pre">.release-please-manifest.json</span></code>. release-please updates <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>,
 <code class="docutils literal notranslate"><span class="pre">src/py_dem_bones/__version__.py</span></code>, documentation and citation metadata in
 the release pull request. CI checks that these surfaces agree.</p>
+<p>CI fetches Eigen from the maintainers’ <a class="reference external" href="https://github.com/eigen-mirror/eigen">official GitHub mirror</a>. The immutable submodule gitlink
+selects the exact upstream commit and source tree independently of the
+download URL.</p>
 <section id="release-sequence">
 <h2>Release sequence<a class="headerlink" href="#release-sequence" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">

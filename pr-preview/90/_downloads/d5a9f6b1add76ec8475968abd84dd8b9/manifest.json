@@ -98,9 +98,24 @@
       "sha256": "5753160e230d7114eb6fc2730581c740a0ae2657d120047eb217bb5a79daca75"
     },
     {
+      "path": "docs/showcase/arm-skin/premium-houdini-motion-sequence.json",
+      "size_bytes": 17875,
+      "sha256": "8297bf3020672f870cf9a8e96cad66559bf6c7c49d945b4720256abd5eba7a2e"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-houdini-motion.gif",
+      "size_bytes": 1406926,
+      "sha256": "4defcd95cd01c9a63469d1de86c9e39fead51e346d634ba65e710d73f6f50fb8"
+    },
+    {
       "path": "docs/showcase/arm-skin/premium-houdini-motion.json",
       "size_bytes": 2007,
       "sha256": "3f1e97163726d3476d1240aec00559425d15b0089c5240b2f20b9f4f74b7de27"
+    },
+    {
+      "path": "docs/showcase/arm-skin/premium-houdini-motion.mp4",
+      "size_bytes": 317618,
+      "sha256": "942c089f3acaad83fa4e01e8475e613c55bd9a59fd0277127ea884d3bdc91efc"
     },
     {
       "path": "docs/showcase/arm-skin/premium-houdini-motion.png",
@@ -184,8 +199,8 @@
     },
     {
       "path": "docs/showcase/arm-skin/README.md",
-      "size_bytes": 16471,
-      "sha256": "7ddd704e3f2f629ed9ac19a446cc589e664eccdad7dac7b3d3a6cda16921b8e3"
+      "size_bytes": 16800,
+      "sha256": "596e4da91ee62a3da4431372e186211d44a15d697bc4abfa1d0dc351b416edc5"
     },
     {
       "path": "docs/showcase/arm-skin/render.png",
@@ -219,8 +234,8 @@
     },
     {
       "path": "docs/showcase/arm-skin/validation.json",
-      "size_bytes": 48953,
-      "sha256": "74a954c592fd7b5d4fb97149fdfb171929e5dc819e5f8ed9659e59f096f2e76f"
+      "size_bytes": 53108,
+      "sha256": "f3db5c1bb1eec8ddd8f5fee06183fd4f3b678962dcca3e3086c2918ef359c666"
     },
     {
       "path": "examples/showcase/assets/arm.obj",

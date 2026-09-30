@@ -438,7 +438,7 @@
       "file": "houdini-tentacle.gif",
       "host": "houdini",
       "case": "tentacle",
-      "description": "Native OpenGL deformation preview; arm Mantra sequence pending",
+      "description": "Native OpenGL deformation preview; Mantra studies are recorded separately",
       "native_frames": 48,
       "distinct_native_png_hashes": 48,
       "gif_frames": 48,
@@ -796,6 +796,69 @@
       "fps": 12,
       "evidence_file": "premium-unreal-chain-sequence.json",
       "render_geometry_excluded_from_numerical_acceptance": true
+    },
+    {
+      "file": "premium-houdini-motion.gif",
+      "host": "houdini",
+      "case": "tentacle",
+      "native_frames": 48,
+      "size": [
+        960,
+        540
+      ],
+      "fps": 12,
+      "evidence_file": "premium-houdini-motion-sequence.json",
+      "native_frame_sha256": [
+        "2c958ac984d4eeb7a8de518e76378c82c0110ff622ad4a7ff3a82b8c2a76e1d2",
+        "ce2a050d8ea690a2fe31bc513e3420b47b2af6d6c6d516558d1c4f474e420f27",
+        "3fabfd6aae9bc02e6cb890a63e25d9f6e8e1575fd14b30443bce753ad1414a3e",
+        "7aac5504459f50cf2b87bb42ff972f4d2455e5734d3a2d4fa778de74143423b1",
+        "f813c1a92b8f6580a1c012ec6573fa02f2f5717c2b75b54667cf6c09d1f4b84e",
+        "fd000f67cc0a604fabb83480bd4fa848fbab9cbe131034673f6e1b3e84ea4deb",
+        "1ee20d185a2a23c112a340db204fc58a84814b7f71539c3210d1a5351b1f11f9",
+        "e82fe417b9059c4696b0d1af37da3f16cced3885a9d80a7677c16643ede5ea32",
+        "3d140b75735363e12432d0979d06f3880b7901cceff84c935b935e3bc702a708",
+        "8263b2efb4e9d53313f5da93cdbbe044614abe299b2778989807e45c618f3802",
+        "7842b8801db1ee9fe252914331fd58e45feab97a78b71dc503276fb249890206",
+        "d9494b2323adac2cfc69604d88c89cd85b83617667f62cd1b046e193134d9afa",
+        "981d7fc95995bbc0848b253a4df07b020a45eebad8bc043e08415ed640220d14",
+        "31f68d8b1128797190667ffa15bea89981fc181a6d27db7ceecdcad2757ae0e6",
+        "9f8f4584337fa40591b76375924efb3a1683a1583074aa7247f9c8ef13b4a7fd",
+        "1faacaaa5f1ee499f597a47b610f56552ddb872a62ba679006cabc64081609f6",
+        "20802400f06b5f5b0b0372d8573e5e82b5ae7bc7361b5bb851a2f163f4214772",
+        "4a512beb96d7fcc56fbcb0e8ea507c0aacbe5785ea150fa3fbda5030d5567bee",
+        "fa1103cb418c3ba73d791759d478d4a81f005f3513eaf34dc115471f1ae9dd51",
+        "02530e1e180d2fd109fd4936ddd187b226d56dfef25f1ce884049b51620cc5ef",
+        "73d2e73741e24ee6282be1030fe457ce95e2c680aee11e630199fdd1b92b306d",
+        "25dbfbcdfde50a0a83da2924544bd2ae30fcc95c3d48acad1d56c9a259c1c491",
+        "41e4d10e54a1034dde4804ec1543beaca31af8863f8c77c316e170832cafb227",
+        "2bd84035c0d4500cbb7d43d6d8986b09d3322b0e1ee63cbd3161e02cc4406f13",
+        "676a4103512873a1086efb7454a1c298711e3e5237a1d8708a21618b35bffb6a",
+        "571a2906f79777053d2bbb0a70ea6c484731ed04b9b61db36c0bcb08b7cd2510",
+        "a8fa5d9543d84ecec8a5b3ea776f4a4dff853555fa2c05fea4ac36952c61e2e6",
+        "53bced57244ce6d997cb2fd9b2edd3e959dfd8e7b4c3ae419c6a377a5cd24e75",
+        "53e80d937b5157e59ef469237fb3c6d4484a4ce145b5cccd2b0dc9a8fd18076b",
+        "3be390ced93e59d2be9bd47117b93c8ffeb38ce3dc90e024334f3f9564f41caa",
+        "119d7f71393e6e25c49021beb9a360bcb68995afed68d85ab6fd7120cc0cc033",
+        "7dd055ca3d955202455acd3f6c5b63115d59db26a7283714c07d2aa395693549",
+        "583bd0c29397eda7d4f31ce9df7fbc99d0f8c589f2d9c32eb8e4f632113860e7",
+        "8f48ec431a081bd4a7a2d71b28a34c9e3bab43a5897d2a2eaecae39176e213ae",
+        "9ba8686970dc651ef8b827f9aa0e6c43e34038cdfbdbdb1ae22b1dc4b94600d8",
+        "9a3ecf266f07f63a917610676059c248bade76e0735ddbc491363736b6c3793e",
+        "cb43df0c97aac8801699b2b5dd90838d702d0da218cc66fdbdd6b024b6e766ba",
+        "1653308512b0dfe87457229ba6c905ca1101d401d8fed03d7066c9dfbb5661ce",
+        "7eda85ce0fe133e96e90a2b94b1739b8b7575e65e67403451d9b1a4811217de1",
+        "dca72ba9588a59807695856fb6f8f705b4ac3801a11e8458239b57d7319559d3",
+        "2d66ee93a9b6ff1cde5dd5094dbb82c56c499256a6b0b06b87bc1d9bbc4b1d9d",
+        "f5b0cdd84296db7ca35af505c8f07e5ca8e1245f21a067e05bdb7ad9e168c4c7",
+        "53d44662e6ec91aa64ff0371dff465ee4dcfc3bb394f4eba795290bac66d0f01",
+        "27f52a907cd9df024ffc5e000c3b9b39d2428c147510d5982f93a0205aecec28",
+        "cc99290b47470a180d8aad9dfd5ccec9eec5ac0a84ccb56205b70d03adf25bc6",
+        "e4160098c0d3e70880987fc9385ec293321234c7764e3c7c773fdc40f7bf2764",
+        "8bfe9d098224471cad5c5d5d9aef86908d15a66d811434c0462db13511bf97ea",
+        "ca58a07a3c595f82c083dc98a42d60d8dea7c6a14bed7b8ecafea6b12f0aadf2"
+      ],
+      "render_geometry_excluded_from_numerical_acceptance": true
     }
   ],
   "material": {
@@ -935,7 +998,8 @@
   },
   "pending": [
     "Maya lighter Designer palette and 0.03 SSS scale native re-render",
-    "Public Maya/Houdini/Unreal native scene delivery/reopen and complete Designer graph capture"
+    "Public Maya/Houdini/Unreal native scene delivery",
+    "Complete Designer graph capture"
   ],
   "environment_blocker": null,
   "unreal_chain_preview": {
@@ -979,7 +1043,8 @@
       "receipt_file": "premium-houdini-motion.json",
       "reopen_receipt": "premium-houdini-reopen.json",
       "native_beauty_outputs": true,
-      "render_geometry_excluded_from_metrics": true
+      "render_geometry_excluded_from_metrics": true,
+      "sequence_receipt": "premium-houdini-motion-sequence.json"
     }
   }
 }
