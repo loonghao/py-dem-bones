@@ -1,18 +1,38 @@
-Native DCC showcase
-===================
+Native render studies
+=====================
 
 The arm, tentacle and rigid-chain cases exercise the shared skinning contracts
 through DCC-MCP in Maya, Blender, Houdini and Unreal Engine 5.8.
 
-.. image:: showcase/arm-skin/render.png
-   :alt: Native Cycles source arm on the left and reconstructed arm on the right
+.. image:: showcase/arm-skin/premium-blender-skin.png
+   :alt: Native Cycles hand closeup with HDRI, procedural skin detail and subsurface scattering
 
-The image uses the lighter Designer skin material in native Cycles with a
-real CC0 HDRI and SSS. Blender's full sequence, SSS off/on comparison and
-packed texture readback have passed native acceptance. Arnold retains its
-first material iteration. Unreal's 48-frame HDRI/Subsurface preview and rigid
-chain evaluation have passed. Houdini has completed its 48-frame Mantra
-SSS sequence and higher-sampling still. Updated Maya still requires live acceptance.
+The 1920 × 1080 Cycles closeup combines unchanged Designer texture exports
+with shader-authored complexion, pores and crease detail, a real CC0 HDRI,
+and rectangular softboxes. Its SSS pair changes only scattering weight under
+identical camera and lighting. The steel-chain study adds native strip-light
+reflections and a complete 48-frame animation. Saved Blender scenes are
+reopened to check packed textures, HDRI and the original rig coordinates.
+
+Presentation subdivision affects only rendered surfaces and is excluded from
+numerical acceptance. Cameras and lights may track actual pose bounds;
+the accepted rig, pose sequence and timing remain unchanged. Procedural skin
+detail is artist-authored, not scanned anatomy. Rigid-chain motion is prescribed,
+not a collision simulation.
+
+The solver evidence plate and video use Matplotlib Agg to display the accepted
+Blender cache: source motion, reconstruction, solved weight colors and a fixed
+vertex-error scale. They are scientific visualizations, separate from native
+beauty renders and fresh host acceptance.
+
+Unreal's HDRI/Subsurface captures use an independent Loop render proxy after
+native DynamicMesh weight/pose readback. They are real-time SDK previews,
+not path-traced skin or SkeletalMesh animation exports. Houdini's completed
+arm sequence uses Mantra and an explicit Python SOP deformer; new motion-study
+completion is recorded individually in the gallery. Renderer scales and display
+transforms differ, so cross-host images are not a calibrated skin comparison.
+Updated Maya look development remains unverified; Arnold media retains the
+first material iteration.
 
 See the :doc:`rendered gallery and validation ledger <showcase/arm-skin/README>`
 for exact host results and remaining work, and the `DCC-MCP example guide

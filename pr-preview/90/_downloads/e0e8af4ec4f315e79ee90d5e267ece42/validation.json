@@ -568,7 +568,7 @@
       "file": "houdini-arm.gif",
       "host": "houdini",
       "case": "arm",
-      "description": "Native Mantra HDRI, Designer BaseColor, SSS0.65 scale0.03; gamma2.2 display conversion",
+      "description": "Native Mantra HDRI/SSS; official color-only OIDN and full-range RGB gamma2.2 display copy",
       "native_frames": 48,
       "gif_frames": 48,
       "duration_ms": 4000,
@@ -679,7 +679,7 @@
         "5d8d9e6bcfd79cba107926f3f10b056ac076ac612d48010a2f84066a1f292442"
       ],
       "distinct_native_exr_hashes": 48,
-      "display_transform": "FFmpeg eq=gamma=2.2; approximate, not a matched cross-renderer transform",
+      "display_transform": "Full-range linear RGB to approximate gamma 2.2; 8-bit RGB display PNG",
       "material_iteration": "final-houdini-v2",
       "render_job": {
         "state": "completed",
@@ -698,7 +698,104 @@
         "sss_scale": 0.03,
         "hdri_intensity": 2,
         "roughness_scalar": 0.55
-      }
+      },
+      "postprocess": "SideFX Houdini 22.0.368 idenoise --oidn-cpu; color only; no albedo or normal guide",
+      "display_receipt_file": "houdini-display-readback.json",
+      "display_png_sha256": [
+        "afec83051bf3ede977308ea5676a03645ea234aff5961015d242690d21e4e876",
+        "3908415eaab8cba40b1916b73dd466842e1c828cf66bb18dcfcbeed47de69bf6",
+        "6613c3211b342d1f01eb91226a3247198e2b3b98983c03e426563eb3c38abebe",
+        "7a538b99a2e9461b135f7f0cc829393ee150894d660c8911b72677cd77b5ecb3",
+        "51a4dccab59084d05f55e2f35468eaa5d287c2caa251d3e54a4995f1a4b31e93",
+        "a834f35908bf1112ccb4a2f88c17af6762e378fa7e5e52d7087b09f7e34d85bc",
+        "2d857ff91faa474b0a867063d9a45361dc55273f8874286d89cfae31edb0e41c",
+        "ace5107fae00029e66310f6675927b8775d879b176b6e697cef4790f63f04a1b",
+        "7121f8cdeda86ab07e59f553c889009d96d53563710fc98a5e29e4e0f4f32716",
+        "34c3d6738356e2dd0c9f78222e9f53dbbe04b5974c3949927eefa298f1e702e5",
+        "7eb2b2d52286ad1548dc030d01abd43e03365d7e8adf6057b35f45b0b4ef6a45",
+        "4e8c69752692cd135452d579c3cc9c64edea2694efc65741fb9c55c8bc15a638",
+        "13acd474538342e2f2fa489ad75532601422b2533709d656eb3daebe4c8f7a78",
+        "80e63e75253232d4b7b5ec53902b153ec5ff14ad6b536597734c6f0852553d7c",
+        "505a7b74f4ac1fab9a55d68aa585436a6a67173c5740adfee1bc96aa1d4c4ac8",
+        "37ae04f6b7c3916e0a06629b59fd6c9e99949487c7f0c9f4a6f791df8559576b",
+        "adcbe1d93acfca370f1fadf2a7c0606d0f3c0920a656ab85b803c20aa2e3d8ce",
+        "3e6048983d2ff7b9bd873bb2336d64637bcc75dd93d84048b6fa5d1cb15a2f54",
+        "b958b8b94cd37fd5e0b25531cc6e989dfd315c19f507cd8accd58f7eb9385742",
+        "da9957883a3778706b09155ace4e926f6d0035b3218beaa2337621bb5272e0b0",
+        "f2401ded1dc04d10f8d91a82bd97bf264b7f00e8685e40df595b10f1c8c7a7a9",
+        "0911eec301a26fbc743867035246c509998d0032e0445edf33762cca1eab6f3a",
+        "035f5367946ed2999376f9252c2971176607ca9826fe8a160171d7de08d8585d",
+        "49dfb3989d7d401954fe1d4a7d7d921a974b073a62d24f3de6873da4f0a3e597",
+        "85ede6e5c7759419900a847ee361a16afe92103f7df113b87cf797f0cf72372f",
+        "8a1d0ffd1099317d40cf23a01a029a8d253924f8a07f5b89bb05c9dea443258d",
+        "e7ecc75c42a87197501833242d5371513c9a5fb92a5d24510c1955038d029dbc",
+        "520d529f091a0e8ff0950d1d303615f8e6fb1c5e3f2709ca81f6ff23c0c05f2c",
+        "92cd49f9314e2c166958cad6e91b03920329fac8e7f05d44717accacefe837b1",
+        "36e19564ca5f927f1592d5d9fe4a7beec3783bd0b2ff1e64ec2f3489f37834b2",
+        "5d5429e18c6fd897c25422a402b8671c28e7d3a5d4bce83f49d3dd906bbe8506",
+        "c66d64dad67986b99a04e51a0c538f396e31116d63b7830bbb4bae2fe6a73379",
+        "f2b06de7c54a5dd2a062e7d2583721e2a5e98c9e78310fdba1acd153f2444fa7",
+        "69158e38a43772bcecbd385d154452b299dbc94b0628cdc125e73c7b064030aa",
+        "9c961f1f6184a9a95738ffd3213af6e7515024f650d83e197260aadcdabf2420",
+        "494bdc52bed160d782510576ffa7e9b2022d3e9c01ca49f0f93d636edf610807",
+        "8e3f25dc9126aa12e354ebae74a2756c8eae48bbabc603cea7c6bece5a1a9949",
+        "0fdf09e808fbdab5a118ed44a207ec83837d00c05cfad7a271bbccc434b638c7",
+        "f68e3a02a50498c81c93eda19ce2441ee525d560092451ce8f04eb4490a263e1",
+        "5061a2c7e966176e02ff173c46ae604bda8080d2da2a14a5eaa688238a963231",
+        "4ad7eb2115ebf0af2cd00854a0c9bd007c129fd3318905290fa07f4fc731733a",
+        "b285c7623173b5e88a2a2354e03de87853b3f4c4df44961fa889ab7daf35fae1",
+        "7929f2549587062f1b04e405eeabc523a06697f6ba54a3a3ab02dd872b1bdd57",
+        "3e986503be2e20f5d1ad2c25eeaa1b34d353d433a5ef684a3a65be41356612f2",
+        "75862b631fb04de829bff0715ca31ff81ad80393dd7670ba2c99de4096e18271",
+        "2356c29be7d36f661d6dbc71c34a96b9de7acb06748ec5c0ba474878383be1f0",
+        "6764e01ef2f3e4d07e7ceb1f6402c3e63430a74374abb1236644b123cf2bc919",
+        "9412b5d6f01423d0b1d4b91f91da07726ea50ea5131ef2e330641ec2d6fbf7b8"
+      ]
+    },
+    {
+      "file": "premium-blender-chain.gif",
+      "host": "blender",
+      "case": "chain",
+      "native_frames": 48,
+      "gif_frames": 48,
+      "size": [
+        1280,
+        720
+      ],
+      "duration_ms": 4000,
+      "fps": 12,
+      "evidence_file": "premium-blender-evidence.json",
+      "render_geometry_excluded_from_numerical_acceptance": true
+    },
+    {
+      "file": "premium-unreal-arm.gif",
+      "host": "unreal",
+      "case": "arm",
+      "native_frames": 48,
+      "gif_frames": 48,
+      "size": [
+        800,
+        450
+      ],
+      "duration_ms": 4000,
+      "fps": 12,
+      "evidence_file": "premium-unreal-arm-sequence.json",
+      "render_geometry_excluded_from_numerical_acceptance": true
+    },
+    {
+      "file": "premium-unreal-chain.gif",
+      "host": "unreal",
+      "case": "chain",
+      "native_frames": 48,
+      "gif_frames": 48,
+      "size": [
+        800,
+        450
+      ],
+      "duration_ms": 4000,
+      "fps": 12,
+      "evidence_file": "premium-unreal-chain-sequence.json",
+      "render_geometry_excluded_from_numerical_acceptance": true
     }
   ],
   "material": {
@@ -809,14 +906,17 @@
         12
       ],
       "native_exr_sha256": "d76ae78ac38f8568bc8f0c87f62dfe24f65361b6f4b82acfd0b70c74fe23599c",
-      "display_transform": "FFmpeg eq=gamma=2.2",
+      "display_transform": "Full-range linear RGB to approximate gamma 2.2; 8-bit RGB display PNG",
       "render_job": {
         "state": "completed",
         "output_verification": "verified",
         "written_frames": 1,
         "elapsed_secs": 79.564,
         "warning_count": 0
-      }
+      },
+      "postprocess": "SideFX Houdini 22.0.368 idenoise --oidn-cpu; color only; no albedo or normal guide",
+      "denoised_exr_sha256": "4305b4a102ff0a305e9fe3ce2d6714b64158341256ca0499720c5ebf58941802",
+      "display_png_sha256": "6c98950f57c9e2e54135c01fe5430dc26382d7bb1f26d769dd808238e218b6dc"
     },
     "source_map_recompute_exact_hash_match": true,
     "source_graph_outputsize": {
@@ -849,5 +949,37 @@
     "frames_verified": 48,
     "max_difference_from_cached_evaluation": 0.0,
     "updated_material_scene_saved": true
+  },
+  "render_studies": {
+    "blender": {
+      "receipt_file": "premium-blender-evidence.json",
+      "native_beauty_outputs": true,
+      "render_geometry_excluded_from_metrics": true
+    },
+    "unreal_arm": {
+      "hero_receipt": "premium-unreal-arm-hero.json",
+      "sequence_receipt": "premium-unreal-arm-sequence.json",
+      "reopen_receipt": "premium-unreal-reopen.json",
+      "native_beauty_outputs": true,
+      "render_geometry_excluded_from_metrics": true
+    },
+    "unreal_chain": {
+      "hero_receipt": "premium-unreal-chain-hero.json",
+      "sequence_receipt": "premium-unreal-chain-sequence.json",
+      "reopen_receipt": "premium-unreal-reopen.json",
+      "native_beauty_outputs": true,
+      "render_geometry_excluded_from_metrics": true
+    },
+    "solver_evidence": {
+      "receipt_file": "premium-solver-evidence.json",
+      "rendering": "Matplotlib Agg from accepted Blender native cache",
+      "native_beauty_outputs": false
+    },
+    "houdini_motion": {
+      "receipt_file": "premium-houdini-motion.json",
+      "reopen_receipt": "premium-houdini-reopen.json",
+      "native_beauty_outputs": true,
+      "render_geometry_excluded_from_metrics": true
+    }
   }
 }
