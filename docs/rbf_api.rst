@@ -4,7 +4,7 @@ RBF API Reference
 This page provides detailed documentation for the RBF (Radial Basis Function) integration with py-dem-bones. This functionality enables advanced animation workflows by combining DemBones skeletal weight calculations with SciPy's RBF interpolation capabilities.
 
 RBF Integration Overview
------------------------
+------------------------
 
 The integration between py-dem-bones and SciPy's RBF functionality allows for:
 
@@ -13,7 +13,7 @@ The integration between py-dem-bones and SciPy's RBF functionality allows for:
 3. Implementing functionality similar to Chad Vernon RBF nodes, but using standard Python scientific computing libraries
 
 RBF Utility Functions
--------------------
+---------------------
 
 .. py:function:: create_rbf_interpolator(key_poses, key_values, rbf_function='thin_plate_spline')
 
@@ -36,7 +36,7 @@ RBF Utility Functions
    :rtype: scipy.interpolate.RBFInterpolator
 
 RBF Kernel Functions
-------------------
+--------------------
 
 The following kernel functions are available through SciPy's RBFInterpolator:
 
@@ -71,7 +71,7 @@ The following kernel functions are available through SciPy's RBFInterpolator:
 Where r is the distance between points and ε is a shape parameter that controls the influence radius.
 
 Usage with DemBones
------------------
+-------------------
 
 The typical workflow for using RBF functionality with DemBones involves:
 
@@ -146,7 +146,7 @@ The typical workflow for using RBF functionality with DemBones involves:
       interpolated_positions = rbf(test_pose).reshape(-1, 3)
 
 Integration with DCC Software
----------------------------
+-----------------------------
 
 To use this functionality in Digital Content Creation (DCC) software like Maya, Blender, or Houdini, you'll need to:
 
