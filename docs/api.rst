@@ -22,6 +22,22 @@ The wrapper classes provide a more Pythonic interface to the core functionality:
 - **DemBonesWrapper**: Python-friendly wrapper for DemBones
 - **DemBonesExtWrapper**: Python-friendly wrapper for DemBonesExt
 
+Transformation Arrays
+~~~~~~~~~~~~~~~~~~~~~
+
+``get_skinning_result()`` returns weights ``(B, V)`` and every bone transform
+``(F, B, 4, 4)``. Matrices act on column vectors, with translation in the last
+column. ``set_transformations()`` accepts that complete array and requires a
+finite affine matrix with final row ``[0, 0, 0, 1]`` for each frame and bone.
+Its bone axis must match the configured bone count, or establishes the count
+when no bones are configured.
+
+For compatibility, ``get_transformations()`` returns only bone zero as
+``(F, 4, 4)``. The setter accepts this historical shape only for a configured
+single bone; multi-bone callers must supply the explicit bone axis. Serialized
+records now store every bone. Old multi-bone records containing only bone zero
+cannot be restored because the other transformations were not saved.
+
 Exception Classes
 ~~~~~~~~~~~~~~~~~
 
@@ -90,8 +106,9 @@ Basic Usage
    dem_bones.compute()
 
    # Get results
-   weights = dem_bones.get_weights()
-   transformations = dem_bones.get_transformations()
+   result = dem_bones.get_skinning_result()
+   weights = result.weights             # (B, V)
+   transformations = result.transforms  # (F, B, 4, 4)
 
 Advanced Usage
 ~~~~~~~~~~~~~~

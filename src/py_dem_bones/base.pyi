@@ -160,10 +160,12 @@ class DemBonesWrapper:
     def get_transformations(self):
         """
 
-        Get the transformation matrices for all bones.
+        Get the legacy transformation sequence for bone zero.
 
         Returns:
-            numpy.ndarray: Array of 4x4 transformation matrices with shape [num_frames, 4, 4]
+            numpy.ndarray: Column-vector matrices with shape [num_frames, 4, 4].
+
+        Use get_skinning_result() to export every bone.
 
         """
     def get_weights(self):
@@ -245,10 +247,15 @@ class DemBonesWrapper:
     def set_transformations(self, transformations):
         """
 
-        Set the transformation matrices for all bones.
+        Replace every native frame and bone transformation.
 
         Args:
-            transformations (numpy.ndarray): Array of 4x4 transformation matrices with shape [num_frames, 4, 4]
+            transformations: Finite affine column-vector matrices (F, B, 4, 4).
+                Legacy (F, 4, 4) is accepted only for a configured single bone.
+
+        The bone axis must match the configured count, or establishes that count
+        when no bones are configured. The frame count is replaced exactly.
+        Invalid inputs raise ParameterError before native state changes.
 
         """
     def set_weights(self, weights):

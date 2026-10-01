@@ -15,7 +15,13 @@ import numpy as np
 # Import local modules
 from py_dem_bones._py_dem_bones import DemBones as _DemBones, DemBonesExt as _DemBonesExt
 from py_dem_bones.exceptions import ComputationError, IndexError, NameError, ParameterError
-from py_dem_bones.portable import SkinningResult, _prepare_solver, _read_skinning_result
+from py_dem_bones.portable import (
+    SkinningResult,
+    _pack_transformations,
+    _prepare_solver,
+    _read_skinning_result,
+    _read_transformations,
+)
 
 
 class DemBonesWrapper:
@@ -359,7 +365,11 @@ class DemBonesWrapper:
 
         Args:
             bone (str or int): The bone name or index
-            matrix (numpy.ndarray): The 4x4 transform matrix
+            matrix (numpy.ndarray): A finite affine 4x4 column-vector matrix.
+
+        Bind matrices are Python metadata. They seed one native frame only when
+        no native transformations exist; changing metadata does not replace
+        an existing animation.
         """
         if isinstance(bone, str):
             try:
@@ -373,6 +383,10 @@ class DemBonesWrapper:
         # Ensure the matrix is 4x4
         if not isinstance(matrix, np.ndarray) or matrix.shape != (4, 4):
             raise ParameterError("Matrix must be a 4x4 numpy array")
+        try:
+            _pack_transformations(matrix[None, None])
+        except (TypeError, ValueError) as exc:
+            raise ParameterError(str(exc)) from exc
 
         # We need to maintain a separate bind matrix for each bone
         # Since the C++ binding doesn't support this, we maintain these matrices in Python
@@ -386,31 +400,8 @@ class DemBonesWrapper:
         # Update bind matrix
         self._bind_matrices[bone] = matrix.copy()
 
-        # Get current transformation matrix
-        transformations = self._dem_bones.get_transformations()
-
-        # If there's no transformation matrix, create a new array
-        if transformations.shape[0] == 0:
-            self._dem_bones.nF = 1  # Only one frame (bind pose)
-
-            # Create a new transformation matrix array
-            # In the C++ binding, we expect a 2D matrix
-            # where each 3 rows represent the first 3 rows of a bone's transformation matrix
-            flat_transforms = np.zeros((3 * self.num_bones, 4))
-
-            # For each bone, set its transformation matrix
-            for b in range(self.num_bones):
-                if b < len(self._bind_matrices):
-                    # Only copy the first 3 rows, the last row [0,0,0,1] is implicit
-                    flat_transforms[b * 3 : (b + 1) * 3, :] = self._bind_matrices[b][
-                        :3, :
-                    ]
-                else:
-                    # For bones without a bind matrix, use identity matrix
-                    flat_transforms[b * 3 : (b + 1) * 3, :] = np.eye(4)[:3, :]
-
-            # Update transformation matrix in DemBones
-            self._dem_bones.set_transformations(flat_transforms)
+        if self._dem_bones.m.size == 0:
+            self.set_transformations(np.stack(self._bind_matrices[: self.num_bones])[None])
 
     def get_weights(self):
         """
@@ -596,10 +587,13 @@ class DemBonesWrapper:
 
     def get_transformations(self):
         """
-        Get the transformation matrices for all bones.
+        Get the legacy transformation sequence for bone zero.
 
         Returns:
-            numpy.ndarray: Array of 4x4 transformation matrices with shape [num_frames, 4, 4]
+            numpy.ndarray: Column-vector matrices with shape [num_frames, 4, 4].
+
+        Use :meth:`get_skinning_result` to export every bone after computing
+        or importing weights and transformations.
         """
         # Get transformation matrices from C++ binding
         transforms = self._dem_bones.get_transformations()
@@ -612,39 +606,30 @@ class DemBonesWrapper:
         return transforms
 
     def set_transformations(self, transformations):
-        """
-        Set the transformation matrices for all bones.
+        """Replace every native frame and bone transformation.
 
         Args:
-            transformations (numpy.ndarray): Array of 4x4 transformation matrices with shape [num_frames, 4, 4]
+            transformations: Finite affine column-vector matrices ``(F, B, 4, 4)``.
+                Legacy ``(F, 4, 4)`` input is accepted only for a configured
+                single bone. Translation is in the last column and the last
+                row is ``[0, 0, 0, 1]``.
+
+        The bone axis must match the configured count, or establishes that count
+        when no bones are configured. The frame count is replaced exactly.
+        Invalid inputs raise ``ParameterError`` before native state changes.
         """
-        if not isinstance(transformations, np.ndarray):
-            try:
-                transformations = np.asarray(transformations)
-            except ValueError as e:
-                raise ParameterError(
-                    f"Failed to convert transformations to numpy array: {str(e)}"
-                )
-
-        # Check dimensions
-        if len(transformations.shape) != 3 or transformations.shape[1:] != (4, 4):
-            raise ParameterError(
-                f"Transformations must have shape [num_frames, 4, 4], got {transformations.shape}"
-            )
-
-        # Update the number of frames if needed
-        if transformations.shape[0] > self.num_frames:
-            self._dem_bones.nF = transformations.shape[0]
-
-        # Convert 3D array to C++ binding expected format
-        num_frames = transformations.shape[0]
-        flat_transforms = np.zeros((num_frames * 3, 4))
-
-        for f in range(num_frames):
-            # Only copy the first 3 rows, the last row [0,0,0,1] is implicit
-            flat_transforms[f * 3 : f * 3 + 3, :] = transformations[f, :3, :]
-
+        try:
+            transformations = np.asarray(transformations, dtype=np.float64)
+            if transformations.ndim == 3:
+                if self.num_bones != 1:
+                    raise ValueError("(F, 4, 4) transformations require a configured single bone; use (F, B, 4, 4)")
+                transformations = transformations[:, None]
+            flat_transforms = _pack_transformations(transformations, self.num_bones or None)
+        except (TypeError, ValueError) as exc:
+            raise ParameterError(str(exc)) from exc
         self._dem_bones.set_transformations(flat_transforms)
+        self._dem_bones.nB = transformations.shape[1]
+        self._dem_bones.nF = transformations.shape[0]
 
     def compute(self, callback: Optional[Callable[[float], None]] = None):
         """
@@ -776,7 +761,7 @@ class DemBonesWrapper:
 
         # Export transformations if available
         try:
-            transforms = self.get_transformations()
+            transforms = _read_transformations(self._dem_bones)
             if transforms.size > 0:
                 data["transformations"] = transforms.tolist()
         except Exception:  # Catch specific exceptions when possible
@@ -797,14 +782,18 @@ class DemBonesWrapper:
 
         Returns:
             bool: True if import was successful
+
+        Transformation data uses ``(F, B, 4, 4)``. Historical ``(F, 4, 4)``
+        data is accepted for one bone; a multi-bone record that only saved
+        bone zero raises ``ParameterError`` because other bones are missing.
         """
         # Clear current state
         self.clear()
 
         # Set basic parameters
-        if "num_bones" in data:
+        if "num_bones" in data and data["num_bones"] != 0:
             self.num_bones = data["num_bones"]
-        if "num_vertices" in data:
+        if "num_vertices" in data and data["num_vertices"] != 0:
             self.num_vertices = data["num_vertices"]
         if "num_iterations" in data:
             self.num_iterations = data["num_iterations"]
@@ -966,13 +955,8 @@ class DemBonesExtWrapper(DemBonesWrapper):
                 children_map[parent] = []
             children_map[parent].append(bone)
 
-        # Build the tree starting from root bones
-        root_bones = children_map.get(-1, [])
-
-        # If no explicit root bones are defined but we have bones,
-        # use the first bone as the root
-        if not root_bones and self.num_bones > 0:
-            root_bones = [0]  # Use bone 0 as the default root
+        # Missing parent entries also denote roots; retain disconnected bones.
+        root_bones = [bone for bone in range(self.num_bones) if self._parent_map.get(bone, -1) == -1]
 
         def build_tree(bone_idx):
             bone_name = (
@@ -996,6 +980,10 @@ class DemBonesExtWrapper(DemBonesWrapper):
         Args:
             hierarchy (list): List of dictionaries representing the bone hierarchy
 
+        An exported node's ``index`` preserves its native bone slot. Nodes
+        without indices are assigned in traversal order rather than appended
+        after the configured native bone count.
+
         Returns:
             int: Number of bones set
         """
@@ -1006,7 +994,7 @@ class DemBonesExtWrapper(DemBonesWrapper):
         # Process the hierarchy
         def process_node(node, parent_idx=-1):
             name = node.get("name", f"Bone_{len(self._bones)}")
-            bone_idx = self.set_bone_name(name)
+            bone_idx = self.set_bone_name(name, node.get("index", len(self._bones)))
 
             # Set parent relationship
             if parent_idx != -1:
