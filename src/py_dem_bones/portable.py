@@ -190,12 +190,42 @@ def _read_skinning_result(solver):
     """Read every bone and frame without the legacy bone-zero accessor."""
 
     weights = np.asarray(solver.get_weights(), dtype=np.float64)
+    transforms = _read_transformations(solver)
+    if weights.shape != (solver.nB, solver.nV):
+        raise RuntimeError("Dem Bones returned an unexpected weights layout")
+    if not np.isfinite(weights).all():
+        raise RuntimeError("Dem Bones returned non-finite skinning data")
+    return SkinningResult(weights.copy(), transforms)
+
+
+def _read_transformations(solver):
+    """Read all native transformation blocks, including transform-only states."""
+
     blocks = np.asarray(solver.m, dtype=np.float64)
     if solver.nB < 1 or solver.nF < 1:
-        raise RuntimeError("Dem Bones has no solved bones or frames")
-    if weights.shape != (solver.nB, solver.nV) or blocks.shape != (4 * solver.nF, 4 * solver.nB):
-        raise RuntimeError("Dem Bones returned an unexpected weights or transformation layout")
-    if not np.isfinite(weights).all() or not np.isfinite(blocks).all():
-        raise RuntimeError("Dem Bones returned non-finite skinning data")
-    transforms = blocks.reshape(solver.nF, 4, solver.nB, 4).transpose(0, 2, 1, 3).copy()
-    return SkinningResult(weights.copy(), transforms)
+        raise RuntimeError("Dem Bones has no bones or frames")
+    if blocks.shape != (4 * solver.nF, 4 * solver.nB):
+        raise RuntimeError("Dem Bones returned an unexpected transformation layout")
+    if not np.isfinite(blocks).all():
+        raise RuntimeError("Dem Bones returned non-finite transformations")
+    return blocks.reshape(solver.nF, 4, solver.nB, 4).transpose(0, 2, 1, 3).copy()
+
+
+def _pack_transformations(transforms, bone_count=None):
+    """Validate canonical column-vector transforms and pack native ``m`` blocks."""
+
+    transforms = np.asarray(transforms, dtype=np.float64)
+    if (
+        transforms.ndim != 4
+        or transforms.shape[-2:] != (4, 4)
+        or transforms.shape[0] < 1
+        or transforms.shape[1] < 1
+        or not np.isfinite(transforms).all()
+    ):
+        raise ValueError("transformations must be a finite nonempty array with shape (F, B, 4, 4)")
+    if bone_count is not None and transforms.shape[1] != bone_count:
+        raise ValueError("transformations must contain one matrix per configured bone in every frame")
+    if not np.all(transforms[:, :, 3, :] == [0, 0, 0, 1]):
+        raise ValueError("transformations must be affine with final row [0, 0, 0, 1]")
+    frame_count, bone_count = transforms.shape[:2]
+    return np.ascontiguousarray(transforms.transpose(0, 2, 1, 3).reshape(4 * frame_count, 4 * bone_count))
