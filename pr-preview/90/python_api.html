@@ -1106,10 +1106,13 @@ bind matrices and hierarchy are invalidated. Call <a class="reference internal" 
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bone</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The bone name or index</p></li>
-<li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – The 4x4 transform matrix</p></li>
+<li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – A finite affine 4x4 column-vector matrix.</p></li>
 </ul>
 </dd>
 </dl>
+<p>Bind matrices are Python metadata. They seed one native frame only when
+no native transformations exist; changing metadata does not replace
+an existing animation.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1165,26 +1168,34 @@ bind matrices and hierarchy are invalidated. Call <a class="reference internal" 
 <dl class="py method">
 <dt class="sig sig-object py" id="py_dem_bones.DemBonesWrapper.get_transformations">
 <span class="sig-name descname"><span class="pre">get_transformations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DemBonesWrapper.get_transformations" title="Link to this definition">¶</a></dt>
-<dd><p>Get the transformation matrices for all bones.</p>
+<dd><p>Get the legacy transformation sequence for bone zero.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Array of 4x4 transformation matrices with shape [num_frames, 4, 4]</p>
+<dd class="field-odd"><p>Column-vector matrices with shape [num_frames, 4, 4].</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a></p>
 </dd>
 </dl>
+<p>Use <a class="reference internal" href="#py_dem_bones.DemBonesWrapper.get_skinning_result" title="py_dem_bones.DemBonesWrapper.get_skinning_result"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_skinning_result()</span></code></a> to export every bone after computing
+or importing weights and transformations.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="py_dem_bones.DemBonesWrapper.set_transformations">
 <span class="sig-name descname"><span class="pre">set_transformations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transformations</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DemBonesWrapper.set_transformations" title="Link to this definition">¶</a></dt>
-<dd><p>Set the transformation matrices for all bones.</p>
+<dd><p>Replace every native frame and bone transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>transformations</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – Array of 4x4 transformation matrices with shape [num_frames, 4, 4]</p>
+<dd class="field-odd"><p><strong>transformations</strong> – Finite affine column-vector matrices <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">B,</span> <span class="pre">4,</span> <span class="pre">4)</span></code>.
+Legacy <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">4,</span> <span class="pre">4)</span></code> input is accepted only for a configured
+single bone. Translation is in the last column and the last
+row is <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">1]</span></code>.</p>
 </dd>
 </dl>
+<p>The bone axis must match the configured count, or establishes that count
+when no bones are configured. The frame count is replaced exactly.
+Invalid inputs raise <code class="docutils literal notranslate"><span class="pre">ParameterError</span></code> before native state changes.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1242,6 +1253,9 @@ bind matrices and hierarchy are invalidated. Call <a class="reference internal" 
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a></p>
 </dd>
 </dl>
+<p>Transformation data uses <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">B,</span> <span class="pre">4,</span> <span class="pre">4)</span></code>. Historical <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">4,</span> <span class="pre">4)</span></code>
+data is accepted for one bone; a multi-bone record that only saved
+bone zero raises <code class="docutils literal notranslate"><span class="pre">ParameterError</span></code> because other bones are missing.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1392,15 +1406,17 @@ skeleton support.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="py_dem_bones.DemBonesExtWrapper.get_transformations">
 <span class="sig-name descname"><span class="pre">get_transformations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DemBonesExtWrapper.get_transformations" title="Link to this definition">¶</a></dt>
-<dd><p>Get the transformation matrices for all bones.</p>
+<dd><p>Get the legacy transformation sequence for bone zero.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Array of 4x4 transformation matrices with shape [num_frames, 4, 4]</p>
+<dd class="field-odd"><p>Column-vector matrices with shape [num_frames, 4, 4].</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a></p>
 </dd>
 </dl>
+<p>Use <a class="reference internal" href="#py_dem_bones.DemBonesExtWrapper.get_skinning_result" title="py_dem_bones.DemBonesExtWrapper.get_skinning_result"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_skinning_result()</span></code></a> to export every bone after computing
+or importing weights and transformations.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1483,10 +1499,13 @@ Do not mutate it externally while the adapter is using it.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bone</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The bone name or index</p></li>
-<li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – The 4x4 transform matrix</p></li>
+<li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – A finite affine 4x4 column-vector matrix.</p></li>
 </ul>
 </dd>
 </dl>
+<p>Bind matrices are Python metadata. They seed one native frame only when
+no native transformations exist; changing metadata does not replace
+an existing animation.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1584,12 +1603,18 @@ bind matrices and hierarchy are invalidated. Call <a class="reference internal" 
 <dl class="py method">
 <dt class="sig sig-object py" id="py_dem_bones.DemBonesExtWrapper.set_transformations">
 <span class="sig-name descname"><span class="pre">set_transformations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transformations</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_dem_bones.DemBonesExtWrapper.set_transformations" title="Link to this definition">¶</a></dt>
-<dd><p>Set the transformation matrices for all bones.</p>
+<dd><p>Replace every native frame and bone transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>transformations</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – Array of 4x4 transformation matrices with shape [num_frames, 4, 4]</p>
+<dd class="field-odd"><p><strong>transformations</strong> – Finite affine column-vector matrices <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">B,</span> <span class="pre">4,</span> <span class="pre">4)</span></code>.
+Legacy <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">4,</span> <span class="pre">4)</span></code> input is accepted only for a configured
+single bone. Translation is in the last column and the last
+row is <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">1]</span></code>.</p>
 </dd>
 </dl>
+<p>The bone axis must match the configured count, or establishes that count
+when no bones are configured. The frame count is replaced exactly.
+Invalid inputs raise <code class="docutils literal notranslate"><span class="pre">ParameterError</span></code> before native state changes.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1657,11 +1682,16 @@ bind matrices and hierarchy are invalidated. Call <a class="reference internal" 
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>hierarchy</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – List of dictionaries representing the bone hierarchy</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Number of bones set</p>
+</dl>
+<p>An exported node’s <code class="docutils literal notranslate"><span class="pre">index</span></code> preserves its native bone slot. Nodes
+without indices are assigned in traversal order rather than appended
+after the configured native bone count.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of bones set</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)">int</a></p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)">int</a></p>
 </dd>
 </dl>
 </dd></dl>

@@ -322,6 +322,20 @@
 <li><p><strong>DemBonesExtWrapper</strong>: Python-friendly wrapper for DemBonesExt</p></li>
 </ul>
 </section>
+<section id="transformation-arrays">
+<h3>Transformation Arrays<a class="headerlink" href="#transformation-arrays" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">get_skinning_result()</span></code> returns weights <code class="docutils literal notranslate"><span class="pre">(B,</span> <span class="pre">V)</span></code> and every bone transform
+<code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">B,</span> <span class="pre">4,</span> <span class="pre">4)</span></code>. Matrices act on column vectors, with translation in the last
+column. <code class="docutils literal notranslate"><span class="pre">set_transformations()</span></code> accepts that complete array and requires a
+finite affine matrix with final row <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">1]</span></code> for each frame and bone.
+Its bone axis must match the configured bone count, or establishes the count
+when no bones are configured.</p>
+<p>For compatibility, <code class="docutils literal notranslate"><span class="pre">get_transformations()</span></code> returns only bone zero as
+<code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">4,</span> <span class="pre">4)</span></code>. The setter accepts this historical shape only for a configured
+single bone; multi-bone callers must supply the explicit bone axis. Serialized
+records now store every bone. Old multi-bone records containing only bone zero
+cannot be restored because the other transformations were not saved.</p>
+</section>
 <section id="exception-classes">
 <h3>Exception Classes<a class="headerlink" href="#exception-classes" title="Link to this heading">¶</a></h3>
 <p>The exception classes provide structured error handling:</p>
@@ -386,8 +400,9 @@
 <span class="n">dem_bones</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
 
 <span class="c1"># Get results</span>
-<span class="n">weights</span> <span class="o">=</span> <span class="n">dem_bones</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
-<span class="n">transformations</span> <span class="o">=</span> <span class="n">dem_bones</span><span class="o">.</span><span class="n">get_transformations</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">dem_bones</span><span class="o">.</span><span class="n">get_skinning_result</span><span class="p">()</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">weights</span>             <span class="c1"># (B, V)</span>
+<span class="n">transformations</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">transforms</span>  <span class="c1"># (F, B, 4, 4)</span>
 </pre></div>
 </div>
 </section>
@@ -464,6 +479,7 @@
 <li><a class="reference internal" href="#python-api-overview">Python API Overview</a><ul>
 <li><a class="reference internal" href="#core-classes">Core Classes</a></li>
 <li><a class="reference internal" href="#wrapper-classes">Wrapper Classes</a></li>
+<li><a class="reference internal" href="#transformation-arrays">Transformation Arrays</a></li>
 <li><a class="reference internal" href="#exception-classes">Exception Classes</a></li>
 <li><a class="reference internal" href="#utility-functions">Utility Functions</a></li>
 <li><a class="reference internal" href="#interfaces">Interfaces</a></li>
