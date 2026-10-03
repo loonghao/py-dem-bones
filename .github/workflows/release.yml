@@ -418,7 +418,10 @@ jobs:
   release:
     name: Release
     needs: [build-wheels-linux, build-wheels-windows, build-wheels-macos, build-wheels-macos-arm, build-sdist]
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    # `workflow_dispatch` covers release-please tags minted with GITHUB_TOKEN:
+    # GitHub raises no `push` event for those, and workflow_dispatch is the one
+    # event it does start from a GITHUB_TOKEN-initiated request.
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
       contents: write

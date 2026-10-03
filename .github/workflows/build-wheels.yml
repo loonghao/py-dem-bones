@@ -21,11 +21,43 @@ on:
         required: false
         type: string
         default: '[]'
+  # The `workflow_call` entry above is the only trigger this file used to have,
+  # and release.yml builds its wheels inline instead of calling it, so the
+  # workflow had never been exercised by a single run. A manual trigger makes the
+  # wheel pipeline verifiable on its own, without cutting a release.
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform (linux, windows, macos-intel, macos-arm)'
+        required: true
+        type: choice
+        default: 'linux'
+        options:
+          - linux
+          - windows
+          - macos-intel
+          - macos-arm
+      runner:
+        description: 'Runner to use (ubuntu-latest, windows-latest, macos-15-intel, macos-14)'
+        required: true
+        type: string
+        default: 'ubuntu-latest'
+      python-versions:
+        description: 'cibuildwheel selectors to build for, as a JSON list'
+        required: false
+        type: string
+        default: '["cp38", "cp39", "cp310", "cp311", "cp312"]'
+      python-versions-exclude:
+        description: 'Matrix entries to exclude, as a JSON list'
+        required: false
+        type: string
+        default: '[]'
 
 jobs:
   build-wheels:
     name: Build ${{ matrix.python }} wheels on ${{ inputs.platform }}
     runs-on: ${{ inputs.runner }}
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:

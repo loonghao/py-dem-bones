@@ -172,14 +172,58 @@ jobs:
     permissions:
       contents: write # tag + GitHub Release
       pull-requests: write # the release PR itself
+      actions: write # hand the tag to release.yml when a push event cannot fire
     steps:
+      # The expression language has no "is this secret set" predicate: a missing
+      # secret renders as an empty string, and an empty value still overrides the
+      # action's own `github.token` default. With both PAT secrets absent the
+      # token input was therefore sent as an empty string and every run since
+      # this workflow was introduced died with "Bad credentials". Probe the
+      # secrets through env vars so their values never reach the script body.
+      - name: Resolve release-please credentials
+        id: credentials
+        env:
+          RELEASE_PLEASE_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -n "${RELEASE_PLEASE_TOKEN:-}" ] || [ -n "${PERSONAL_ACCESS_TOKEN:-}" ]; then
+            echo "pat=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "pat=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::No RELEASE_PLEASE_TOKEN / PERSONAL_ACCESS_TOKEN secret is configured; falling back to GITHUB_TOKEN. A tag created with GITHUB_TOKEN does not raise a push event, so the release workflow is dispatched explicitly below."
+          fi
+
       - uses: googleapis/release-please-action@v5
         id: release
         with:
-          # A PAT is required: with GITHUB_TOKEN the tag this action creates
-          # cannot trigger the release workflow, and the release PR would carry
-          # no CI status either.
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.PERSONAL_ACCESS_TOKEN }}
+          # A PAT stays the preferred credential: it makes the release PR carry
+          # CI status and lets the tag it pushes fire release.yml directly. The
+          # GITHUB_TOKEN fallback keeps the release PR flowing when no PAT is
+          # configured instead of failing the whole run.
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.PERSONAL_ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
           target-branch: main
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+      # A tag created with GITHUB_TOKEN never raises `on: push: tags:`, which is
+      # the only publication trigger release.yml had. workflow_dispatch is the
+      # one event GitHub does start from a GITHUB_TOKEN-initiated request, so
+      # start the publish chain by hand. Skipped when a PAT was used, because
+      # that tag push already triggers release.yml on its own.
+      - name: Start the release workflow for a GITHUB_TOKEN-created tag
+        if: >-
+          steps.credentials.outputs.pat == 'false' &&
+          (steps.release.outputs.release_created == 'true' ||
+           steps.release.outputs.releases_created == 'true')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          if [ -z "$RELEASE_TAG" ]; then
+            echo "::error::release-please reported a release without a tag name"
+            exit 1
+          fi
+          gh workflow run release.yml --repo "$GITHUB_REPOSITORY" --ref "$RELEASE_TAG"
+          echo "Dispatched release.yml for tag $RELEASE_TAG"
