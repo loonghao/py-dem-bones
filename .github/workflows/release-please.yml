@@ -172,14 +172,86 @@ jobs:
     permissions:
       contents: write # tag + GitHub Release
       pull-requests: write # the release PR itself
+      actions: write # hand the tag to release.yml when a push event cannot fire
     steps:
+      # A configured secret is not necessarily a working one. PERSONAL_ACCESS_TOKEN
+      # is set on this repository but no longer authenticates, and because the
+      # expression language only sees a non-empty string, the usual
+      # `secrets.A || secrets.B` chain short-circuits onto the dead token and
+      # release-please answers "Bad credentials". Verify each candidate against a
+      # cheap authenticated call and let the first usable one win, rather than
+      # trusting that a set secret is a usable secret.
+      - name: Resolve release-please credentials
+        id: credentials
+        env:
+          RELEASE_PLEASE_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          REPOSITORY_API: ${{ github.api_url }}/repos/${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          probe_err="$RUNNER_TEMP/rp-probe.err"
+
+          usable() {
+            GH_TOKEN="$1" gh api "$REPOSITORY_API" --silent 2>"$probe_err"
+          }
+
+          report_unusable() {
+            # gh keeps credential values out of its error output, so the message
+            # it produced is safe to surface.
+            echo "::warning::$1 is configured but could not authenticate: $(head -n 1 "$probe_err")"
+            rm -f "$probe_err"
+          }
+
+          use_pat=false
+          for name in RELEASE_PLEASE_TOKEN PERSONAL_ACCESS_TOKEN; do
+            token="${!name}"
+            [ -n "$token" ] || continue
+            if usable "$token"; then
+              echo "source=$name" >> "$GITHUB_OUTPUT"
+              echo "pat=true" >> "$GITHUB_OUTPUT"
+              use_pat=true
+              break
+            fi
+            report_unusable "$name"
+          done
+
+          if [ "$use_pat" = "false" ]; then
+            echo "source=GITHUB_TOKEN" >> "$GITHUB_OUTPUT"
+            echo "pat=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::No usable PAT secret; falling back to GITHUB_TOKEN. A tag created with GITHUB_TOKEN raises no push event, so release.yml is dispatched explicitly below."
+          fi
+
       - uses: googleapis/release-please-action@v5
         id: release
         with:
-          # A PAT is required: with GITHUB_TOKEN the tag this action creates
-          # cannot trigger the release workflow, and the release PR would carry
-          # no CI status either.
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.PERSONAL_ACCESS_TOKEN }}
+          # A usable PAT stays the preferred credential: it makes the release PR
+          # carry CI status and lets the tag it pushes fire release.yml directly.
+          # GITHUB_TOKEN keeps the release PR flowing when no working PAT exists,
+          # instead of failing the whole run on a dead secret.
+          token: ${{ steps.credentials.outputs.pat == 'true' && (secrets.RELEASE_PLEASE_TOKEN || secrets.PERSONAL_ACCESS_TOKEN) || secrets.GITHUB_TOKEN }}
           target-branch: main
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+      # A tag created with GITHUB_TOKEN never raises `on: push: tags:`, which is
+      # the only publication trigger release.yml had. workflow_dispatch is the
+      # one event GitHub does start from a GITHUB_TOKEN-initiated request, so
+      # start the publish chain by hand. Skipped when a PAT was used, because
+      # that tag push already triggers release.yml on its own.
+      - name: Start the release workflow for a GITHUB_TOKEN-created tag
+        if: >-
+          steps.credentials.outputs.pat == 'false' &&
+          (steps.release.outputs.release_created == 'true' ||
+           steps.release.outputs.releases_created == 'true')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          if [ -z "$RELEASE_TAG" ]; then
+            echo "::error::release-please reported a release without a tag name"
+            exit 1
+          fi
+          gh workflow run release.yml --repo "$GITHUB_REPOSITORY" --ref "$RELEASE_TAG"
+          echo "Dispatched release.yml for tag $RELEASE_TAG"
