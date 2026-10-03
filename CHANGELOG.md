@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0](https://github.com/loonghao/py-dem-bones/compare/0.12.4...v0.13.0) (2026-10-03)
+
+
+### Features
+
+* add detailed native render studies ([2184abd](https://github.com/loonghao/py-dem-bones/commit/2184abd6ae846d22a87d18cea97b47447fd94241))
+* add licensed octopus materials and native SSS study ([46502c0](https://github.com/loonghao/py-dem-bones/commit/46502c0ea6e15f3ea65c02de4cb7e2823a279a64))
+* add native DCC skinning showcase and provenance ([f2d3717](https://github.com/loonghao/py-dem-bones/commit/f2d3717ca5c39fa232c8e4e6d91d636378c1b37c))
+* add portable DCC skinning and release-please ([108765c](https://github.com/loonghao/py-dem-bones/commit/108765c24f32b44a195b9758f760f9dced6c0f56))
+* complete native Mantra motion showcase ([f8bb59b](https://github.com/loonghao/py-dem-bones/commit/f8bb59b430866784ca9cd82c1da80f289e633948))
+* migrate DCC adapters to shared skinning contracts ([b57df51](https://github.com/loonghao/py-dem-bones/commit/b57df51a8329c7fbc3c316f0bead0060017a71ef))
+* publish native Mantra and Unreal SSS showcases ([2af3601](https://github.com/loonghao/py-dem-bones/commit/2af3601aaddb6c7ed36768614bbd43e9f0a84ea2))
+* showcase native octopus softbody reconstruction ([861943d](https://github.com/loonghao/py-dem-bones/commit/861943d96e357ee2ab2f0e15ea3f574183be614c))
+
+
+### Bug Fixes
+
+* **ci:** repair release-please to release publish chain ([#92](https://github.com/loonghao/py-dem-bones/issues/92)) ([6423701](https://github.com/loonghao/py-dem-bones/commit/642370117b7581e29ab08799c9c38926ca186b4b))
+* **ci:** repair repo-level CI failures blocking every PR ([1e70b13](https://github.com/loonghao/py-dem-bones/commit/1e70b13c679db305c121e52033d4c516119cc395))
+* fetch pinned Eigen from the official mirror ([52aeb05](https://github.com/loonghao/py-dem-bones/commit/52aeb0537c2e4043ad8eb036028462edcf57177c))
+* preserve all native transformation blocks ([0b0a05c](https://github.com/loonghao/py-dem-bones/commit/0b0a05c947c098021ec82df3f864e08c0c4bfd42))
+* preserve exact showcase bytes across platforms ([d2daa81](https://github.com/loonghao/py-dem-bones/commit/d2daa81e2fb70072a0d1f9fb8950ccf05c981dee))
+* refresh packed skin textures and publish SSS comparison ([f3be53a](https://github.com/loonghao/py-dem-bones/commit/f3be53a9135680affd2f8629664bc6d5f1988a38))
+
+
+### Documentation
+
+* align RBF examples with adapter lifecycle ([9c4c28a](https://github.com/loonghao/py-dem-bones/commit/9c4c28a54cf179ba8e3eb6a39ea590c644a64cf1))
+* correct RBF section headings ([d442515](https://github.com/loonghao/py-dem-bones/commit/d442515cf6513426a688ab30eb2b818f52567dd7))
+
 ## 0.12.4 (2025-05-05)
 
 ### Fix
