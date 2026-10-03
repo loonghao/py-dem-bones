@@ -174,34 +174,62 @@ jobs:
       pull-requests: write # the release PR itself
       actions: write # hand the tag to release.yml when a push event cannot fire
     steps:
-      # The expression language has no "is this secret set" predicate: a missing
-      # secret renders as an empty string, and an empty value still overrides the
-      # action's own `github.token` default. With both PAT secrets absent the
-      # token input was therefore sent as an empty string and every run since
-      # this workflow was introduced died with "Bad credentials". Probe the
-      # secrets through env vars so their values never reach the script body.
+      # A configured secret is not necessarily a working one. PERSONAL_ACCESS_TOKEN
+      # is set on this repository but no longer authenticates, and because the
+      # expression language only sees a non-empty string, the usual
+      # `secrets.A || secrets.B` chain short-circuits onto the dead token and
+      # release-please answers "Bad credentials". Verify each candidate against a
+      # cheap authenticated call and let the first usable one win, rather than
+      # trusting that a set secret is a usable secret.
       - name: Resolve release-please credentials
         id: credentials
         env:
           RELEASE_PLEASE_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          REPOSITORY_API: ${{ github.api_url }}/repos/${{ github.repository }}
         run: |
           set -euo pipefail
-          if [ -n "${RELEASE_PLEASE_TOKEN:-}" ] || [ -n "${PERSONAL_ACCESS_TOKEN:-}" ]; then
-            echo "pat=true" >> "$GITHUB_OUTPUT"
-          else
+
+          probe_err="$RUNNER_TEMP/rp-probe.err"
+
+          usable() {
+            GH_TOKEN="$1" gh api "$REPOSITORY_API" --silent 2>"$probe_err"
+          }
+
+          report_unusable() {
+            # gh keeps credential values out of its error output, so the message
+            # it produced is safe to surface.
+            echo "::warning::$1 is configured but could not authenticate: $(head -n 1 "$probe_err")"
+            rm -f "$probe_err"
+          }
+
+          use_pat=false
+          for name in RELEASE_PLEASE_TOKEN PERSONAL_ACCESS_TOKEN; do
+            token="${!name}"
+            [ -n "$token" ] || continue
+            if usable "$token"; then
+              echo "source=$name" >> "$GITHUB_OUTPUT"
+              echo "pat=true" >> "$GITHUB_OUTPUT"
+              use_pat=true
+              break
+            fi
+            report_unusable "$name"
+          done
+
+          if [ "$use_pat" = "false" ]; then
+            echo "source=GITHUB_TOKEN" >> "$GITHUB_OUTPUT"
             echo "pat=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::No RELEASE_PLEASE_TOKEN / PERSONAL_ACCESS_TOKEN secret is configured; falling back to GITHUB_TOKEN. A tag created with GITHUB_TOKEN does not raise a push event, so the release workflow is dispatched explicitly below."
+            echo "::warning::No usable PAT secret; falling back to GITHUB_TOKEN. A tag created with GITHUB_TOKEN raises no push event, so release.yml is dispatched explicitly below."
           fi
 
       - uses: googleapis/release-please-action@v5
         id: release
         with:
-          # A PAT stays the preferred credential: it makes the release PR carry
-          # CI status and lets the tag it pushes fire release.yml directly. The
-          # GITHUB_TOKEN fallback keeps the release PR flowing when no PAT is
-          # configured instead of failing the whole run.
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.PERSONAL_ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
+          # A usable PAT stays the preferred credential: it makes the release PR
+          # carry CI status and lets the tag it pushes fire release.yml directly.
+          # GITHUB_TOKEN keeps the release PR flowing when no working PAT exists,
+          # instead of failing the whole run on a dead secret.
+          token: ${{ steps.credentials.outputs.pat == 'true' && (secrets.RELEASE_PLEASE_TOKEN || secrets.PERSONAL_ACCESS_TOKEN) || secrets.GITHUB_TOKEN }}
           target-branch: main
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
