@@ -7,7 +7,6 @@
   "group-pull-request-title-pattern": "chore: release v${version}",
   "packages": {
     ".": {
-      "package-name": "py-dem-bones",
       "include-component-in-tag": false,
       "changelog-path": "CHANGELOG.md",
       "bump-minor-pre-major": true,
