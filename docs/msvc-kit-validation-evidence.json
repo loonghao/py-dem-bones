@@ -1,0 +1,304 @@
+{
+  "msvc_kit_source_revision": "8fefb7ffb21a624895fec6381d0f525f7fb9a335",
+  "toolchain": {
+    "msvc_version": "14.44.35207",
+    "sdk_version": "10.0.26100.0",
+    "arch": "x64",
+    "host_arch": "x64",
+    "compiler_sha256": "fe251ef50a1545b1b0835ee17b1e785459712b38d79e45b5c1d3d28970a36619",
+    "doctor_status": "passed",
+    "fingerprint": "a7176bacd6ee785687dc827f60915e35ec9d03c87b15f75ceb0fc61006c2e9d8"
+  },
+  "wheel": {
+    "wheel": "py_dem_bones-0.13.1-cp312-cp312-win_amd64.whl",
+    "arch": "x64",
+    "native_entries": [
+      "py_dem_bones/_py_dem_bones.cp312-win_amd64.pyd",
+      "py_dem_bones.libs/msvcp140-6b7abb439f9c0bcc09b725cb326f5aff.dll",
+      "py_dem_bones.libs/vcomp140-902f4368aec2949bf69837c5548d289e.dll"
+    ],
+    "sha256": "2fc904dbdbdd9fe9a6c9f18d94f2488641d5bfc557ee58c8eb0dbf1bafe3c703"
+  },
+  "wheel_bytes": 720476,
+  "compiler_banner": "MSVC 19.44.35229.0",
+  "rust_library_passes": 198,
+  "downloader_passes": 29,
+  "python_contract_passes": 22,
+  "installed_wheel_tests": {
+    "passed": 272,
+    "skipped": 3,
+    "skip_reasons": [
+      "legacy test expects weights (2,4), receives (1,4)",
+      "legacy test expects weights (3,8), receives (1,8)",
+      "legacy multi-target test expects weights (2,4), receives (1,4)"
+    ]
+  },
+  "doctor_probes": [
+    {
+      "id": "tool.cl",
+      "status": "passed"
+    },
+    {
+      "id": "tool.link",
+      "status": "passed"
+    },
+    {
+      "id": "tool.lib",
+      "status": "passed"
+    },
+    {
+      "id": "tool.rc",
+      "status": "passed"
+    },
+    {
+      "id": "tool.mt",
+      "status": "passed"
+    },
+    {
+      "id": "header.msvc",
+      "status": "passed"
+    },
+    {
+      "id": "header.cpp",
+      "status": "passed"
+    },
+    {
+      "id": "lib.runtime",
+      "status": "passed"
+    },
+    {
+      "id": "lib.vcruntime",
+      "status": "passed"
+    },
+    {
+      "id": "lib.cpp",
+      "status": "passed"
+    },
+    {
+      "id": "header.ucrt",
+      "status": "passed"
+    },
+    {
+      "id": "header.windows",
+      "status": "passed"
+    },
+    {
+      "id": "header.shared",
+      "status": "passed"
+    },
+    {
+      "id": "lib.ucrt",
+      "status": "passed"
+    },
+    {
+      "id": "lib.windows",
+      "status": "passed"
+    },
+    {
+      "id": "probe.compile",
+      "status": "passed"
+    },
+    {
+      "id": "probe.resource",
+      "status": "passed"
+    },
+    {
+      "id": "probe.link",
+      "status": "passed"
+    },
+    {
+      "id": "probe.manifest",
+      "status": "passed"
+    },
+    {
+      "id": "probe.execute",
+      "status": "passed"
+    }
+  ],
+  "dependency_resolution": {
+    "3.8": [
+      {
+        "name": "build",
+        "version": "1.2.2.post1",
+        "sha256": "1d61c0887fa860c01971625baae8bdd338e517b836a2f70dd1f7aa3a6b2fc5b5"
+      },
+      {
+        "name": "delvewheel",
+        "version": "1.10.0",
+        "sha256": "6abac69d13b39428a0fa3679d43a45ec6ff315bfef37dba0df53240fa3034372"
+      },
+      {
+        "name": "scikit_build_core",
+        "version": "0.11.6",
+        "sha256": "ce6d8fe64e6b4c759ea0fb95d2f8a68f60d2df31c2989838633b8ec930736360"
+      },
+      {
+        "name": "pybind11",
+        "version": "2.13.6",
+        "sha256": "237c41e29157b962835d356b370ededd57594a26d5894a795960f0047cb5caf5"
+      },
+      {
+        "name": "cmake",
+        "version": "3.31.10",
+        "sha256": "f1ea1fe826355560e8976c3d5794d9357444209bc0e0d56676c71e6a571fd474"
+      },
+      {
+        "name": "ninja",
+        "version": "1.13.0",
+        "sha256": "fb8ee8719f8af47fed145cced4a85f0755dd55d45b2bddaf7431fa89803c5f3e"
+      },
+      {
+        "name": "pytest",
+        "version": "8.3.5",
+        "sha256": "c69214aa47deac29fad6c2a4f590b9c4a9fdb16a403176fe154b79c0b4d4d820"
+      },
+      {
+        "name": "pytest-cov",
+        "version": "5.0.0",
+        "sha256": "4f0764a1219df53214206bf1feea4633c3b558a2925c8b59f144f682861ce652"
+      },
+      {
+        "name": "wheel",
+        "version": "0.45.1",
+        "sha256": "708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248"
+      },
+      {
+        "name": "numpy",
+        "version": "1.24.4",
+        "sha256": "692f2e0f55794943c5bfff12b3f56f99af76f902fc47487bdfe97856de51a706"
+      },
+      {
+        "name": "coverage",
+        "version": "7.6.1",
+        "sha256": "3f1156e3e8f2872197af3840d8ad307a9dd18e615dc64d9ee41696f287c57ad8"
+      },
+      {
+        "name": "packaging",
+        "version": "26.2",
+        "sha256": "5fc45236b9446107ff2415ce77c807cee2862cb6fac22b8a73826d0693b0980e"
+      },
+      {
+        "name": "pathspec",
+        "version": "0.12.1",
+        "sha256": "a0d503e138a4c123b27490a4f7beda6a01c6f288df0e4a8b79c7eb0dc7b4cc08"
+      },
+      {
+        "name": "pefile",
+        "version": "2024.8.26",
+        "sha256": "76f8b485dcd3b1bb8166f1128d395fa3d87af26360c2358fb75b80019b957c6f"
+      },
+      {
+        "name": "pluggy",
+        "version": "1.5.0",
+        "sha256": "44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669"
+      },
+      {
+        "name": "colorama",
+        "version": "0.4.6",
+        "sha256": "4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"
+      },
+      {
+        "name": "iniconfig",
+        "version": "2.1.0",
+        "sha256": "9deba5723312380e77435581c6bf4935c94cbfab9b1ed33ef8d238ea168eb760"
+      },
+      {
+        "name": "pyproject_hooks",
+        "version": "1.3.3",
+        "sha256": "5fc53fdac9f7bd63fbcdc868fb5f90b4784d78a53a3d3388cd738b807441a20b"
+      }
+    ],
+    "3.11": [
+      {
+        "name": "build",
+        "version": "1.2.2.post1",
+        "sha256": "1d61c0887fa860c01971625baae8bdd338e517b836a2f70dd1f7aa3a6b2fc5b5"
+      },
+      {
+        "name": "delvewheel",
+        "version": "1.10.0",
+        "sha256": "6abac69d13b39428a0fa3679d43a45ec6ff315bfef37dba0df53240fa3034372"
+      },
+      {
+        "name": "scikit_build_core",
+        "version": "0.11.6",
+        "sha256": "ce6d8fe64e6b4c759ea0fb95d2f8a68f60d2df31c2989838633b8ec930736360"
+      },
+      {
+        "name": "pybind11",
+        "version": "2.13.6",
+        "sha256": "237c41e29157b962835d356b370ededd57594a26d5894a795960f0047cb5caf5"
+      },
+      {
+        "name": "cmake",
+        "version": "3.31.10",
+        "sha256": "422a54711aa977af19d59b8f6010354cdda0b72a2e6d702b6d892e3e2cdf98a2"
+      },
+      {
+        "name": "ninja",
+        "version": "1.13.0",
+        "sha256": "3c0b40b1f0bba764644385319028650087b4c1b18cdfa6f45cb39a3669b81aa9"
+      },
+      {
+        "name": "pytest",
+        "version": "8.3.5",
+        "sha256": "c69214aa47deac29fad6c2a4f590b9c4a9fdb16a403176fe154b79c0b4d4d820"
+      },
+      {
+        "name": "pytest-cov",
+        "version": "5.0.0",
+        "sha256": "4f0764a1219df53214206bf1feea4633c3b558a2925c8b59f144f682861ce652"
+      },
+      {
+        "name": "wheel",
+        "version": "0.48.0",
+        "sha256": "3217dcc807155e45db462d7ef2431f5ddda0d7273b700d05a67b271ceb1287ab"
+      },
+      {
+        "name": "numpy",
+        "version": "2.4.6",
+        "sha256": "ed9749eef4cbd126da3dc1d6bcb3a57f5eb7ac6a6484146bdbf743f552dfc577"
+      },
+      {
+        "name": "coverage",
+        "version": "7.16.2",
+        "sha256": "a336eec40e3520d369b8a6cdabb4f596e69a8b42927ca074aa1452fed943238a"
+      },
+      {
+        "name": "packaging",
+        "version": "26.3",
+        "sha256": "d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c"
+      },
+      {
+        "name": "pathspec",
+        "version": "1.1.1",
+        "sha256": "a00ce642f577bf7f473932318056212bc4f8bfdf53128c78bbd5af0b9b20b189"
+      },
+      {
+        "name": "pefile",
+        "version": "2024.8.26",
+        "sha256": "76f8b485dcd3b1bb8166f1128d395fa3d87af26360c2358fb75b80019b957c6f"
+      },
+      {
+        "name": "pluggy",
+        "version": "1.6.0",
+        "sha256": "e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746"
+      },
+      {
+        "name": "colorama",
+        "version": "0.4.6",
+        "sha256": "4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"
+      },
+      {
+        "name": "iniconfig",
+        "version": "2.3.0",
+        "sha256": "f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12"
+      },
+      {
+        "name": "pyproject_hooks",
+        "version": "1.3.3",
+        "sha256": "5fc53fdac9f7bd63fbcdc868fb5f90b4784d78a53a3d3388cd738b807441a20b"
+      }
+    ]
+  }
+}
