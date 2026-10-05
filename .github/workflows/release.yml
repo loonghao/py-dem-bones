@@ -132,6 +132,38 @@ jobs:
           # Build the source distribution
           python -m build --sdist
 
+      # PyPI rejects any file above the per-project limit (100 MB by default),
+      # and the rejection lands at the very end of the publish job after every
+      # wheel has already been uploaded. Catch an oversized sdist here instead,
+      # before the wheels are built.
+      - name: Check SDist size against the PyPI project limit
+        shell: bash
+        run: |
+          python - <<'PY'
+          """Fail fast when the sdist is too large for PyPI to accept."""
+          # Import built-in modules
+          import sys
+          from pathlib import Path
+
+          # PyPI's default per-project file size limit; raise it in lockstep if
+          # PyPI ever grants this project a larger quota.
+          LIMIT_BYTES = 100 * 1024 * 1024
+
+          # Import third-party modules
+          sdists = sorted(Path("dist").glob("*.tar.gz"))
+          if not sdists:
+              sys.exit("No sdist was built; expected one *.tar.gz under dist/")
+
+          for path in sdists:
+              size = path.stat().st_size
+              print(f"{path.name}: {size / 1e6:.1f} MB")
+              if size > LIMIT_BYTES:
+                  sys.exit(
+                      f"{path.name} is {size / 1e6:.1f} MB, above PyPI's "
+                      f"{LIMIT_BYTES / 1e6:.0f} MB project limit"
+                  )
+          PY
+
       - name: Verify SDist
         run: |
           python -m pip install --upgrade pip
