@@ -40,7 +40,7 @@ def toolchain_environment(report, inherited):
         '-DCMAKE_CXX_COMPILER="{}"'.format(tools["cl"].replace("\\", "/")),
         '-DCMAKE_LINKER="{}"'.format(tools["link"].replace("\\", "/")),
         '-DCMAKE_RC_COMPILER="{}"'.format(tools["rc"].replace("\\", "/")),
-        # ccache does not support Microsoft's cl.exe. Keep archive caching in CI.
+        # Invoke selected tools directly; CI caches verified download archives.
         '-DUSE_CCACHE=OFF',
     ]).strip()
     environment["CC"] = environment["CXX"] = tools["cl"]

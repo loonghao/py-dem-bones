@@ -61,7 +61,7 @@ Only download archives and their index are cached, keyed by source revision,
 architecture and versions. Reuse rehashes bytes against the manifest. The
 installed tree and extraction markers are excluded from the CI cache. The
 builder explicitly selects cl/link/rc for Ninja, normalizes CMake paths, uses the
-DLL CRT, and avoids the ccache launcher intended for GCC/Clang.
+DLL CRT, and invokes the selected tools directly instead of the shared ccache launcher.
 
 Wheel verification checks the CPython tag, every extension/DLL's PE architecture,
 duplicate/unsafe entries and accidental compiler/debug files. Delvewheel bundles

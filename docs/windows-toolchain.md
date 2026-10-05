@@ -28,7 +28,7 @@ The pinned commit must exist on the official repository before remote CI can run
 
 Only source archives are cached, keyed by CLI revision, host/target and versions;
 each use rehashes the archives and extracts into a fresh installation. Windows
-does not use the existing GCC/Clang ccache launcher for Microsoft's `cl.exe`.
+invokes the selected compiler/linker directly instead of the shared ccache launcher.
 
 For a local build, supply an existing compatible msvc-kit installation and exact
 versions. Install `build`, `delvewheel`, CMake, Ninja, scikit-build-core, pybind11,
