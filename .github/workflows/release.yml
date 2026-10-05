@@ -283,23 +283,12 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      # Cache Eigen library
-      - uses: ./.github/actions/cache-eigen
-        with:
-          platform: Windows
-
-      # Set up ccache
-      - uses: ./.github/actions/setup-ccache
-        with:
-          platform: Windows
-          python: ${{ matrix.python }}
-          max-size: ${{ env.CCACHE_MAX_SIZE }}
-
-      # Build wheels using cibuildwheel action
+      # Build with the exact msvc-kit compiler and SDK for this Python ABI.
       - uses: ./.github/actions/build-wheels
         with:
           platform: windows
           python: ${{ matrix.python }}
+          python-version: ${{ matrix.python-version }}
           config-file: ${{ env.CIBW_CONFIG_FILE }}
           build-verbosity: ${{ env.CIBW_BUILD_VERBOSITY }}
 
@@ -309,14 +298,34 @@ jobs:
           platform: windows
           python: ${{ matrix.python }}
 
-      # Test the wheel immediately after building
-      - uses: ./.github/actions/setup-python-build
+      # The selected Windows builder tests the repaired wheel in a clean venv.
+
+  build-wheels-windows-arm64:
+    name: Build ${{ matrix.python }} wheels on Windows ARM64
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.fast-mode == 'true') }}
+    runs-on: windows-11-arm
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python: cp311
+            python-version: '3.11'
+          - python: cp312
+            python-version: '3.12'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: ./.github/actions/build-windows-wheel
         with:
           python-version: ${{ matrix.python-version }}
-
-      - uses: ./.github/actions/test-wheel
+          arch: arm64
+      - uses: ./.github/actions/upload-wheels
         with:
-          platform: windows
+          platform: windows-arm64
+          python: ${{ matrix.python }}
 
   # Build and test wheels for macOS Intel
   build-wheels-macos:
@@ -388,7 +397,8 @@ jobs:
   build-wheels-macos-arm:
     name: Build ${{ matrix.python }} wheels on macOS ARM
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.fast-mode == 'true') && (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'release' || github.event_name == 'workflow_dispatch') }}
-    runs-on: macos-14
+    # macos-14 brownouts begin 2026-10-05; macos-15 remains a native ARM64 runner.
+    runs-on: macos-15
     timeout-minutes: 90
     strategy:
       fail-fast: false
@@ -449,7 +459,7 @@ jobs:
   # Create GitHub Release and publish to PyPI
   release:
     name: Release
-    needs: [build-wheels-linux, build-wheels-windows, build-wheels-macos, build-wheels-macos-arm, build-sdist]
+    needs: [build-wheels-linux, build-wheels-windows, build-wheels-windows-arm64, build-wheels-macos, build-wheels-macos-arm, build-sdist]
     # `workflow_dispatch` covers release-please tags minted with GITHUB_TOKEN:
     # GitHub raises no `push` event for those, and workflow_dispatch is the one
     # event it does start from a GITHUB_TOKEN-initiated request.

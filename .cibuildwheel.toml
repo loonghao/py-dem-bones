@@ -1,4 +1,5 @@
 # cibuildwheel configuration
+[tool.cibuildwheel]
 build-verbosity = 3
 test-requires = ["pytest", "pytest-cov", "numpy>=1.20.0"]
 test-command = "python -I {project}/scripts/test_wheel_import.py && pytest {project}/tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v"
@@ -20,7 +21,7 @@ environment-pass = [
 environment = {}
 
 # Windows-specific configuration
-[windows]
+[tool.cibuildwheel.windows]
 # Use Ninja generator to speed up builds
 
 # Install Ninja, ccache and other tools
@@ -36,13 +37,10 @@ before-build = [
     "pip install setuptools wheel numpy pybind11 scikit-build-core cmake",
     "ccache -s"   # Print ccache statistics before build
 ]
-after-build = [
-    "ccache -s"   # Print ccache statistics after build
-]
 # Use delvewheel to repair wheel packages
 repair-wheel-command = "delvewheel repair -w {dest_dir} {wheel}"
 
-[windows.environment]
+[tool.cibuildwheel.windows.environment]
 CMAKE_GENERATOR = "Ninja"
 CMAKE_POSITION_INDEPENDENT_CODE = "ON"
 # Ensure DLLs can be loaded correctly
@@ -63,7 +61,7 @@ CCACHE_BASEDIR = "{package}"
 CMAKE_BUILD_PARALLEL_LEVEL = "4"
 
 # Linux-specific configuration
-[linux]
+[tool.cibuildwheel.linux]
 
 before-all = [
     "yum install -y ccache || apt-get update && apt-get install -y ccache || true",
@@ -75,12 +73,12 @@ before-build = [
     "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core cmake",
     "ccache -s || echo 'ccache stats failed'"     # Print ccache statistics before build
 ]
-after-build = [
-    "ccache -s || echo 'ccache stats failed'"     # Print ccache statistics after build
-]
 repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
 
-[linux.environment]
+[tool.cibuildwheel.linux.environment]
+# Cap NumPy to a manylinux2014 wheel instead of compiling it with the older GCC.
+# cibuildwheel copies the project, including this constraint file, to /project.
+PIP_CONSTRAINT = "/project/constraints-manylinux2014.txt"
 LANG = "C.UTF-8"
 LC_ALL = "C.UTF-8"
 PYTHONIOENCODING = "UTF-8"
@@ -95,7 +93,7 @@ CCACHE_BASEDIR = "{package}"
 CMAKE_BUILD_PARALLEL_LEVEL = "4"
 
 # macOS-specific configuration
-[macos]
+[tool.cibuildwheel.macos]
 
 before-all = [
     "brew install ccache || true",
@@ -107,12 +105,9 @@ before-build = [
     "pip install -U pip setuptools wheel numpy pybind11 scikit-build-core cmake",
     "ccache -s"   # Print ccache statistics before build
 ]
-after-build = [
-    "ccache -s"   # Print ccache statistics after build
-]
 repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
 
-[macos.environment]
+[tool.cibuildwheel.macos.environment]
 # AppleClang has no bundled OpenMP runtime; wheel jobs explicitly use serial.
 CMAKE_ARGS = "-DPY_DEM_BONES_USE_OPENMP=OFF"
 # Enable ccache with optimized settings

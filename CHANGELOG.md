@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.1](https://github.com/loonghao/py-dem-bones/compare/v0.13.0...v0.13.1) (2026-10-05)
+
+
+### Bug Fixes
+
+* **ci:** drop package-name so release-please can tag releases ([157fc28](https://github.com/loonghao/py-dem-bones/commit/157fc2864038264c8d3862e2d68a1e927e222f41))
+* **ci:** keep the sdist under PyPI's 100 MB project limit ([#96](https://github.com/loonghao/py-dem-bones/issues/96)) ([6568f6f](https://github.com/loonghao/py-dem-bones/commit/6568f6fc8c6dcc33b220f6d7c94417f409d98560))
+
 ## [0.13.0](https://github.com/loonghao/py-dem-bones/compare/0.12.4...v0.13.0) (2026-10-03)
 
 
