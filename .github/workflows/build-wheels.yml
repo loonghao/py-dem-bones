@@ -81,6 +81,15 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate effective wheel configuration
+        run: |
+          python -m pip install cibuildwheel==2.23.1 PyYAML pytest
+          python -m pytest tools/wheels/test_cibuildwheel_configuration.py -v
+
       # Cache Eigen library
       - uses: ./.github/actions/cache-eigen
         with:

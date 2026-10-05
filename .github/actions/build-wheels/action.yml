@@ -30,6 +30,7 @@ runs:
       uses: pypa/cibuildwheel@v2.23.1
       with:
         output-dir: ${{ inputs.output-dir }}
+        config-file: ${{ inputs.config-file }}
       env:
         # Platform-specific settings
         CIBW_BUILD: >-
@@ -46,8 +47,6 @@ runs:
             inputs.platform == 'windows' && '*-win32' ||
             ''
           }}
-        # Use config file for most settings
-        CIBW_CONFIG_FILE: ${{ inputs.config-file }}
         # Set build verbosity
         CIBW_BUILD_VERBOSITY: ${{ inputs.build-verbosity }}
         # Install the wheel repair tool and the Ninja generator. The trailing Visual
@@ -56,8 +55,3 @@ runs:
         # which failed every Windows wheel job before the build even started.
         CIBW_BEFORE_ALL_WINDOWS: >-
           ${{ inputs.platform == 'windows' && 'pip install delvewheel && choco install -y ninja' || '' }}
-        # Cap the build-time NumPy inside the manylinux2014 container so pip resolves
-        # a manylinux2014 wheel instead of compiling NumPy from source, which fails
-        # on NumPy >= 2.5 (needs GCC >= 10.3, image ships 10.2.1).
-        # cibuildwheel copies the working directory to /project inside the container.
-        CIBW_ENVIRONMENT_LINUX: PIP_CONSTRAINT=/project/constraints-manylinux2014.txt
