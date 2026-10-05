@@ -1,0 +1,142 @@
+{
+  "asset": "Kraken octopus sculpt",
+  "author": "FIELDFLY3R",
+  "author_current_display_name": "fld",
+  "author_url": "https://sketchfab.com/FIELDFLY3R",
+  "source": "https://sketchfab.com/3d-models/kraken-ca7e400c9cb34e02a6dfd74aecf26eff",
+  "source_uid": "ca7e400c9cb34e02a6dfd74aecf26eff",
+  "license": "CC-BY-4.0",
+  "license_source": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": "Kraken by FIELDFLY3R (current display name: fld), CC BY 4.0, via Ai2 Objaverse. Showcase geometry, motion, materials and presentation are adapted as described below.",
+  "mirror": {
+    "dataset": "https://huggingface.co/datasets/allenai/objaverse",
+    "download": "https://huggingface.co/datasets/allenai/objaverse/resolve/main/glbs/000-115/ca7e400c9cb34e02a6dfd74aecf26eff.glb",
+    "metadata": "https://huggingface.co/datasets/allenai/objaverse/resolve/main/metadata/000-115.json.gz",
+    "individual_object_license": "CC-BY-4.0",
+    "metadata_license_slug": "by",
+    "metadata_chunk_sha256": "3ee735ee531f998094ca18e720f6fd5039bfe871e7b73c30128f23f6d3d1e8f9"
+  },
+  "files": {
+    "kraken.glb": {
+      "bytes": 10498180,
+      "sha256": "824a8fc33a192f8b3589bc413d808e537e77a486105ff7e7fe1481201de6e97c",
+      "modification": "None; exact bytes from the official Objaverse download, including all original meshes, materials, textures and embedded attribution."
+    },
+    "kraken-basecolor-original.png": {
+      "bytes": 1674432,
+      "sha256": "5eef412ec1aada5e559d9779d2f4272a8e42f240eb143aad284fe8272f4c2885",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "color_mode": "RGB",
+      "modification": "None; exact embedded image 1 bytes extracted from kraken.glb."
+    }
+  },
+  "source_geometry": {
+    "mesh_index": 1,
+    "node_index": 7,
+    "node_name": "Object_7",
+    "primitive_index": 0,
+    "material_index": 1,
+    "material_name": "material_1",
+    "stored_vertices": 30572,
+    "triangles": 58912,
+    "includes": [
+      "mantle and head",
+      "eyes",
+      "eight arms",
+      "modeled suckers"
+    ],
+    "presentation_up_axis": "Y",
+    "world_bounds": {
+      "minimum": [
+        -22.972155523473532,
+        -7.203646196845712,
+        -41.30540141697054
+      ],
+      "maximum": [
+        20.178118559781524,
+        11.290162576605383,
+        4.602169743163813
+      ]
+    },
+    "basecolor_binding": {
+      "texture_index": 1,
+      "image_index": 1,
+      "uv_attribute": "TEXCOORD_0",
+      "texture_transform": null
+    },
+    "uv_attributes": [
+      "TEXCOORD_0",
+      "TEXCOORD_1",
+      "TEXCOORD_2"
+    ],
+    "source_rig": null,
+    "source_animation_clips": 0
+  },
+  "showcase_derivation": {
+    "original_files_unchanged": true,
+    "native_import_verified": {
+      "host": "Houdini",
+      "version": "22.0.368",
+      "body_points_after_native_seam_consolidation": 29542,
+      "body_triangles": 58912,
+      "body_primitive_name": "Object_1"
+    },
+    "excluded_meshes": {
+      "indices": [
+        0,
+        2,
+        3,
+        4,
+        5
+      ],
+      "reason": "The separate ray and four small underwater decorations are not octopus anatomy. They remain intact in the distributed source GLB."
+    },
+    "numerical_proxy": {
+      "status": "native fixed rest proxy accepted",
+      "method": "Houdini PolyReduce 2.0; freeze topology before sampling source poses",
+      "points": 8000,
+      "triangles": 15936
+    },
+    "motion": {
+      "status": "native Vellum source, 81-bone Dem Bones reconstruction, independent reopen and complete 48-frame Mantra animation accepted",
+      "method": "Houdini Vellum stretch and bend constraints, internal struts, compliant sparse arm-tip targets and contact generate 48 physical samples. Dem Bones fits an 8000-point fixed proxy with sparse weights and rigid transforms; native Point Deform transfers the fit to the original artist mesh. The sculpt contains no original animated rig or clip.",
+      "source_is_authored_lbs": false,
+      "frames": 48,
+      "bones": 81,
+      "source_receipt": "docs/showcase/arm-skin/octopus-softbody-native-source.json",
+      "fit_receipt": "docs/showcase/arm-skin/octopus-softbody-native-report.json",
+      "native_readback": "docs/showcase/arm-skin/octopus-softbody-native-readback.json",
+      "independent_reopen": "docs/showcase/arm-skin/octopus-softbody-native-reopen.json",
+      "earlier_kinematic_baseline": {
+        "frames": 48,
+        "bones": 33,
+        "softbody_simulation": false,
+        "receipt": "docs/showcase/arm-skin/octopus-native-report.json"
+      },
+      "boundary_edges": 60,
+      "closed_volume_conservation_claimed": false,
+      "first_and_last_samples_forced_equal": false,
+      "seamless_loop_claimed": false,
+      "native_animation_receipt": "docs/showcase/arm-skin/octopus-native-animation.json"
+    },
+    "render_only_geometry": {
+      "status": "native posed hero, complete 48-frame animation and rest-surface controlled SSS study accepted",
+      "subdivision_levels": 1,
+      "scale": "Uniform presentation scale to metres; source units are not asserted to be metres.",
+      "axis_conversion": "Convert source Y-up to the Z-up render study as an explicit presentation transform. Preserve numerical rest geometry, source poses and solver output.",
+      "metres_per_source_unit": 0.035,
+      "native_hero_evidence": "docs/showcase/arm-skin/octopus-native-hero.json",
+      "numerical_mesh_changed_for_render": false,
+      "native_animation_evidence": "docs/showcase/arm-skin/octopus-native-animation.json"
+    },
+    "materials": {
+      "status": "official Designer 16 cook/render accepted: editable SBS, SBSAR and 18 native 2K maps; repeated render byte hashes match",
+      "method": "New body and sucker surface appearance uses the original BaseColor as an input where needed to preserve eye and sucker regions. The distributed original PNG is unchanged.",
+      "evidence": "examples/showcase/materials/octopus/evidence.json",
+      "native_render_evidence": "docs/showcase/arm-skin/octopus-material-render.json"
+    }
+  }
+}
