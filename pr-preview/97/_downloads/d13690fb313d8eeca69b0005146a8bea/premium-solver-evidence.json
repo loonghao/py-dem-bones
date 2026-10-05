@@ -1,0 +1,630 @@
+{
+  "schema": "py-dem-bones.solver-evidence.v1",
+  "renderer": "Matplotlib Agg scientific visualization; not a DCC beauty render",
+  "rendering_versions": {
+    "matplotlib": "3.11.2",
+    "numpy": "2.5.3"
+  },
+  "native_host": "Blender",
+  "native_version": "5.2.0 LTS",
+  "native_cache": {
+    "sha256": "90d62a979c64b6f0430b12297f43b7ef7bbea4efb962e3e8613f40669861aa50",
+    "acceptance_hash_verified": true,
+    "report_sha256": "fbdba0a18a0f67ed56af2a326e33bf0226f14588056f72e6133c9fcdd9adb997"
+  },
+  "authored_source": {
+    "case": "arm",
+    "poses_equal_cache": true,
+    "rest_vertex_indices_equal_cache": true,
+    "files": [
+      {
+        "path": "examples/showcase/assets/arm.obj",
+        "sha256": "f9ebab4881cde14651a694be51e7020a58f58311e681ce951d3bf4594ad1270b"
+      },
+      {
+        "path": "examples/showcase/assets/arm_joints.json",
+        "sha256": "247ac5d3dc23d1890241022156578803a5fbf56038337ab5779aca08b47d2792"
+      },
+      {
+        "path": "examples/showcase/arm_sequence.py",
+        "sha256": "17a38c4f4b8c3486f1a0e7204fee2ce94c9bc18e5f3718e93b37dff94fd44275"
+      },
+      {
+        "path": "examples/showcase/sequence.py",
+        "sha256": "1f2e4d3dd7e8a5d256e194269fe2cc90b65b3962b28d3bc1743d0ffd2994f181"
+      }
+    ]
+  },
+  "data": {
+    "weights": {
+      "shape": [
+        9,
+        2087
+      ],
+      "dtype": "float64",
+      "array_sha256": "02920615cf7411aec3f941eeeed04a6c88392babf8ad412636df88cda3d7c461"
+    },
+    "transforms": {
+      "shape": [
+        48,
+        9,
+        4,
+        4
+      ],
+      "dtype": "float64",
+      "array_sha256": "b3b198989324651f5ee95a33f0f877a584208d7795bd61eef73fd34893ed6f91"
+    },
+    "evaluated": {
+      "shape": [
+        48,
+        2087,
+        3
+      ],
+      "dtype": "float64",
+      "array_sha256": "294293e1f463011c9dec8d81fc1b3db805643390dd54683545f146d6e38cabca"
+    },
+    "rest": {
+      "shape": [
+        2087,
+        3
+      ],
+      "dtype": "float64",
+      "array_sha256": "4317afb67a621d4a51fcbdafcbaf4ac3a1508093883aedd19eb441fd7c4f82df"
+    },
+    "poses": {
+      "shape": [
+        48,
+        2087,
+        3
+      ],
+      "dtype": "float64",
+      "array_sha256": "d730f5fb28c606da34cd200cbe5696103274711b2228027aaf10b4b519a598f9"
+    }
+  },
+  "metrics": {
+    "vertices": 2087,
+    "faces": 2068,
+    "bones": 9,
+    "frames": 48,
+    "normalized_rmse": 0.0006720154420585266,
+    "max_vertex_error": 0.03070994976072811,
+    "host_lbs_max_difference": 1.9598395112142427e-06
+  },
+  "error": {
+    "formula": "norm(native_evaluated[f,v] - authored_source[f,v], 2) / norm(ptp(rest, axis=0), 2)",
+    "rest_aabb_diagonal_case_units": 6.329064324453279,
+    "global_minimum_normalized": 1.0039875821865392e-09,
+    "global_maximum_normalized": 0.004852210087686218,
+    "color_range_percent": [
+      0,
+      0.4852210087686218
+    ],
+    "normalization": "Linear; one fixed range for all 48 frames; no logarithm or percentile clipping",
+    "surface_color": "Original per-vertex error colors; Gouraud interpolation over depth-sorted native triangles",
+    "per_frame_rmse_normalized": [
+      2.4115582325212554e-08,
+      0.00010173278486834524,
+      0.0001984048862878319,
+      0.0002864116976256585,
+      0.00036299601580218403,
+      0.0004264580571575619,
+      0.00047646589816672836,
+      0.0005141689634427371,
+      0.0005423393588731463,
+      0.0005650812083705622,
+      0.000587239643797685,
+      0.0006132422344829314,
+      0.000645849828923577,
+      0.0006853385949847545,
+      0.0007296404012640836,
+      0.000775082373309414,
+      0.0008176789390939342,
+      0.0008540395210116445,
+      0.0008820785899544836,
+      0.0009011869467457549,
+      0.0009122812990253121,
+      0.0009173372618423586,
+      0.0009188336864787915,
+      0.0009191024173789728,
+      0.0009196057925071451,
+      0.0009205338483216738,
+      0.0009207069359711263,
+      0.000917993319509898,
+      0.0009098520230705254,
+      0.0008941007341114924,
+      0.0008696202748862751,
+      0.0008365693865189078,
+      0.000796684848180319,
+      0.0007529147721155041,
+      0.0007090435929715059,
+      0.0006687685105397229,
+      0.0006345834105857407,
+      0.0006068203229249069,
+      0.0005832296586676378,
+      0.0005594919878989428,
+      0.0005304803442854894,
+      0.0004915372249021507,
+      0.0004395000576034359,
+      0.00037311047548222733,
+      0.00029307026310567986,
+      0.00020171965136268045,
+      0.00010262327164130333,
+      2.4115582325811814e-08
+    ],
+    "per_frame_peak_normalized": [
+      4.2748296048080034e-08,
+      0.0009062045555257859,
+      0.0017719351037135938,
+      0.002548418315778257,
+      0.003194515294620107,
+      0.0036795729307928693,
+      0.003985516955496723,
+      0.004106632251275474,
+      0.004050418647557573,
+      0.003836041754339408,
+      0.0034928726021378744,
+      0.0030615981356325156,
+      0.003302436574680698,
+      0.0035015150253426145,
+      0.0036380722508267986,
+      0.0036963725696303644,
+      0.0036710330000836104,
+      0.0037367674231440274,
+      0.004046845204275439,
+      0.004321750480106915,
+      0.004547658880795967,
+      0.00471208489810502,
+      0.004804796221890043,
+      0.004819186000084145,
+      0.00475262474465019,
+      0.00460648485431233,
+      0.004463564224326319,
+      0.004740421377077806,
+      0.004852210087686218,
+      0.004784177052055994,
+      0.0045356733075683575,
+      0.004121188971932703,
+      0.003574093846561812,
+      0.0030509981253944315,
+      0.003071496139761235,
+      0.0031017855856168013,
+      0.003120148101733531,
+      0.0031048634705272368,
+      0.003036931899759165,
+      0.0032373684341903157,
+      0.003494691230272244,
+      0.003548846758167303,
+      0.003387581326603833,
+      0.0030152437322959642,
+      0.00245179351408927,
+      0.0017307948603800093,
+      0.000896398045682474,
+      4.2748296048080034e-08
+    ],
+    "per_frame_p95_normalized": [
+      3.767273009459606e-08,
+      0.00021833370426839469,
+      0.0004210571017498923,
+      0.0006091749517995819,
+      0.0007698763777639056,
+      0.000894850462588336,
+      0.0010435798168316468,
+      0.0011908296707306694,
+      0.0013051630806169814,
+      0.0013231139026266476,
+      0.0013514149487248322,
+      0.0014036181261172266,
+      0.0014379646194019734,
+      0.0015578260471837773,
+      0.0016426786145064913,
+      0.0017548038663794095,
+      0.001895471518567612,
+      0.002036597523136367,
+      0.002125416482096054,
+      0.0021880862914769057,
+      0.002240933433397384,
+      0.002225223546008368,
+      0.0023111417635320168,
+      0.0023518658223417145,
+      0.0023930204052357747,
+      0.0023823590206956038,
+      0.002362533276141636,
+      0.002316128717065682,
+      0.0022729814357586317,
+      0.0022164155060039243,
+      0.0021045069925750134,
+      0.0019996569585719807,
+      0.0018948403626697923,
+      0.0017718424246395365,
+      0.0016262933872766656,
+      0.0015272858648444662,
+      0.0014416234866672364,
+      0.0013740782116250575,
+      0.0013290728606850859,
+      0.0012650149025754587,
+      0.0011794644870644333,
+      0.0010806709188411303,
+      0.0009483515379780507,
+      0.0008056005953653882,
+      0.000627472737759637,
+      0.00043227128050051065,
+      0.00021733465750968455,
+      3.767273005238696e-08
+    ]
+  },
+  "weights": {
+    "colors": [
+      "#50c9db",
+      "#668dff",
+      "#aa7ce8",
+      "#e582bb",
+      "#f4a26e",
+      "#efd57a",
+      "#aace77",
+      "#60d8b4",
+      "#eb6b78"
+    ],
+    "solver_slot_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "display": "RGB weighted sum of nine solver slot colors; colors have no anatomical identity claim",
+    "max_influences_threshold": 1e-08,
+    "max_influences": 4
+  },
+  "camera": {
+    "basis": [
+      [
+        0.042860529420914395,
+        -0.8448714736459508,
+        -0.5332496301330906
+      ],
+      [
+        0.9820300218683811,
+        0.13381449549958016,
+        -0.13308161760130416
+      ]
+    ],
+    "depth_direction": [
+      0.183793392609598,
+      -0.5179631973543216,
+      0.8354245118618091
+    ],
+    "center": [
+      -3.745375990678138,
+      4.47605987608171
+    ],
+    "span": [
+      3.6613753273887792,
+      4.751719037645598
+    ],
+    "projection": "Orthonormal orthographic; equal aspect; fixed global bounds for all panels/frames"
+  },
+  "geometry": {
+    "displacement_scale": 1,
+    "subdivision": false,
+    "interpolated_poses": false,
+    "triangulation": "Existing vertex indices, polygon fan; only triangle drawing order changes"
+  },
+  "static_frame_one_based": 12,
+  "script_sha256": "2bb6dec17a5eca155494741e71f963bb6056b5053f80129b5fe713e8aa53815a",
+  "artifacts": [
+    {
+      "file": "premium-solver-evidence.png",
+      "size_bytes": 260799,
+      "sha256": "d18a6ac34d693fb86eca9097569e5b21afb37949756dc3bf94b22b9a5d32fae3"
+    },
+    {
+      "file": "premium-solver-evidence.mp4",
+      "size_bytes": 345960,
+      "sha256": "781384bd90bd7106fd8dfe8f5ac5056bfc1af0d232d5e3db5a408d9c5886cb06"
+    }
+  ],
+  "video": {
+    "codec": "h264",
+    "width": 1920,
+    "height": 1080,
+    "decoded_frames": 48,
+    "fps": 12,
+    "duration_seconds": 4.0,
+    "audio_streams": 0,
+    "encoding": "H.264, CRF 18, yuv420p; lossy display copy of the recorded PNG visualization frames"
+  },
+  "rendered_frames": [
+    {
+      "native_frame": 1,
+      "file": "frame_001.png",
+      "size_bytes": 214874,
+      "sha256": "d4859a4ebf4c86bb6e8647ebe8d345d608f1c3b52399c2c809760dac42cb3882"
+    },
+    {
+      "native_frame": 2,
+      "file": "frame_002.png",
+      "size_bytes": 220495,
+      "sha256": "0137c98096fa7a7bab06c141c8e905738be965196db8894a605b0116df30cabc"
+    },
+    {
+      "native_frame": 3,
+      "file": "frame_003.png",
+      "size_bytes": 224644,
+      "sha256": "1fbfb7066cae74931a1f97560536e698cf82798d7e735539e3bc7282ef39246f"
+    },
+    {
+      "native_frame": 4,
+      "file": "frame_004.png",
+      "size_bytes": 227900,
+      "sha256": "6d320def2af415461db61309bb7011dafe8ca4bcd2eb95c2c56dc97f3bc9e3e7"
+    },
+    {
+      "native_frame": 5,
+      "file": "frame_005.png",
+      "size_bytes": 233439,
+      "sha256": "0808cae93916c2ee1699f0a43eb41c771c94feaa59066069ca3755276c1c3dd3"
+    },
+    {
+      "native_frame": 6,
+      "file": "frame_006.png",
+      "size_bytes": 238387,
+      "sha256": "84021c2c1617c9aacb147a74a34b516125e13a6888a9a2bf426d78d87c71afc5"
+    },
+    {
+      "native_frame": 7,
+      "file": "frame_007.png",
+      "size_bytes": 243219,
+      "sha256": "3f6672508fea8e84283c87b069728f49d14e947d4e8d48cfb46e8aecc216419d"
+    },
+    {
+      "native_frame": 8,
+      "file": "frame_008.png",
+      "size_bytes": 247183,
+      "sha256": "4881bbdb3734d03ee8d730d38e12425f1b2f29d5ccf6dece374445755a167c6a"
+    },
+    {
+      "native_frame": 9,
+      "file": "frame_009.png",
+      "size_bytes": 251677,
+      "sha256": "c9cbccd02a1a2a2ee155304c28b80a476d675a494dca5942394655b714f34141"
+    },
+    {
+      "native_frame": 10,
+      "file": "frame_010.png",
+      "size_bytes": 255236,
+      "sha256": "0fa2b559d4aeb7c3e6ab580531688251706e5a9e76b470792144aef4b8fd4f0a"
+    },
+    {
+      "native_frame": 11,
+      "file": "frame_011.png",
+      "size_bytes": 258094,
+      "sha256": "979040320e8da03eb74eba370a415c15299bb8702f683c923b63f8f4c8775430"
+    },
+    {
+      "native_frame": 12,
+      "file": "frame_012.png",
+      "size_bytes": 260799,
+      "sha256": "d18a6ac34d693fb86eca9097569e5b21afb37949756dc3bf94b22b9a5d32fae3"
+    },
+    {
+      "native_frame": 13,
+      "file": "frame_013.png",
+      "size_bytes": 262865,
+      "sha256": "b270ca844abeb8ed2b62761f394c5a3d57aed2c24848fbe9a28b7b889a374791"
+    },
+    {
+      "native_frame": 14,
+      "file": "frame_014.png",
+      "size_bytes": 265589,
+      "sha256": "c712e5d297dd40be265955c48c695738ded80c74d96a115bc66a9ed445a3875c"
+    },
+    {
+      "native_frame": 15,
+      "file": "frame_015.png",
+      "size_bytes": 267020,
+      "sha256": "e14bcaebf7efe4ce07d3dd3157fe8e1df6fc169d07a74fe61e0929de5d5834d1"
+    },
+    {
+      "native_frame": 16,
+      "file": "frame_016.png",
+      "size_bytes": 270278,
+      "sha256": "398ec70a553e635911233f041fca668e3d756613cc5df1d44ffb831c9fba4813"
+    },
+    {
+      "native_frame": 17,
+      "file": "frame_017.png",
+      "size_bytes": 271864,
+      "sha256": "f8599c8f79bc13715437a4831e7d635e51c172dcfb430373e28f63801062fb01"
+    },
+    {
+      "native_frame": 18,
+      "file": "frame_018.png",
+      "size_bytes": 273434,
+      "sha256": "4ee7137f3d118120da13ae19e5d9b664dc91ceb7be71c380fde6b1bdf3176178"
+    },
+    {
+      "native_frame": 19,
+      "file": "frame_019.png",
+      "size_bytes": 274588,
+      "sha256": "db1bb9e95ddf767cafc4a76c2af54eec6ca8074049a5a24626eae487498790ea"
+    },
+    {
+      "native_frame": 20,
+      "file": "frame_020.png",
+      "size_bytes": 275864,
+      "sha256": "92a5f54aa1893d7141e61393f52ff34f347ff6ace4daae0faf9635d60ca2b768"
+    },
+    {
+      "native_frame": 21,
+      "file": "frame_021.png",
+      "size_bytes": 276932,
+      "sha256": "154a64e148d3bb84358969bb4461623bcb57a3300f878d25fb0cc54e5bf8ab0f"
+    },
+    {
+      "native_frame": 22,
+      "file": "frame_022.png",
+      "size_bytes": 277822,
+      "sha256": "905ee613679cc885ae31831e37e53e40ceac720d8d3898b08cd046c12605ab2e"
+    },
+    {
+      "native_frame": 23,
+      "file": "frame_023.png",
+      "size_bytes": 279123,
+      "sha256": "37ae97ff6da72c28f3fa247d1f7411a56c1367cd9273f725c3652eb81cfee864"
+    },
+    {
+      "native_frame": 24,
+      "file": "frame_024.png",
+      "size_bytes": 279395,
+      "sha256": "482c039718c438dc83c96018e7eeca5e91e64e1d63e4358ccad3da0471457f0e"
+    },
+    {
+      "native_frame": 25,
+      "file": "frame_025.png",
+      "size_bytes": 279837,
+      "sha256": "9f36e0b17a02dd01cb9c1aa931628236b5f6abf60aa7b62c6ee47ca0fc5381f1"
+    },
+    {
+      "native_frame": 26,
+      "file": "frame_026.png",
+      "size_bytes": 279280,
+      "sha256": "58e9b4d3e8f5c0d3933624bfd41c0b93aa3df8dc734fd720cd0f14705694dd40"
+    },
+    {
+      "native_frame": 27,
+      "file": "frame_027.png",
+      "size_bytes": 279253,
+      "sha256": "0a23b04aa049e6d4fed739741fac3fb53264103ad4d9801dfb6c98d02bf73f82"
+    },
+    {
+      "native_frame": 28,
+      "file": "frame_028.png",
+      "size_bytes": 278229,
+      "sha256": "a556cbd920ec91a5360b8b7d7dee28b4131085151c097ffd181e09a8a4b32e76"
+    },
+    {
+      "native_frame": 29,
+      "file": "frame_029.png",
+      "size_bytes": 277434,
+      "sha256": "868374fd0e0f3437619e102b81ad71f2aba01446f604ab140c76cad8b6681c04"
+    },
+    {
+      "native_frame": 30,
+      "file": "frame_030.png",
+      "size_bytes": 274642,
+      "sha256": "6a60316ada514abb2e2f9dede2e38c5ad73ecda6dd7959eaaf3ca576339b8c3d"
+    },
+    {
+      "native_frame": 31,
+      "file": "frame_031.png",
+      "size_bytes": 271576,
+      "sha256": "12440d1c831e5f5315c8a04203caf9beb6e24a71965b01e90738a40bd5d202db"
+    },
+    {
+      "native_frame": 32,
+      "file": "frame_032.png",
+      "size_bytes": 267351,
+      "sha256": "6acd719a9de8342c1875997c754787be1444b927bbb5dde2aa32bb49a5213cd1"
+    },
+    {
+      "native_frame": 33,
+      "file": "frame_033.png",
+      "size_bytes": 263420,
+      "sha256": "31ef6baefbfea125a8eace7583c7e69c177820e5e3a0ccc0594593465fff30d7"
+    },
+    {
+      "native_frame": 34,
+      "file": "frame_034.png",
+      "size_bytes": 258732,
+      "sha256": "53810c27a178d96eca02f57eaaee7a234b8c9e59525dc76c3a82f810f34751cb"
+    },
+    {
+      "native_frame": 35,
+      "file": "frame_035.png",
+      "size_bytes": 254756,
+      "sha256": "47f7c940594664dcfec4ed8ffe3d314aa1c74d82f67a7609e6ad672dc74b43ac"
+    },
+    {
+      "native_frame": 36,
+      "file": "frame_036.png",
+      "size_bytes": 251458,
+      "sha256": "a9293a54b8f400198f0d5d07b678ba8f9dc3679d91583557a5effe915bd6eada"
+    },
+    {
+      "native_frame": 37,
+      "file": "frame_037.png",
+      "size_bytes": 248487,
+      "sha256": "c17b356914c9d263a670ba94e07001dfa1b5c194e37e98cf01254506011f01f3"
+    },
+    {
+      "native_frame": 38,
+      "file": "frame_038.png",
+      "size_bytes": 245215,
+      "sha256": "63c52e1e6cde32358d67c04a436f6d43649724049693a3effce16574d57a3752"
+    },
+    {
+      "native_frame": 39,
+      "file": "frame_039.png",
+      "size_bytes": 242715,
+      "sha256": "873e1e6c7e21c1d7f51804e7911b527dec18419e0ddebcf81a9c58ec4788a9af"
+    },
+    {
+      "native_frame": 40,
+      "file": "frame_040.png",
+      "size_bytes": 240145,
+      "sha256": "8631f0b61dc67b2b7b6f06b57bd6d55441ab83c990e137ba55bce586dd9f8a95"
+    },
+    {
+      "native_frame": 41,
+      "file": "frame_041.png",
+      "size_bytes": 237799,
+      "sha256": "5da4f3bea99bc8c6910d4ac38deb1b84d49fdec0425eded212f4521f6a2d732c"
+    },
+    {
+      "native_frame": 42,
+      "file": "frame_042.png",
+      "size_bytes": 235669,
+      "sha256": "60f8b4f41935506e668b388d607c7f86d3dc33484e8c35a0f4bcf6acab9a80e1"
+    },
+    {
+      "native_frame": 43,
+      "file": "frame_043.png",
+      "size_bytes": 232981,
+      "sha256": "15fbee9d3461505352160c13ca51c839b42bb2a09a4bcb4fe82251e59d98c3f6"
+    },
+    {
+      "native_frame": 44,
+      "file": "frame_044.png",
+      "size_bytes": 229571,
+      "sha256": "6aed5f227cca2a95b2c544f6347480cf16ed74f17aafdb124cb044fa090a230d"
+    },
+    {
+      "native_frame": 45,
+      "file": "frame_045.png",
+      "size_bytes": 226478,
+      "sha256": "e5aa16741fee1d802bb5dbc366a83420eef0b67b3697abc4ad4a94e6463bc6d5"
+    },
+    {
+      "native_frame": 46,
+      "file": "frame_046.png",
+      "size_bytes": 222518,
+      "sha256": "2d42cc0330de350a7fb62aae8d648c80aa1fe653c96f68e92ecddc5d327e186d"
+    },
+    {
+      "native_frame": 47,
+      "file": "frame_047.png",
+      "size_bytes": 218823,
+      "sha256": "439561310126ccb62bd2245237eea05309f4a73754eba6c6bd85702120cec876"
+    },
+    {
+      "native_frame": 48,
+      "file": "frame_048.png",
+      "size_bytes": 213924,
+      "sha256": "d1db10615299dfdbc99a02d557adaa6ae231e29f1e59f013e855b055293b9393"
+    }
+  ]
+}

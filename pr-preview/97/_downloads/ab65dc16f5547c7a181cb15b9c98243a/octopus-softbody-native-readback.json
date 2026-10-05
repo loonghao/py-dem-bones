@@ -1,0 +1,517 @@
+{
+  "success": true,
+  "host": "Houdini",
+  "version": "22.0.368",
+  "source_kind": "native_vellum_softbody",
+  "source_sha256": "824a8fc33a192f8b3589bc413d808e537e77a486105ff7e7fe1481201de6e97c",
+  "frames": 48,
+  "bones": 81,
+  "maximum_weight_difference": 0.0,
+  "maximum_source_cache_difference": 0.0,
+  "maximum_numerical_cache_difference": 0.0,
+  "maximum_transform_storage_difference": 9.461345911176977e-07,
+  "artist_vertices": 29542,
+  "artist_faces": 58912,
+  "maximum_artist_ground_penetration_metres": 0.00025853157043459474,
+  "artist_reconstructed_contact_accepted": true,
+  "ground_y_metres": -0.285,
+  "floor_source_y": -8.14285714285714,
+  "source_units_to_metres": 0.035,
+  "proxy_vertices": 8000,
+  "proxy_faces": 15936,
+  "buffer_hash_convention": "C-contiguous little-endian float32 positions/UVs/weights and int32 triangles",
+  "proxy_positions_sha256": "7ad355ea112d872606002404b1c6eef9fa9516762480e58a11a2ac68557728e8",
+  "proxy_topology_sha256": "4b2178edf4bb99d44fcbb408109e77018df39764e2aeb0d4f7f5189a7fb7dc47",
+  "artist_positions_sha256": "2f553885fafcc0965d40aa7635be4443681fafabcf05b49770ebd6ab53cf86e7",
+  "artist_topology_sha256": "66481c18f6bb0716eff6ed3a3e912346b4379c487e330c2bfaa7fc840080d126",
+  "artist_uv_sha256": {
+    "uv": "360ff9eac07185e40a483474aa9fc5de2e2fff5124ed2a69f2d3a644ca93d5a0",
+    "uv2": "360ff9eac07185e40a483474aa9fc5de2e2fff5124ed2a69f2d3a644ca93d5a0",
+    "uv3": "360ff9eac07185e40a483474aa9fc5de2e2fff5124ed2a69f2d3a644ca93d5a0"
+  },
+  "weights_sha256": "e30377e1d6c802a06ad8041c92145c31c0754443f1c6599d7865bd54e7b9c160",
+  "native_frame_readback": [
+    {
+      "frame": 1,
+      "source_points_sha256": "e25704a5f0f8150d1df489a077ca98d904acb747a82154974bd18034be9ff721",
+      "numerical_points_sha256": "b10d55802e29acf05f38bc0d2b08e05201d2a351b5611cc31e87555a6aa239db",
+      "artist_points_sha256": "2d733365bf6fb819f5c69c248c8e8d76e1fd157583fab83c3a5fa59f03e10f39",
+      "artist_minimum_y_metres": -0.28314606666564945,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 2,
+      "source_points_sha256": "fa3f91a66451b07d5e223ce61e481b0b0dda018c12e14156082bd1e522ee5a5f",
+      "numerical_points_sha256": "c7d6fb9c19886d979d4f8884da4fc1bd3f82d74fd10b32bb6f35d2b583bf356a",
+      "artist_points_sha256": "9327966f101eae5fb3e428ad7320a4a5c3114a8f409cc87ae9baaa852e593fab",
+      "artist_minimum_y_metres": -0.28352785110473633,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 3,
+      "source_points_sha256": "b0a9adb4aa461239b669b669f4d2fb7158ea2067bf79c6d420d63c9abbd50a69",
+      "numerical_points_sha256": "0b11792375b800160aedc42fedc818314bab2acf64c4d25ed23cdc44638788df",
+      "artist_points_sha256": "840b9b07b642beb446befe469c3e8a51ae8582e6ac9175a9befe184f7483be96",
+      "artist_minimum_y_metres": -0.2829955291748047,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 4,
+      "source_points_sha256": "a69ea4da9a508a79e4f80c1b61ad9bfac06e2fb2c093b52ab451a17b5e403ebe",
+      "numerical_points_sha256": "1ff91f3a705305bb43634fbeb0908d84a049a0ac1d2e7079e2773a534134e8df",
+      "artist_points_sha256": "c39a770e021ef739aca351ed0c56adb8555795a263e76d03ec98bb68209ab2ef",
+      "artist_minimum_y_metres": -0.2832793140411377,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 5,
+      "source_points_sha256": "c162ea616aeaeda30aa05dd119842f4a94cf4ef695d25b4072566bde4507cef9",
+      "numerical_points_sha256": "b79c18bfe38bc61f12747125804db303193d1fc8da2e375e246c4e45d4e35e68",
+      "artist_points_sha256": "ea90c5760fec9742e0d2fbdc3271c1f5cca8c6afebe551e991038e820ad79c57",
+      "artist_minimum_y_metres": -0.2830654573440552,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 6,
+      "source_points_sha256": "4bb0e2faee6806f4f698aef1e0ad3fef4688da6be45723e400ef4f5512b79b77",
+      "numerical_points_sha256": "ccde9328d9a31d1fcafa53841fa64c0907c4d620fa6fe0b87575364e5504e623",
+      "artist_points_sha256": "08d1724be0bebfb858b6e16a624d34812f23f69eea322bdfd4c9c40e938750b4",
+      "artist_minimum_y_metres": -0.2840541648864746,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 7,
+      "source_points_sha256": "3b860ba69f8543d2b8d306e0526fc22ee4da899d958224cf42f42d2954d6cb54",
+      "numerical_points_sha256": "2bfbd053b4976b33f2eaa1119a714ae622933ad6c6a906293311a6b0103af96e",
+      "artist_points_sha256": "4622da6467bb64898662525c0340deee9590fc806a8c3a684d64137d9486df7b",
+      "artist_minimum_y_metres": -0.2837473487854004,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 8,
+      "source_points_sha256": "e10788472eed5a364b3938cbe1f0c841e0bd1599d6246b805ea45aca27a24e6d",
+      "numerical_points_sha256": "cb4b30c5cf3265196fe0c6528e07a0f99b97b5aa9b425d394cf31b61c1f40177",
+      "artist_points_sha256": "0246e33c6295ac61eeb78dacdf7eed2ce1eaa8ce64330f7bd36f9f16a9a53431",
+      "artist_minimum_y_metres": -0.28381020069122315,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 9,
+      "source_points_sha256": "5b847433d4edf2db4d0461740ea22de7623a0d31f8221d46c58a21b72ceed411",
+      "numerical_points_sha256": "dc855d11ed957c8bdc616c2648237f24fdddf569c28626937c47fc82b274ffaa",
+      "artist_points_sha256": "0437274675e4430285b03a7ee3f973b0e3db5637ea2967246b4be887f770a92d",
+      "artist_minimum_y_metres": -0.2837747192382813,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 10,
+      "source_points_sha256": "65f7cedff6431d099857f70580acbe426b00f00bf6ecfbcd5eeceaf20ccd89a3",
+      "numerical_points_sha256": "83c478807d4e0ea4ca2ed9e4ce1ccf2d113c29f5d8ea6ec960cc598e8b608a73",
+      "artist_points_sha256": "620bf5cf8e01dbe9dccf1d7749869bf8ac39cc8e40c001c1c2abef0d5c7a7277",
+      "artist_minimum_y_metres": -0.28353118896484375,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 11,
+      "source_points_sha256": "67285814def60aed76a2857b5ecccf7395684e4f8428c6c93046e20dac6b0041",
+      "numerical_points_sha256": "4e55e2dc425a4775b4bf15dc959b7178024c7fb43e874edaabf706ee356ad370",
+      "artist_points_sha256": "ab7f6966ed0e8183cf57d230d97b50ed450ef674f1d22e05a348e68bc6e5f582",
+      "artist_minimum_y_metres": -0.28378216266632084,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 12,
+      "source_points_sha256": "bc6fdb95fc0470a6dca7f85d53b2e22c4337581edb5d29440e4dfd39e86df541",
+      "numerical_points_sha256": "21c7f453d7938004946120087092f0df23cc9dcc53c0b1458ad73ce5fc34dd46",
+      "artist_points_sha256": "f026ca546c5fc984c178b09f1e63935ccd3aeb1fda02f88e38d96d97168d765c",
+      "artist_minimum_y_metres": -0.28389725208282474,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 13,
+      "source_points_sha256": "ea1e4215c19759261d5ae6899746bdbe6e8e1f08d05bf99d6881e7fd81681478",
+      "numerical_points_sha256": "841b6650b7aa40aaeb2268db5a78a46d1c6b7b3350f369effe441026e3e1eff9",
+      "artist_points_sha256": "9d3d7da21435c49e33407dd6a0a6eb92caae9fb1a789850e0de6069898a2a4ef",
+      "artist_minimum_y_metres": -0.28394762039184573,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 14,
+      "source_points_sha256": "4cb470fa2a95b18beac1d6e4880e172927e68601eaa31d0c5fd442e81657dd66",
+      "numerical_points_sha256": "e2d05cb22f0548d018d60a1e09e6526395e69e63f4e1731b4cc33c3f50321385",
+      "artist_points_sha256": "ad9f588393032e1236e195a9dd14c5988e10a912899b042a3768831bb995b0d1",
+      "artist_minimum_y_metres": -0.2839368724822998,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 15,
+      "source_points_sha256": "4bf60d074f0e60f8a2564c813e8b2552c1e3d374e3453cbeccff1333b3aa13ed",
+      "numerical_points_sha256": "93a99eeac3bbc8fc4c195f18ffb48df2bed91f8c76beb82814601fe90cb64b76",
+      "artist_points_sha256": "de95448e48c68934e6bba4dd4f3024b83f3454205232b954be0fcbb60ecc83be",
+      "artist_minimum_y_metres": -0.28382205009460454,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 16,
+      "source_points_sha256": "31746c13188fb0564af24d031ebd6039105733fcb0730d7ae14671a6d84ba3a7",
+      "numerical_points_sha256": "ad890721a9aaa17944178315efea9a3f5023734439d37bc760d52ce030bf1343",
+      "artist_points_sha256": "6094f97572c64b0880764fb0af91eab916275a66511fcb765ec480591ddfa8a5",
+      "artist_minimum_y_metres": -0.2837293243408203,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 17,
+      "source_points_sha256": "72aaefb09f87155575a082cfaaebd6f05986ac08c5ffacd7d1243c0a908ea5e4",
+      "numerical_points_sha256": "a12a44c2713b03e67d3487900024469f8384289eb0d35931076e42077294eb14",
+      "artist_points_sha256": "f2f7a88b9c4f5cc1f4146b787fbebb340ee1a081646168e7dea871cbee246fe3",
+      "artist_minimum_y_metres": -0.28364544391632085,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 18,
+      "source_points_sha256": "728b6eb984b7acd2dadb81a582f9f47fc65feb7acc60d9d09314a82bba227c85",
+      "numerical_points_sha256": "e61fd16568b23884ccee01c58fe2dad00107504f6ea3bdb37c25b6974b544e47",
+      "artist_points_sha256": "ebe551730dfe37bd11f603c94ff7c2293e3df9dfb73e15c70f975e40b77dabb4",
+      "artist_minimum_y_metres": -0.28420316696167,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 19,
+      "source_points_sha256": "679643dff0a700bb38592bc7daa750190c71d819da4d175148c419ceceebe2fc",
+      "numerical_points_sha256": "055474baefa7c041156f7f6e98e18dc3fd920fedfcbe8bf86dadb6a3dc860d84",
+      "artist_points_sha256": "e6bc097cfda36f32040ba67124bbf7880d111e0f351ad4d53a2c7c9e594cb08d",
+      "artist_minimum_y_metres": -0.284436149597168,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 20,
+      "source_points_sha256": "6cb29260e11cea5fd1ace17b6753ccd5f1ae92ab887041f6c73f3f1a4252c8f8",
+      "numerical_points_sha256": "fd77b284170d90240d4e8f28f4ae6dc7ad1ba3d31bf25e46fd6e60f86d294fc4",
+      "artist_points_sha256": "353c651125dd8120867dd645cefa538e39965d3ba9cbcc73157f77c7f66dd46c",
+      "artist_minimum_y_metres": -0.28434108734130864,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 21,
+      "source_points_sha256": "85673e836cd4af1317cbb4e3cad48bae8e5a63d5c6cec0ab0cd1c460044552e0",
+      "numerical_points_sha256": "673023a2b3e441808e50a348451d290295ae39e4a78ee4fc65d914ffa7e583fa",
+      "artist_points_sha256": "67697ec69ed688dcf813ec97a154a3b787ec5f762cd09a0d13679007df832580",
+      "artist_minimum_y_metres": -0.283869948387146,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 22,
+      "source_points_sha256": "227d0f7df827c145ef2b49b8a7b2d2c26cc99e8ff552d749b5ab84d215d568a8",
+      "numerical_points_sha256": "c6c657423f5bb4d17d093d7107a1d1e4236ae17e30d3f570de70272ceac9a82c",
+      "artist_points_sha256": "8223bd542d28cac7f435e32d14f321b1336405d5e22b9b8cfa68e64edcfb125f",
+      "artist_minimum_y_metres": -0.2837995529174805,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 23,
+      "source_points_sha256": "0dc1ec9f2cc604c81f41627a9a67468429c23963ef1d3b764779419ae2d10ea5",
+      "numerical_points_sha256": "c3c728394d80fabfb548d0f8a6e9ee8dac508e4f590b34c05989a6a0120261da",
+      "artist_points_sha256": "8ef0b7446f8d98eaf68e3795001d851c42c9e8103dbcd60235593a6a66530bb0",
+      "artist_minimum_y_metres": -0.2839897775650025,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 24,
+      "source_points_sha256": "d1777bbe6853cde941d0b48ac2419be625ff94e22ba8951aa53a4dfccdd094a0",
+      "numerical_points_sha256": "ef9864e4514b250f382670dc08883e6714ff4299940e9031a8e1cf71fc4341d5",
+      "artist_points_sha256": "4464fc74b6e70466109c92c44fb07dd328782b469d96d2e48d34e5397685d717",
+      "artist_minimum_y_metres": -0.28383002758026127,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 25,
+      "source_points_sha256": "dcb4bf6a973122b190f42415fc9ea879e8ba12f80129e91b32db9fb9b31839c3",
+      "numerical_points_sha256": "e47ddb42576213d39f0e72a7c77ae5138e2124026da8f82e31b6651e61471f4b",
+      "artist_points_sha256": "5813b5cfd2bc9a75b34d7800ad4ba1faaf02e69b7fb404cc6b9fa55caea00d0b",
+      "artist_minimum_y_metres": -0.283980131149292,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 26,
+      "source_points_sha256": "0253230419a2b27959bd9b29df8985827a2e8d59cb911fa40866c40b1feb570f",
+      "numerical_points_sha256": "0b43042234cbb23830546b7072d90a64877ad94368f7f3ab230d3d1a01c97634",
+      "artist_points_sha256": "f8c3d73c86c6d349f920c88e0bcd9e90057090d5a07806edfaf57573aa4fe49d",
+      "artist_minimum_y_metres": -0.28414248466491704,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 27,
+      "source_points_sha256": "10cefc161e0496727dcf19f1556c5ece140125ba326d8fb584a0c28d1ce074ba",
+      "numerical_points_sha256": "a346b4c1f64271d0563efde862692f9fdb02cd4d590d562f73fe11a9c6d2dd3f",
+      "artist_points_sha256": "1514694c60acf3222163a8a417200b4bae1ccbe1cb3803ae3c92ae4013e5e193",
+      "artist_minimum_y_metres": -0.28420653820037844,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 28,
+      "source_points_sha256": "688247f393ae5a70be771fd742494823e065242625770f27b72d9273ac0cf87b",
+      "numerical_points_sha256": "23676cae8722b5eefccdcb1335be6627733e99a5ae0cd9da773f702f3e7da908",
+      "artist_points_sha256": "6f549f8b2468a5a6e522cb7f8f8bab0619f6d1f54a4a748dc8def4175484e1b4",
+      "artist_minimum_y_metres": -0.2842598104476929,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 29,
+      "source_points_sha256": "4f5a4f43ee461a9e6ee98f9e0285a82d21ff611b4f0016955a6f44065e3d3f9d",
+      "numerical_points_sha256": "94a50e640d86954297fbc04ecd0b993b2a6eb8be4365dac14c0c492716a2d944",
+      "artist_points_sha256": "a5acc6933fa9cc72ce2c3cde602b27e5b7de3a73512c46dfb16982488d743ed0",
+      "artist_minimum_y_metres": -0.28434375762939457,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 30,
+      "source_points_sha256": "abc2de090e984ec49586e7c3f2429ff295eaa7ca5a1f427db469b9b919c14fe1",
+      "numerical_points_sha256": "1502bc273f864c7a251829d4855705db818f7633876703b722d63c2b2c4ce48f",
+      "artist_points_sha256": "807d3a66db1720434572c0931e99afdcc2d16ec267043aa0f7130485b0e01e87",
+      "artist_minimum_y_metres": -0.28442944049835206,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 31,
+      "source_points_sha256": "d8f9d22eb32daacb9a10eb749ccbf2dcdac815cb5e5bd8d195ea490dfffe12f0",
+      "numerical_points_sha256": "9769778864a4022f16bdee11948b8f7921c605fe0ed5790d1263bc36a9e9cc89",
+      "artist_points_sha256": "de5c4abe54e2885ba243b9830d29e7f564ce2bc4f1bdc8b3c2274c116c491f6a",
+      "artist_minimum_y_metres": -0.2840552663803101,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 32,
+      "source_points_sha256": "7e43edb89731906ab922a21632aa314112a14c7b9be4ae4f3f3009f26fd1eb40",
+      "numerical_points_sha256": "f5484538623fa3150fdf8df269ce1e8fd87ebbab6ee80a1f123842b751f94e41",
+      "artist_points_sha256": "67ebebcf03f86276db9b41b201c5a96e213f6abea93a0ee308ac064c0174d0bd",
+      "artist_minimum_y_metres": -0.2837747192382813,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 33,
+      "source_points_sha256": "5043ddfb1badf50d0c4505af8170ad60e7104d0efcdedc33cd6eb74acc9dd600",
+      "numerical_points_sha256": "a981efb44fcd0062e4f04033f997411d7fd197f72961a2d6eea40f3a69de0dbf",
+      "artist_points_sha256": "179f9c83d9ef089610922d63ee04d654199243b5bed9a9ab99e9edf78d9c3b72",
+      "artist_minimum_y_metres": -0.2842593097686768,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 34,
+      "source_points_sha256": "70a3319847c05b77853f46cb1264ac698200789576df01ec72715447e67aaa06",
+      "numerical_points_sha256": "9eb73671f5fcf356c607ee8c301fc370e6519f4c32c65d25637b9985af884057",
+      "artist_points_sha256": "a792570aff3961d574371ff8cf5869fc3bc00c9728e2d62c0e5b090c0694d006",
+      "artist_minimum_y_metres": -0.28452213287353517,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 35,
+      "source_points_sha256": "2c10947b1a8ac1fbd40fa69b368d232190251d9705d73a9afa4ca0a6c3302e5d",
+      "numerical_points_sha256": "5bd4d6637df2b4171c920e38a8bbca8c5eb62d1d693723b4036f94966d11cba8",
+      "artist_points_sha256": "d0cddfa3f135a2c2b5454a04ffd3587dea9dd8d6f4e363a26d0db141bf9b7495",
+      "artist_minimum_y_metres": -0.2844156885147095,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 36,
+      "source_points_sha256": "4efbb722be39d7559be54bad1bbd2ae781c27d5491494235560f3c2ec125a97f",
+      "numerical_points_sha256": "ba320ca00d25e57f133c0f31c784cf2971efdaee9c590bfb230941ff31ec7255",
+      "artist_points_sha256": "23059e285103b617a0b69e32a36d534fc6416f40bfbf0df7f5d379fa89f2eafc",
+      "artist_minimum_y_metres": -0.28430830955505376,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 37,
+      "source_points_sha256": "e9159a963aad9c9abe235ae78c133ea1376dc909f5e361ceaa46c9397ce4d368",
+      "numerical_points_sha256": "05c38ba8ed79011e42c97561ede61b6cc934f1ca98f0bd6dacab573a686ee4fc",
+      "artist_points_sha256": "1c8f94ec4608ad7e4f7e8b93a2e5a372e236bebf327922c54c11744f66047e96",
+      "artist_minimum_y_metres": -0.28445547580719,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 38,
+      "source_points_sha256": "9d5694fbbea828a053cdfb25e1d9cd17e1ecdaaf81a6a6887e39dfa184a7eacd",
+      "numerical_points_sha256": "acd08046ef97f143ca8d5e93456c6bae239e140b40d98676e6940fea4e0e20c7",
+      "artist_points_sha256": "06f8323c382f0e7ef2f234a0c657e5ae86efb8df0b66327fd1ebb841b03fe26d",
+      "artist_minimum_y_metres": -0.28511473655700686,
+      "artist_ground_penetration_metres": 0.00011473655700688923,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 39,
+      "source_points_sha256": "6d79a790a9836d987b03a39d0db59018c863bc5bbcd152f3758a019bfd5938db",
+      "numerical_points_sha256": "4b7c100e7ae8c15d4ac6f8f862996b4e20df491f5d961be9abfda7dae70cb6e7",
+      "artist_points_sha256": "9a2d5f3997db015653e21aee625f302510f0a515eb6cdfe15dd16b57b8af49b0",
+      "artist_minimum_y_metres": -0.28525853157043457,
+      "artist_ground_penetration_metres": 0.00025853157043459474,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 40,
+      "source_points_sha256": "6a21c7edde24f6c2336a002250a513b1574d725812fcef169e47c7eab1da4a72",
+      "numerical_points_sha256": "a732a112f53d5d8c518f7c76158b2f948a4d14796658eeaef5183d72f542cea8",
+      "artist_points_sha256": "d9c43f8dd85232903a3553a938c4b878dff2561b49ab667b846dbc3956d33fbc",
+      "artist_minimum_y_metres": -0.2852358341217041,
+      "artist_ground_penetration_metres": 0.0002358341217041371,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 41,
+      "source_points_sha256": "21c99cea8b7e2a2306081a8944e5f45ade7e81143fb0a9b44e6d7ae367151d5a",
+      "numerical_points_sha256": "faf4867459104a2cbe9907ecc1eae40440bf9cf513ebc1ecf3b83b11dce0b8d5",
+      "artist_points_sha256": "e58bf361a816270f68933926732f29be4eda463b2f6b4f51f55e5b49059860d6",
+      "artist_minimum_y_metres": -0.285000548362732,
+      "artist_ground_penetration_metres": 5.483627320002071e-07,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 42,
+      "source_points_sha256": "e8fad7002353cdaa129e2027c3553b85d42d2b14adc901564ca7204aa1b07450",
+      "numerical_points_sha256": "d6d220ead81e71c8cef1904a60616c425a27c1f5c082de0beb5cc37aec23ced0",
+      "artist_points_sha256": "0c0da74f9f82364de99c28f2f8c06e2e177ef95d336e7eebb3b177fef061d182",
+      "artist_minimum_y_metres": -0.28448234558105473,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 43,
+      "source_points_sha256": "ef318f5b0ac4223a46b69824cbe89f14fc75d09af535bfdefa3f366820ccc6da",
+      "numerical_points_sha256": "f3904a3b58e9a463edd09f72f0c5310009480ddf77dd0dfdd3d9aae79ec1ab07",
+      "artist_points_sha256": "183cea288f922d76583c8e04944beccf2cc982cbf14c1a9600715e605fb8356d",
+      "artist_minimum_y_metres": -0.28443387985229496,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 44,
+      "source_points_sha256": "a431c461aab51fe5a1d260b2fd5155855ddfa4c8166b0612786ddeca1c05090d",
+      "numerical_points_sha256": "f82a87b4f5198fd1a7a9215d33f2f39247763553bd981d92bae99e419f4823f2",
+      "artist_points_sha256": "03896097a7d11c82ea2ab9568c76396d2dc35b670b519a9ccbf6e7f774e49375",
+      "artist_minimum_y_metres": -0.28424365520477296,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 45,
+      "source_points_sha256": "4dc53eaff88df98a91250c2371d29f4d5becc6fe2be5613dc9c0cd89602fdad1",
+      "numerical_points_sha256": "3a46728d587705c27ee5bc5e7fb866dafa2c8541586d42855f9dd9085128e81f",
+      "artist_points_sha256": "08fd9d7d0257ddef7bbb11aee44a991679e1f6e037a2d493dc36caedcb19c606",
+      "artist_minimum_y_metres": -0.2836073923110962,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 46,
+      "source_points_sha256": "12770dfdf1bce7fe74815d18c89d34304e6a2159a3ab3f270f641c454766add1",
+      "numerical_points_sha256": "b2e2aa236d9b83c5201d81a76f6b516d4514b46dd0dc2b0a5da33d330193d8d0",
+      "artist_points_sha256": "bf04471626d9d91402c49a687bc1ee0cdadf2848d25f30aae23a254d79dc5d86",
+      "artist_minimum_y_metres": -0.2835154676437378,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 47,
+      "source_points_sha256": "cf47dafca5a54ecb738bcc50f55e7863b204987021dd9a2b92ece97824c22dfe",
+      "numerical_points_sha256": "68fd849af73e6a0a0b1564df978771e6798f93186d4211070acdf41dedc78521",
+      "artist_points_sha256": "65021601388ace4dc0e26e7235d76631a0f15f09cb2d272a0e18b9d777f354fa",
+      "artist_minimum_y_metres": -0.28305117130279545,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    },
+    {
+      "frame": 48,
+      "source_points_sha256": "469b99f139a0eb862b0276b145df6b4b178230dd6aae5bda3972d978710a4022",
+      "numerical_points_sha256": "a1bcb16af7b2019b77b166bad333fed7e8f5869da9cd8bd2ead371ee4e24998e",
+      "artist_points_sha256": "c793c56a28a857f63ac26d1c460dbcdc942805cc09ac5c93267032331e61302a",
+      "artist_minimum_y_metres": -0.28296502113342287,
+      "artist_ground_penetration_metres": 0.0,
+      "native_topology_preserved": true,
+      "artist_uv_sets_preserved": 3
+    }
+  ],
+  "render_transfer_excluded_from_numerical_metrics": true,
+  "ui_automation_used": false
+}

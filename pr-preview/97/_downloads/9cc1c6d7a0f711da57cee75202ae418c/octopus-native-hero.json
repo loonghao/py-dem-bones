@@ -1,0 +1,221 @@
+{
+  "schema": "py-dem-bones.octopus-native-hero.v1",
+  "success": true,
+  "verified_on": "2026-10-01",
+  "host": {
+    "application": "Houdini",
+    "version": "22.0.368",
+    "adapter": "0.43.1",
+    "core": "0.20.28",
+    "ui_automation_used": false
+  },
+  "control": "DCC-MCP typed render_rop/get_render_job and official Houdini SDK",
+  "source_kind": "native_vellum_softbody",
+  "case_source_sop": "/obj/DemBonesOctopusSoftbody/RENDER_DEFORM",
+  "source_glb_sha256": "824a8fc33a192f8b3589bc413d808e537e77a486105ff7e7fe1481201de6e97c",
+  "accepted_numerical_cache_sha256": "61b5619d63d81f8c32418cbbdd0ea35347ec6884f485e33b814af67a4d7985f6",
+  "accepted_numerical_report_sha256": "b5da49f4b168aa5b4ea10b1d2a44eaa8478586fd2a2a048a099d4626056fc014",
+  "accepted_artist_readback_sha256": "b6b9f4afe5e2e068557c013f6ce4c64b175cdb539193f51aa0b167664a308d52",
+  "accepted_scene_reopen_sha256": "8fb71c8c962e3e6d061a77346bcf96ec30e22a57d3c8b918920d125c61985822",
+  "independent_reopen_acceptance_passed": true,
+  "accepted_input_scene_sha256": "b2757ba632f08acc069058c9a974a2c826d711baa349e00b9f43b9b9d73d0e47",
+  "job_snapshot_checksum": null,
+  "job_snapshot_checksum_status": "Adapter removes its owned snapshot after loading; no checksum was returned.",
+  "render_geometry": {
+    "schema": "py-dem-bones.octopus-render.v1",
+    "host": "22.0.368",
+    "case_source_sop": "/obj/DemBonesOctopusSoftbody/RENDER_DEFORM",
+    "presentation_scale_metres_per_source_unit": 0.035,
+    "presentation_axis_change": "artist Y-up to render Z-up by +90 degrees around X",
+    "presentation_subdivision": 1,
+    "presentation_vertices": 117994,
+    "presentation_normals": "vertex normals recomputed after deformation and subdivision, cusp 180 degrees",
+    "render_geometry_excluded_from_numerical_acceptance": true,
+    "floor_light_mask": "/obj/DemBonesOctopusKey /obj/DemBonesOctopusRim /obj/DemBonesOctopusFill /obj/DemBonesOctopusHDRI",
+    "floor_surface_z_metres": -0.02499999999999991,
+    "material": {
+      "metallic": 0,
+      "sss_weight": 0.48,
+      "sss_distance_metres": 0.003,
+      "coat": 0.06,
+      "coat_roughness": 0.26
+    },
+    "textures": [
+      {
+        "channel": "BaseColor",
+        "file": "BaseColor.png",
+        "size_bytes": 1825285,
+        "sha256": "8dffa89fb123fe36b555779209addb44c3aa4a9334783713e33e21d003cb7aee"
+      },
+      {
+        "channel": "Roughness",
+        "file": "Roughness.png",
+        "size_bytes": 2071660,
+        "sha256": "7f9d4774a2b3fa637d371b8b7f523aadecb27cb47f5a809d5d17ebc05c2f9e08"
+      },
+      {
+        "channel": "Normal",
+        "file": "Normal.png",
+        "size_bytes": 12373695,
+        "sha256": "e2bb8221067f0b08ac40e05aa283f04c291e5df7cde1a4c7b5f392a2d0925bbd"
+      },
+      {
+        "channel": "SSSMask",
+        "file": "SSSMask.png",
+        "size_bytes": 9034,
+        "sha256": "65a0f84b558175ade08b03b8e4b088090110d5e44f17411890e695eaaca79e69"
+      }
+    ],
+    "hdri_sha256": "36724313c0fc66dab126ff90f081b85a0b1ef47be65eda1417bd20b033f0573f",
+    "renderer": "/out/DemBonesOctopusRender",
+    "preview_only": false,
+    "input_scene_sha256": "b2757ba632f08acc069058c9a974a2c826d711baa349e00b9f43b9b9d73d0e47",
+    "publication_requires_independent_reopen_pass": true
+  },
+  "settings": {
+    "shot": "hero",
+    "frame": 12,
+    "size": [
+      1800,
+      1200
+    ],
+    "pixel_samples": [
+      6,
+      6
+    ],
+    "threads": 8,
+    "focal_mm": 70,
+    "depth_of_field": false,
+    "camera_world_transform": [
+      0.7540815958863057,
+      0.656780744804202,
+      -2.7755575615628914e-17,
+      0.0,
+      -0.25098423095627986,
+      0.2881670799868397,
+      0.9241031597300937,
+      0.0,
+      0.6069331615234475,
+      -0.6968491854528468,
+      0.38214310169994814,
+      0.0,
+      2.4876912933015336,
+      -2.3577821125987297,
+      1.9044034335669973,
+      1.0
+    ],
+    "camera_aperture_mm": 41.4214,
+    "camera_target": [
+      -0.06438382811896538,
+      0.5723782119951759,
+      0.2975413200800167
+    ],
+    "camera_distance_metres": 4.20487012938064,
+    "stationary_camera": true,
+    "framing_subject": "accepted artist surface at hero frame12; animation keeps its separate fixed all48 camera",
+    "maximum_projected_fraction_of_half_frame": 0.8400000000000016
+  },
+  "material": {
+    "sss_weight": 0.48,
+    "sss_distance_metres": 0.003,
+    "coat_weight": 0.06,
+    "normal_scale": 0.5
+  },
+  "render_position_buffer_sha256": "9844f3a8f71e139c0901e5b39ac6ae1cdd21755b3c63dbf5a732545326b10dce",
+  "render_triangles": 235648,
+  "numerical_mesh_changed_for_render": false,
+  "render_job": {
+    "job_id": "45d0b2f98424431ea4ffcf33e93c3b47",
+    "state": "completed",
+    "rop_path": "/out/DemBonesOctopusRender",
+    "frame_range": [
+      12,
+      12
+    ],
+    "elapsed_secs": 310.758,
+    "completed": 1,
+    "total": 1,
+    "warning_count": 0,
+    "output_verification": {
+      "state": "verified",
+      "expected_output_count": 1,
+      "written_file_count": 1
+    }
+  },
+  "native_processing": {
+    "schema": "py-dem-bones.rgb-display.v1",
+    "display_transform": "Full-range linear RGB to approximate gamma 2.2; 8-bit RGB display PNG",
+    "ffmpeg_filter": "format=rgb48le,lutrgb=r='pow(val/maxval,1/2.2)*maxval':g='pow(val/maxval,1/2.2)*maxval':b='pow(val/maxval,1/2.2)*maxval',format=rgb24",
+    "hdr_values_above_one": "clipped before approximate display transfer",
+    "alpha": "RGB display copy; native EXR preserved",
+    "frame_count": 1,
+    "frame_range": [
+      12,
+      12
+    ],
+    "frames": [
+      {
+        "source": "frame_012.exr",
+        "native_exr_sha256": "1f05ada9051f381eef06f7ee71f6be3e5b27a966e0b4e315a8b3566b30dff6db",
+        "display_png": "frame_012.png",
+        "display_png_sha256": "064f2488fb1b839d866542e40d3539c9e0a6987a2d7932f58913f182c5b5544c",
+        "size": [
+          1800,
+          1200
+        ],
+        "native_rgb_statistics": {
+          "size": [
+            1800,
+            1200
+          ],
+          "finite_rgb": true,
+          "decoded_native_pixel_format": "gbrapf16le",
+          "native_hdr_checked_without_pixel_format_conversion": true,
+          "minimum_linear": 0.0004627704620361328,
+          "maximum_linear": 5.06640625,
+          "standard_deviation_linear": 0.10525158303489097
+        }
+      }
+    ],
+    "original_native_frames": [
+      {
+        "frame": 12,
+        "original_exr_sha256": "073439037c8c4edb05376bcd49ef974b8e24953a6475db6b45f0104d44155620",
+        "denoised_exr_sha256": "1f05ada9051f381eef06f7ee71f6be3e5b27a966e0b4e315a8b3566b30dff6db",
+        "size": [
+          1800,
+          1200
+        ],
+        "finite_rgb": true,
+        "decoded_native_pixel_format": "gbrapf16le",
+        "native_hdr_checked_without_pixel_format_conversion": true,
+        "minimum_linear": 0.0004436969757080078,
+        "maximum_linear": 5.12109375,
+        "standard_deviation_linear": 0.1053239387696017
+      }
+    ],
+    "denoiser": {
+      "application": "SideFX idenoise",
+      "host_version": "22.0.368",
+      "engine": "OIDN CPU",
+      "inputs": "color only; no albedo/normal guides",
+      "source_exrs_unchanged": true,
+      "temporal_consistency_independently_measured": false
+    }
+  },
+  "processing_frames_refer_to": "denoised EXR copies; original_native_frames records unchanged native HDR sources",
+  "artifacts": [
+    {
+      "file": "octopus-mantra-hero.png",
+      "size_bytes": 2058274,
+      "sha256": "064f2488fb1b839d866542e40d3539c9e0a6987a2d7932f58913f182c5b5544c",
+      "width": 1800,
+      "height": 1200
+    }
+  ],
+  "reproduction_helpers": {
+    "examples/showcase/houdini_octopus_softbody.py": "a6d9baffacdce88046038ef0b16043989dac8fe4ab2bf5f9b56becd1a18e2bee",
+    "examples/showcase/houdini_octopus_render.py": "86dc0d8f46ed45db2a015fadf27f6e276ad783eed0e8ec45582be1894663f12b",
+    "examples/showcase/convert_mantra_frames.py": "6a00e935d98fc9eb4da360422d952b759938d26007b0868ff8f2b0b3b7920110"
+  }
+}

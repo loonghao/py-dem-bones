@@ -1,0 +1,151 @@
+{
+  "schema": "py-dem-bones.designer-native-readback.v1",
+  "host": "Substance 3D Designer 16.0.0",
+  "provider": "DCC-MCP official SDK",
+  "source_package": "examples/showcase/materials/skin/material.sbs",
+  "source_package_sha256": "7afc1e2d68a820fefc33458a7ae7afc1cc9f24bec78c7ed9484fb93bffe7b951",
+  "source_reopen": {
+    "closed": true,
+    "already_open_on_reopen": false,
+    "computed": true,
+    "absolute_resolution": [
+      1024,
+      1024
+    ],
+    "all_five_source_exports_match_published_bytes": true
+  },
+  "source_maps": [
+    {
+      "file": "BaseColor.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "png_bit_depth": 16,
+      "png_color_type": 6,
+      "interpretation": "sRGB",
+      "sha256": "5f12ab9dd39d06d00bd2a319861af71d4fa15008cb3ffaff9a100f2c8005d42d"
+    },
+    {
+      "file": "Height.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "png_bit_depth": 16,
+      "png_color_type": 0,
+      "interpretation": "linear data",
+      "sha256": "a66300095b1eca2bd83c6be72e2c0a990a9e3bacaaa63d60daae94ad24240c00"
+    },
+    {
+      "file": "Metallic.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "png_bit_depth": 8,
+      "png_color_type": 2,
+      "interpretation": "linear data",
+      "sha256": "df6704f51dd27ff6061ed65b4cda8d16ed20e834fb69621cbb3914bf6acf3a7c"
+    },
+    {
+      "file": "Normal.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "png_bit_depth": 16,
+      "png_color_type": 6,
+      "interpretation": "linear data",
+      "sha256": "d34c820954a22caa504e0e59d9f6c3669ce928f8b46046e598d0c10be2c63de2"
+    },
+    {
+      "file": "Roughness.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "png_bit_depth": 16,
+      "png_color_type": 6,
+      "interpretation": "linear data",
+      "sha256": "b5f317a77acaab954621cd946352d1972ded6b78b03384cad885d0941c7d3b9a"
+    }
+  ],
+  "compiled_package_runtime": {
+    "verified": true,
+    "package": "examples/showcase/materials/skin/material.sbsar",
+    "package_sha256": "729df3a08f12fd93e1bf7d5b8bdaeeed807c949f066b57a409b0b3fe933ca76c",
+    "already_open_on_load": false,
+    "resource_type": "SDSBSCompGraph",
+    "native_instance_connected_to_five_output_nodes": true,
+    "channel_mapping": "SBS graphoutput identifier and usage metadata",
+    "all_five_outputs_match_published_bytes": true,
+    "files": [
+      {
+        "name": "BaseColor",
+        "property": "output",
+        "pixel_format": "RGBA16",
+        "sha256": "5f12ab9dd39d06d00bd2a319861af71d4fa15008cb3ffaff9a100f2c8005d42d",
+        "image_metadata": {
+          "width": 1024,
+          "height": 1024,
+          "channels": 4,
+          "bit_depth": "16",
+          "format": "png"
+        }
+      },
+      {
+        "name": "Roughness",
+        "property": "output_1",
+        "pixel_format": "RGBA16",
+        "sha256": "b5f317a77acaab954621cd946352d1972ded6b78b03384cad885d0941c7d3b9a",
+        "image_metadata": {
+          "width": 1024,
+          "height": 1024,
+          "channels": 4,
+          "bit_depth": "16",
+          "format": "png"
+        }
+      },
+      {
+        "name": "Metallic",
+        "property": "output_2",
+        "pixel_format": "RGBA8",
+        "sha256": "df6704f51dd27ff6061ed65b4cda8d16ed20e834fb69621cbb3914bf6acf3a7c",
+        "image_metadata": {
+          "width": 1024,
+          "height": 1024,
+          "channels": 3,
+          "bit_depth": "8",
+          "format": "png"
+        }
+      },
+      {
+        "name": "Height",
+        "property": "output_3",
+        "pixel_format": "LUM16",
+        "sha256": "a66300095b1eca2bd83c6be72e2c0a990a9e3bacaaa63d60daae94ad24240c00",
+        "image_metadata": {
+          "width": 1024,
+          "height": 1024,
+          "channels": 1,
+          "bit_depth": "16",
+          "format": "png"
+        }
+      },
+      {
+        "name": "Normal",
+        "property": "output_4",
+        "pixel_format": "RGBA16",
+        "sha256": "d34c820954a22caa504e0e59d9f6c3669ce928f8b46046e598d0c10be2c63de2",
+        "image_metadata": {
+          "width": 1024,
+          "height": 1024,
+          "channels": 4,
+          "bit_depth": "16",
+          "format": "png"
+        }
+      }
+    ]
+  }
+}

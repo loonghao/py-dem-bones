@@ -1,0 +1,10 @@
+{
+  "asset": "MakeHuman left arm extract",
+  "author": "MakeHuman Community",
+  "license": "CC0-1.0",
+  "source": "https://github.com/makehumancommunity/makehuman/blob/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/makehuman/data/3dobjs/base.obj",
+  "license_source": "https://github.com/makehumancommunity/makehuman/blob/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/LICENSE.ASSETS.md",
+  "source_sha256": "8e761e6624b8f54536409135d1636da63b32486a90d4897f84e121d144f6fb4c",
+  "arm_sha256": "f9ebab4881cde14651a694be51e7020a58f58311e681ce951d3bf4594ad1270b",
+  "modification": "Body polygons clipped to x >= 2.0 and y >= 0.5; boundary intersections welded and shoulder opening capped. Original rig and weights are not included."
+}
