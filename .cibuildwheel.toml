@@ -1,7 +1,7 @@
 # cibuildwheel configuration
 build-verbosity = 3
 test-requires = ["pytest", "pytest-cov", "numpy>=1.20.0"]
-test-command = "pytest {project}/tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v"
+test-command = "python -I {project}/scripts/test_wheel_import.py && pytest {project}/tests --cov=py_dem_bones --cov-report=term --cov-report=xml -v"
 
 # Common configuration for all platforms
 environment-pass = [
@@ -22,26 +22,7 @@ environment = {}
 # Windows-specific configuration
 [windows]
 # Use Ninja generator to speed up builds
-environment = {
-    CMAKE_GENERATOR = "Ninja",
-    CMAKE_POSITION_INDEPENDENT_CODE = "ON",
-    # Ensure DLLs can be loaded correctly
-    PYTHONIOENCODING = "UTF-8",
-    PIP_NO_BUILD_ISOLATION = "1",
-    # Use static linking to reduce DLL dependencies
-    CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON",
-    # Disable loading DLLs from PATH to avoid conflicts
-    PYDEMB_PYTHON_LOAD_DLLS_FROM_PATH = "0",
-    # Enable ccache with optimized settings
-    CCACHE_MAXSIZE = "5G",
-    CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime,file_stat_matches",
-    CCACHE_COMPRESS = "1",
-    CCACHE_COMPILERCHECK = "content",
-    CCACHE_NOHASHDIR = "1",
-    CCACHE_BASEDIR = "{package}",
-    # Use parallel compilation
-    CMAKE_BUILD_PARALLEL_LEVEL = "4"
-}
+
 # Install Ninja, ccache and other tools
 before-all = [
     "pip install ninja delvewheel wheel",
@@ -61,22 +42,29 @@ after-build = [
 # Use delvewheel to repair wheel packages
 repair-wheel-command = "delvewheel repair -w {dest_dir} {wheel}"
 
+[windows.environment]
+CMAKE_GENERATOR = "Ninja"
+CMAKE_POSITION_INDEPENDENT_CODE = "ON"
+# Ensure DLLs can be loaded correctly
+PYTHONIOENCODING = "UTF-8"
+PIP_NO_BUILD_ISOLATION = "1"
+# Export the extension entry point; delvewheel repairs runtime dependencies.
+CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS = "ON"
+# Disable loading DLLs from PATH to avoid conflicts
+PYDEMB_PYTHON_LOAD_DLLS_FROM_PATH = "0"
+# Enable ccache with optimized settings
+CCACHE_MAXSIZE = "5G"
+CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime,file_stat_matches"
+CCACHE_COMPRESS = "1"
+CCACHE_COMPILERCHECK = "content"
+CCACHE_NOHASHDIR = "1"
+CCACHE_BASEDIR = "{package}"
+# Use parallel compilation
+CMAKE_BUILD_PARALLEL_LEVEL = "4"
+
 # Linux-specific configuration
 [linux]
-environment = {
-    LANG = "C.UTF-8",
-    LC_ALL = "C.UTF-8",
-    PYTHONIOENCODING = "UTF-8",
-    # Enable ccache with optimized settings
-    CCACHE_MAXSIZE = "5G",
-    CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime,file_stat_matches",
-    CCACHE_COMPRESS = "1",
-    CCACHE_COMPILERCHECK = "content",
-    CCACHE_NOHASHDIR = "1",
-    CCACHE_BASEDIR = "{package}",
-    # Use parallel compilation
-    CMAKE_BUILD_PARALLEL_LEVEL = "4"
-}
+
 before-all = [
     "yum install -y ccache || apt-get update && apt-get install -y ccache || true",
     "ccache --version || echo 'ccache not found'",
@@ -92,20 +80,23 @@ after-build = [
 ]
 repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
 
+[linux.environment]
+LANG = "C.UTF-8"
+LC_ALL = "C.UTF-8"
+PYTHONIOENCODING = "UTF-8"
+# Enable ccache with optimized settings
+CCACHE_MAXSIZE = "5G"
+CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime,file_stat_matches"
+CCACHE_COMPRESS = "1"
+CCACHE_COMPILERCHECK = "content"
+CCACHE_NOHASHDIR = "1"
+CCACHE_BASEDIR = "{package}"
+# Use parallel compilation
+CMAKE_BUILD_PARALLEL_LEVEL = "4"
+
 # macOS-specific configuration
 [macos]
-environment = {
-    # Enable ccache with optimized settings
-    CCACHE_MAXSIZE = "5G",
-    CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime,file_stat_matches",
-    CCACHE_COMPRESS = "1",
-    CCACHE_CPP2 = "yes",
-    CCACHE_COMPILERCHECK = "content",
-    CCACHE_NOHASHDIR = "1",
-    CCACHE_BASEDIR = "{package}",
-    # Use parallel compilation
-    CMAKE_BUILD_PARALLEL_LEVEL = "4"
-}
+
 before-all = [
     "brew install ccache || true",
     "ccache --version",
@@ -120,3 +111,17 @@ after-build = [
     "ccache -s"   # Print ccache statistics after build
 ]
 repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
+
+[macos.environment]
+# AppleClang has no bundled OpenMP runtime; wheel jobs explicitly use serial.
+CMAKE_ARGS = "-DPY_DEM_BONES_USE_OPENMP=OFF"
+# Enable ccache with optimized settings
+CCACHE_MAXSIZE = "5G"
+CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_ctime,file_stat_matches"
+CCACHE_COMPRESS = "1"
+CCACHE_CPP2 = "yes"
+CCACHE_COMPILERCHECK = "content"
+CCACHE_NOHASHDIR = "1"
+CCACHE_BASEDIR = "{package}"
+# Use parallel compilation
+CMAKE_BUILD_PARALLEL_LEVEL = "4"
