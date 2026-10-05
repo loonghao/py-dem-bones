@@ -8,11 +8,14 @@ are described in msvc-kit's `docs/guide/integrity-review-2026-10-05.md`.
 This review does not constitute a separate reviewer's approval.
 
 The Windows action now pins corrected CLI source
-`5dd2d2ccd7329cbcd001ef2084f723b1fbe79389`. Its 199 library tests, 4 manifest
+`b6d38e423e2eda25d47851ba03db4c062272f69e`. Its 199 library tests, 4 manifest
 integrity fixtures, 2 explicit-config tests, 3 config-creation compatibility
 tests and warnings-denied Clippy checks passed. The Python configuration/wheel
 contract suite passed 22 tests and all three modified workflows passed actionlint.
 The freshly built CLI exited 1 for the official manifest SHA discrepancy below.
+The later CLI fixture correction passed its two integration tests and changes
+no production Rust code from the tested integrity commit
+`5dd2d2ccd7329cbcd001ef2084f723b1fbe79389`.
 
 ## Integrity gate
 
@@ -52,6 +55,24 @@ The Intel job remains `macos-15-intel`; ARM selectors remain cp39/cp310/cp311/cp
 and `macosx_arm64`. Linux/macOS continue using their platform compilers and
 cibuildwheel. The runner move requires its own CI evidence; a brownout failure
 must not be reclassified as a passing required check.
+
+## First approved CI run and configuration correction
+
+The first #176 continuation run failed acquisition with the same declared and
+retrieved manifest SHA values observed locally. Rust/coverage also exposed an
+older CLI test fixture that wrote an empty, schema-invalid TOML file. Its fixture
+was corrected to serialized valid isolated settings; the production invalid
+configuration check remains strict.
+
+The first #97 run reached cibuildwheel on Linux and both macOS architectures,
+but ccache rejected the now-effective legacy `CCACHE_BASEDIR="{package}"`.
+Command placeholders are not expanded in environment table values. Linux now
+uses the container's absolute `/project` source directory, macOS resolves `$PWD`
+from the actual job environment, and the unused Windows cibuildwheel cache base
+is empty. Effective-configuration regressions verify those resolved values.
+No platform compiler, OpenMP policy, ABI selector or integrity check is changed
+by this correction. The observed failures require a fresh CI run on the new head;
+they were configuration failures rather than a macOS runner brownout.
 
 ## Complete open PR coverage
 

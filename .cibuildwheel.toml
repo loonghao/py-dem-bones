@@ -56,7 +56,8 @@ CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_cti
 CCACHE_COMPRESS = "1"
 CCACHE_COMPILERCHECK = "content"
 CCACHE_NOHASHDIR = "1"
-CCACHE_BASEDIR = "{package}"
+# Windows CI invokes the selected compiler directly; no ccache base is needed.
+CCACHE_BASEDIR = ""
 # Use parallel compilation
 CMAKE_BUILD_PARALLEL_LEVEL = "4"
 
@@ -88,7 +89,8 @@ CCACHE_SLOPPINESS = "pch_defines,time_macros,include_file_mtime,include_file_cti
 CCACHE_COMPRESS = "1"
 CCACHE_COMPILERCHECK = "content"
 CCACHE_NOHASHDIR = "1"
-CCACHE_BASEDIR = "{package}"
+# Environment values do not expand command placeholders such as {package}.
+CCACHE_BASEDIR = "/project"
 # Use parallel compilation
 CMAKE_BUILD_PARALLEL_LEVEL = "4"
 
@@ -117,6 +119,6 @@ CCACHE_COMPRESS = "1"
 CCACHE_CPP2 = "yes"
 CCACHE_COMPILERCHECK = "content"
 CCACHE_NOHASHDIR = "1"
-CCACHE_BASEDIR = "{package}"
+CCACHE_BASEDIR = "$PWD"
 # Use parallel compilation
 CMAKE_BUILD_PARALLEL_LEVEL = "4"

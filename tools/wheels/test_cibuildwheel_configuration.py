@@ -69,7 +69,7 @@ def test_effective_platform_options(wheel_action, platform, arch, identifier, re
     options = compute_options(platform=platform, command_line_arguments=args, env=action_environment).build_options(
         identifier
     )
-    environment = options.environment.as_dictionary(prev_environment={})
+    environment = options.environment.as_dictionary(prev_environment={"PWD": "/ci/project"})
     assert options.before_all
     assert "ccache -s" in options.before_build
     assert options.repair_command.startswith(repair_tool)
@@ -82,13 +82,17 @@ def test_effective_platform_options(wheel_action, platform, arch, identifier, re
     assert environment["CMAKE_BUILD_PARALLEL_LEVEL"] == "4"
     if platform == "macos":
         assert environment["CMAKE_ARGS"] == "-DPY_DEM_BONES_USE_OPENMP=OFF"
+        assert environment["CCACHE_BASEDIR"] == "/ci/project"
     elif platform == "linux":
         assert environment["PIP_CONSTRAINT"] == "/project/constraints-manylinux2014.txt"
         assert environment["LANG"] == environment["LC_ALL"] == "C.UTF-8"
         assert environment["CCACHE_DIR"] == "/ci-cache"
+        assert environment["CCACHE_BASEDIR"] == "/project"
     else:
         assert environment["CMAKE_GENERATOR"] == "Ninja"
         assert environment["PYDEMB_PYTHON_LOAD_DLLS_FROM_PATH"] == "0"
+        assert environment["CCACHE_BASEDIR"] == ""
+    assert all("{package}" not in value for value in environment.values())
 
 
 @pytest.mark.parametrize("workflow_name", ["build-wheels.yml", "release.yml"])
