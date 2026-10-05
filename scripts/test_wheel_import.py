@@ -4,10 +4,10 @@ Test importing the py_dem_bones package.
 
 This script is used by CI to verify that the built wheel can be imported correctly.
 """
-import os
 import sys
 import importlib
-import pytest
+
+import numpy as np
 
 
 def test_import():
@@ -41,6 +41,17 @@ def test_import():
     # Make assertions to verify the module works correctly
     assert dem_bones.max_influences == 8, f"Expected max_influences to be 8, got {dem_bones.max_influences}"
     assert dem_bones.num_iterations == 30, f"Expected num_iterations to be 30, got {dem_bones.num_iterations}"
+
+    # Exercise the native solver; an import alone cannot catch CRT/OpenMP failures.
+    rest = np.array([[0., 0., 0.], [1., 0., 0.], [0., 1., 0.], [0., 0., 1.]])
+    poses = np.stack([rest, rest + [0.25, 0.5, 0.75]])
+    result = module.solve_skinning(rest, poses, 1)
+    assert result.weights.shape == (1, 4)
+    np.testing.assert_allclose(result.weights.sum(axis=0), 1.0, atol=1e-6)
+    assert np.isfinite(result.transforms).all()
+    homogeneous = np.column_stack([rest, np.ones(len(rest))])
+    reconstructed = np.einsum("fij,vj->fvi", result.transforms[:, 0], homogeneous)[..., :3]
+    np.testing.assert_allclose(reconstructed, poses, atol=1e-5)
     
     # Test successful
     return True

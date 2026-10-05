@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 3.15...3.30)
+cmake_policy(SET CMP0091 NEW)
+# CPython uses the DLL CRT. Keep one policy for every extension configuration.
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
 
 # Set up module path for our own cmake modules
@@ -38,35 +41,8 @@ if(WIN32)
       # Add MSVC-specific flags
       add_compile_options(/MP /bigobj)
 
-      # Enable multi-threaded compilation
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-
-      # Set runtime library to match Python's expectations
-      # Use Multi-threaded DLL runtime library (/MD) for Release builds
-      set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
-      # Use Multi-threaded Debug DLL runtime library (/MDd) for Debug builds
-      set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
-
       # Use export symbol table file
       set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
-
-      # Use static linking to Python library
-      set(PYTHON_LINK_STATIC ON)
-
-      # Check if platform toolset is specified
-      if(NOT CMAKE_GENERATOR_TOOLSET)
-        # Set the default toolset based on the Visual Studio version
-        if(MSVC_VERSION GREATER_EQUAL 1920)
-          # Visual Studio 2019 and above
-          set(CMAKE_GENERATOR_TOOLSET "v142")
-        elseif(MSVC_VERSION GREATER_EQUAL 1910)
-          # Visual Studio 2017
-          set(CMAKE_GENERATOR_TOOLSET "v141")
-        elseif(MSVC_VERSION GREATER_EQUAL 1900)
-          # Visual Studio 2015
-          set(CMAKE_GENERATOR_TOOLSET "v140")
-        endif()
-      endif()
     endif()
 endif()
 
@@ -197,11 +173,10 @@ endif()
 # OpenMP support
 option(PY_DEM_BONES_USE_OPENMP "Use OpenMP for parallelization" ON)
 if(PY_DEM_BONES_USE_OPENMP)
-    find_package(OpenMP)
-    if(OpenMP_CXX_FOUND)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-    endif()
+    find_package(OpenMP REQUIRED COMPONENTS CXX)
+    message(STATUS "Dem Bones parallelization: OpenMP ${OpenMP_CXX_VERSION}")
+else()
+    message(STATUS "Dem Bones parallelization: serial (explicitly disabled)")
 endif()
 
 # Include directories
@@ -220,6 +195,9 @@ pybind11_add_module(_py_dem_bones
     src/binding/py_dem_bones_ext.cpp
     src/binding/py_dem_bones_module.cpp
 )
+if(PY_DEM_BONES_USE_OPENMP)
+    target_link_libraries(_py_dem_bones PRIVATE OpenMP::OpenMP_CXX)
+endif()
 
 # Note: Do not directly define Py_LIMITED_API, as it will cause compilation errors in pybind11 internal classes and functions
 # We temporarily remove ABI3 compatibility mode, as it is not compatible with the current pybind11 code
@@ -247,11 +225,6 @@ if(WIN32)
     # Copy required DLLs to the output directory
     # If using MSVC, copy the Visual C++ runtime DLL
     if(MSVC)
-        # Use static libraries
-        target_compile_options(_py_dem_bones PRIVATE
-            "/MT$<$<CONFIG:Debug>:d>"
-        )
-
         # Disable automatic export of all symbols
         set_property(TARGET _py_dem_bones PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS OFF)
 
