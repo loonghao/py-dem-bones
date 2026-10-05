@@ -378,6 +378,14 @@ invocation now passes the test directory explicitly; the separate effective
 configuration CI step continues to execute its pinned-tool orchestration suite.
 Local execution of the explicit runtime directory passed 272 tests with the same
 three documented legacy shape skips. No tests are newly skipped or removed.</p>
+<p>Linux CPython 3.12 exposed a separate pip 26.2 compatibility change: ordinary
+<code class="docutils literal notranslate"><span class="pre">PIP_CONSTRAINT</span></code> no longer affects isolated build dependencies. This ignored the
+existing manylinux2014 NumPy cap and attempted to compile NumPy 2.5.3 with the
+older container compiler. The Linux environment now also sets
+<code class="docutils literal notranslate"><span class="pre">PIP_BUILD_CONSTRAINT</span></code> to the existing constraints file, retaining the ordinary
+variable for older Python/pip versions. The constraint contents and platform
+compiler are unchanged. See the official pip documentation:
+<a class="reference external" href="https://pip.pypa.io/en/stable/user_guide/#build-constraints">https://pip.pypa.io/en/stable/user_guide/#build-constraints</a>.</p>
 </section>
 <section id="complete-open-pr-coverage">
 <h2>Complete open PR coverage<a class="headerlink" href="#complete-open-pr-coverage" title="Link to this heading">¶</a></h2>
