@@ -85,6 +85,7 @@ def test_effective_platform_options(wheel_action, platform, arch, identifier, re
         assert environment["CCACHE_BASEDIR"] == "/ci/project"
     elif platform == "linux":
         assert environment["PIP_CONSTRAINT"] == "/project/constraints-manylinux2014.txt"
+        assert environment["PIP_BUILD_CONSTRAINT"] == environment["PIP_CONSTRAINT"]
         assert environment["LANG"] == environment["LC_ALL"] == "C.UTF-8"
         assert environment["CCACHE_DIR"] == "/ci-cache"
         assert environment["CCACHE_BASEDIR"] == "/project"

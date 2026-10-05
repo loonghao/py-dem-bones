@@ -80,6 +80,9 @@ repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
 # Cap NumPy to a manylinux2014 wheel instead of compiling it with the older GCC.
 # cibuildwheel copies the project, including this constraint file, to /project.
 PIP_CONSTRAINT = "/project/constraints-manylinux2014.txt"
+# pip 26.2 stopped applying ordinary constraints to isolated build dependencies.
+# Keep both variables so Python 3.8's older pip and newer pip enforce this cap.
+PIP_BUILD_CONSTRAINT = "/project/constraints-manylinux2014.txt"
 LANG = "C.UTF-8"
 LC_ALL = "C.UTF-8"
 PYTHONIOENCODING = "UTF-8"

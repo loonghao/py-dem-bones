@@ -82,6 +82,15 @@ configuration CI step continues to execute its pinned-tool orchestration suite.
 Local execution of the explicit runtime directory passed 272 tests with the same
 three documented legacy shape skips. No tests are newly skipped or removed.
 
+Linux CPython 3.12 exposed a separate pip 26.2 compatibility change: ordinary
+`PIP_CONSTRAINT` no longer affects isolated build dependencies. This ignored the
+existing manylinux2014 NumPy cap and attempted to compile NumPy 2.5.3 with the
+older container compiler. The Linux environment now also sets
+`PIP_BUILD_CONSTRAINT` to the existing constraints file, retaining the ordinary
+variable for older Python/pip versions. The constraint contents and platform
+compiler are unchanged. See the official pip documentation:
+<https://pip.pypa.io/en/stable/user_guide/#build-constraints>.
+
 ## Complete open PR coverage
 
 The original heads and parsed source matrices are in `msvc-kit-pr-matrix.json`.
