@@ -371,6 +371,13 @@ is empty. Effective-configuration regressions verify those resolved values.
 No platform compiler, OpenMP policy, ABI selector or integrity check is changed
 by this correction. The observed failures require a fresh CI run on the new head;
 they were configuration failures rather than a macOS runner brownout.</p>
+<p>The corrected Linux/macOS run built and installed its native wheels, then
+exposed nox’s runtime pytest invocation discovering orchestration tests outside
+the runtime directory: <code class="docutils literal notranslate"><span class="pre">--rootdir</span></code> does not restrict test discovery. The runtime
+invocation now passes the test directory explicitly; the separate effective
+configuration CI step continues to execute its pinned-tool orchestration suite.
+Local execution of the explicit runtime directory passed 272 tests with the same
+three documented legacy shape skips. No tests are newly skipped or removed.</p>
 </section>
 <section id="complete-open-pr-coverage">
 <h2>Complete open PR coverage<a class="headerlink" href="#complete-open-pr-coverage" title="Link to this heading">¶</a></h2>

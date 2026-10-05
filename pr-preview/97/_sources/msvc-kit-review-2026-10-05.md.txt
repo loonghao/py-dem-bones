@@ -74,6 +74,14 @@ No platform compiler, OpenMP policy, ABI selector or integrity check is changed
 by this correction. The observed failures require a fresh CI run on the new head;
 they were configuration failures rather than a macOS runner brownout.
 
+The corrected Linux/macOS run built and installed its native wheels, then
+exposed nox's runtime pytest invocation discovering orchestration tests outside
+the runtime directory: `--rootdir` does not restrict test discovery. The runtime
+invocation now passes the test directory explicitly; the separate effective
+configuration CI step continues to execute its pinned-tool orchestration suite.
+Local execution of the explicit runtime directory passed 272 tests with the same
+three documented legacy shape skips. No tests are newly skipped or removed.
+
 ## Complete open PR coverage
 
 The original heads and parsed source matrices are in `msvc-kit-pr-matrix.json`.
