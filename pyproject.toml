@@ -89,8 +89,20 @@ Changelog = "https://github.com/loonghao/py-dem-bones/blob/main/CHANGELOG.md"
 wheel.packages = ["src/py_dem_bones"]
 wheel.exclude = ["tests/*"]
 wheel.expand-macos-universal-tags = false
-sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICENSE.md", "README.md", "extern/dem-bones/*", "extern/eigen/*"]
-sdist.exclude = ["tests/data/*"]
+# scikit-build-core applies sdist.include *before* sdist.exclude, so a broad
+# include silently re-adds anything the exclude list drops. Keep the include
+# list limited to the build inputs and prune the rest through exclude:
+# docs/ and examples/ carry ~197 MB of showcase media, and the prebuilt
+# extern/dem-bones demo binaries another ~41 MB. PyPI caps a project file at
+# 100 MB, so shipping them made the 0.13.0 sdist undeliverable.
+sdist.include = ["src/py_dem_bones/*", "src/binding/*", "CMakeLists.txt", "LICENSE.md", "README.md", "extern/dem-bones/include/*", "extern/eigen/*"]
+sdist.exclude = [
+    "tests/data/*",
+    "docs/*",
+    "examples/*",
+    "extern/dem-bones/bin/*",
+    "extern/dem-bones/data/*",
+]
 # Enable experimental features
 experimental = true
 
