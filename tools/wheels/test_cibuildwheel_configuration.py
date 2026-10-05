@@ -1,14 +1,13 @@
 """Resolve CI's configuration with its pinned cibuildwheel, without building a wheel.
 
-Run with ``python -m pytest tools/wheels/test_cibuildwheel_configuration.py`` after
-installing cibuildwheel==2.23.1, PyYAML and pytest. These build orchestration tests
+Run with ``python tools/wheels/check_configuration.py`` to install the action's
+exact cibuildwheel version, PyYAML and pytest. These build orchestration tests
 stay outside the native wheel's runtime test suite.
 """
 
 from dataclasses import replace
 from importlib.metadata import version
 from pathlib import Path
-import re
 
 import pytest
 import yaml
@@ -51,7 +50,6 @@ def test_action_forwards_config_file(wheel_action):
     ],
 )
 def test_effective_platform_options(wheel_action, platform, arch, identifier, repair_tool):
-    step = cibuildwheel_step(wheel_action)
     args = replace(
         CommandLineArguments.defaults(),
         platform=platform,
@@ -61,18 +59,11 @@ def test_effective_platform_options(wheel_action, platform, arch, identifier, re
     )
     # This validates every key in the global and selected platform sections, then
     # resolves platform inheritance, environment parsing and per-wheel options.
-    # Include the wrapper's Windows hook override. Other action overrides only
-    # select the wheel or its verbosity; none may replace the TOML environment.
-    hook = re.fullmatch(
-        r"\$\{\{ inputs.platform == 'windows' && '([^']+)' \|\| '' \}\}",
-        step["env"]["CIBW_BEFORE_ALL_WINDOWS"],
-    )
-    assert hook is not None
+    # Non-Windows action overrides select wheels and verbosity, preserving TOML.
     action_environment = {
         "CIBW_BUILD": identifier,
         "CIBW_SKIP": "pp*",
         "CIBW_BUILD_VERBOSITY": wheel_action["inputs"]["build-verbosity"]["default"],
-        "CIBW_BEFORE_ALL_WINDOWS": hook.group(1) if platform == "windows" else "",
         "CCACHE_DIR": "/ci-cache",
     }
     options = compute_options(platform=platform, command_line_arguments=args, env=action_environment).build_options(
@@ -96,7 +87,6 @@ def test_effective_platform_options(wheel_action, platform, arch, identifier, re
         assert environment["LANG"] == environment["LC_ALL"] == "C.UTF-8"
         assert environment["CCACHE_DIR"] == "/ci-cache"
     else:
-        assert options.before_all == "pip install delvewheel && choco install -y ninja"
         assert environment["CMAKE_GENERATOR"] == "Ninja"
         assert environment["PYDEMB_PYTHON_LOAD_DLLS_FROM_PATH"] == "0"
 
@@ -117,3 +107,23 @@ def test_workflows_use_shared_configured_action(workflow_name):
         if config_file == "${{ env.CIBW_CONFIG_FILE }}":
             config_file = workflow["env"]["CIBW_CONFIG_FILE"]
         assert config_file == "{package}/.cibuildwheel.toml"
+
+
+def test_windows_jobs_select_native_python_and_exact_toolchain(wheel_action):
+    assert cibuildwheel_step(wheel_action)["if"] == "inputs.platform != 'windows'"
+    windows = next(step for step in wheel_action["runs"]["steps"]
+                   if step.get("uses") == "./.github/actions/build-windows-wheel")
+    assert windows["if"] == "inputs.platform == 'windows'"
+    assert windows["with"]["python-version"] == "${{ inputs.python-version }}"
+    release = read_yaml(ROOT / ".github/workflows/release.yml")
+    arm = release["jobs"]["build-wheels-windows-arm64"]
+    assert arm["runs-on"] == "windows-11-arm"
+    assert [row["python"] for row in arm["strategy"]["matrix"]["include"]] == ["cp311", "cp312"]
+    assert "build-wheels-windows-arm64" in release["jobs"]["release"]["needs"]
+    for workflow_name in ("release.yml", "build-wheels.yml"):
+        workflow = read_yaml(ROOT / ".github/workflows" / workflow_name)
+        for job in workflow["jobs"].values():
+            for step in job.get("steps", []):
+                if (step.get("uses") == "./.github/actions/build-wheels"
+                        and step["with"]["platform"] in ("windows", "${{ inputs.platform }}")):
+                    assert step["with"]["python-version"] == "${{ matrix.python-version }}"
