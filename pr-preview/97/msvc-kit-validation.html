@@ -3,11 +3,11 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="使用cibuildwheel进行本地构建" href="cibuildwheel.html"><link rel="prev" title="py-dem-bones Documentation" href="README.html">
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html">
         <link rel="prefetch" href="_static/logo-dark.png" as="image">
 
     <link rel="shortcut icon" href="_static/logo-dark.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>CI/CD and releases - py-dem-bones 0.13.1 documentation</title>
+        <title>Local Windows migration candidate — 2026-10-05 - py-dem-bones 0.13.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8e0739bd" />
@@ -257,10 +257,10 @@
 <li class="toctree-l1"><a class="reference internal" href="rbf_api.html">RBF API Reference</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html">py-dem-bones Documentation</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">CI/CD and releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ci_cd.html">CI/CD and releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cibuildwheel.html">使用cibuildwheel进行本地构建</a></li>
 <li class="toctree-l1"><a class="reference internal" href="adr/0001-validated-skinning-boundary.html">One validated boundary for mesh skinning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="adr/0002-host-adapters-and-native-kernel.html">Keep the native kernel and migrate host adapters</a></li>
@@ -283,7 +283,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="_sources/ci_cd.rst.txt" title="View this page">
+  <a class="muted-link" href="_sources/msvc-kit-validation.md.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -301,38 +301,220 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="ci-cd-and-releases">
-<h1>CI/CD and releases<a class="headerlink" href="#ci-cd-and-releases" title="Link to this heading">¶</a></h1>
-<p>Pull requests run the configured build, lint, documentation, and version
-consistency workflows. The source of truth for the released version is
-<code class="docutils literal notranslate"><span class="pre">.release-please-manifest.json</span></code>. release-please updates <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>,
-<code class="docutils literal notranslate"><span class="pre">src/py_dem_bones/__version__.py</span></code>, documentation and citation metadata in
-the release pull request. CI checks that these surfaces agree.</p>
-<p>CI fetches Eigen from the maintainers’ <a class="reference external" href="https://github.com/eigen-mirror/eigen">official GitHub mirror</a>. The immutable submodule gitlink
-selects the exact upstream commit and source tree independently of the
-download URL.</p>
-<section id="release-sequence">
-<h2>Release sequence<a class="headerlink" href="#release-sequence" title="Link to this heading">¶</a></h2>
+          <section id="local-windows-migration-candidate-2026-10-05">
+<h1>Local Windows migration candidate — 2026-10-05<a class="headerlink" href="#local-windows-migration-candidate-2026-10-05" title="Link to this heading">¶</a></h1>
+<p>This is the initial local validation snapshot. At that point no remote branch,
+pull request, release, repository permission or security setting was changed.
+Subsequent integrity findings, approved PR scope, release status and runner
+changes are recorded in <code class="docutils literal notranslate"><span class="pre">msvc-kit-review-2026-10-05.md</span></code>; its unresolved integrity
+gate takes precedence over the earlier candidate’s functional test results.</p>
+<p>The candidate starts at py-dem-bones main <code class="docutils literal notranslate"><span class="pre">21797949b9fe0d425b35a390fddb553a9632b5d7</span></code>
+(0.13.1), reuses PR #97 and the existing local configuration fix, and adds the
+shared Windows CI builder. Its CLI source pin is msvc-kit
+<code class="docutils literal notranslate"><span class="pre">8fefb7ffb21a624895fec6381d0f525f7fb9a335</span></code>, a local continuation of #176.
+This pin must be uploaded to the official repository before remote CI can run.</p>
+<section id="official-pr-snapshot">
+<h2>Official PR snapshot<a class="headerlink" href="#official-pr-snapshot" title="Link to this heading">¶</a></h2>
+<p>Every listed py-dem-bones PR still had the existing Windows x64 CPython
+3.8/3.9/3.10/3.11/3.12 release matrix at its inspected head. The reusable wheel
+workflow accepts the same selectors. None had a native Windows ARM64 matrix.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>PR</p></th>
+<th class="head"><p>Proposal</p></th>
+<th class="head"><p>Observed checks</p></th>
+<th class="head"><p>Required follow-up</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>#97</p></td>
+<td><p>Windows toolchain contracts</p></td>
+<td><p>Windows/Linux/sdist pass; 9 macOS wheel jobs fail finding OpenMP</p></td>
+<td><p>Continue with this candidate, latest main and the reused configuration fix</p></td>
+</tr>
+<tr class="row-odd"><td><p>#91</p></td>
+<td><p>Black dependency</p></td>
+<td><p>7 failed wheel checks, including 3 Windows ABIs</p></td>
+<td><p>Refresh onto the migration base, then rerun all wheels</p></td>
+</tr>
+<tr class="row-even"><td><p>#84</p></td>
+<td><p>setup-python v7</p></td>
+<td><p>No failed checks observed</p></td>
+<td><p>Refresh onto migration base; retain its dependency change</p></td>
+</tr>
+<tr class="row-odd"><td><p>#82</p></td>
+<td><p>github-script v9</p></td>
+<td><p>No failed checks observed</p></td>
+<td><p>Refresh onto migration base</p></td>
+</tr>
+<tr class="row-even"><td><p>#80</p></td>
+<td><p>deploy-pages v5</p></td>
+<td><p>No failed checks observed</p></td>
+<td><p>Refresh onto migration base</p></td>
+</tr>
+<tr class="row-odd"><td><p>#79</p></td>
+<td><p>cache v6</p></td>
+<td><p>No failed checks observed</p></td>
+<td><p>Refresh onto migration base; inspect cache action conflicts</p></td>
+</tr>
+<tr class="row-even"><td><p>#78</p></td>
+<td><p>checkout v7</p></td>
+<td><p>No failed checks observed</p></td>
+<td><p>Refresh onto migration base; inspect the two checkout sites</p></td>
+</tr>
+<tr class="row-odd"><td><p>#77</p></td>
+<td><p>configure-pages v6</p></td>
+<td><p>No failed checks observed</p></td>
+<td><p>Refresh onto migration base</p></td>
+</tr>
+<tr class="row-even"><td><p>#72</p></td>
+<td><p>Python dependency</p></td>
+<td><p>No failed checks observed</p></td>
+<td><p>Refresh onto migration base; keep the wheel ABI matrix explicit</p></td>
+</tr>
+<tr class="row-odd"><td><p>#64</p></td>
+<td><p>artifact actions</p></td>
+<td><p>No failed checks observed</p></td>
+<td><p>Refresh onto migration base; retain distinct ARM64 artifact names</p></td>
+</tr>
+<tr class="row-even"><td><p>#40</p></td>
+<td><p>cibuildwheel 2.23.4</p></td>
+<td><p>Observed build checks pass</p></td>
+<td><p>Refresh onto migration base; configuration validation now follows the action’s exact version</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>msvc-kit has #176 (6 failed bundle/action checks caused by VSIX size metadata),
+#175 (Tokio update; observed checks pass), and #164 (release proposal; no checks
+observed). Apply the downloader/configuration continuation to #176 first.
+Dependency #175 should then refresh onto that base. Leave #164’s release decision
+to its normal release process; this task does not merge or publish it.</p>
+<p>Historical statuses were re-read: #94, #95 and #96 are merged. #95 merged at
+2026-10-05 11:59:06 UTC and main is 0.13.1. The candidate preserves that version
+and the sdist size guard from #96.</p>
+<p>The heads and workflow matrices are recorded in <code class="docutils literal notranslate"><span class="pre">msvc-kit-pr-matrix.json</span></code>.
+An end-of-validation read confirmed all listed heads and both main commits were
+unchanged. Source check evidence was read directly from official GitHub APIs.</p>
+</section>
+<section id="implemented-behavior">
+<h2>Implemented behavior<a class="headerlink" href="#implemented-behavior" title="Link to this heading">¶</a></h2>
+<p>All Windows CI wheel builds select msvc-kit: native x64 CPython 3.8–3.12 and
+new native ARM64 CPython 3.11/3.12. Linux and macOS retain cibuildwheel and their
+platform compilers. macOS explicitly selects the serial mode already intended
+by #97; the corrected config-file/environment forwarding makes that setting
+effective, instead of failing to find AppleClang OpenMP.</p>
+<p>The action builds the pinned official CLI source with a locked Cargo dependency
+set and Rust 1.93.1. It selects MSVC 14.44.35207, SDK 10.0.26100.0, VS17 and a
+matching native host/target. Microsoft download hashes remain enabled. Both
+acquisition receipts must exist before a per-run exact lock is passed to doctor
+and query. Version/host/target mismatches fail before a wheel build.</p>
+<p>Only download archives and their index are cached, keyed by source revision,
+architecture and versions. Reuse rehashes bytes against the manifest. The
+installed tree and extraction markers are excluded from the CI cache. The
+builder explicitly selects cl/link/rc for Ninja, normalizes CMake paths, uses the
+DLL CRT, and invokes the selected tools directly instead of the shared ccache launcher.</p>
+<p>Wheel verification checks the CPython tag, every extension/DLL’s PE architecture,
+duplicate/unsafe entries and accidental compiler/debug files. Delvewheel bundles
+runtime DLLs and omits diagnostics containing local paths. Portable summaries
+contain versions, architectures and hashes, with no installation paths.</p>
+<p>Failures propagate through subprocess exit codes and PowerShell checks. An
+invalid explicitly selected CLI config now exits with failure instead of changing
+to the default installation/cache root. The action writes a real TOML config.</p>
+</section>
+<section id="completed-local-validation">
+<h2>Completed local validation<a class="headerlink" href="#completed-local-validation" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Check</p></th>
+<th class="head"><p>Result</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Fresh official VS17 manifest and four failing VSIX samples</p></td>
+<td><p>All full SHA-256 values match; ZIP contents valid; manifest byte sizes differ</p></td>
+</tr>
+<tr class="row-odd"><td><p>Rust downloader tests</p></td>
+<td><p>29 passed, including mutated cache, stale size, invalid digest, old index upgrade and disabled-verification boundaries</p></td>
+</tr>
+<tr class="row-even"><td><p>Rust library suite</p></td>
+<td><p>198 passed</p></td>
+</tr>
+<tr class="row-odd"><td><p>Explicit-config CLI regression</p></td>
+<td><p>Passed for both –config and MSVC_KIT_CONFIG; no default fallback</p></td>
+</tr>
+<tr class="row-even"><td><p>Rust format and all-target Clippy with warnings denied</p></td>
+<td><p>Passed</p></td>
+</tr>
+<tr class="row-odd"><td><p>Python configuration/ABI/content/failure contracts</p></td>
+<td><p>22 passed</p></td>
+</tr>
+<tr class="row-even"><td><p>Changed Python code lint and workflow actionlint</p></td>
+<td><p>Passed</p></td>
+</tr>
+<tr class="row-odd"><td><p>PyPI binary dependency resolution</p></td>
+<td><p>Python 3.8 x64 and Python 3.11 ARM64 both pass; fixed delvewheel 1.10.0 / pytest-cov 5.0.0 support 3.8</p></td>
+</tr>
+<tr class="row-even"><td><p>Toolchain acquisition</p></td>
+<td><p>Compiler and SDK acquired and extracted in the isolated directory; 315 source payloads in the acquisition lock</p></td>
+</tr>
+<tr class="row-odd"><td><p>Doctor probes</p></td>
+<td><p>Compile, resource, link, manifest and native execution all pass</p></td>
+</tr>
+<tr class="row-even"><td><p>Real repaired wheel</p></td>
+<td><p>0.13.1, CPython 3.12 x64; every native PE entry matches x64</p></td>
+</tr>
+<tr class="row-odd"><td><p>Clean-environment installed wheel tests</p></td>
+<td><p>272 passed, 3 legacy computation skips; isolated import and one-bone tetrahedron reconstruction pass</p></td>
+</tr>
+<tr class="row-even"><td><p>Public wheel privacy scan</p></td>
+<td><p>No local username, workspace path, user-profile path or host marker found, in text or native bytes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The selected folder is 14.44.35207; CMake identifies the actual compiler as
+MSVC 19.44.35229.0. The compiler bytes are hashed separately because a folder
+version alone does not distinguish binary revisions. Exact compiler/wheel hashes
+and bundled DLL names are in <code class="docutils literal notranslate"><span class="pre">msvc-kit-validation-evidence.json</span></code>.</p>
+<p>The installed wheel test uses a fresh venv, isolated Python, no PYTHONPATH or
+PYTHONHOME, and PATH restricted to that venv and System32. Its NumPy runtime
+resolved to 2.5.3, while the build used NumPy 2.2.6. All numerical tests pass.</p>
+<p>SDK administrative extraction encountered Installer contention during the local
+attempt. Only this task’s verified CLI/MSI client was stopped; the Installer
+service and other tasks were left running. An absolute-directory retry and resume
+completed successfully. CI always uses an absolute installation path.</p>
+</section>
+<section id="remaining-validation-and-remote-sequence">
+<h2>Remaining validation and remote sequence<a class="headerlink" href="#remaining-validation-and-remote-sequence" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
-<li><p>Merge a Conventional Commit (for example <code class="docutils literal notranslate"><span class="pre">feat:</span> <span class="pre">add</span> <span class="pre">DCC</span> <span class="pre">adapter</span></code> or
-<code class="docutils literal notranslate"><span class="pre">fix:</span> <span class="pre">validate</span> <span class="pre">pose</span> <span class="pre">layout</span></code>) to <code class="docutils literal notranslate"><span class="pre">main</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">release-please.yml</span></code> opens or updates a release pull request with the
-proposed version and changelog. Review its diff and CI results.</p></li>
-<li><p>Merge the release pull request. release-please creates <code class="docutils literal notranslate"><span class="pre">vX.Y.Z</span></code> and a
-GitHub Release.</p></li>
-<li><p>The tag triggers <code class="docutils literal notranslate"><span class="pre">release.yml</span></code>. The workflow checks the tag against
-<code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>, builds and tests wheels and a source distribution,
-attaches artifacts to the GitHub Release, then publishes to PyPI through
-Trusted Publishing.</p></li>
+<li><p>Upload the reviewed msvc-kit continuation to a new branch or approved #176
+continuation without force pushing. The pinned CLI commit currently exists
+only locally. Run #176’s bundle/action matrix, including x64→x86/ARM64.</p></li>
+<li><p>Continue #97 with latest main, the existing config fix and this migration.
+Do not replace a moved remote head; merge/cherry-pick onto its current branch.</p></li>
+<li><p>Run every Windows x64 ABI, both native ARM64 ABIs and the preserved Linux/macOS
+matrices. Native ARM64 compilation, OpenMP/runtime loading and numerical tests
+have not been executed locally. Dependency resolution is supporting evidence,
+not a substitute for those runs. macOS’s corrected configuration still needs
+real AppleClang CI confirmation.</p></li>
+<li><p>Once the migration is accepted on main, refresh #91/#84/#82/#80/#79/#78/#77/
+#72/#64/#40 onto that common base. This propagates one reviewed Windows builder
+to all open PR builds instead of maintaining divergent workflow copies.</p></li>
 </ol>
-<p><code class="docutils literal notranslate"><span class="pre">RELEASE_PLEASE_TOKEN</span></code> (or <code class="docutils literal notranslate"><span class="pre">PERSONAL_ACCESS_TOKEN</span></code>) must be a token
-permitted to create release pull requests and tags. GitHub’s default
-<code class="docutils literal notranslate"><span class="pre">GITHUB_TOKEN</span></code> does not trigger downstream workflows when it creates a tag.
-PyPI Trusted Publishing must trust this repository and its <code class="docutils literal notranslate"><span class="pre">release</span></code>
-environment. Publication requires successful artifact jobs on the exact tag.</p>
-<p>The release workflow can also be dispatched manually for build diagnosis;
-manual dispatch does not publish a new package. Never edit version files or
-create a release tag by hand as part of normal publication.</p>
+<p>The three skips are existing legacy computation tests that expect 2/3 weight
+rows for rigid translations, receive one, and turn those shape assertions into
+pytest.skip. They are a coverage gap, not successful fixed-count solver checks. The new
+isolated numerical smoke and the non-skipping solve_skinning tests provide the
+core reconstruction check. The Windows builder now reports skip reasons explicitly.</p>
+<p>The acquisition lock records the exact bytes used by one run. Cross-run source
+pinning beyond the exact CLI/toolset/SDK selections would require approved,
+committed acquisition locks for each architecture; this candidate does not
+pretend version directories alone are immutable binary digests.</p>
+<p>No remote CI was dispatched in this task. No merge, force push, version release,
+desktop interaction or global toolchain registration was performed.</p>
 </section>
 </section>
 
@@ -341,26 +523,8 @@ create a release tag by hand as part of normal publication.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="cibuildwheel.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">使用cibuildwheel进行本地构建</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="README.html">
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">py-dem-bones Documentation</div>
-                
-              </div>
-            </a>
+          
+          
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -398,8 +562,11 @@ create a release tag by hand as part of normal publication.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">CI/CD and releases</a><ul>
-<li><a class="reference internal" href="#release-sequence">Release sequence</a></li>
+<li><a class="reference internal" href="#">Local Windows migration candidate — 2026-10-05</a><ul>
+<li><a class="reference internal" href="#official-pr-snapshot">Official PR snapshot</a></li>
+<li><a class="reference internal" href="#implemented-behavior">Implemented behavior</a></li>
+<li><a class="reference internal" href="#completed-local-validation">Completed local validation</a></li>
+<li><a class="reference internal" href="#remaining-validation-and-remote-sequence">Remaining validation and remote sequence</a></li>
 </ul>
 </li>
 </ul>

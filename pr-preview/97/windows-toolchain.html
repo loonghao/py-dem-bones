@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/logo-dark.png" as="image">
 
     <link rel="shortcut icon" href="_static/logo-dark.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Windows toolchain contract - py-dem-bones 0.13.0 documentation</title>
+        <title>Windows toolchain contract - py-dem-bones 0.13.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8e0739bd" />
@@ -206,7 +206,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">py-dem-bones 0.13.0 documentation</div></a>
+      <a href="index.html"><div class="brand">py-dem-bones 0.13.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -230,7 +230,7 @@
     <img class="sidebar-logo" src="_static/logo-dark.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">py-dem-bones 0.13.0 documentation</span>
+  <span class="sidebar-brand-text">py-dem-bones 0.13.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -312,22 +312,38 @@ For an intentional serial build use <code class="docutils literal notranslate"><
 <code class="docutils literal notranslate"><span class="pre">CMAKE_ARGS</span></code>. macOS wheel jobs explicitly select serial builds because AppleClang
 has no bundled OpenMP runtime. Windows wheels retain the
 existing <code class="docutils literal notranslate"><span class="pre">delvewheel</span> <span class="pre">repair</span></code> step.</p>
-<section id="optional-portable-msvc-build">
-<h2>Optional portable MSVC build<a class="headerlink" href="#optional-portable-msvc-build" title="Link to this heading">¶</a></h2>
-<p>Use an msvc-kit CLI supporting <code class="docutils literal notranslate"><span class="pre">query</span> <span class="pre">--host-arch</span></code> and <code class="docutils literal notranslate"><span class="pre">doctor</span> <span class="pre">--compile</span></code>. Supply
-an existing installation and exact versions; this entry point does not install
-or register a toolchain. Normal cibuildwheel jobs continue to work without it.
-Install <code class="docutils literal notranslate"><span class="pre">build</span></code>, <code class="docutils literal notranslate"><span class="pre">delvewheel</span></code>, CMake and Ninja in the invoking Python environment.</p>
+<section id="ci-matrix-and-portable-msvc-build">
+<h2>CI matrix and portable MSVC build<a class="headerlink" href="#ci-matrix-and-portable-msvc-build" title="Link to this heading">¶</a></h2>
+<p>All Windows CI wheel jobs use the shared <code class="docutils literal notranslate"><span class="pre">build-windows-wheel</span></code> action. The release
+matrix keeps CPython 3.8–3.12 on native x64 and adds CPython 3.11/3.12 on native
+ARM64. Older ARM64 ABIs are omitted because upstream native Python and NumPy
+binary availability differs from x64. No cross-built wheel is reported as tested.
+Linux and macOS continue to use cibuildwheel and their platform compilers.</p>
+<p><code class="docutils literal notranslate"><span class="pre">tools/wheels/msvc-kit.json</span></code> pins the CLI source commit, MSVC 14.44.35207 and SDK
+10.0.26100.0. The CLI is built from that immutable official source with Cargo’s
+lockfile checksums. It downloads from Microsoft’s VS17 channel with verification
+enabled, records compiler/SDK acquisition receipts, and passes an exact lock to
+the build and compile probe. There is no compiler fallback after a failed check.
+The pinned commit must exist on the official repository before remote CI can run.</p>
+<p>Only source archives are cached, keyed by CLI revision, host/target and versions;
+each use rehashes the archives and extracts into a fresh installation. Windows
+invokes the selected compiler/linker directly instead of the shared ccache launcher.</p>
+<p>For a local build, supply an existing compatible msvc-kit installation and exact
+versions. Install <code class="docutils literal notranslate"><span class="pre">build</span></code>, <code class="docutils literal notranslate"><span class="pre">delvewheel</span></code>, CMake, Ninja, scikit-build-core, pybind11,
+wheel and NumPy in the invoking Python environment. The builder itself does not
+download, register or change the parent toolchain.</p>
 <div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">tools</span><span class="p">/</span><span class="n">wheels</span><span class="p">/</span><span class="n">build_msvc_wheel</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-msvc-version</span> <span class="n">14</span><span class="p">.</span><span class="n">44</span><span class="p">.</span><span class="n">35207</span> <span class="p">-</span><span class="n">-sdk-version</span> <span class="n">10</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">26100</span><span class="p">.</span><span class="n">0</span> <span class="p">-</span><span class="n">-arch</span> <span class="n">x64</span> <span class="p">-</span><span class="n">-host-arch</span> <span class="n">x64</span> <span class="p">-</span><span class="n">-dir</span> <span class="n">C</span><span class="p">:/</span><span class="n">toolchains</span><span class="p">/</span><span class="n">msvc</span> <span class="p">-</span><span class="n">-msvc-kit</span> <span class="n">C</span><span class="p">:/</span><span class="n">tools</span><span class="p">/</span><span class="n">msvc-kit</span><span class="p">.</span><span class="n">exe</span>
 </pre></div>
 </div>
 <p>Replace the example versions with the installed versions approved for the target
 Python/DCC host. The script validates a compile/link probe, passes the query’s
-selected environment and compiler to Ninja, records the query, doctor result and
-actual <code class="docutils literal notranslate"><span class="pre">cl.exe</span></code> SHA256 (folder versions can share different binary revisions), repairs the
-wheel, and installs it into a fresh virtual environment. Its isolated smoke test
+selected environment, compiler, linker and resource compiler to Ninja, records
+versions, architecture and actual <code class="docutils literal notranslate"><span class="pre">cl.exe</span></code> SHA256 in a portable summary, repairs
+the wheel, checks its Python tag and every bundled native PE architecture, and
+installs it into a fresh virtual environment with only Python and System32 on
+PATH. Its isolated smoke test
 checks native one-bone fitting and reconstructs a translated tetrahedron. A
-failure is fatal; there is no fallback to a different compiler or serial build.</p>
+failure is fatal; the complete runtime test suite must pass too.</p>
 <p>The target architecture must match the running Python interpreter. Test each
 supported Python ABI separately. Passing this wheel test establishes the package
 contract; DCC host loading remains a separate acceptance check.</p>
@@ -379,7 +395,7 @@ contract; DCC host loading remains a separate acceptance check.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Windows toolchain contract</a><ul>
-<li><a class="reference internal" href="#optional-portable-msvc-build">Optional portable MSVC build</a></li>
+<li><a class="reference internal" href="#ci-matrix-and-portable-msvc-build">CI matrix and portable MSVC build</a></li>
 </ul>
 </li>
 </ul>
@@ -391,7 +407,7 @@ contract; DCC host loading remains a separate acceptance check.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=d304bea3"></script>
+</div><script src="_static/documentation_options.js?v=7a44cac5"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
