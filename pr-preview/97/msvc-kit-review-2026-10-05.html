@@ -310,11 +310,14 @@ review found integrity/configuration blockers in the CLI. The follow-up fixes
 are described in msvc-kit’s <code class="docutils literal notranslate"><span class="pre">docs/guide/integrity-review-2026-10-05.md</span></code>.
 This review does not constitute a separate reviewer’s approval.</p>
 <p>The Windows action now pins corrected CLI source
-<code class="docutils literal notranslate"><span class="pre">5dd2d2ccd7329cbcd001ef2084f723b1fbe79389</span></code>. Its 199 library tests, 4 manifest
+<code class="docutils literal notranslate"><span class="pre">b6d38e423e2eda25d47851ba03db4c062272f69e</span></code>. Its 199 library tests, 4 manifest
 integrity fixtures, 2 explicit-config tests, 3 config-creation compatibility
 tests and warnings-denied Clippy checks passed. The Python configuration/wheel
 contract suite passed 22 tests and all three modified workflows passed actionlint.
-The freshly built CLI exited 1 for the official manifest SHA discrepancy below.</p>
+The freshly built CLI exited 1 for the official manifest SHA discrepancy below.
+The later CLI fixture correction passed its two integration tests and changes
+no production Rust code from the tested integrity commit
+<code class="docutils literal notranslate"><span class="pre">5dd2d2ccd7329cbcd001ef2084f723b1fbe79389</span></code>.</p>
 <section id="integrity-gate">
 <h2>Integrity gate<a class="headerlink" href="#integrity-gate" title="Link to this heading">¶</a></h2>
 <p>Microsoft’s fresh VS17 channel declares package manifest SHA256
@@ -351,6 +354,23 @@ The Intel job remains <code class="docutils literal notranslate"><span class="pr
 and <code class="docutils literal notranslate"><span class="pre">macosx_arm64</span></code>. Linux/macOS continue using their platform compilers and
 cibuildwheel. The runner move requires its own CI evidence; a brownout failure
 must not be reclassified as a passing required check.</p>
+</section>
+<section id="first-approved-ci-run-and-configuration-correction">
+<h2>First approved CI run and configuration correction<a class="headerlink" href="#first-approved-ci-run-and-configuration-correction" title="Link to this heading">¶</a></h2>
+<p>The first #176 continuation run failed acquisition with the same declared and
+retrieved manifest SHA values observed locally. Rust/coverage also exposed an
+older CLI test fixture that wrote an empty, schema-invalid TOML file. Its fixture
+was corrected to serialized valid isolated settings; the production invalid
+configuration check remains strict.</p>
+<p>The first #97 run reached cibuildwheel on Linux and both macOS architectures,
+but ccache rejected the now-effective legacy <code class="docutils literal notranslate"><span class="pre">CCACHE_BASEDIR=&quot;{package}&quot;</span></code>.
+Command placeholders are not expanded in environment table values. Linux now
+uses the container’s absolute <code class="docutils literal notranslate"><span class="pre">/project</span></code> source directory, macOS resolves <code class="docutils literal notranslate"><span class="pre">$PWD</span></code>
+from the actual job environment, and the unused Windows cibuildwheel cache base
+is empty. Effective-configuration regressions verify those resolved values.
+No platform compiler, OpenMP policy, ABI selector or integrity check is changed
+by this correction. The observed failures require a fresh CI run on the new head;
+they were configuration failures rather than a macOS runner brownout.</p>
 </section>
 <section id="complete-open-pr-coverage">
 <h2>Complete open PR coverage<a class="headerlink" href="#complete-open-pr-coverage" title="Link to this heading">¶</a></h2>
@@ -494,6 +514,7 @@ on the final PR heads before a merge.</p>
 <li><a class="reference internal" href="#">Windows migration review and rollout, 2026-10-05</a><ul>
 <li><a class="reference internal" href="#integrity-gate">Integrity gate</a></li>
 <li><a class="reference internal" href="#existing-release-and-macos-runner-changes">Existing release and macOS runner changes</a></li>
+<li><a class="reference internal" href="#first-approved-ci-run-and-configuration-correction">First approved CI run and configuration correction</a></li>
 <li><a class="reference internal" href="#complete-open-pr-coverage">Complete open PR coverage</a></li>
 <li><a class="reference internal" href="#safe-push-and-merge-conditions">Safe push and merge conditions</a></li>
 </ul>
