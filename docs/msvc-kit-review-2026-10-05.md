@@ -121,6 +121,33 @@ the new base. Other PRs are listed for analysis only and will not be modified by
 this approval. #94/#95/#96 are merged; #95 released 0.13.1 and #96 reduced the
 sdist. They need no repeated workflow changes.
 
+Independent review identified that the earlier CLI could record unverified local
+archive bytes in the same v1 source receipt format as verified acquisition. The
+Windows action never enabled `--no-verify`; its fresh official manifest check
+still failed before acquisition. The updated CLI requires verified official
+payload SHA, matching index provenance and a complete archive rehash before
+publishing v2 receipts. It rejects v1 source receipts, including those nested
+in a selection lock. This action now explicitly requires the v1 selection-lock
+container and two nonempty v2 source receipts. Existing installed trees or edits
+to old receipt schemas cannot replace fresh verified compiler/SDK acquisition.
+
+The exact CLI revision is now
+`25bf17cd0a21aa46b4d26d36096a19a800885cdc`. Its related Rust suites passed
+17 tests with Rust 1.93.1 and one compiler worker; fmt and warnings-denied Clippy
+passed. The action's actual PowerShell receipt guard was exercised with valid
+v2, legacy v1, unknown lock, empty payload and missing component inputs; only
+valid v2 was accepted. New CI and a review of these updated heads remain required.
+The Python configuration and Windows wheel-contract suite passed 22 tests using
+an isolated temporary directory.
+
+Eight official channel/catalog probes, including five fixed-version references
+statically extracted from Microsoft Authenticode-validated bootstrappers,
+covered seven distinct catalog URLs. All advertised SHA values still differ
+from the complete HTTP response bytes. The fixed 17.14.0, .4, .15, .40 and .41
+releases, VS17 release, VS2026 stable and 17.12 LTSC did not establish a matching
+chain. Exact version choices remain MSVC 14.44.35207 and SDK 10.0.26100.0; no
+publisher SHA is replaced with an observed digest and no validation is disabled.
+
 ## Safe push and merge conditions
 
 Fetch the official branch immediately before pushing and require its old head

@@ -28,7 +28,8 @@ $lock = Join-Path $env:RUNNER_TEMP py-dem-bones-msvc.lock.json
 & $exe lock --dir $root --output $lock @selectors
 if ($LASTEXITCODE -ne 0) { throw 'Toolchain lock capture failed' }
 $receipt = Get-Content -LiteralPath $lock -Raw | ConvertFrom-Json
-if ($receipt.receipts.Count -ne 2 -or @($receipt.receipts | Where-Object { $_.payloads.Count -eq 0 }).Count) {
+if ($receipt.schema -ne 'msvc-kit.toolchain-lock.v1' -or $receipt.receipts.Count -ne 2 -or
+    @($receipt.receipts | Where-Object { $_.schema -ne 'msvc-kit.installation-receipt.v2' -or $_.payloads.Count -eq 0 }).Count) {
     throw 'Compiler and SDK require verified acquisition receipts'
 }
 foreach ($item in @{exe=$exe; root=$root; lock=$lock}.GetEnumerator()) {
