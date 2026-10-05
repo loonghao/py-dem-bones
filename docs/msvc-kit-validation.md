@@ -1,7 +1,10 @@
 # Local Windows migration candidate — 2026-10-05
 
-This report describes local candidates only. No remote branch, pull request,
-release, repository permission or security setting was changed.
+This is the initial local validation snapshot. At that point no remote branch,
+pull request, release, repository permission or security setting was changed.
+Subsequent integrity findings, approved PR scope, release status and runner
+changes are recorded in `msvc-kit-review-2026-10-05.md`; its unresolved integrity
+gate takes precedence over the earlier candidate's functional test results.
 
 The candidate starts at py-dem-bones main `21797949b9fe0d425b35a390fddb553a9632b5d7`
 (0.13.1), reuses PR #97 and the existing local configuration fix, and adds the

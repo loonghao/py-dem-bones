@@ -397,7 +397,8 @@ jobs:
   build-wheels-macos-arm:
     name: Build ${{ matrix.python }} wheels on macOS ARM
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.fast-mode == 'true') && (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'release' || github.event_name == 'workflow_dispatch') }}
-    runs-on: macos-14
+    # macos-14 brownouts begin 2026-10-05; macos-15 remains a native ARM64 runner.
+    runs-on: macos-15
     timeout-minutes: 90
     strategy:
       fail-fast: false
