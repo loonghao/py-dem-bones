@@ -1,0 +1,81 @@
+name: Build Windows wheel with msvc-kit
+description: Acquire an exact verified portable toolchain, build, repair and test one Python ABI
+inputs:
+  python-version:
+    description: Native CPython version
+    required: true
+  arch:
+    description: Native compiler and Python architecture (x64 or arm64)
+    required: true
+    default: x64
+  output-dir:
+    description: Wheel output directory
+    default: wheelhouse
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+        architecture: ${{ inputs.arch }}
+    - name: Read exact toolchain selection
+      id: selection
+      shell: pwsh
+      run: |
+        $selection = Get-Content tools/wheels/msvc-kit.json -Raw | ConvertFrom-Json
+        if ($selection.revision -notmatch '^[a-f0-9]{40}$') { throw 'An immutable msvc-kit commit is required' }
+        "revision=$($selection.revision)" >> $env:GITHUB_OUTPUT
+        "msvc=$($selection.msvc_version)" >> $env:GITHUB_OUTPUT
+        "sdk=$($selection.sdk_version)" >> $env:GITHUB_OUTPUT
+    - uses: actions/checkout@v4
+      with:
+        repository: loonghao/msvc-kit
+        ref: ${{ steps.selection.outputs.revision }}
+        path: .toolchains/msvc-kit-source
+        persist-credentials: false
+    - name: Build the pinned CLI
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+        rustup toolchain install 1.93.1 --profile minimal
+        if ($LASTEXITCODE -ne 0) { throw 'Rust bootstrap failed' }
+        $env:CARGO_BUILD_JOBS = '2'
+        cargo +1.93.1 build --locked --release --manifest-path .toolchains/msvc-kit-source/Cargo.toml
+        if ($LASTEXITCODE -ne 0) { throw 'Pinned msvc-kit build failed' }
+    # Only archives and their index are cached. Every use rehashes them against
+    # Microsoft's current manifest and extracts into a fresh installation.
+    - uses: actions/cache@v4
+      with:
+        path: ${{ runner.temp }}/py-dem-bones-msvc/downloads
+        key: msvc-archives-v1-${{ steps.selection.outputs.revision }}-${{ inputs.arch }}-${{ steps.selection.outputs.msvc }}-${{ steps.selection.outputs.sdk }}
+    - name: Acquire and verify toolchain
+      id: toolchain
+      shell: pwsh
+      env:
+        WHEEL_ARCH: ${{ inputs.arch }}
+      run: '& ./tools/wheels/setup_msvc_toolchain.ps1'
+    - name: Install wheel build dependencies
+      shell: pwsh
+      run: |
+        python -m pip install --index-url https://pypi.org/simple --only-binary=:all: build==1.2.2.post1 delvewheel==1.10.0 scikit-build-core==0.11.6 pybind11==2.13.6 cmake==3.31.10 ninja==1.13.0 wheel numpy
+        if ($LASTEXITCODE -ne 0) { throw 'Wheel build dependency installation failed' }
+    - name: Build, repair, inspect and test wheel
+      shell: pwsh
+      env:
+        WHEEL_ARCH: ${{ inputs.arch }}
+        WHEEL_OUTPUT: ${{ inputs.output-dir }}
+        MSVC_KIT_EXE: ${{ steps.toolchain.outputs.exe }}
+        MSVC_KIT_ROOT: ${{ steps.toolchain.outputs.root }}
+        MSVC_KIT_LOCK: ${{ steps.toolchain.outputs.lock }}
+        CMAKE_BUILD_PARALLEL_LEVEL: '2'
+      run: |
+        $selection = Get-Content tools/wheels/msvc-kit.json -Raw | ConvertFrom-Json
+        python tools/wheels/build_msvc_wheel.py --msvc-kit $env:MSVC_KIT_EXE --dir $env:MSVC_KIT_ROOT --lockfile $env:MSVC_KIT_LOCK --msvc-version $selection.msvc_version --sdk-version $selection.sdk_version --host-arch $env:WHEEL_ARCH --arch $env:WHEEL_ARCH --output-dir $env:WHEEL_OUTPUT
+        if ($LASTEXITCODE -ne 0) { throw 'Selected Windows wheel build or tests failed' }
+    - name: Publish portable toolchain summary
+      shell: pwsh
+      env:
+        WHEEL_OUTPUT: ${{ inputs.output-dir }}
+      run: |
+        Get-Content (Join-Path $env:WHEEL_OUTPUT toolchain-summary.json) >> $env:GITHUB_STEP_SUMMARY
+        Get-Content (Join-Path $env:WHEEL_OUTPUT wheel-summary.json) >> $env:GITHUB_STEP_SUMMARY

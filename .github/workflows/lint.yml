@@ -50,6 +50,9 @@ jobs:
             **/pyproject.toml
             **/requirements*.txt
       
+      - name: Validate effective wheel configuration
+        run: python tools/wheels/check_configuration.py
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip

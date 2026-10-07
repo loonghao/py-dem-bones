@@ -108,4 +108,7 @@ Conventional commits merged to `main` feed release-please. It opens a release PR
 
 ## Documentation and license
 
+For the Windows CRT/OpenMP policy and optional msvc-kit wheel build, see the
+[Windows toolchain contract](docs/windows-toolchain.md).
+
 [Documentation](https://loonghao.github.io/py-dem-bones/) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md) · [BSD 3-Clause license](LICENSE.md) · [Third-party licenses](3RDPARTYLICENSES.md)

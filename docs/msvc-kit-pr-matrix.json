@@ -1,0 +1,879 @@
+[
+  {
+    "number": 176,
+    "title": "feat: add selected toolchain contracts and diagnostics",
+    "headRefName": "agent/toolchain-contracts",
+    "headRefOid": "2736536755659e5f18c064c5d2d5bcc46c3c3e19",
+    "url": "https://github.com/loonghao/msvc-kit/pull/176",
+    "repository": "msvc-kit",
+    "failed_checks": [
+      "Action (all, x64 to arm64)",
+      "Action (all, x64 to x64)",
+      "Action (all, x64 to x86)",
+      "Action (msvc, x64 to x64)",
+      "Validate bundle (x64)",
+      "action-success"
+    ],
+    "checks_observed": 19,
+    "windows_jobs": [
+      {
+        "workflow": ".github/workflows/bundle.yml",
+        "job": "validate-bundle",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/ci.yml",
+        "job": "rust-tests",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/ci.yml",
+        "job": "docs",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/coverage.yml",
+        "job": "coverage",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/pr-checks.yml",
+        "job": "pre-build",
+        "runner": "windows-latest",
+        "matrix": {
+          "include": [
+            {
+              "target": "x86_64-pc-windows-msvc",
+              "artifact-name": "msvc-kit-x86_64-windows"
+            },
+            {
+              "target": "i686-pc-windows-msvc",
+              "artifact-name": "msvc-kit-i686-windows"
+            },
+            {
+              "target": "aarch64-pc-windows-msvc",
+              "artifact-name": "msvc-kit-aarch64-windows"
+            }
+          ]
+        }
+      },
+      {
+        "workflow": ".github/workflows/pr-checks.yml",
+        "job": "quick-checks",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/pr-checks.yml",
+        "job": "clippy",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/pr-checks.yml",
+        "job": "rust-tests",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "crates-publish",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "build-release-binary",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/test-action.yml",
+        "job": "test-action",
+        "runner": "windows-latest",
+        "matrix": {
+          "include": [
+            {
+              "arch": "x64",
+              "components": "all"
+            },
+            {
+              "arch": "x86",
+              "components": "all"
+            },
+            {
+              "arch": "arm64",
+              "components": "all"
+            },
+            {
+              "arch": "x64",
+              "components": "msvc"
+            },
+            {
+              "arch": "x64",
+              "components": "sdk"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "number": 175,
+    "title": "deps: update Rust crate tokio to v1.53.2",
+    "headRefName": "renovate/tokio-1.x-lockfile",
+    "headRefOid": "6751e097d784d1ebf2dcd50115d56dd202e28b5a",
+    "url": "https://github.com/loonghao/msvc-kit/pull/175",
+    "repository": "msvc-kit",
+    "failed_checks": [],
+    "checks_observed": 14,
+    "windows_jobs": [
+      {
+        "workflow": ".github/workflows/bundle.yml",
+        "job": "validate-bundle",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/ci.yml",
+        "job": "rust-tests",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/ci.yml",
+        "job": "docs",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/coverage.yml",
+        "job": "coverage",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/pr-checks.yml",
+        "job": "pre-build",
+        "runner": "windows-latest",
+        "matrix": {
+          "include": [
+            {
+              "target": "x86_64-pc-windows-msvc",
+              "artifact-name": "msvc-kit-x86_64-windows"
+            },
+            {
+              "target": "i686-pc-windows-msvc",
+              "artifact-name": "msvc-kit-i686-windows"
+            },
+            {
+              "target": "aarch64-pc-windows-msvc",
+              "artifact-name": "msvc-kit-aarch64-windows"
+            }
+          ]
+        }
+      },
+      {
+        "workflow": ".github/workflows/pr-checks.yml",
+        "job": "quick-checks",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/pr-checks.yml",
+        "job": "clippy",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/pr-checks.yml",
+        "job": "rust-tests",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "crates-publish",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "build-release-binary",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/test-action.yml",
+        "job": "test-action",
+        "runner": "windows-latest",
+        "matrix": {
+          "arch": [
+            "x64",
+            "x86"
+          ]
+        }
+      },
+      {
+        "workflow": ".github/workflows/test-action.yml",
+        "job": "test-action-msvc-only",
+        "runner": "windows-latest",
+        "matrix": {}
+      }
+    ]
+  },
+  {
+    "number": 164,
+    "title": "chore(main): release 0.2.18",
+    "headRefName": "release-please--branches--main--components--msvc-kit",
+    "headRefOid": "2797077242263dd689f67d9a4721d38e813c6e4b",
+    "url": "https://github.com/loonghao/msvc-kit/pull/164",
+    "repository": "msvc-kit",
+    "failed_checks": [],
+    "checks_observed": 0,
+    "windows_jobs": [
+      {
+        "workflow": ".github/workflows/bundle.yml",
+        "job": "validate-bundle",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/ci.yml",
+        "job": "rust-tests",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/ci.yml",
+        "job": "docs",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/coverage.yml",
+        "job": "coverage",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/pr-checks.yml",
+        "job": "pre-build",
+        "runner": "windows-latest",
+        "matrix": {
+          "include": [
+            {
+              "target": "x86_64-pc-windows-msvc",
+              "artifact-name": "msvc-kit-x86_64-windows"
+            },
+            {
+              "target": "i686-pc-windows-msvc",
+              "artifact-name": "msvc-kit-i686-windows"
+            },
+            {
+              "target": "aarch64-pc-windows-msvc",
+              "artifact-name": "msvc-kit-aarch64-windows"
+            }
+          ]
+        }
+      },
+      {
+        "workflow": ".github/workflows/pr-checks.yml",
+        "job": "quick-checks",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/pr-checks.yml",
+        "job": "clippy",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/pr-checks.yml",
+        "job": "rust-tests",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "crates-publish",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "build-release-binary",
+        "runner": "windows-latest",
+        "matrix": {}
+      },
+      {
+        "workflow": ".github/workflows/test-action.yml",
+        "job": "test-action",
+        "runner": "windows-latest",
+        "matrix": {
+          "arch": [
+            "x64",
+            "x86"
+          ]
+        }
+      },
+      {
+        "workflow": ".github/workflows/test-action.yml",
+        "job": "test-action-msvc-only",
+        "runner": "windows-latest",
+        "matrix": {}
+      }
+    ]
+  },
+  {
+    "number": 97,
+    "title": "feat: make Windows wheel toolchains reproducible",
+    "headRefName": "agent/toolchain-contracts-python",
+    "headRefOid": "7c80520b6325aeaeb53dc5ffc5232dcb2d1859f8",
+    "url": "https://github.com/loonghao/py-dem-bones/pull/97",
+    "repository": "py-dem-bones",
+    "failed_checks": [
+      "Build cp310 wheels on macOS ARM",
+      "Build cp310 wheels on macOS Intel",
+      "Build cp311 wheels on macOS ARM",
+      "Build cp311 wheels on macOS Intel",
+      "Build cp312 wheels on macOS ARM",
+      "Build cp312 wheels on macOS Intel",
+      "Build cp38 wheels on macOS Intel",
+      "Build cp39 wheels on macOS ARM",
+      "Build cp39 wheels on macOS Intel"
+    ],
+    "checks_observed": 26,
+    "windows_jobs": [
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "build-wheels-windows",
+        "runner": "windows-latest",
+        "matrix": {
+          "python": [
+            "cp38",
+            "cp39",
+            "cp310",
+            "cp311",
+            "cp312"
+          ],
+          "include": [
+            {
+              "python": "cp38",
+              "python-version": "3.8"
+            },
+            {
+              "python": "cp39",
+              "python-version": "3.9"
+            },
+            {
+              "python": "cp310",
+              "python-version": "3.10"
+            },
+            {
+              "python": "cp311",
+              "python-version": "3.11"
+            },
+            {
+              "python": "cp312",
+              "python-version": "3.12"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "number": 91,
+    "title": "fix(deps): update dependency black to <25.12.1",
+    "headRefName": "renovate/black-25.x",
+    "headRefOid": "f8df47eeeaf447b01cfc19a2f7212659aef0caac",
+    "url": "https://github.com/loonghao/py-dem-bones/pull/91",
+    "repository": "py-dem-bones",
+    "failed_checks": [
+      "Build cp311 wheels on macOS ARM",
+      "Build cp311 wheels on macOS Intel",
+      "Build cp312 wheels on Windows",
+      "Build cp312 wheels on macOS Intel",
+      "Build cp38 wheels on Windows",
+      "Build cp38 wheels on macOS Intel",
+      "Build cp39 wheels on Windows"
+    ],
+    "checks_observed": 28,
+    "windows_jobs": [
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "build-wheels-windows",
+        "runner": "windows-latest",
+        "matrix": {
+          "python": [
+            "cp38",
+            "cp39",
+            "cp310",
+            "cp311",
+            "cp312"
+          ],
+          "include": [
+            {
+              "python": "cp38",
+              "python-version": "3.8"
+            },
+            {
+              "python": "cp39",
+              "python-version": "3.9"
+            },
+            {
+              "python": "cp310",
+              "python-version": "3.10"
+            },
+            {
+              "python": "cp311",
+              "python-version": "3.11"
+            },
+            {
+              "python": "cp312",
+              "python-version": "3.12"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "number": 84,
+    "title": "chore(deps): update actions/setup-python action to v7",
+    "headRefName": "renovate/actions-setup-python-7.x",
+    "headRefOid": "13f6e2895a53033f8ab28e007da118e8fe5d322a",
+    "url": "https://github.com/loonghao/py-dem-bones/pull/84",
+    "repository": "py-dem-bones",
+    "failed_checks": [],
+    "checks_observed": 30,
+    "windows_jobs": [
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "build-wheels-windows",
+        "runner": "windows-latest",
+        "matrix": {
+          "python": [
+            "cp38",
+            "cp39",
+            "cp310",
+            "cp311",
+            "cp312"
+          ],
+          "include": [
+            {
+              "python": "cp38",
+              "python-version": "3.8"
+            },
+            {
+              "python": "cp39",
+              "python-version": "3.9"
+            },
+            {
+              "python": "cp310",
+              "python-version": "3.10"
+            },
+            {
+              "python": "cp311",
+              "python-version": "3.11"
+            },
+            {
+              "python": "cp312",
+              "python-version": "3.12"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "number": 82,
+    "title": "chore(deps): update actions/github-script action to v9",
+    "headRefName": "renovate/actions-github-script-9.x",
+    "headRefOid": "66bb53ec167933552b4af52a240a25340da3653a",
+    "url": "https://github.com/loonghao/py-dem-bones/pull/82",
+    "repository": "py-dem-bones",
+    "failed_checks": [],
+    "checks_observed": 27,
+    "windows_jobs": [
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "build-wheels-windows",
+        "runner": "windows-latest",
+        "matrix": {
+          "python": [
+            "cp38",
+            "cp39",
+            "cp310",
+            "cp311",
+            "cp312"
+          ],
+          "include": [
+            {
+              "python": "cp38",
+              "python-version": "3.8"
+            },
+            {
+              "python": "cp39",
+              "python-version": "3.9"
+            },
+            {
+              "python": "cp310",
+              "python-version": "3.10"
+            },
+            {
+              "python": "cp311",
+              "python-version": "3.11"
+            },
+            {
+              "python": "cp312",
+              "python-version": "3.12"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "number": 80,
+    "title": "chore(deps): update actions/deploy-pages action to v5",
+    "headRefName": "renovate/actions-deploy-pages-5.x",
+    "headRefOid": "bd79dade647dd24e8820f4fb8742f3280cf2182a",
+    "url": "https://github.com/loonghao/py-dem-bones/pull/80",
+    "repository": "py-dem-bones",
+    "failed_checks": [],
+    "checks_observed": 27,
+    "windows_jobs": [
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "build-wheels-windows",
+        "runner": "windows-latest",
+        "matrix": {
+          "python": [
+            "cp38",
+            "cp39",
+            "cp310",
+            "cp311",
+            "cp312"
+          ],
+          "include": [
+            {
+              "python": "cp38",
+              "python-version": "3.8"
+            },
+            {
+              "python": "cp39",
+              "python-version": "3.9"
+            },
+            {
+              "python": "cp310",
+              "python-version": "3.10"
+            },
+            {
+              "python": "cp311",
+              "python-version": "3.11"
+            },
+            {
+              "python": "cp312",
+              "python-version": "3.12"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "number": 79,
+    "title": "chore(deps): update actions/cache action to v6",
+    "headRefName": "renovate/actions-cache-6.x",
+    "headRefOid": "ff745ad49806b82e9627be05e9ddff88b1eba05e",
+    "url": "https://github.com/loonghao/py-dem-bones/pull/79",
+    "repository": "py-dem-bones",
+    "failed_checks": [],
+    "checks_observed": 25,
+    "windows_jobs": [
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "build-wheels-windows",
+        "runner": "windows-latest",
+        "matrix": {
+          "python": [
+            "cp38",
+            "cp39",
+            "cp310",
+            "cp311",
+            "cp312"
+          ],
+          "include": [
+            {
+              "python": "cp38",
+              "python-version": "3.8"
+            },
+            {
+              "python": "cp39",
+              "python-version": "3.9"
+            },
+            {
+              "python": "cp310",
+              "python-version": "3.10"
+            },
+            {
+              "python": "cp311",
+              "python-version": "3.11"
+            },
+            {
+              "python": "cp312",
+              "python-version": "3.12"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "number": 78,
+    "title": "chore(deps): update actions/checkout action to v7",
+    "headRefName": "renovate/actions-checkout-7.x",
+    "headRefOid": "04a9336e9c4e00f5012282c2495ccba99972e924",
+    "url": "https://github.com/loonghao/py-dem-bones/pull/78",
+    "repository": "py-dem-bones",
+    "failed_checks": [],
+    "checks_observed": 28,
+    "windows_jobs": [
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "build-wheels-windows",
+        "runner": "windows-latest",
+        "matrix": {
+          "python": [
+            "cp38",
+            "cp39",
+            "cp310",
+            "cp311",
+            "cp312"
+          ],
+          "include": [
+            {
+              "python": "cp38",
+              "python-version": "3.8"
+            },
+            {
+              "python": "cp39",
+              "python-version": "3.9"
+            },
+            {
+              "python": "cp310",
+              "python-version": "3.10"
+            },
+            {
+              "python": "cp311",
+              "python-version": "3.11"
+            },
+            {
+              "python": "cp312",
+              "python-version": "3.12"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "number": 77,
+    "title": "chore(deps): update actions/configure-pages action to v6",
+    "headRefName": "renovate/actions-configure-pages-6.x",
+    "headRefOid": "a49b3a0f20d544eaced51b4ab6590cd19a245b69",
+    "url": "https://github.com/loonghao/py-dem-bones/pull/77",
+    "repository": "py-dem-bones",
+    "failed_checks": [],
+    "checks_observed": 27,
+    "windows_jobs": [
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "build-wheels-windows",
+        "runner": "windows-latest",
+        "matrix": {
+          "python": [
+            "cp38",
+            "cp39",
+            "cp310",
+            "cp311",
+            "cp312"
+          ],
+          "include": [
+            {
+              "python": "cp38",
+              "python-version": "3.8"
+            },
+            {
+              "python": "cp39",
+              "python-version": "3.9"
+            },
+            {
+              "python": "cp310",
+              "python-version": "3.10"
+            },
+            {
+              "python": "cp311",
+              "python-version": "3.11"
+            },
+            {
+              "python": "cp312",
+              "python-version": "3.12"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "number": 72,
+    "title": "chore(deps): update dependency python",
+    "headRefName": "renovate/python-3.x",
+    "headRefOid": "b2624c4f792b8a3ae5f116ea7b7d59dd6845870a",
+    "url": "https://github.com/loonghao/py-dem-bones/pull/72",
+    "repository": "py-dem-bones",
+    "failed_checks": [],
+    "checks_observed": 28,
+    "windows_jobs": [
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "build-wheels-windows",
+        "runner": "windows-latest",
+        "matrix": {
+          "python": [
+            "cp38",
+            "cp39",
+            "cp310",
+            "cp311",
+            "cp312"
+          ],
+          "include": [
+            {
+              "python": "cp38",
+              "python-version": "3.8"
+            },
+            {
+              "python": "cp39",
+              "python-version": "3.9"
+            },
+            {
+              "python": "cp310",
+              "python-version": "3.10"
+            },
+            {
+              "python": "cp311",
+              "python-version": "3.11"
+            },
+            {
+              "python": "cp312",
+              "python-version": "3.12"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "number": 64,
+    "title": "chore(deps): update github artifact actions (major)",
+    "headRefName": "renovate/major-github-artifact-actions",
+    "headRefOid": "09269e9efa2a202e6f0aa93d1c9d3cb8c11d9706",
+    "url": "https://github.com/loonghao/py-dem-bones/pull/64",
+    "repository": "py-dem-bones",
+    "failed_checks": [],
+    "checks_observed": 27,
+    "windows_jobs": [
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "build-wheels-windows",
+        "runner": "windows-latest",
+        "matrix": {
+          "python": [
+            "cp38",
+            "cp39",
+            "cp310",
+            "cp311",
+            "cp312"
+          ],
+          "include": [
+            {
+              "python": "cp38",
+              "python-version": "3.8"
+            },
+            {
+              "python": "cp39",
+              "python-version": "3.9"
+            },
+            {
+              "python": "cp310",
+              "python-version": "3.10"
+            },
+            {
+              "python": "cp311",
+              "python-version": "3.11"
+            },
+            {
+              "python": "cp312",
+              "python-version": "3.12"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "number": 40,
+    "title": "chore(deps): update pypa/cibuildwheel action to v2.23.4",
+    "headRefName": "renovate/pypa-cibuildwheel-2.x",
+    "headRefOid": "3ee59efe0de9103f48f9246dc95bfdd6fe040aa7",
+    "url": "https://github.com/loonghao/py-dem-bones/pull/40",
+    "repository": "py-dem-bones",
+    "failed_checks": [],
+    "checks_observed": 25,
+    "windows_jobs": [
+      {
+        "workflow": ".github/workflows/release.yml",
+        "job": "build-wheels-windows",
+        "runner": "windows-latest",
+        "matrix": {
+          "python": [
+            "cp38",
+            "cp39",
+            "cp310",
+            "cp311",
+            "cp312"
+          ],
+          "include": [
+            {
+              "python": "cp38",
+              "python-version": "3.8"
+            },
+            {
+              "python": "cp39",
+              "python-version": "3.9"
+            },
+            {
+              "python": "cp310",
+              "python-version": "3.10"
+            },
+            {
+              "python": "cp311",
+              "python-version": "3.11"
+            },
+            {
+              "python": "cp312",
+              "python-version": "3.12"
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

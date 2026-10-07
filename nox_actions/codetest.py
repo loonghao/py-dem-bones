@@ -44,6 +44,7 @@ def pytest(session: nox.Session, skip_install: bool = False) -> None:
     # Run pytest with coverage
     session.run(
         "pytest",
+        test_root,
         f"--cov={MODULE_NAME}",
         "--cov-report=xml:coverage.xml",
         f"--rootdir={test_root}",

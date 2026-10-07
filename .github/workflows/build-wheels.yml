@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       runner:
-        description: 'Runner to use (ubuntu-latest, windows-latest, macos-15-intel, macos-14)'
+        description: 'Runner to use (ubuntu-latest, windows-latest, macos-15-intel, macos-15)'
         required: true
         type: string
       python-versions:
@@ -38,7 +38,7 @@ on:
           - macos-intel
           - macos-arm
       runner:
-        description: 'Runner to use (ubuntu-latest, windows-latest, macos-15-intel, macos-14)'
+        description: 'Runner to use (ubuntu-latest, windows-latest, macos-15-intel, macos-15)'
         required: true
         type: string
         default: 'ubuntu-latest'
@@ -81,13 +81,22 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate effective wheel configuration
+        run: python tools/wheels/check_configuration.py
+
       # Cache Eigen library
       - uses: ./.github/actions/cache-eigen
+        if: inputs.platform != 'windows'
         with:
           platform: ${{ inputs.platform }}
 
       # Set up ccache
       - uses: ./.github/actions/setup-ccache
+        if: inputs.platform != 'windows'
         with:
           platform: ${{ inputs.platform }}
           python: ${{ matrix.python }}
@@ -99,6 +108,7 @@ jobs:
           platform: ${{ inputs.platform }}
           python: ${{ matrix.python }}
           config-file: "{package}/.cibuildwheel.toml"
+          python-version: ${{ matrix.python-version }}
           build-verbosity: 3
 
       # Upload wheels
@@ -109,9 +119,11 @@ jobs:
 
       # Test the wheel immediately after building
       - uses: ./.github/actions/setup-python-build
+        if: inputs.platform != 'windows'
         with:
           python-version: ${{ matrix.python-version }}
 
       - uses: ./.github/actions/test-wheel
+        if: inputs.platform != 'windows'
         with:
-          platform: ${{ inputs.platform == 'windows' && 'windows' || 'macos' }}
+          platform: ${{ inputs.platform == 'linux' && 'linux' || 'macos' }}
