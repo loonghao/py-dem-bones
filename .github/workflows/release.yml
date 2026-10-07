@@ -136,13 +136,14 @@ jobs:
       # and the rejection lands at the very end of the publish job after every
       # wheel has already been uploaded. Catch an oversized sdist here instead,
       # before the wheels are built.
-      - name: Check SDist size against the PyPI project limit
+      - name: Check SDist contents and PyPI project limit
         shell: bash
         run: |
           python - <<'PY'
-          """Fail fast when the sdist is too large for PyPI to accept."""
+          """Verify the actual source archive before installing or publishing it."""
           # Import built-in modules
           import sys
+          import tarfile
           from pathlib import Path
 
           # PyPI's default per-project file size limit; raise it in lockstep if
@@ -157,6 +158,22 @@ jobs:
           for path in sdists:
               size = path.stat().st_size
               print(f"{path.name}: {size / 1e6:.1f} MB")
+              with tarfile.open(path) as archive:
+                  members = {"/".join(member.name.split("/")[1:])
+                             for member in archive.getmembers() if member.isfile()}
+              if any(name.startswith(".ccache/") for name in members):
+                  sys.exit(f"{path.name} contains machine-local compiler cache files")
+              required = {
+                  "CMakeLists.txt", "pyproject.toml", "LICENSE.md",
+                  "cmake/modules/UseCCache.cmake", "src/binding/py_dem_bones.cpp",
+                  "src/py_dem_bones/__init__.py",
+                  "extern/dem-bones/include/DemBones/DemBones.h",
+                  "extern/dem-bones/LICENSE.md", "extern/dem-bones/3RDPARTYLICENSES.md",
+                  "extern/eigen/Eigen/Core", "extern/eigen/COPYING.MPL2",
+              }
+              missing = sorted(required - members)
+              if missing:
+                  sys.exit(f"{path.name} is missing source or license files: {missing}")
               if size > LIMIT_BYTES:
                   sys.exit(
                       f"{path.name} is {size / 1e6:.1f} MB, above PyPI's "
