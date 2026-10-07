@@ -130,14 +130,14 @@ def cibuildwheel_local(session: nox.Session) -> None:
     # Run cibuildwheel directly
     session.log(f"Building wheel for Python {python_version} on {current_platform}...")
 
-    # On Windows, use setup.py directly
+    # On Windows, build with the developer's existing compiler environment.
     if current_platform == "windows":
-        session.log("Using setup.py directly on Windows...")
+        session.log("Using PEP 517 build on Windows...")
 
         # Install build dependencies
-        session.install("numpy", "pybind11", "cmake", "ninja", "wheel")
+        session.install("build", "numpy", "pybind11", "cmake", "ninja", "wheel")
 
-        # Set environment variables for setup.py
+        # Set environment variables for the native build.
         env["CMAKE_GENERATOR"] = "Ninja"
         env["CMAKE_POSITION_INDEPENDENT_CODE"] = "ON"
         env["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = "ON"
@@ -156,21 +156,23 @@ def cibuildwheel_local(session: nox.Session) -> None:
 
             # Install additional dependencies
             session.install(
-                "wheel", "setuptools", "cmake", "ninja", "pybind11", "numpy"
+                "build", "wheel", "setuptools", "cmake", "ninja", "pybind11", "numpy"
             )
 
-            # Run setup.py directly with verbose output
-            session.log("Running setup.py bdist_wheel...")
+            session.log("Running python -m build --wheel...")
             session.run(
                 "python",
-                "setup.py",
-                "bdist_wheel",
-                "-v",
+                "-m",
+                "build",
+                "--wheel",
+                "--outdir",
+                "wheelhouse",
                 env=env,
                 external=True,
                 silent=True,
-                success_codes=[0, 1],
             )
+
+            session.log("PEP 517 build completed successfully")
 
             # Check if dist directory exists and contains wheels
             if os.path.exists("dist"):
@@ -182,12 +184,6 @@ def cibuildwheel_local(session: nox.Session) -> None:
                         dst = os.path.join("wheelhouse", wheel_file)
                         session.log(f"Copying {src} to {dst}")
                         shutil.copy2(src, dst)
-
-                    session.log("setup.py build completed successfully")
-                else:
-                    session.log("No wheels found in dist directory")
-            else:
-                session.log("dist directory not found")
 
             # Try direct pip wheel as a fallback if no wheels were found
             if not os.path.exists("wheelhouse") or not os.listdir("wheelhouse"):
@@ -203,7 +199,7 @@ def cibuildwheel_local(session: nox.Session) -> None:
                     external=True,
                 )
         except Exception as e:
-            session.log(f"setup.py build failed: {e}")
+            session.log(f"PEP 517 build failed: {e}")
             session.log("Falling back to pip wheel...")
             try:
                 session.run(
@@ -226,6 +222,8 @@ def cibuildwheel_local(session: nox.Session) -> None:
                 "python",
                 "-m",
                 "cibuildwheel",
+                "--config-file",
+                os.path.join(ROOT, ".cibuildwheel.toml"),
                 "--platform",
                 current_platform,
                 "--output-dir",
@@ -248,6 +246,8 @@ def cibuildwheel_local(session: nox.Session) -> None:
                     "python",
                     "-m",
                     "cibuildwheel",
+                    "--config-file",
+                    os.path.join(ROOT, ".cibuildwheel.toml"),
                     "--platform",
                     current_platform,
                     "--output-dir",

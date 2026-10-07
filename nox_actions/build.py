@@ -148,14 +148,15 @@ def build_wheels(session: nox.Session) -> None:
     # Run build process
     session.log("Building wheels...")
 
-    # On Windows, use setup.py directly
+    # On Windows, build with the developer's existing compiler environment.
     if current_platform == "windows":
-        session.log("Using setup.py directly on Windows...")
+        session.log("Using PEP 517 build on Windows...")
 
         # Install build dependencies
         retry_command(
             session,
             session.install,
+            "build",
             "numpy",
             "pybind11",
             "cmake",
@@ -164,7 +165,7 @@ def build_wheels(session: nox.Session) -> None:
             max_retries=3,
         )
 
-        # Set environment variables for setup.py
+        # Set environment variables for the native build.
         env["CMAKE_GENERATOR"] = "Ninja"
         env["CMAKE_POSITION_INDEPENDENT_CODE"] = "ON"
         env["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = "ON"
@@ -173,11 +174,13 @@ def build_wheels(session: nox.Session) -> None:
         os.makedirs("dist", exist_ok=True)
 
         try:
-            # Run setup.py directly
             session.run(
                 "python",
-                "setup.py",
-                "bdist_wheel",
+                "-m",
+                "build",
+                "--wheel",
+                "--outdir",
+                "wheelhouse",
                 env=env,
                 external=True,
             )
@@ -190,9 +193,9 @@ def build_wheels(session: nox.Session) -> None:
                     session.log(f"Copying {src} to {dst}")
                     shutil.copy2(src, dst)
 
-            session.log("setup.py build completed successfully")
+            session.log("PEP 517 build completed successfully")
         except Exception as e:
-            session.log(f"setup.py build failed: {e}")
+            session.log(f"PEP 517 build failed: {e}")
             session.log("Falling back to standard build...")
             build(session)
             return
@@ -203,6 +206,8 @@ def build_wheels(session: nox.Session) -> None:
                 "python",
                 "-m",
                 "cibuildwheel",
+                "--config-file",
+                str(THIS_ROOT / ".cibuildwheel.toml"),
                 "--platform",
                 current_platform,  # Build for current platform only
                 "--output-dir",
@@ -224,6 +229,8 @@ def build_wheels(session: nox.Session) -> None:
                     "python",
                     "-m",
                     "cibuildwheel",
+                    "--config-file",
+                    str(THIS_ROOT / ".cibuildwheel.toml"),
                     "--platform",
                     current_platform,
                     "--output-dir",

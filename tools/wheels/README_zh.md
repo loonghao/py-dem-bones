@@ -4,13 +4,13 @@
 
 ## 使用 cibuildwheel 构建
 
-[cibuildwheel](https://cibuildwheel.readthedocs.io/) 是一个强大的工具，用于为多个平台和 Python 版本构建 wheel 包。我们的 CI 流程使用 cibuildwheel 来构建所有支持的平台和 Python 版本的 wheel 包。
+[cibuildwheel](https://cibuildwheel.readthedocs.io/) 用于 Linux 和 macOS 的 CI wheel 构建。Windows CI 使用下文介绍的固定源码版本 msvc-kit action。
 
 ### 本地构建
 
 要在本地使用 cibuildwheel 构建 wheel 包，有以下几种方法：
 
-#### 使用 nox（推荐）
+#### 在 Linux 或 macOS 上使用 nox
 
 ```bash
 # 安装 nox
@@ -35,37 +35,44 @@ pip install cibuildwheel
 
 ```bash
 # 构建当前平台的 wheel
-python -m cibuildwheel --platform auto
+python -m cibuildwheel --config-file .cibuildwheel.toml --platform auto
 ```
 
-cibuildwheel 将使用项目根目录下的 `.cibuildwheel.toml` 配置文件来构建 wheel 包。构建完成后，wheel 包将位于 `./wheelhouse/` 目录中。
+请在项目根目录运行命令。`--config-file` 显式选择 `.cibuildwheel.toml`；cibuildwheel 的默认配置路径是 `pyproject.toml`。nox 和独立 wheel 脚本都会显式传递这一参数。生成的 wheel 位于 `wheelhouse/`。
 
 ### Windows 环境特殊说明
 
-在 Windows 环境中，由于 cibuildwheel 可能会遇到一些问题，我们提供了一个专门的脚本来构建 wheel 包：
+使用本机已有编译器进行 Windows 本地构建时，可以运行：
 
 ```bash
 python tools/wheels/build_windows_wheel.py
 ```
 
-这个脚本会自动安装所需的依赖，并使用标准的 `python -m build` 命令构建 wheel 包。构建完成后，wheel 包将位于 `wheelhouse/` 目录中。
+该脚本安装构建依赖，先尝试显式传入配置文件的 cibuildwheel，再回退到 PEP 517 构建命令，并将 wheel 收集到 `wheelhouse/`。这些本地构建入口使用开发者环境，不下载便携工具链，也不生成下载凭据。
 
-如果你在 Windows 环境中使用 nox 命令构建 wheel，它会自动检测操作系统并使用适当的方法：
+如果要主动选择已有的 msvc-kit 工具链，请使用专用构建入口，传入完整版本，并确保目标架构与当前 Python 一致：
 
-```bash
-python -m nox -s build-wheels
+请先安装 [Windows 工具链指南](../../docs/windows-toolchain.md) 列出的 Python 构建工具。
+
+```powershell
+python tools/wheels/build_msvc_wheel.py --msvc-kit C:/toolchains/msvc-kit.exe --dir C:/toolchains/native --msvc-version 14.44.35207 --sdk-version 10.0.26100.0 --host-arch x64 --arch x64 --output-dir wheelhouse
 ```
+
+该入口执行 `doctor --compile`、校验 query 输出，以 Ninja 调用选定的编译器，修复运行时 DLL 依赖，并在干净虚拟环境中运行测试。它不会下载工具，也不会回退到其他编译器。已有下载凭据时可追加 `--lockfile`。修复后的 wheel 旁会生成 `toolchain-summary.json` 和 `wheel-summary.json`。ARM64 构建需使用 ARM64 Python，并将两个架构参数都设为 `arm64`。
 
 ### 配置文件
 
-cibuildwheel 的配置位于以下两个文件中：
+- `.cibuildwheel.toml`：`[tool.cibuildwheel]` 下的构建、修复和测试配置。
+- `pyproject.toml`：包元数据和 scikit-build-core 配置。
+- `tools/wheels/msvc-kit.json`：Windows CI 使用的固定 CLI 提交和完整 MSVC/SDK 版本。
 
-- `.cibuildwheel.toml`：主要配置文件，包含构建选项、环境设置等
-- `pyproject.toml`：包含一些基本的 cibuildwheel 配置
+运行 `python tools/wheels/check_configuration.py`，可以使用 CI 的 cibuildwheel 版本验证实际生效的配置，并在不编译 wheel 的情况下测试本地命令参数传递。
 
 ### CI 构建
 
-GitHub Actions 工作流程 `.github/workflows/release.yml` 使用 cibuildwheel 为所有支持的平台和 Python 版本构建 wheel 包。当创建一个新的 tag 或手动触发工作流程时，CI 将自动构建 wheel 包并上传到 GitHub Releases 和 PyPI。
+共享构建 action 将 Linux 和 macOS 任务交给显式指定配置文件的 cibuildwheel。Windows 任务使用 `.github/actions/build-windows-wheel/action.yml`，从 `msvc-kit.json` 中的提交构建 CLI，根据微软清单校验下载档案，生成精确的锁定凭据，再通过 `build_msvc_wheel.py` 构建并测试一个原生 Python ABI。
+
+发布工作流先构建全部必需产物。GitHub Releases 和 PyPI 发布仅在版本 tag 上执行；PR 和分支构建负责验证产物，不执行发布。
 
 ## 验证 wheel 包
 
@@ -101,8 +108,8 @@ python -m twine upload wheelhouse/*.whl
 
 1. 确保你已安装所有必需的依赖，包括 CMake 和 C++ 编译器。
 2. 检查 cibuildwheel 日志以获取详细的错误信息。
-3. 尝试增加构建的详细程度：`CIBW_BUILD_VERBOSITY=3 python -m cibuildwheel`。
-4. 对于 Windows 特定的问题，尝试使用专门的 Windows 构建脚本。
+3. 尝试增加构建的详细程度：`CIBW_BUILD_VERBOSITY=3 python -m cibuildwheel --config-file .cibuildwheel.toml`。
+4. 选定 Windows 工具链的构建失败时，先检查 doctor 报告和请求的版本。
 
 ## 参考资料
 

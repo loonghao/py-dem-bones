@@ -9,7 +9,6 @@ import sys
 import shutil
 import subprocess
 import platform
-import io
 
 def run_command(cmd, cwd=None, env=None):
     """Run a command and return the output."""
@@ -105,6 +104,7 @@ def build_wheel():
             ],
             "build": [
                 sys.executable, "-m", "cibuildwheel",
+                "--config-file", os.path.join(root_dir, ".cibuildwheel.toml"),
                 "--platform", "windows",
                 "--output-dir", "wheelhouse"
             ],

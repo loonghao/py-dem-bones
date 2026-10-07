@@ -11,13 +11,14 @@ import sys
 from pathlib import Path
 
 
-def run_command(cmd, cwd=None):
+def run_command(cmd, cwd=None, env=None):
     """Run command and return output."""
     print(f"Running: {' '.join(cmd)}")
     try:
         result = subprocess.run(
             cmd,
             cwd=cwd,
+            env=env,
             check=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
@@ -47,7 +48,11 @@ def build_wheels():
     
     # Use cibuildwheel to build wheels
     success, _ = run_command(
-        [sys.executable, "-m", "cibuildwheel", "--platform", "auto"],
+        [
+            sys.executable, "-m", "cibuildwheel",
+            "--config-file", str(Path(__file__).resolve().parents[2] / ".cibuildwheel.toml"),
+            "--platform", "auto",
+        ],
         cwd=str(Path(__file__).parent.parent.parent),  # Project root directory
         env=env,
     )
