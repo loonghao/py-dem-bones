@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 LABEL maintainer="Long Hao <hal.long@outlook.com>"
 LABEL description="Python bindings for the Dem Bones library"
