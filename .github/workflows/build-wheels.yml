@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       runner:
-        description: 'Runner to use (ubuntu-latest, windows-latest, macos-15-intel, macos-14)'
+        description: 'Runner to use (ubuntu-latest, windows-latest, macos-15-intel, macos-15)'
         required: true
         type: string
       python-versions:
@@ -38,7 +38,7 @@ on:
           - macos-intel
           - macos-arm
       runner:
-        description: 'Runner to use (ubuntu-latest, windows-latest, macos-15-intel, macos-14)'
+        description: 'Runner to use (ubuntu-latest, windows-latest, macos-15-intel, macos-15)'
         required: true
         type: string
         default: 'ubuntu-latest'
